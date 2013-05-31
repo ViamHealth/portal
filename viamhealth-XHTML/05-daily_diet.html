@@ -1,0 +1,1837 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>05-Daily Diet Page</title>
+<link type="text/css" rel="stylesheet" href="css/style.css" />
+<link type="text/css" rel="stylesheet" href="css/jquery-ui.css" />
+<link rel="stylesheet" type="text/css" href="css/dd.css" />
+<script src="js/jquery-1.9.1.min.js" type="text/javascript"></script>
+<script src="js/jquery-migrate-1.1.1.min.js" type="text/javascript"></script>
+<script src="js/jquery-ui.js" type="text/javascript"></script>
+<script type="text/javascript">
+	//popup 
+	$(function() {
+	
+		$( "#pp_diaryinfo" ).dialog({
+			autoOpen: false,
+			modal         : true,
+			width         : "auto",
+			height        : "auto",
+			draggable     : false,
+			closeOnEscape : true,
+			resizable: false ,
+			open: function(){
+						$('.ui-widget-overlay').bind('click',function(){
+							$('#pp_diaryinfo').dialog('close');
+						});
+					}
+		});
+		
+		$(".ui-dialog .ui-dialog-titlebar").hide();
+		$( "div.cols.c6 .pp_diary" ).click(function() {
+				$( "#pp_diaryinfo" ).dialog( "open" );
+		});
+		$("a.a_close").click(function(event){
+			event.preventDefault();
+			$( "#pp_diaryinfo" ).dialog("close");
+		});
+		$(".row3 .rwrap #pp_close").click(function(event){
+			event.preventDefault();
+			$( "#pp_diaryinfo" ).dialog("close");
+		});
+	});
+	//Date Picker
+	$(function() {
+		$( "#sel_date" ).datepicker({
+			showOtherMonths: true,
+			selectOtherMonths: true
+		});
+		$( "#sel_date" ).datepicker("setDate", new Date());
+		$( "#sel_date" ).datepicker( "option", "dateFormat", "DD, d MM, yy" );
+	});
+
+	//Pop Tab
+	$(function() {
+		//$( "#pptabs" ).tabs().addClass( "active" );	
+		 $("a.maintab").click(function(event){ 
+			event.preventDefault();
+				var cid = $(this).attr("rel");
+				var scid = $(this).attr("rev");
+				var cobj = $(this);
+				 $("[id^=tabs-]").each(function(){ 
+					 $(this).hide();
+				 });
+				 
+				 $(cid).show();
+					 $("ul#mantb li").each(function(){ 
+						 $(this).removeClass("active");
+					 });
+				 cobj.parents("li").addClass("active");
+				 $("[id^=innertabs1-]").each(function(){ 
+					 $(this).hide();
+				 });
+				 
+				 $(scid).show();
+				 $(cid).find("ul.subtb li").each(function(){ 
+				   $(this).removeClass("active");
+				 });
+				 $(cid).find("ul.subtb li:eq(0)").addClass("active");
+		 });
+		 
+		  $("a.subtab").click(function(event){ 
+			event.preventDefault();
+				var cid = $(this).attr("rel");
+				var cobj = $(this);
+				 $("[id^=innertabs1-]").each(function(){ 
+					 $(this).hide();
+				 });
+				 
+				 $(cid).show();
+					 cobj.parents("ul.subtb").find("li").each(function(){ 
+						 $(this).removeClass("active");
+					 });
+				 cobj.parents("li").addClass("active");
+		 });
+		
+	});
+	//Toggle
+	$(function(){
+		$("div.cols.c1").click(function(){
+			$(this).parents("li").find(".tgle_block").slideToggle();
+			if($(this).hasClass("cls-show"))
+			{
+				$(this).removeClass("cls-show");
+				$(this).addClass("cls-hide");
+			}else{
+				$(this).removeClass("cls-hide");
+				$(this).addClass("cls-show");
+			}
+		});
+	});
+</script>
+</head>
+
+<body>
+<div id="header">
+	<div class="nrow"><div class="container">&nbsp;</div></div>
+    <div class="mrow clearfix">
+    	<div class="container clearfix">
+        
+        	<div id="logo"><h1><a href="#">Viam Health</a></h1></div>
+            
+            <ul id="main-menu">
+                <li><a href="#">Goals</a></li>
+                <li><a href="#">Journals</a></li>
+                <li><a href="#">Files<em>5</em></a></li>
+                <li><a href="#">Remainders</a></li>
+            </ul>
+            
+            <div class="u_col">
+				<div class="u_box clearfix">
+                	<div class="ub_inr">
+                        <div class="u_img"><a href="#"><img width="25" height="25" alt="User Image" src="images/thumb/s_img1.jpg" /></a></div>
+                        <div class="u_nam"><a href="#">Sharat Khurana</a></div>
+                        <div class="dd_lnks pp_box">
+                            <div class="twrap">&nbsp;</div>
+                            <div class="mwrap">
+                                <ul>
+                                    <li><a href="#">Profile Details</a></li>
+                                    <li><a href="#">Account Settings</a></li>
+                                    <li><a href="#">Privacy Settings</a></li>
+                                    <li><a href="#">Logout</a></li>
+                                </ul>
+                            </div>
+                            <div class="bwrap">&nbsp;</div>
+                        </div>
+					</div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <div class="hrow">
+        <div class="container">
+        	<h1>Daily Diet</h1>
+        </div>
+    </div>
+</div><!--E.O.header-->
+<div id="content" class="container DailyDiet clearfix">
+	<div id="sidebar">
+		<div class="rc_block">
+        	<div class="rc_tb">
+            	<div class="rc_bb">
+                	<div class="rc_lb">
+                    	<div class="rc_rb">
+                        	<div class="rc_tlc">
+                            	<div class="rc_trc">
+                                    <div class="rc_blc">
+                                        <div class="rc_brc">
+                                        	<div class="rc_inp">
+                                            	<div class="sb_list1">
+                                                	<h3>Family Profiles (6)</h3>
+                                                    <ul>
+                                                    	<li class="active">
+                                                        	<div class="c1">
+                                                            	<a href="#"><img src="images/thumb/img_grey.jpg" width="25" height="25" alt="Img" /></a>
+                                                            </div>
+                                                            <div class="c2"> <a href="#">Sharat Khurana</a> </div>
+                                                        </li>
+                                                        <li>
+                                                        	<div class="c1">
+                                                            	<a href="#"><img src="images/thumb/img_grey.jpg" width="25" height="25" alt="Img" /></a>
+                                                            </div>
+                                                            <div class="c2"> <a href="#">Tripti Khurana</a> </div>
+                                                        </li>
+                                                        <li>
+                                                        	<div class="c1">
+                                                            	<a href="#"><img src="images/thumb/img_grey.jpg" width="25" height="25" alt="Img" /></a>
+                                                            </div>
+                                                            <div class="c2"> <a href="#">Deesha Khurana</a> </div>
+                                                        </li>
+                                                        <li>
+                                                        	<div class="c1">
+                                                            	<a href="#"><img src="images/thumb/img_grey.jpg" width="25" height="25" alt="Img" /></a>
+                                                            </div>
+                                                            <div class="c2"> <a href="#">Rehaan Khurana</a> </div>
+                                                        </li>
+                                                        <li>
+                                                        	<div class="c1">
+                                                            	<a href="#"><img src="images/thumb/img_grey.jpg" width="25" height="25" alt="Img" /></a>
+                                                            </div>
+                                                            <div class="c2"> <a href="#">Dharamjeet Khurana</a></div>
+                                                        </li>
+                                                        <li>
+                                                        	<div class="c1">
+                                                            	<a href="#"><img src="images/thumb/img_grey.jpg" width="25" height="25" alt="Img" /></a>
+                                                            </div>
+                                                            <div class="c2"> <a href="#">Parmeet Khurana</a> </div>
+                                                        </li>
+                                                    </ul>
+                                                    <div class="b_row">
+                                                    	<div class="b_btn s_grn"><span><input type="submit" value="Add" /></span></div>
+                                                    	<div class="b_btn s_blu"><span><input type="submit" value="Invite" /></span></div>
+                                                        <span class="rc_ble">&nbsp;</span><span class="rc_bre">&nbsp;</span>                                                    
+													</div>
+                                              	</div>
+                                            </div>
+                                        </div>
+									</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div><!--E.O.sidebar-->
+    <div id="main">
+    	<div class="rc_block">
+        	<div class="rc_tb">
+                	<div class="rc_lb">
+                    	<div class="rc_rb">
+                        	<div class="rc_tlc">
+                            	<div class="rc_trc">
+                                        	<div class="rc_inp">
+                                             		<div class="bd_block">
+                                                    	<div class="tit clearfix">
+                                                            <h2>Food Diary</h2>
+                                                            <!--<p id="sel_date"><span>Tuesday,</span> 5 March 2013</p>-->
+                                                            <!--<input id="sel_date" class="rgt_ipbox" type="text" value="hie" />-->
+                                                            <div class="rgt_cal"><input id="sel_date" class="rgt_ipbox" type="text" value="Tuesday, 28 May, 2013" /></div>
+                                                        </div>
+<div class="fchart">
+	<p class="rtop">Total (8 Foods)</p>
+	<table cellpadding="0" cellspacing="0">
+    	<tr>								                     
+        	<th class="c1">Intake</th>
+            <th class="c2">Calories</th>
+            <th class="c3">Carbs</th>
+            <th class="c4">Fat</th>
+            <th class="c5">Protein</th>
+            <th class="c6">&nbsp;</th>
+        </tr>
+    </table>
+	<ul>
+    	<li class="rodd_bgc" rel="1">
+        	<div class="clearfix">
+                <div class="cols c1 cls-show">Breakfast</div>
+                <div class="cols c2">242</div>
+                <div class="cols c3">51</div>
+                <div class="cols c4">1</div>
+                <div class="cols c5">8</div>
+                <div class="cols c6"><a href="javascript:void(0);" class="pp_diary">Add New</a></div>
+            </div>
+            <div class="tgle_block" style="display:none;">
+                <table cellpadding="0" cellspacing="0">
+                    <tr>
+                        <td class="c1">Dosa</td>
+                        <td class="c2">348</td>
+                        <td class="c3">51</td>
+                        <td class="c4">1</td>
+                        <td class="c5">8</td>
+                        <td class="c6"><a href="#">X</a></td>
+                    </tr>
+                    <tr>
+                        <td class="c1">Scrambled eggs</td>
+                        <td class="c2">202</td>
+                        <td class="c3">51</td>
+                        <td class="c4">1</td>
+                        <td class="c5">8</td>
+                        <td class="c6"><a href="#">X</a></td>
+                    </tr>
+                    <tr>
+                        <td class="c1">Sambar</td>
+                        <td class="c2">10400</td>
+                        <td class="c3">51</td>
+                        <td class="c4">1</td>
+                        <td class="c5">8</td>
+                        <td class="c6"><a href="#">X</a></td>
+                    </tr>
+                    <tr>
+                        <td class="c1">Mixed Fruit Juice</td>
+                        <td class="c2">10400</td>
+                        <td class="c3">51</td>
+                        <td class="c4">1</td>
+                        <td class="c5">8</td>
+                        <td class="c6"><a href="#">X</a></td>
+                    </tr>
+                </table>
+            </div>
+        </li>
+		<li rel="2">
+        	<div class="clearfix">
+                <div class="cols c1 cls-show">Lunch</div>
+                <div class="cols c2">348</div>
+                <div class="cols c3">51</div>
+                <div class="cols c4">1</div>
+                <div class="cols c5">8</div>
+                <div class="cols c6"><a href="javascript:void(0);" class="pp_diary">Add New</a></div>
+			</div>
+            <div class="tgle_block" style="display:none;">
+                <table cellpadding="0" cellspacing="0">
+                    <tr>
+                        <td class="c1">Dosa</td>
+                        <td class="c2">348</td>
+                        <td class="c3">51</td>
+                        <td class="c4">1</td>
+                        <td class="c5">8</td>
+                        <td class="c6"><a href="#">X</a></td>
+                    </tr>
+                    <tr>
+                        <td class="c1">Scrambled eggs</td>
+                        <td class="c2">202</td>
+                        <td class="c3">51</td>
+                        <td class="c4">1</td>
+                        <td class="c5">8</td>
+                        <td class="c6"><a href="#">X</a></td>
+                    </tr>
+                    <tr>
+                        <td class="c1">Sambar</td>
+                        <td class="c2">10400</td>
+                        <td class="c3">51</td>
+                        <td class="c4">1</td>
+                        <td class="c5">8</td>
+                        <td class="c6"><a href="#">X</a></td>
+                    </tr>
+                    <tr>
+                        <td class="c1">Mixed Fruit Juice</td>
+                        <td class="c2">10400</td>
+                        <td class="c3">51</td>
+                        <td class="c4">1</td>
+                        <td class="c5">8</td>
+                        <td class="c6"><a href="#">X</a></td>
+                    </tr>
+                </table>
+            </div>
+        </li>
+    	<li class="rodd_bgc" rel="3">
+        	<div class="clearfix">
+                <div class="cols c1 cls-show">Snack</div>
+                <div class="cols c2">202</div>
+                <div class="cols c3">51</div>
+                <div class="cols c4">1</div>
+                <div class="cols c5">8</div>
+                <div class="cols c6"><a href="javascript:void(0);" class="pp_diary">Add New</a></div>
+			</div>
+            <div class="tgle_block" style="display:none;">
+                <table cellpadding="0" cellspacing="0">
+                    <tr>
+                        <td class="c1">Dosa</td>
+                        <td class="c2">348</td>
+                        <td class="c3">51</td>
+                        <td class="c4">1</td>
+                        <td class="c5">8</td>
+                        <td class="c6"><a href="#">X</a></td>
+                    </tr>
+                    <tr>
+                        <td class="c1">Scrambled eggs</td>
+                        <td class="c2">202</td>
+                        <td class="c3">51</td>
+                        <td class="c4">1</td>
+                        <td class="c5">8</td>
+                        <td class="c6"><a href="#">X</a></td>
+                    </tr>
+                    <tr>
+                        <td class="c1">Sambar</td>
+                        <td class="c2">10400</td>
+                        <td class="c3">51</td>
+                        <td class="c4">1</td>
+                        <td class="c5">8</td>
+                        <td class="c6"><a href="#">X</a></td>
+                    </tr>
+                    <tr>
+                        <td class="c1">Mixed Fruit Juice</td>
+                        <td class="c2">10400</td>
+                        <td class="c3">51</td>
+                        <td class="c4">1</td>
+                        <td class="c5">8</td>
+                        <td class="c6"><a href="#">X</a></td>
+                    </tr>
+                </table>
+            </div>
+        </li>
+    	<li rel="4">
+        	<div class="clearfix">
+                <div class="cols c1 cls-show">Dinner</div>
+                <div class="cols c2">10400</div>
+                <div class="cols c3">51</div>
+                <div class="cols c4">1</div>
+                <div class="cols c5">8</div> 
+                <div class="cols c6"><a href="javascript:void(0);" class="pp_diary">Add New</a></div>
+			</div>
+            <div class="tgle_block" style="display:none;">
+                <table cellpadding="0" cellspacing="0">
+                    <tr>
+                        <td class="c1">Dosa</td>
+                        <td class="c2">348</td>
+                        <td class="c3">51</td>
+                        <td class="c4">1</td>
+                        <td class="c5">8</td>
+                        <td class="c6"><a href="#">X</a></td>
+                    </tr>
+                    <tr>
+                        <td class="c1">Scrambled eggs</td>
+                        <td class="c2">202</td>
+                        <td class="c3">51</td>
+                        <td class="c4">1</td>
+                        <td class="c5">8</td>
+                        <td class="c6"><a href="#">X</a></td>
+                    </tr>
+                    <tr>
+                        <td class="c1">Sambar</td>
+                        <td class="c2">10400</td>
+                        <td class="c3">51</td>
+                        <td class="c4">1</td>
+                        <td class="c5">8</td>
+                        <td class="c6"><a href="#">X</a></td>
+                    </tr>
+                    <tr>
+                        <td class="c1">Mixed Fruit Juice</td>
+                        <td class="c2">10400</td>
+                        <td class="c3">51</td>
+                        <td class="c4">1</td>
+                        <td class="c5">8</td>
+                        <td class="c6"><a href="#">X</a></td>
+                    </tr>
+                </table>
+            </div>
+        </li>
+    	<li class="rodd_bgc" rel="5">
+        	<div class="clearfix">
+                <div class="cols c1 cls-show">Excercise</div>
+                <div class="cols c2">1400</div>
+                <div class="cols c3">51</div>
+                <div class="cols c4">1</div>
+                <div class="cols c5">8</div>
+                <div class="cols c6"><a href="javascript:void(0);" class="pp_diary">Add New</a></div>
+            </div>
+            <div class="tgle_block" style="display:none;">
+                <table cellpadding="0" cellspacing="0">
+                    <tr>
+                        <td class="c1">Dosa</td>
+                        <td class="c2">348</td>
+                        <td class="c3">51</td>
+                        <td class="c4">1</td>
+                        <td class="c5">8</td>
+                        <td class="c6"><a href="#">X</a></td>
+                    </tr>
+                    <tr>
+                        <td class="c1">Scrambled eggs</td>
+                        <td class="c2">202</td>
+                        <td class="c3">51</td>
+                        <td class="c4">1</td>
+                        <td class="c5">8</td>
+                        <td class="c6"><a href="#">X</a></td>
+                    </tr>
+                    <tr>
+                        <td class="c1">Sambar</td>
+                        <td class="c2">10400</td>
+                        <td class="c3">51</td>
+                        <td class="c4">1</td>
+                        <td class="c5">8</td>
+                        <td class="c6"><a href="#">X</a></td>
+                    </tr>
+                    <tr>
+                        <td class="c1">Mixed Fruit Juice</td>
+                        <td class="c2">10400</td>
+                        <td class="c3">51</td>
+                        <td class="c4">1</td>
+                        <td class="c5">8</td>
+                        <td class="c6"><a href="#">X</a></td>
+                    </tr>
+                </table>
+            </div>
+        </li>
+    </ul>
+    <div class="botm_block">
+        <table cellpadding="0" cellspacing="0">
+            <tr>
+                <td class="c1">gain</td>
+                <td class="c2">9792</td>
+                <td class="c3">517</td>
+                <td class="c4">397</td>
+                <td class="c5">34</td>
+                <td class="c6">&nbsp;</td>
+            </tr>
+            <tr>
+                <td class="c1">goal</td>
+                <td class="c2">2000</td>
+                <td class="c3">250</td>
+                <td class="c4">1</td>
+                <td class="c5">70</td>
+                <td class="c6">&nbsp;</td>
+            </tr>
+            <tr class="cls_rslt">
+                <td class="c1">remaining</td>
+                <td class="c2">9508</td>
+                <td class="c3">126</td>
+                <td class="c4">337</td>
+                <td class="c5">35</td>
+                <td class="c6">&nbsp;</td>
+            </tr>
+            <tr>
+                <td class="c1">net burn</td>
+                <td class="c2">228</td>
+                <td class="c3">51</td>
+                <td class="c4">1</td>
+                <td class="c5">8</td>
+                <td class="c6">&nbsp;</td>
+            </tr>
+        </table>
+    </div>
+</div><!--E.o.fchart-->
+                                                    </div>
+                                                    <div class="advice-bx">
+                                                    	<p class="hdr">Advice</p>
+                                                        <p>You are slightly overweight.<br /> 
+                                                        Your Calorie consumption is higher than Net burn.<br />
+                                                        You must control your Calorie Intake.</p>
+                                                        <p class="inti">Last Saved&nbsp;<span>2 mins ago</span></p>
+                                                    </div>
+
+                                            </div>
+                                </div>
+                            </div>
+                        </div>
+
+                </div>
+            </div>
+        </div>
+    </div><!--E.O.main-->
+</div><!--E.O.content-->
+<div id="footer"><div class="container"><p>&copy; 2013. VIAM HEALTH</p></div></div>
+<!--Pop up-->
+<div id="pp_diaryinfo"  class="pp_block layout1">
+	<div class="twrap-2">&nbsp;</div>
+	<div class="mwrap-2">
+    	<div class="row1" style="border:none;">
+        	<h2>Food Diary&nbsp;<span>/ Add Breakfast</span></h2>
+            <a href="#" class="a_close">Close</a>
+            <!--<input class="input-search" type="text" value="Search for Food"/>-->
+        </div><!--E.O.row2-->        
+        <div class="row2" style="border:none;" >
+        	<div class="srch_row">
+            	<div class="frow clearfix">
+                	<label>Search For Food</label>
+                    <input type="text" value="EGG" />
+                </div>
+            </div>
+            <div id="pptabs">        
+                <div class="col-1">
+                    <ul id="mantb">
+                        <li class="active"><a  rel="#tabs-1" rev="#innertabs1-11" href="#" class="maintab" >All Foods</a></li>
+                        <li><a rel="#tabs-2" rev="#innertabs1-21" href="#" class="maintab">Recently Eaten</a></li>                    
+                        <li><a rel="#tabs-3" rev="#innertabs1-31" href="#" class="maintab">Most Eaten</a></li>                                        
+                        <li><a rel="#tabs-4" rev="#innertabs1-41" href="#" class="maintab">Saved Meals</a></li>                                        
+                        <li><a rel="#tabs-5"  rev="#innertabs1-51"  href="#" class="maintab">Custom Meal</a></li>
+                    </ul>
+                    <div class="back-btn"> 
+                        <div class="b_btn s_gr-sm"> <span> <a href="#">&lt;Back</a> </span> </div>
+                    </div>
+                </div><!--Tab Links-->
+                <div class="col-2" id="tabs-1">
+                    <div class="col-2-1">
+                        <div class="menu-title"> <p>EGG - All Foods</p> </div>
+                        <div class="menu">
+                            <ul class="subtb">
+                                <li class="active"><a rel="#innertabs1-11" href="#" class="subtab">Egg Whites</a></li>
+                                <li><a rel="#innertabs1-12" href="#" class="subtab">Egg Yolk</a></li>
+                                <li><a rel="#innertabs1-13" href="#" class="subtab">Fried Eggs</a></li>                                        
+                                <li><a rel="#innertabs1-14" href="#" class="subtab">Hard Boiled Eggs</a></li>                                        
+                                <li><a rel="#innertabs1-15" href="#" class="subtab">Omelets</a></li>                                        
+                                <li><a rel="#innertabs1-16" href="#" class="subtab">Scrambled Eggs</a></li>                                        
+                                <li class="last"><a rel="#innertabs1-17" href="#" class="subtab">Poached Eggs</a></li>                                                            
+                            </ul>
+                        </div>
+                    </div><!--Sub-Tab Links-->
+                    <div class="col-2-2" id="innertabs1-11">
+                        <div class="item-name"> <p>Tab1 - Subtab1 - Egg Whites</p> </div>
+                        <div class="item-photo">
+                            <div class="clsthumb">
+                                <div class="tl">&nbsp;</div>
+                                <div class="tr">&nbsp;</div>
+                                    <a href="#"> <img src="images/item-photo.jpg" width="100" height="100" alt="photo" /> </a>
+                                <div class="bl">&nbsp;</div>
+                                <div class="br">&nbsp;</div>
+                            </div>
+                            <a class="sbt-p" href="#">Submit <br />Photo</a>
+                        </div>
+                        <div class="item-detail">
+                            <ul>
+                                <li class="spl">Calories<span>316.8</span></li>
+                                <li class="spl">Fat<span>11.1 g</span></li>
+                                <li class="spl">Carbs<span>32.2 g</span></li>                                    
+                                <li class="spl">Protein<span>20.3 g</span></li>            
+                                <li class="high">Sugars<span>0.5 g</span></li>            
+                                <li class="high">Cholesterol<span>6.2 mg</span></li>            
+                                <li>Sodium<span>56.6 mg</span></li>            
+                                <li>Potassium<span>317.8 mg</span></li>            
+                                <li>Saturated<span>0.3 g</span></li>            
+                                <li>Polyunsaturated<span>1.0 g</span></li>
+                                <li>Dietary Fiber<span>4.8 g</span></li>                        
+                                <li>Trans<span>0.0 g</span></li>                                                
+                                <li>Vitamin A<span>0.1%</span></li>                                                
+                                <li>Calcium<span>17.5%</span></li>                                                
+                                <li>Vitamin C<span>1.0%</span></li>                    	
+                                <li>Iron<span>6.3%</span></li>
+                            </ul>
+                        </div>
+                    </div><!--Sub-Tab content1-->
+                    <div class="col-2-2" id="innertabs1-12" style="display:none">
+                        <div class="item-name"> <p>Egg Yolk - TAB2</p> </div>
+                        <div class="item-photo">
+                            <div class="clsthumb">
+                                <div class="tl">&nbsp;</div>
+                                <div class="tr">&nbsp;</div>
+                                    <a href="#"> <img src="images/item-photo.jpg" width="100" height="100" alt="photo" /> </a>
+                                <div class="bl">&nbsp;</div>
+                                <div class="br">&nbsp;</div>
+                            </div>
+                            <a class="sbt-p" href="#">Submit <br />Photo</a>
+                        </div>
+                        <div class="item-detail">
+                            <ul>
+                                <li class="spl">Calories<span>316.8</span></li>
+                                <li class="spl">Fat<span>11.1 g</span></li>
+                                <li class="spl">Carbs<span>32.2 g</span></li>                                    
+                                <li class="spl">Protein<span>20.3 g</span></li>            
+                                <li class="high">Sugars<span>0.5 g</span></li>            
+                                <li class="high">Cholesterol<span>6.2 mg</span></li>            
+                                <li>Sodium<span>56.6 mg</span></li>            
+                                <li>Potassium<span>317.8 mg</span></li>            
+                                <li>Saturated<span>0.3 g</span></li>            
+                                <li>Polyunsaturated<span>1.0 g</span></li>
+                                <li>Dietary Fiber<span>4.8 g</span></li>                        
+                                <li>Trans<span>0.0 g</span></li>                                                
+                                <li>Vitamin A<span>0.1%</span></li>                                                
+                                <li>Calcium<span>17.5%</span></li>                                                
+                                <li>Vitamin C<span>1.0%</span></li>                    	
+                                <li>Iron<span>6.3%</span></li>
+                            </ul>
+                        </div>
+                    </div><!--Sub-Tab content2-->
+                    <div class="col-2-2" id="innertabs1-13" style="display:none">
+                        <div class="item-name"> <p>Fried Eggs - TAB3</p> </div>
+                        <div class="item-photo">
+                            <div class="clsthumb">
+                                <div class="tl">&nbsp;</div>
+                                <div class="tr">&nbsp;</div>
+                                    <a href="#"> <img src="images/item-photo.jpg" width="100" height="100" alt="photo" /> </a>
+                                <div class="bl">&nbsp;</div>
+                                <div class="br">&nbsp;</div>
+                            </div>
+                            <a class="sbt-p" href="#">Submit <br />Photo</a>
+                        </div>
+                        <div class="item-detail">
+                            <ul>
+                                <li class="spl">Calories<span>316.8</span></li>
+                                <li class="spl">Fat<span>11.1 g</span></li>
+                                <li class="spl">Carbs<span>32.2 g</span></li>                                    
+                                <li class="spl">Protein<span>20.3 g</span></li>            
+                                <li class="high">Sugars<span>0.5 g</span></li>            
+                                <li class="high">Cholesterol<span>6.2 mg</span></li>            
+                                <li>Sodium<span>56.6 mg</span></li>            
+                                <li>Potassium<span>317.8 mg</span></li>            
+                                <li>Saturated<span>0.3 g</span></li>            
+                                <li>Polyunsaturated<span>1.0 g</span></li>
+                                <li>Dietary Fiber<span>4.8 g</span></li>                        
+                                <li>Trans<span>0.0 g</span></li>                                                
+                                <li>Vitamin A<span>0.1%</span></li>                                                
+                                <li>Calcium<span>17.5%</span></li>                                                
+                                <li>Vitamin C<span>1.0%</span></li>                    	
+                                <li>Iron<span>6.3%</span></li>
+                            </ul>
+                        </div>
+                    </div><!--Sub-Tab content3-->
+                    <div class="col-2-2" id="innertabs1-14" style="display:none">
+                        <div class="item-name"> <p>Hard Boiled Eggs - TAB4</p> </div>
+                        <div class="item-photo">
+                            <div class="clsthumb">
+                                <div class="tl">&nbsp;</div>
+                                <div class="tr">&nbsp;</div>
+                                    <a href="#"> <img src="images/item-photo.jpg" width="100" height="100" alt="photo" /> </a>
+                                <div class="bl">&nbsp;</div>
+                                <div class="br">&nbsp;</div>
+                            </div>
+                            <a class="sbt-p" href="#">Submit <br />Photo</a>
+                        </div>
+                        <div class="item-detail">
+                            <ul>
+                                <li class="spl">Calories<span>316.8</span></li>
+                                <li class="spl">Fat<span>11.1 g</span></li>
+                                <li class="spl">Carbs<span>32.2 g</span></li>                                    
+                                <li class="spl">Protein<span>20.3 g</span></li>            
+                                <li class="high">Sugars<span>0.5 g</span></li>            
+                                <li class="high">Cholesterol<span>6.2 mg</span></li>            
+                                <li>Sodium<span>56.6 mg</span></li>            
+                                <li>Potassium<span>317.8 mg</span></li>            
+                                <li>Saturated<span>0.3 g</span></li>            
+                                <li>Polyunsaturated<span>1.0 g</span></li>
+                                <li>Dietary Fiber<span>4.8 g</span></li>                        
+                                <li>Trans<span>0.0 g</span></li>                                                
+                                <li>Vitamin A<span>0.1%</span></li>                                                
+                                <li>Calcium<span>17.5%</span></li>                                                
+                                <li>Vitamin C<span>1.0%</span></li>                    	
+                                <li>Iron<span>6.3%</span></li>
+                            </ul>
+                        </div>
+                    </div><!--Sub-Tab content4-->
+                    <div class="col-2-2" id="innertabs1-15" style="display:none">
+                        <div class="item-name"> <p>Scrambled Eggs - TAB5</p> </div>
+                        <div class="item-photo">
+                            <div class="clsthumb">
+                                <div class="tl">&nbsp;</div>
+                                <div class="tr">&nbsp;</div>
+                                    <a href="#"> <img src="images/item-photo.jpg" width="100" height="100" alt="photo" /> </a>
+                                <div class="bl">&nbsp;</div>
+                                <div class="br">&nbsp;</div>
+                            </div>
+                            <a class="sbt-p" href="#">Submit <br />Photo</a>
+                        </div>                 
+                        <div class="item-detail">
+                            <ul>
+                                <li class="spl">Calories<span>316.8</span></li>
+                                <li class="spl">Fat<span>11.1 g</span></li>
+                                <li class="spl">Carbs<span>32.2 g</span></li>                                    
+                                <li class="spl">Protein<span>20.3 g</span></li>            
+                                <li class="high">Sugars<span>0.5 g</span></li>            
+                                <li class="high">Cholesterol<span>6.2 mg</span></li>            
+                                <li>Sodium<span>56.6 mg</span></li>            
+                                <li>Potassium<span>317.8 mg</span></li>            
+                                <li>Saturated<span>0.3 g</span></li>            
+                                <li>Polyunsaturated<span>1.0 g</span></li>
+                                <li>Dietary Fiber<span>4.8 g</span></li>                        
+                                <li>Trans<span>0.0 g</span></li>                                                
+                                <li>Vitamin A<span>0.1%</span></li>                                                
+                                <li>Calcium<span>17.5%</span></li>                                                
+                                <li>Vitamin C<span>1.0%</span></li>                    	
+                                <li>Iron<span>6.3%</span></li>
+                            </ul>
+                        </div>
+                    </div><!--Sub-Tab content5-->
+                    <div class="col-2-2" id="innertabs1-16" style="display:none">
+                        <div class="item-name"> <p>Hard Boiled Eggs - TAB6</p> </div>
+                        <div class="item-photo">
+                            <div class="clsthumb">
+                                <div class="tl">&nbsp;</div>
+                                <div class="tr">&nbsp;</div>
+                                    <a href="#"> <img src="images/item-photo.jpg" width="100" height="100" alt="photo" /> </a>
+                                <div class="bl">&nbsp;</div>
+                                <div class="br">&nbsp;</div>
+                            </div>
+                            <a class="sbt-p" href="#">Submit <br />Photo</a>
+                        </div>
+                        <div class="item-detail">
+                            <ul>
+                                <li class="spl">Calories<span>316.8</span></li>
+                                <li class="spl">Fat<span>11.1 g</span></li>
+                                <li class="spl">Carbs<span>32.2 g</span></li>                                    
+                                <li class="spl">Protein<span>20.3 g</span></li>            
+                                <li class="high">Sugars<span>0.5 g</span></li>            
+                                <li class="high">Cholesterol<span>6.2 mg</span></li>            
+                                <li>Sodium<span>56.6 mg</span></li>            
+                                <li>Potassium<span>317.8 mg</span></li>            
+                                <li>Saturated<span>0.3 g</span></li>            
+                                <li>Polyunsaturated<span>1.0 g</span></li>
+                                <li>Dietary Fiber<span>4.8 g</span></li>                        
+                                <li>Trans<span>0.0 g</span></li>                                                
+                                <li>Vitamin A<span>0.1%</span></li>                                                
+                                <li>Calcium<span>17.5%</span></li>                                                
+                                <li>Vitamin C<span>1.0%</span></li>                    	
+                                <li>Iron<span>6.3%</span></li>
+                            </ul>
+                        </div>
+                    </div><!--Sub-Tab content6-->
+                    <div class="col-2-2" id="innertabs1-17" style="display:none">
+                        <div class="item-name"> <p>Poached Eggs - TAB7</p> </div>
+                        <div class="item-photo">
+                            <div class="clsthumb">
+                                <div class="tl">&nbsp;</div>
+                                <div class="tr">&nbsp;</div>
+                                    <a href="#"> <img src="images/item-photo.jpg" width="100" height="100" alt="photo" /> </a>
+                                <div class="bl">&nbsp;</div>
+                                <div class="br">&nbsp;</div>
+                            </div>
+                            <a class="sbt-p" href="#">Submit <br />Photo</a>
+                        </div>                 
+                        <div class="item-detail">
+                            <ul>
+                                <li class="spl">Calories<span>316.8</span></li>
+                                <li class="spl">Fat<span>11.1 g</span></li>
+                                <li class="spl">Carbs<span>32.2 g</span></li>                                    
+                                <li class="spl">Protein<span>20.3 g</span></li>            
+                                <li class="high">Sugars<span>0.5 g</span></li>            
+                                <li class="high">Cholesterol<span>6.2 mg</span></li>            
+                                <li>Sodium<span>56.6 mg</span></li>            
+                                <li>Potassium<span>317.8 mg</span></li>            
+                                <li>Saturated<span>0.3 g</span></li>            
+                                <li>Polyunsaturated<span>1.0 g</span></li>
+                                <li>Dietary Fiber<span>4.8 g</span></li>                        
+                                <li>Trans<span>0.0 g</span></li>                                                
+                                <li>Vitamin A<span>0.1%</span></li>                                                
+                                <li>Calcium<span>17.5%</span></li>                                                
+                                <li>Vitamin C<span>1.0%</span></li>                    	
+                                <li>Iron<span>6.3%</span></li>
+                            </ul>
+                        </div>
+                    </div><!--Sub-Tab content7-->                    
+                </div><!--Tab-Content tab1-->
+				<div class="col-2" id="tabs-2" style="display:none;">
+                    <div class="col-2-1">
+                        <div class="menu-title"> <p>EGG - Recently Eaten</p> </div>
+                        <div class="menu">
+                            <ul class="subtb">
+                                <li class="active"><a rel="#innertabs1-21" href="#" class="subtab">Egg Whites</a></li>
+                                <li><a rel="#innertabs1-22" href="#" class="subtab">Egg Yolk</a></li>
+                                <li><a rel="#innertabs1-23" href="#" class="subtab">Fried Eggs</a></li>                                        
+                                <li><a rel="#innertabs1-24" href="#" class="subtab">Hard Boiled Eggs</a></li>                                        
+                                <li><a rel="#innertabs1-25" href="#" class="subtab">Omelets</a></li>                                        
+                                <li><a rel="#innertabs1-26" href="#" class="subtab">Scrambled Eggs</a></li>                                        
+                                <li class="last"><a rel="#innertabs1-27" href="#" class="subtab">Poached Eggs</a></li>                                                            
+                            </ul>
+                        </div>
+                    </div><!--Sub-Tab Links-->
+                    <div class="col-2-2" id="innertabs1-21">
+                        <div class="item-name"> <p>Tab2 - Subtab1 - Egg Whites</p> </div>
+                        <div class="item-photo">
+                            <div class="clsthumb">
+                                <div class="tl">&nbsp;</div>
+                                <div class="tr">&nbsp;</div>
+                                    <a href="#"> <img src="images/item-photo.jpg" width="100" height="100" alt="photo" /> </a>
+                                <div class="bl">&nbsp;</div>
+                                <div class="br">&nbsp;</div>
+                            </div>
+                            <a class="sbt-p" href="#">Submit <br />Photo</a>
+                        </div>
+                        <div class="item-detail">
+                            <ul>
+                                <li class="spl">Calories<span>316.8</span></li>
+                                <li class="spl">Fat<span>11.1 g</span></li>
+                                <li class="spl">Carbs<span>32.2 g</span></li>                                    
+                                <li class="spl">Protein<span>20.3 g</span></li>            
+                                <li class="high">Sugars<span>0.5 g</span></li>            
+                                <li class="high">Cholesterol<span>6.2 mg</span></li>            
+                                <li>Sodium<span>56.6 mg</span></li>            
+                                <li>Potassium<span>317.8 mg</span></li>            
+                                <li>Saturated<span>0.3 g</span></li>            
+                                <li>Polyunsaturated<span>1.0 g</span></li>
+                                <li>Dietary Fiber<span>4.8 g</span></li>                        
+                                <li>Trans<span>0.0 g</span></li>                                                
+                                <li>Vitamin A<span>0.1%</span></li>                                                
+                                <li>Calcium<span>17.5%</span></li>                                                
+                                <li>Vitamin C<span>1.0%</span></li>                    	
+                                <li>Iron<span>6.3%</span></li>
+                            </ul>
+                        </div>
+                    </div><!--Sub-Tab content1-->
+                    <div class="col-2-2" id="innertabs1-22" style="display:none">
+                        <div class="item-name"> <p>Egg Yolk - TAB2</p> </div>
+                        <div class="item-photo">
+                            <div class="clsthumb">
+                                <div class="tl">&nbsp;</div>
+                                <div class="tr">&nbsp;</div>
+                                    <a href="#"> <img src="images/item-photo.jpg" width="100" height="100" alt="photo" /> </a>
+                                <div class="bl">&nbsp;</div>
+                                <div class="br">&nbsp;</div>
+                            </div>
+                            <a class="sbt-p" href="#">Submit <br />Photo</a>
+                        </div>
+                        <div class="item-detail">
+                            <ul>
+                                <li class="spl">Calories<span>316.8</span></li>
+                                <li class="spl">Fat<span>11.1 g</span></li>
+                                <li class="spl">Carbs<span>32.2 g</span></li>                                    
+                                <li class="spl">Protein<span>20.3 g</span></li>            
+                                <li class="high">Sugars<span>0.5 g</span></li>            
+                                <li class="high">Cholesterol<span>6.2 mg</span></li>            
+                                <li>Sodium<span>56.6 mg</span></li>            
+                                <li>Potassium<span>317.8 mg</span></li>            
+                                <li>Saturated<span>0.3 g</span></li>            
+                                <li>Polyunsaturated<span>1.0 g</span></li>
+                                <li>Dietary Fiber<span>4.8 g</span></li>                        
+                                <li>Trans<span>0.0 g</span></li>                                                
+                                <li>Vitamin A<span>0.1%</span></li>                                                
+                                <li>Calcium<span>17.5%</span></li>                                                
+                                <li>Vitamin C<span>1.0%</span></li>                    	
+                                <li>Iron<span>6.3%</span></li>
+                            </ul>
+                        </div>
+                    </div><!--Sub-Tab content2-->
+                    <div class="col-2-2" id="innertabs1-23" style="display:none">
+                        <div class="item-name"> <p>Fried Eggs - TAB3</p> </div>
+                        <div class="item-photo">
+                            <div class="clsthumb">
+                                <div class="tl">&nbsp;</div>
+                                <div class="tr">&nbsp;</div>
+                                    <a href="#"> <img src="images/item-photo.jpg" width="100" height="100" alt="photo" /> </a>
+                                <div class="bl">&nbsp;</div>
+                                <div class="br">&nbsp;</div>
+                            </div>
+                            <a class="sbt-p" href="#">Submit <br />Photo</a>
+                        </div>
+                        <div class="item-detail">
+                            <ul>
+                                <li class="spl">Calories<span>316.8</span></li>
+                                <li class="spl">Fat<span>11.1 g</span></li>
+                                <li class="spl">Carbs<span>32.2 g</span></li>                                    
+                                <li class="spl">Protein<span>20.3 g</span></li>            
+                                <li class="high">Sugars<span>0.5 g</span></li>            
+                                <li class="high">Cholesterol<span>6.2 mg</span></li>            
+                                <li>Sodium<span>56.6 mg</span></li>            
+                                <li>Potassium<span>317.8 mg</span></li>            
+                                <li>Saturated<span>0.3 g</span></li>            
+                                <li>Polyunsaturated<span>1.0 g</span></li>
+                                <li>Dietary Fiber<span>4.8 g</span></li>                        
+                                <li>Trans<span>0.0 g</span></li>                                                
+                                <li>Vitamin A<span>0.1%</span></li>                                                
+                                <li>Calcium<span>17.5%</span></li>                                                
+                                <li>Vitamin C<span>1.0%</span></li>                    	
+                                <li>Iron<span>6.3%</span></li>
+                            </ul>
+                        </div>
+                    </div><!--Sub-Tab content3-->
+                    <div class="col-2-2" id="innertabs1-24" style="display:none">
+                        <div class="item-name"> <p>Hard Boiled Eggs - TAB4</p> </div>
+                        <div class="item-photo">
+                            <div class="clsthumb">
+                                <div class="tl">&nbsp;</div>
+                                <div class="tr">&nbsp;</div>
+                                    <a href="#"> <img src="images/item-photo.jpg" width="100" height="100" alt="photo" /> </a>
+                                <div class="bl">&nbsp;</div>
+                                <div class="br">&nbsp;</div>
+                            </div>
+                            <a class="sbt-p" href="#">Submit <br />Photo</a>
+                        </div>
+                        <div class="item-detail">
+                            <ul>
+                                <li class="spl">Calories<span>316.8</span></li>
+                                <li class="spl">Fat<span>11.1 g</span></li>
+                                <li class="spl">Carbs<span>32.2 g</span></li>                                    
+                                <li class="spl">Protein<span>20.3 g</span></li>            
+                                <li class="high">Sugars<span>0.5 g</span></li>            
+                                <li class="high">Cholesterol<span>6.2 mg</span></li>            
+                                <li>Sodium<span>56.6 mg</span></li>            
+                                <li>Potassium<span>317.8 mg</span></li>            
+                                <li>Saturated<span>0.3 g</span></li>            
+                                <li>Polyunsaturated<span>1.0 g</span></li>
+                                <li>Dietary Fiber<span>4.8 g</span></li>                        
+                                <li>Trans<span>0.0 g</span></li>                                                
+                                <li>Vitamin A<span>0.1%</span></li>                                                
+                                <li>Calcium<span>17.5%</span></li>                                                
+                                <li>Vitamin C<span>1.0%</span></li>                    	
+                                <li>Iron<span>6.3%</span></li>
+                            </ul>
+                        </div>
+                    </div><!--Sub-Tab content4-->
+                    <div class="col-2-2" id="innertabs1-25" style="display:none">
+                        <div class="item-name"> <p>Scrambled Eggs - TAB5</p> </div>
+                        <div class="item-photo">
+                            <div class="clsthumb">
+                                <div class="tl">&nbsp;</div>
+                                <div class="tr">&nbsp;</div>
+                                    <a href="#"> <img src="images/item-photo.jpg" width="100" height="100" alt="photo" /> </a>
+                                <div class="bl">&nbsp;</div>
+                                <div class="br">&nbsp;</div>
+                            </div>
+                            <a class="sbt-p" href="#">Submit <br />Photo</a>
+                        </div>                 
+                        <div class="item-detail">
+                            <ul>
+                                <li class="spl">Calories<span>316.8</span></li>
+                                <li class="spl">Fat<span>11.1 g</span></li>
+                                <li class="spl">Carbs<span>32.2 g</span></li>                                    
+                                <li class="spl">Protein<span>20.3 g</span></li>            
+                                <li class="high">Sugars<span>0.5 g</span></li>            
+                                <li class="high">Cholesterol<span>6.2 mg</span></li>            
+                                <li>Sodium<span>56.6 mg</span></li>            
+                                <li>Potassium<span>317.8 mg</span></li>            
+                                <li>Saturated<span>0.3 g</span></li>            
+                                <li>Polyunsaturated<span>1.0 g</span></li>
+                                <li>Dietary Fiber<span>4.8 g</span></li>                        
+                                <li>Trans<span>0.0 g</span></li>                                                
+                                <li>Vitamin A<span>0.1%</span></li>                                                
+                                <li>Calcium<span>17.5%</span></li>                                                
+                                <li>Vitamin C<span>1.0%</span></li>                    	
+                                <li>Iron<span>6.3%</span></li>
+                            </ul>
+                        </div>
+                    </div><!--Sub-Tab content5-->
+                    <div class="col-2-2" id="innertabs1-26" style="display:none">
+                        <div class="item-name"> <p>Hard Boiled Eggs - TAB6</p> </div>
+                        <div class="item-photo">
+                            <div class="clsthumb">
+                                <div class="tl">&nbsp;</div>
+                                <div class="tr">&nbsp;</div>
+                                    <a href="#"> <img src="images/item-photo.jpg" width="100" height="100" alt="photo" /> </a>
+                                <div class="bl">&nbsp;</div>
+                                <div class="br">&nbsp;</div>
+                            </div>
+                            <a class="sbt-p" href="#">Submit <br />Photo</a>
+                        </div>
+                        <div class="item-detail">
+                            <ul>
+                                <li class="spl">Calories<span>316.8</span></li>
+                                <li class="spl">Fat<span>11.1 g</span></li>
+                                <li class="spl">Carbs<span>32.2 g</span></li>                                    
+                                <li class="spl">Protein<span>20.3 g</span></li>            
+                                <li class="high">Sugars<span>0.5 g</span></li>            
+                                <li class="high">Cholesterol<span>6.2 mg</span></li>            
+                                <li>Sodium<span>56.6 mg</span></li>            
+                                <li>Potassium<span>317.8 mg</span></li>            
+                                <li>Saturated<span>0.3 g</span></li>            
+                                <li>Polyunsaturated<span>1.0 g</span></li>
+                                <li>Dietary Fiber<span>4.8 g</span></li>                        
+                                <li>Trans<span>0.0 g</span></li>                                                
+                                <li>Vitamin A<span>0.1%</span></li>                                                
+                                <li>Calcium<span>17.5%</span></li>                                                
+                                <li>Vitamin C<span>1.0%</span></li>                    	
+                                <li>Iron<span>6.3%</span></li>
+                            </ul>
+                        </div>
+                    </div><!--Sub-Tab content6-->
+                    <div class="col-2-2" id="innertabs1-27" style="display:none">
+                        <div class="item-name"> <p>Poached Eggs - TAB7</p> </div>
+                        <div class="item-photo">
+                            <div class="clsthumb">
+                                <div class="tl">&nbsp;</div>
+                                <div class="tr">&nbsp;</div>
+                                    <a href="#"> <img src="images/item-photo.jpg" width="100" height="100" alt="photo" /> </a>
+                                <div class="bl">&nbsp;</div>
+                                <div class="br">&nbsp;</div>
+                            </div>
+                            <a class="sbt-p" href="#">Submit <br />Photo</a>
+                        </div>                 
+                        <div class="item-detail">
+                            <ul>
+                                <li class="spl">Calories<span>316.8</span></li>
+                                <li class="spl">Fat<span>11.1 g</span></li>
+                                <li class="spl">Carbs<span>32.2 g</span></li>                                    
+                                <li class="spl">Protein<span>20.3 g</span></li>            
+                                <li class="high">Sugars<span>0.5 g</span></li>            
+                                <li class="high">Cholesterol<span>6.2 mg</span></li>            
+                                <li>Sodium<span>56.6 mg</span></li>            
+                                <li>Potassium<span>317.8 mg</span></li>            
+                                <li>Saturated<span>0.3 g</span></li>            
+                                <li>Polyunsaturated<span>1.0 g</span></li>
+                                <li>Dietary Fiber<span>4.8 g</span></li>                        
+                                <li>Trans<span>0.0 g</span></li>                                                
+                                <li>Vitamin A<span>0.1%</span></li>                                                
+                                <li>Calcium<span>17.5%</span></li>                                                
+                                <li>Vitamin C<span>1.0%</span></li>                    	
+                                <li>Iron<span>6.3%</span></li>
+                            </ul>
+                        </div>
+                    </div><!--Sub-Tab content7-->
+                  </div><!--Tab-Content tab2-->
+				<div class="col-2" id="tabs-3" style="display:none;">
+                    <div class="col-2-1">
+                        <div class="menu-title"> <p>EGG - Most Eaten</p> </div>
+                        <div class="menu">
+                            <ul class="subtb">
+                                <li class="active"><a rel="#innertabs1-31" href="#" class="subtab">Egg Whites</a></li>
+                                <li><a rel="#innertabs1-32" href="#" class="subtab">Egg Yolk</a></li>
+                                <li><a rel="#innertabs1-33" href="#" class="subtab">Fried Eggs</a></li>                                        
+                                <li><a rel="#innertabs1-34" href="#" class="subtab">Hard Boiled Eggs</a></li>                                        
+                                <li><a rel="#innertabs1-35" href="#" class="subtab">Omelets</a></li>                                        
+                                <li><a rel="#innertabs1-36" href="#" class="subtab">Scrambled Eggs</a></li>                                        
+                                <li class="last"><a rel="#innertabs1-37" href="#" class="subtab">Poached Eggs</a></li>                                                            
+                            </ul>
+                        </div>
+                    </div><!--Sub-Tab Links-->
+                    <div class="col-2-2" id="innertabs1-31">
+                        <div class="item-name"> <p>Tab3 - Subtab1 - Egg Whites</p> </div>
+                        <div class="item-photo">
+                            <div class="clsthumb">
+                                <div class="tl">&nbsp;</div>
+                                <div class="tr">&nbsp;</div>
+                                    <a href="#"> <img src="images/item-photo.jpg" width="100" height="100" alt="photo" /> </a>
+                                <div class="bl">&nbsp;</div>
+                                <div class="br">&nbsp;</div>
+                            </div>
+                            <a class="sbt-p" href="#">Submit <br />Photo</a>
+                        </div>
+                        <div class="item-detail">
+                            <ul>
+                                <li class="spl">Calories<span>316.8</span></li>
+                                <li class="spl">Fat<span>11.1 g</span></li>
+                                <li class="spl">Carbs<span>32.2 g</span></li>                                    
+                                <li class="spl">Protein<span>20.3 g</span></li>            
+                                <li class="high">Sugars<span>0.5 g</span></li>            
+                                <li class="high">Cholesterol<span>6.2 mg</span></li>            
+                                <li>Sodium<span>56.6 mg</span></li>            
+                                <li>Potassium<span>317.8 mg</span></li>            
+                                <li>Saturated<span>0.3 g</span></li>            
+                                <li>Polyunsaturated<span>1.0 g</span></li>
+                                <li>Dietary Fiber<span>4.8 g</span></li>                        
+                                <li>Trans<span>0.0 g</span></li>                                                
+                                <li>Vitamin A<span>0.1%</span></li>                                                
+                                <li>Calcium<span>17.5%</span></li>                                                
+                                <li>Vitamin C<span>1.0%</span></li>                    	
+                                <li>Iron<span>6.3%</span></li>
+                            </ul>
+                        </div>
+                    </div><!--Sub-Tab content1-->
+                    <div class="col-2-2" id="innertabs1-32" style="display:none">
+                        <div class="item-name"> <p>Egg Yolk - TAB2</p> </div>
+                        <div class="item-photo">
+                            <div class="clsthumb">
+                                <div class="tl">&nbsp;</div>
+                                <div class="tr">&nbsp;</div>
+                                    <a href="#"> <img src="images/item-photo.jpg" width="100" height="100" alt="photo" /> </a>
+                                <div class="bl">&nbsp;</div>
+                                <div class="br">&nbsp;</div>
+                            </div>
+                            <a class="sbt-p" href="#">Submit <br />Photo</a>
+                        </div>
+                        <div class="item-detail">
+                            <ul>
+                                <li class="spl">Calories<span>316.8</span></li>
+                                <li class="spl">Fat<span>11.1 g</span></li>
+                                <li class="spl">Carbs<span>32.2 g</span></li>                                    
+                                <li class="spl">Protein<span>20.3 g</span></li>            
+                                <li class="high">Sugars<span>0.5 g</span></li>            
+                                <li class="high">Cholesterol<span>6.2 mg</span></li>            
+                                <li>Sodium<span>56.6 mg</span></li>            
+                                <li>Potassium<span>317.8 mg</span></li>            
+                                <li>Saturated<span>0.3 g</span></li>            
+                                <li>Polyunsaturated<span>1.0 g</span></li>
+                                <li>Dietary Fiber<span>4.8 g</span></li>                        
+                                <li>Trans<span>0.0 g</span></li>                                                
+                                <li>Vitamin A<span>0.1%</span></li>                                                
+                                <li>Calcium<span>17.5%</span></li>                                                
+                                <li>Vitamin C<span>1.0%</span></li>                    	
+                                <li>Iron<span>6.3%</span></li>
+                            </ul>
+                        </div>
+                    </div><!--Sub-Tab content2-->
+                    <div class="col-2-2" id="innertabs1-33" style="display:none">
+                        <div class="item-name"> <p>Fried Eggs - TAB3</p> </div>
+                        <div class="item-photo">
+                            <div class="clsthumb">
+                                <div class="tl">&nbsp;</div>
+                                <div class="tr">&nbsp;</div>
+                                    <a href="#"> <img src="images/item-photo.jpg" width="100" height="100" alt="photo" /> </a>
+                                <div class="bl">&nbsp;</div>
+                                <div class="br">&nbsp;</div>
+                            </div>
+                            <a class="sbt-p" href="#">Submit <br />Photo</a>
+                        </div>
+                        <div class="item-detail">
+                            <ul>
+                                <li class="spl">Calories<span>316.8</span></li>
+                                <li class="spl">Fat<span>11.1 g</span></li>
+                                <li class="spl">Carbs<span>32.2 g</span></li>                                    
+                                <li class="spl">Protein<span>20.3 g</span></li>            
+                                <li class="high">Sugars<span>0.5 g</span></li>            
+                                <li class="high">Cholesterol<span>6.2 mg</span></li>            
+                                <li>Sodium<span>56.6 mg</span></li>            
+                                <li>Potassium<span>317.8 mg</span></li>            
+                                <li>Saturated<span>0.3 g</span></li>            
+                                <li>Polyunsaturated<span>1.0 g</span></li>
+                                <li>Dietary Fiber<span>4.8 g</span></li>                        
+                                <li>Trans<span>0.0 g</span></li>                                                
+                                <li>Vitamin A<span>0.1%</span></li>                                                
+                                <li>Calcium<span>17.5%</span></li>                                                
+                                <li>Vitamin C<span>1.0%</span></li>                    	
+                                <li>Iron<span>6.3%</span></li>
+                            </ul>
+                        </div>
+                    </div><!--Sub-Tab content3-->
+                    <div class="col-2-2" id="innertabs1-34" style="display:none">
+                        <div class="item-name"> <p>Hard Boiled Eggs - TAB4</p> </div>
+                        <div class="item-photo">
+                            <div class="clsthumb">
+                                <div class="tl">&nbsp;</div>
+                                <div class="tr">&nbsp;</div>
+                                    <a href="#"> <img src="images/item-photo.jpg" width="100" height="100" alt="photo" /> </a>
+                                <div class="bl">&nbsp;</div>
+                                <div class="br">&nbsp;</div>
+                            </div>
+                            <a class="sbt-p" href="#">Submit <br />Photo</a>
+                        </div>
+                        <div class="item-detail">
+                            <ul>
+                                <li class="spl">Calories<span>316.8</span></li>
+                                <li class="spl">Fat<span>11.1 g</span></li>
+                                <li class="spl">Carbs<span>32.2 g</span></li>                                    
+                                <li class="spl">Protein<span>20.3 g</span></li>            
+                                <li class="high">Sugars<span>0.5 g</span></li>            
+                                <li class="high">Cholesterol<span>6.2 mg</span></li>            
+                                <li>Sodium<span>56.6 mg</span></li>            
+                                <li>Potassium<span>317.8 mg</span></li>            
+                                <li>Saturated<span>0.3 g</span></li>            
+                                <li>Polyunsaturated<span>1.0 g</span></li>
+                                <li>Dietary Fiber<span>4.8 g</span></li>                        
+                                <li>Trans<span>0.0 g</span></li>                                                
+                                <li>Vitamin A<span>0.1%</span></li>                                                
+                                <li>Calcium<span>17.5%</span></li>                                                
+                                <li>Vitamin C<span>1.0%</span></li>                    	
+                                <li>Iron<span>6.3%</span></li>
+                            </ul>
+                        </div>
+                    </div><!--Sub-Tab content4-->
+                    <div class="col-2-2" id="innertabs1-35" style="display:none">
+                        <div class="item-name"> <p>Scrambled Eggs - TAB5</p> </div>
+                        <div class="item-photo">
+                            <div class="clsthumb">
+                                <div class="tl">&nbsp;</div>
+                                <div class="tr">&nbsp;</div>
+                                    <a href="#"> <img src="images/item-photo.jpg" width="100" height="100" alt="photo" /> </a>
+                                <div class="bl">&nbsp;</div>
+                                <div class="br">&nbsp;</div>
+                            </div>
+                            <a class="sbt-p" href="#">Submit <br />Photo</a>
+                        </div>                 
+                        <div class="item-detail">
+                            <ul>
+                                <li class="spl">Calories<span>316.8</span></li>
+                                <li class="spl">Fat<span>11.1 g</span></li>
+                                <li class="spl">Carbs<span>32.2 g</span></li>                                    
+                                <li class="spl">Protein<span>20.3 g</span></li>            
+                                <li class="high">Sugars<span>0.5 g</span></li>            
+                                <li class="high">Cholesterol<span>6.2 mg</span></li>            
+                                <li>Sodium<span>56.6 mg</span></li>            
+                                <li>Potassium<span>317.8 mg</span></li>            
+                                <li>Saturated<span>0.3 g</span></li>            
+                                <li>Polyunsaturated<span>1.0 g</span></li>
+                                <li>Dietary Fiber<span>4.8 g</span></li>                        
+                                <li>Trans<span>0.0 g</span></li>                                                
+                                <li>Vitamin A<span>0.1%</span></li>                                                
+                                <li>Calcium<span>17.5%</span></li>                                                
+                                <li>Vitamin C<span>1.0%</span></li>                    	
+                                <li>Iron<span>6.3%</span></li>
+                            </ul>
+                        </div>
+                    </div><!--Sub-Tab content5-->
+                    <div class="col-2-2" id="innertabs1-36" style="display:none">
+                        <div class="item-name"> <p>Hard Boiled Eggs - TAB6</p> </div>
+                        <div class="item-photo">
+                            <div class="clsthumb">
+                                <div class="tl">&nbsp;</div>
+                                <div class="tr">&nbsp;</div>
+                                    <a href="#"> <img src="images/item-photo.jpg" width="100" height="100" alt="photo" /> </a>
+                                <div class="bl">&nbsp;</div>
+                                <div class="br">&nbsp;</div>
+                            </div>
+                            <a class="sbt-p" href="#">Submit <br />Photo</a>
+                        </div>
+                        <div class="item-detail">
+                            <ul>
+                                <li class="spl">Calories<span>316.8</span></li>
+                                <li class="spl">Fat<span>11.1 g</span></li>
+                                <li class="spl">Carbs<span>32.2 g</span></li>                                    
+                                <li class="spl">Protein<span>20.3 g</span></li>            
+                                <li class="high">Sugars<span>0.5 g</span></li>            
+                                <li class="high">Cholesterol<span>6.2 mg</span></li>            
+                                <li>Sodium<span>56.6 mg</span></li>            
+                                <li>Potassium<span>317.8 mg</span></li>            
+                                <li>Saturated<span>0.3 g</span></li>            
+                                <li>Polyunsaturated<span>1.0 g</span></li>
+                                <li>Dietary Fiber<span>4.8 g</span></li>                        
+                                <li>Trans<span>0.0 g</span></li>                                                
+                                <li>Vitamin A<span>0.1%</span></li>                                                
+                                <li>Calcium<span>17.5%</span></li>                                                
+                                <li>Vitamin C<span>1.0%</span></li>                    	
+                                <li>Iron<span>6.3%</span></li>
+                            </ul>
+                        </div>
+                    </div><!--Sub-Tab content6-->
+                    <div class="col-2-2" id="innertabs1-37" style="display:none">
+                        <div class="item-name"> <p>Poached Eggs - TAB7</p> </div>
+                        <div class="item-photo">
+                            <div class="clsthumb">
+                                <div class="tl">&nbsp;</div>
+                                <div class="tr">&nbsp;</div>
+                                    <a href="#"> <img src="images/item-photo.jpg" width="100" height="100" alt="photo" /> </a>
+                                <div class="bl">&nbsp;</div>
+                                <div class="br">&nbsp;</div>
+                            </div>
+                            <a class="sbt-p" href="#">Submit <br />Photo</a>
+                        </div>                 
+                        <div class="item-detail">
+                            <ul>
+                                <li class="spl">Calories<span>316.8</span></li>
+                                <li class="spl">Fat<span>11.1 g</span></li>
+                                <li class="spl">Carbs<span>32.2 g</span></li>                                    
+                                <li class="spl">Protein<span>20.3 g</span></li>            
+                                <li class="high">Sugars<span>0.5 g</span></li>            
+                                <li class="high">Cholesterol<span>6.2 mg</span></li>            
+                                <li>Sodium<span>56.6 mg</span></li>            
+                                <li>Potassium<span>317.8 mg</span></li>            
+                                <li>Saturated<span>0.3 g</span></li>            
+                                <li>Polyunsaturated<span>1.0 g</span></li>
+                                <li>Dietary Fiber<span>4.8 g</span></li>                        
+                                <li>Trans<span>0.0 g</span></li>                                                
+                                <li>Vitamin A<span>0.1%</span></li>                                                
+                                <li>Calcium<span>17.5%</span></li>                                                
+                                <li>Vitamin C<span>1.0%</span></li>                    	
+                                <li>Iron<span>6.3%</span></li>
+                            </ul>
+                        </div>
+                    </div><!--Sub-Tab content7-->
+                </div><!--Tab-Content tab3-->
+				<div class="col-2" id="tabs-4" style="display:none;">
+                    <div class="col-2-1">
+                        <div class="menu-title"> <p>EGG - Saved Meals</p> </div>
+                        <div class="menu">
+                            <ul class="subtb">
+                                <li class="active"><a rel="#innertabs1-41" href="#" class="subtab">Egg Whites</a></li>
+                                <li><a rel="#innertabs1-42" href="#" class="subtab">Egg Yolk</a></li>
+                                <li><a rel="#innertabs1-43" href="#" class="subtab">Fried Eggs</a></li>                                        
+                                <li><a rel="#innertabs1-44" href="#" class="subtab">Hard Boiled Eggs</a></li>                                        
+                                <li><a rel="#innertabs1-45" href="#" class="subtab">Omelets</a></li>                                        
+                                <li><a rel="#innertabs1-46" href="#" class="subtab">Scrambled Eggs</a></li>                                        
+                                <li class="last"><a rel="#innertabs1-47" href="#" class="subtab">Poached Eggs</a></li>                                                            
+                            </ul>
+                        </div>
+                    </div><!--Sub-Tab Links-->
+                    <div class="col-2-2" id="innertabs1-41">
+                        <div class="item-name"> <p>Tab4 - Subtab1 - Egg Whites</p> </div>
+                        <div class="item-photo">
+                            <div class="clsthumb">
+                                <div class="tl">&nbsp;</div>
+                                <div class="tr">&nbsp;</div>
+                                    <a href="#"> <img src="images/item-photo.jpg" width="100" height="100" alt="photo" /> </a>
+                                <div class="bl">&nbsp;</div>
+                                <div class="br">&nbsp;</div>
+                            </div>
+                            <a class="sbt-p" href="#">Submit <br />Photo</a>
+                        </div>
+                        <div class="item-detail">
+                            <ul>
+                                <li class="spl">Calories<span>316.8</span></li>
+                                <li class="spl">Fat<span>11.1 g</span></li>
+                                <li class="spl">Carbs<span>32.2 g</span></li>                                    
+                                <li class="spl">Protein<span>20.3 g</span></li>            
+                                <li class="high">Sugars<span>0.5 g</span></li>            
+                                <li class="high">Cholesterol<span>6.2 mg</span></li>            
+                                <li>Sodium<span>56.6 mg</span></li>            
+                                <li>Potassium<span>317.8 mg</span></li>            
+                                <li>Saturated<span>0.3 g</span></li>            
+                                <li>Polyunsaturated<span>1.0 g</span></li>
+                                <li>Dietary Fiber<span>4.8 g</span></li>                        
+                                <li>Trans<span>0.0 g</span></li>                                                
+                                <li>Vitamin A<span>0.1%</span></li>                                                
+                                <li>Calcium<span>17.5%</span></li>                                                
+                                <li>Vitamin C<span>1.0%</span></li>                    	
+                                <li>Iron<span>6.3%</span></li>
+                            </ul>
+                        </div>
+                    </div><!--Sub-Tab content1-->
+                    <div class="col-2-2" id="innertabs1-42" style="display:none">
+                        <div class="item-name"> <p>Egg Yolk - TAB2</p> </div>
+                        <div class="item-photo">
+                            <div class="clsthumb">
+                                <div class="tl">&nbsp;</div>
+                                <div class="tr">&nbsp;</div>
+                                    <a href="#"> <img src="images/item-photo.jpg" width="100" height="100" alt="photo" /> </a>
+                                <div class="bl">&nbsp;</div>
+                                <div class="br">&nbsp;</div>
+                            </div>
+                            <a class="sbt-p" href="#">Submit <br />Photo</a>
+                        </div>
+                        <div class="item-detail">
+                            <ul>
+                                <li class="spl">Calories<span>316.8</span></li>
+                                <li class="spl">Fat<span>11.1 g</span></li>
+                                <li class="spl">Carbs<span>32.2 g</span></li>                                    
+                                <li class="spl">Protein<span>20.3 g</span></li>            
+                                <li class="high">Sugars<span>0.5 g</span></li>            
+                                <li class="high">Cholesterol<span>6.2 mg</span></li>            
+                                <li>Sodium<span>56.6 mg</span></li>            
+                                <li>Potassium<span>317.8 mg</span></li>            
+                                <li>Saturated<span>0.3 g</span></li>            
+                                <li>Polyunsaturated<span>1.0 g</span></li>
+                                <li>Dietary Fiber<span>4.8 g</span></li>                        
+                                <li>Trans<span>0.0 g</span></li>                                                
+                                <li>Vitamin A<span>0.1%</span></li>                                                
+                                <li>Calcium<span>17.5%</span></li>                                                
+                                <li>Vitamin C<span>1.0%</span></li>                    	
+                                <li>Iron<span>6.3%</span></li>
+                            </ul>
+                        </div>
+                    </div><!--Sub-Tab content2-->
+                    <div class="col-2-2" id="innertabs1-43" style="display:none">
+                        <div class="item-name"> <p>Fried Eggs - TAB3</p> </div>
+                        <div class="item-photo">
+                            <div class="clsthumb">
+                                <div class="tl">&nbsp;</div>
+                                <div class="tr">&nbsp;</div>
+                                    <a href="#"> <img src="images/item-photo.jpg" width="100" height="100" alt="photo" /> </a>
+                                <div class="bl">&nbsp;</div>
+                                <div class="br">&nbsp;</div>
+                            </div>
+                            <a class="sbt-p" href="#">Submit <br />Photo</a>
+                        </div>
+                        <div class="item-detail">
+                            <ul>
+                                <li class="spl">Calories<span>316.8</span></li>
+                                <li class="spl">Fat<span>11.1 g</span></li>
+                                <li class="spl">Carbs<span>32.2 g</span></li>                                    
+                                <li class="spl">Protein<span>20.3 g</span></li>            
+                                <li class="high">Sugars<span>0.5 g</span></li>            
+                                <li class="high">Cholesterol<span>6.2 mg</span></li>            
+                                <li>Sodium<span>56.6 mg</span></li>            
+                                <li>Potassium<span>317.8 mg</span></li>            
+                                <li>Saturated<span>0.3 g</span></li>            
+                                <li>Polyunsaturated<span>1.0 g</span></li>
+                                <li>Dietary Fiber<span>4.8 g</span></li>                        
+                                <li>Trans<span>0.0 g</span></li>                                                
+                                <li>Vitamin A<span>0.1%</span></li>                                                
+                                <li>Calcium<span>17.5%</span></li>                                                
+                                <li>Vitamin C<span>1.0%</span></li>                    	
+                                <li>Iron<span>6.3%</span></li>
+                            </ul>
+                        </div>
+                    </div><!--Sub-Tab content3-->
+                    <div class="col-2-2" id="innertabs1-44" style="display:none">
+                        <div class="item-name"> <p>Hard Boiled Eggs - TAB4</p> </div>
+                        <div class="item-photo">
+                            <div class="clsthumb">
+                                <div class="tl">&nbsp;</div>
+                                <div class="tr">&nbsp;</div>
+                                    <a href="#"> <img src="images/item-photo.jpg" width="100" height="100" alt="photo" /> </a>
+                                <div class="bl">&nbsp;</div>
+                                <div class="br">&nbsp;</div>
+                            </div>
+                            <a class="sbt-p" href="#">Submit <br />Photo</a>
+                        </div>
+                        <div class="item-detail">
+                            <ul>
+                                <li class="spl">Calories<span>316.8</span></li>
+                                <li class="spl">Fat<span>11.1 g</span></li>
+                                <li class="spl">Carbs<span>32.2 g</span></li>                                    
+                                <li class="spl">Protein<span>20.3 g</span></li>            
+                                <li class="high">Sugars<span>0.5 g</span></li>            
+                                <li class="high">Cholesterol<span>6.2 mg</span></li>            
+                                <li>Sodium<span>56.6 mg</span></li>            
+                                <li>Potassium<span>317.8 mg</span></li>            
+                                <li>Saturated<span>0.3 g</span></li>            
+                                <li>Polyunsaturated<span>1.0 g</span></li>
+                                <li>Dietary Fiber<span>4.8 g</span></li>                        
+                                <li>Trans<span>0.0 g</span></li>                                                
+                                <li>Vitamin A<span>0.1%</span></li>                                                
+                                <li>Calcium<span>17.5%</span></li>                                                
+                                <li>Vitamin C<span>1.0%</span></li>                    	
+                                <li>Iron<span>6.3%</span></li>
+                            </ul>
+                        </div>
+                    </div><!--Sub-Tab content4-->
+                    <div class="col-2-2" id="innertabs1-45" style="display:none">
+                        <div class="item-name"> <p>Scrambled Eggs - TAB5</p> </div>
+                        <div class="item-photo">
+                            <div class="clsthumb">
+                                <div class="tl">&nbsp;</div>
+                                <div class="tr">&nbsp;</div>
+                                    <a href="#"> <img src="images/item-photo.jpg" width="100" height="100" alt="photo" /> </a>
+                                <div class="bl">&nbsp;</div>
+                                <div class="br">&nbsp;</div>
+                            </div>
+                            <a class="sbt-p" href="#">Submit <br />Photo</a>
+                        </div>                 
+                        <div class="item-detail">
+                            <ul>
+                                <li class="spl">Calories<span>316.8</span></li>
+                                <li class="spl">Fat<span>11.1 g</span></li>
+                                <li class="spl">Carbs<span>32.2 g</span></li>                                    
+                                <li class="spl">Protein<span>20.3 g</span></li>            
+                                <li class="high">Sugars<span>0.5 g</span></li>            
+                                <li class="high">Cholesterol<span>6.2 mg</span></li>            
+                                <li>Sodium<span>56.6 mg</span></li>            
+                                <li>Potassium<span>317.8 mg</span></li>            
+                                <li>Saturated<span>0.3 g</span></li>            
+                                <li>Polyunsaturated<span>1.0 g</span></li>
+                                <li>Dietary Fiber<span>4.8 g</span></li>                        
+                                <li>Trans<span>0.0 g</span></li>                                                
+                                <li>Vitamin A<span>0.1%</span></li>                                                
+                                <li>Calcium<span>17.5%</span></li>                                                
+                                <li>Vitamin C<span>1.0%</span></li>                    	
+                                <li>Iron<span>6.3%</span></li>
+                            </ul>
+                        </div>
+                    </div><!--Sub-Tab content5-->
+                    <div class="col-2-2" id="innertabs1-46" style="display:none">
+                        <div class="item-name"> <p>Hard Boiled Eggs - TAB6</p> </div>
+                        <div class="item-photo">
+                            <div class="clsthumb">
+                                <div class="tl">&nbsp;</div>
+                                <div class="tr">&nbsp;</div>
+                                    <a href="#"> <img src="images/item-photo.jpg" width="100" height="100" alt="photo" /> </a>
+                                <div class="bl">&nbsp;</div>
+                                <div class="br">&nbsp;</div>
+                            </div>
+                            <a class="sbt-p" href="#">Submit <br />Photo</a>
+                        </div>
+                        <div class="item-detail">
+                            <ul>
+                                <li class="spl">Calories<span>316.8</span></li>
+                                <li class="spl">Fat<span>11.1 g</span></li>
+                                <li class="spl">Carbs<span>32.2 g</span></li>                                    
+                                <li class="spl">Protein<span>20.3 g</span></li>            
+                                <li class="high">Sugars<span>0.5 g</span></li>            
+                                <li class="high">Cholesterol<span>6.2 mg</span></li>            
+                                <li>Sodium<span>56.6 mg</span></li>            
+                                <li>Potassium<span>317.8 mg</span></li>            
+                                <li>Saturated<span>0.3 g</span></li>            
+                                <li>Polyunsaturated<span>1.0 g</span></li>
+                                <li>Dietary Fiber<span>4.8 g</span></li>                        
+                                <li>Trans<span>0.0 g</span></li>                                                
+                                <li>Vitamin A<span>0.1%</span></li>                                                
+                                <li>Calcium<span>17.5%</span></li>                                                
+                                <li>Vitamin C<span>1.0%</span></li>                    	
+                                <li>Iron<span>6.3%</span></li>
+                            </ul>
+                        </div>
+                    </div><!--Sub-Tab content6-->
+                    <div class="col-2-2" id="innertabs1-47" style="display:none">
+                        <div class="item-name"> <p>Poached Eggs - TAB7</p> </div>
+                        <div class="item-photo">
+                            <div class="clsthumb">
+                                <div class="tl">&nbsp;</div>
+                                <div class="tr">&nbsp;</div>
+                                    <a href="#"> <img src="images/item-photo.jpg" width="100" height="100" alt="photo" /> </a>
+                                <div class="bl">&nbsp;</div>
+                                <div class="br">&nbsp;</div>
+                            </div>
+                            <a class="sbt-p" href="#">Submit <br />Photo</a>
+                        </div>                 
+                        <div class="item-detail">
+                            <ul>
+                                <li class="spl">Calories<span>316.8</span></li>
+                                <li class="spl">Fat<span>11.1 g</span></li>
+                                <li class="spl">Carbs<span>32.2 g</span></li>                                    
+                                <li class="spl">Protein<span>20.3 g</span></li>            
+                                <li class="high">Sugars<span>0.5 g</span></li>            
+                                <li class="high">Cholesterol<span>6.2 mg</span></li>            
+                                <li>Sodium<span>56.6 mg</span></li>            
+                                <li>Potassium<span>317.8 mg</span></li>            
+                                <li>Saturated<span>0.3 g</span></li>            
+                                <li>Polyunsaturated<span>1.0 g</span></li>
+                                <li>Dietary Fiber<span>4.8 g</span></li>                        
+                                <li>Trans<span>0.0 g</span></li>                                                
+                                <li>Vitamin A<span>0.1%</span></li>                                                
+                                <li>Calcium<span>17.5%</span></li>                                                
+                                <li>Vitamin C<span>1.0%</span></li>                    	
+                                <li>Iron<span>6.3%</span></li>
+                            </ul>
+                        </div>
+                    </div><!--Sub-Tab content7-->
+                </div><!--Tab-Content tab4-->
+				<div class="col-2" id="tabs-5" style="display:none;">
+                    <div class="col-2-1">
+                        <div class="menu-title"> <p>EGG - Custom Meal</p> </div>
+                        <div class="menu">
+                            <ul class="subtb">
+                                <li class="active"><a rel="#innertabs1-51" href="#" class="subtab">Egg Whites</a></li>
+                                <li><a rel="#innertabs1-52" href="#" class="subtab">Egg Yolk</a></li>
+                                <li><a rel="#innertabs1-53" href="#" class="subtab">Fried Eggs</a></li>                                        
+                                <li><a rel="#innertabs1-54" href="#" class="subtab">Hard Boiled Eggs</a></li>                                        
+                                <li><a rel="#innertabs1-55" href="#" class="subtab">Omelets</a></li>                                        
+                                <li><a rel="#innertabs1-56" href="#" class="subtab">Scrambled Eggs</a></li>                                        
+                                <li class="last"><a rel="#innertabs1-57" href="#" class="subtab">Poached Eggs</a></li>                                                            
+                            </ul>
+                        </div>
+                    </div><!--Sub-Tab Links-->
+                    <div class="col-2-2" id="innertabs1-51">
+                        <div class="item-name"> <p>Tab5 - Subtab1 - Egg Whites</p> </div>
+                        <div class="item-photo">
+                            <div class="clsthumb">
+                                <div class="tl">&nbsp;</div>
+                                <div class="tr">&nbsp;</div>
+                                    <a href="#"> <img src="images/item-photo.jpg" width="100" height="100" alt="photo" /> </a>
+                                <div class="bl">&nbsp;</div>
+                                <div class="br">&nbsp;</div>
+                            </div>
+                            <a class="sbt-p" href="#">Submit <br />Photo</a>
+                        </div>
+                        <div class="item-detail">
+                            <ul>
+                                <li class="spl">Calories<span>316.8</span></li>
+                                <li class="spl">Fat<span>11.1 g</span></li>
+                                <li class="spl">Carbs<span>32.2 g</span></li>                                    
+                                <li class="spl">Protein<span>20.3 g</span></li>            
+                                <li class="high">Sugars<span>0.5 g</span></li>            
+                                <li class="high">Cholesterol<span>6.2 mg</span></li>            
+                                <li>Sodium<span>56.6 mg</span></li>            
+                                <li>Potassium<span>317.8 mg</span></li>            
+                                <li>Saturated<span>0.3 g</span></li>            
+                                <li>Polyunsaturated<span>1.0 g</span></li>
+                                <li>Dietary Fiber<span>4.8 g</span></li>                        
+                                <li>Trans<span>0.0 g</span></li>                                                
+                                <li>Vitamin A<span>0.1%</span></li>                                                
+                                <li>Calcium<span>17.5%</span></li>                                                
+                                <li>Vitamin C<span>1.0%</span></li>                    	
+                                <li>Iron<span>6.3%</span></li>
+                            </ul>
+                        </div>
+                    </div><!--Sub-Tab content1-->
+                    <div class="col-2-2" id="innertabs1-52" style="display:none">
+                        <div class="item-name"> <p>Egg Yolk - TAB2</p> </div>
+                        <div class="item-photo">
+                            <div class="clsthumb">
+                                <div class="tl">&nbsp;</div>
+                                <div class="tr">&nbsp;</div>
+                                    <a href="#"> <img src="images/item-photo.jpg" width="100" height="100" alt="photo" /> </a>
+                                <div class="bl">&nbsp;</div>
+                                <div class="br">&nbsp;</div>
+                            </div>
+                            <a class="sbt-p" href="#">Submit <br />Photo</a>
+                        </div>
+                        <div class="item-detail">
+                            <ul>
+                                <li class="spl">Calories<span>316.8</span></li>
+                                <li class="spl">Fat<span>11.1 g</span></li>
+                                <li class="spl">Carbs<span>32.2 g</span></li>                                    
+                                <li class="spl">Protein<span>20.3 g</span></li>            
+                                <li class="high">Sugars<span>0.5 g</span></li>            
+                                <li class="high">Cholesterol<span>6.2 mg</span></li>            
+                                <li>Sodium<span>56.6 mg</span></li>            
+                                <li>Potassium<span>317.8 mg</span></li>            
+                                <li>Saturated<span>0.3 g</span></li>            
+                                <li>Polyunsaturated<span>1.0 g</span></li>
+                                <li>Dietary Fiber<span>4.8 g</span></li>                        
+                                <li>Trans<span>0.0 g</span></li>                                                
+                                <li>Vitamin A<span>0.1%</span></li>                                                
+                                <li>Calcium<span>17.5%</span></li>                                                
+                                <li>Vitamin C<span>1.0%</span></li>                    	
+                                <li>Iron<span>6.3%</span></li>
+                            </ul>
+                        </div>
+                    </div><!--Sub-Tab content2-->
+                    <div class="col-2-2" id="innertabs1-53" style="display:none">
+                        <div class="item-name"> <p>Fried Eggs - TAB3</p> </div>
+                        <div class="item-photo">
+                            <div class="clsthumb">
+                                <div class="tl">&nbsp;</div>
+                                <div class="tr">&nbsp;</div>
+                                    <a href="#"> <img src="images/item-photo.jpg" width="100" height="100" alt="photo" /> </a>
+                                <div class="bl">&nbsp;</div>
+                                <div class="br">&nbsp;</div>
+                            </div>
+                            <a class="sbt-p" href="#">Submit <br />Photo</a>
+                        </div>
+                        <div class="item-detail">
+                            <ul>
+                                <li class="spl">Calories<span>316.8</span></li>
+                                <li class="spl">Fat<span>11.1 g</span></li>
+                                <li class="spl">Carbs<span>32.2 g</span></li>                                    
+                                <li class="spl">Protein<span>20.3 g</span></li>            
+                                <li class="high">Sugars<span>0.5 g</span></li>            
+                                <li class="high">Cholesterol<span>6.2 mg</span></li>            
+                                <li>Sodium<span>56.6 mg</span></li>            
+                                <li>Potassium<span>317.8 mg</span></li>            
+                                <li>Saturated<span>0.3 g</span></li>            
+                                <li>Polyunsaturated<span>1.0 g</span></li>
+                                <li>Dietary Fiber<span>4.8 g</span></li>                        
+                                <li>Trans<span>0.0 g</span></li>                                                
+                                <li>Vitamin A<span>0.1%</span></li>                                                
+                                <li>Calcium<span>17.5%</span></li>                                                
+                                <li>Vitamin C<span>1.0%</span></li>                    	
+                                <li>Iron<span>6.3%</span></li>
+                            </ul>
+                        </div>
+                    </div><!--Sub-Tab content3-->
+                    <div class="col-2-2" id="innertabs1-54" style="display:none">
+                        <div class="item-name"> <p>Hard Boiled Eggs - TAB4</p> </div>
+                        <div class="item-photo">
+                            <div class="clsthumb">
+                                <div class="tl">&nbsp;</div>
+                                <div class="tr">&nbsp;</div>
+                                    <a href="#"> <img src="images/item-photo.jpg" width="100" height="100" alt="photo" /> </a>
+                                <div class="bl">&nbsp;</div>
+                                <div class="br">&nbsp;</div>
+                            </div>
+                            <a class="sbt-p" href="#">Submit <br />Photo</a>
+                        </div>
+                        <div class="item-detail">
+                            <ul>
+                                <li class="spl">Calories<span>316.8</span></li>
+                                <li class="spl">Fat<span>11.1 g</span></li>
+                                <li class="spl">Carbs<span>32.2 g</span></li>                                    
+                                <li class="spl">Protein<span>20.3 g</span></li>            
+                                <li class="high">Sugars<span>0.5 g</span></li>            
+                                <li class="high">Cholesterol<span>6.2 mg</span></li>            
+                                <li>Sodium<span>56.6 mg</span></li>            
+                                <li>Potassium<span>317.8 mg</span></li>            
+                                <li>Saturated<span>0.3 g</span></li>            
+                                <li>Polyunsaturated<span>1.0 g</span></li>
+                                <li>Dietary Fiber<span>4.8 g</span></li>                        
+                                <li>Trans<span>0.0 g</span></li>                                                
+                                <li>Vitamin A<span>0.1%</span></li>                                                
+                                <li>Calcium<span>17.5%</span></li>                                                
+                                <li>Vitamin C<span>1.0%</span></li>                    	
+                                <li>Iron<span>6.3%</span></li>
+                            </ul>
+                        </div>
+                    </div><!--Sub-Tab content4-->
+                    <div class="col-2-2" id="innertabs1-55" style="display:none">
+                        <div class="item-name"> <p>Scrambled Eggs - TAB5</p> </div>
+                        <div class="item-photo">
+                            <div class="clsthumb">
+                                <div class="tl">&nbsp;</div>
+                                <div class="tr">&nbsp;</div>
+                                    <a href="#"> <img src="images/item-photo.jpg" width="100" height="100" alt="photo" /> </a>
+                                <div class="bl">&nbsp;</div>
+                                <div class="br">&nbsp;</div>
+                            </div>
+                            <a class="sbt-p" href="#">Submit <br />Photo</a>
+                        </div>                 
+                        <div class="item-detail">
+                            <ul>
+                                <li class="spl">Calories<span>316.8</span></li>
+                                <li class="spl">Fat<span>11.1 g</span></li>
+                                <li class="spl">Carbs<span>32.2 g</span></li>                                    
+                                <li class="spl">Protein<span>20.3 g</span></li>            
+                                <li class="high">Sugars<span>0.5 g</span></li>            
+                                <li class="high">Cholesterol<span>6.2 mg</span></li>            
+                                <li>Sodium<span>56.6 mg</span></li>            
+                                <li>Potassium<span>317.8 mg</span></li>            
+                                <li>Saturated<span>0.3 g</span></li>            
+                                <li>Polyunsaturated<span>1.0 g</span></li>
+                                <li>Dietary Fiber<span>4.8 g</span></li>                        
+                                <li>Trans<span>0.0 g</span></li>                                                
+                                <li>Vitamin A<span>0.1%</span></li>                                                
+                                <li>Calcium<span>17.5%</span></li>                                                
+                                <li>Vitamin C<span>1.0%</span></li>                    	
+                                <li>Iron<span>6.3%</span></li>
+                            </ul>
+                        </div>
+                    </div><!--Sub-Tab content5-->
+                    <div class="col-2-2" id="innertabs1-56" style="display:none">
+                        <div class="item-name"> <p>Hard Boiled Eggs - TAB6</p> </div>
+                        <div class="item-photo">
+                            <div class="clsthumb">
+                                <div class="tl">&nbsp;</div>
+                                <div class="tr">&nbsp;</div>
+                                    <a href="#"> <img src="images/item-photo.jpg" width="100" height="100" alt="photo" /> </a>
+                                <div class="bl">&nbsp;</div>
+                                <div class="br">&nbsp;</div>
+                            </div>
+                            <a class="sbt-p" href="#">Submit <br />Photo</a>
+                        </div>
+                        <div class="item-detail">
+                            <ul>
+                                <li class="spl">Calories<span>316.8</span></li>
+                                <li class="spl">Fat<span>11.1 g</span></li>
+                                <li class="spl">Carbs<span>32.2 g</span></li>                                    
+                                <li class="spl">Protein<span>20.3 g</span></li>            
+                                <li class="high">Sugars<span>0.5 g</span></li>            
+                                <li class="high">Cholesterol<span>6.2 mg</span></li>            
+                                <li>Sodium<span>56.6 mg</span></li>            
+                                <li>Potassium<span>317.8 mg</span></li>            
+                                <li>Saturated<span>0.3 g</span></li>            
+                                <li>Polyunsaturated<span>1.0 g</span></li>
+                                <li>Dietary Fiber<span>4.8 g</span></li>                        
+                                <li>Trans<span>0.0 g</span></li>                                                
+                                <li>Vitamin A<span>0.1%</span></li>                                                
+                                <li>Calcium<span>17.5%</span></li>                                                
+                                <li>Vitamin C<span>1.0%</span></li>                    	
+                                <li>Iron<span>6.3%</span></li>
+                            </ul>
+                        </div>
+                    </div><!--Sub-Tab content6-->
+                    <div class="col-2-2" id="innertabs1-57" style="display:none">
+                        <div class="item-name"> <p>Poached Eggs - TAB7</p> </div>
+                        <div class="item-photo">
+                            <div class="clsthumb">
+                                <div class="tl">&nbsp;</div>
+                                <div class="tr">&nbsp;</div>
+                                    <a href="#"> <img src="images/item-photo.jpg" width="100" height="100" alt="photo" /> </a>
+                                <div class="bl">&nbsp;</div>
+                                <div class="br">&nbsp;</div>
+                            </div>
+                            <a class="sbt-p" href="#">Submit <br />Photo</a>
+                        </div>                 
+                        <div class="item-detail">
+                            <ul>
+                                <li class="spl">Calories<span>316.8</span></li>
+                                <li class="spl">Fat<span>11.1 g</span></li>
+                                <li class="spl">Carbs<span>32.2 g</span></li>                                    
+                                <li class="spl">Protein<span>20.3 g</span></li>            
+                                <li class="high">Sugars<span>0.5 g</span></li>            
+                                <li class="high">Cholesterol<span>6.2 mg</span></li>            
+                                <li>Sodium<span>56.6 mg</span></li>            
+                                <li>Potassium<span>317.8 mg</span></li>            
+                                <li>Saturated<span>0.3 g</span></li>            
+                                <li>Polyunsaturated<span>1.0 g</span></li>
+                                <li>Dietary Fiber<span>4.8 g</span></li>                        
+                                <li>Trans<span>0.0 g</span></li>                                                
+                                <li>Vitamin A<span>0.1%</span></li>                                                
+                                <li>Calcium<span>17.5%</span></li>                                                
+                                <li>Vitamin C<span>1.0%</span></li>                    	
+                                <li>Iron<span>6.3%</span></li>
+                            </ul>
+                        </div>
+                    </div><!--Sub-Tab content7-->
+                </div><!--Tab-Content tab5-->
+            </div>
+        </div><!--E.O.row2-->
+        <div class="row3">
+            <div class="rwrap clearfix">
+                <p><span>Diet Tracking on</span> Sugars, Cholesterol</p>
+                <div id="pp_close" class="b_btn s_gry"><span><input type="submit" value="Cancel" /></span></div>
+                <div class="b_btn s_grn"><span><input type="submit" value="Save" /></span></div>
+                <div class="cb_btmrow">
+                	<p>Serving Size: </p>
+                    <select id="sel_ppbtmrow" name="sel_ppbtmrow">
+                        <option>1 piece</option>
+                        <option>2 piece</option>                
+                    </select>
+                </div>
+            </div>
+        </div><!--E.O.row3-->
+    </div>
+	<div class="bwrap-2">&nbsp;</div>
+</div><!--E.O.popup_box-->
+<!--Custom BG image for the select boxes-->
+<script src="js/jquery-1.3.2.min.js" type="text/javascript"></script>
+<script type="text/javascript" src="js/jquery.dd.js"></script>
+<script type="text/javascript">
+var jq = jQuery.noConflict();
+jq(function($){
+		$("select").msDropDown();
+	});
+</script>
+</body>
+</html>
