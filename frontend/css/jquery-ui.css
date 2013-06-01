@@ -258,7 +258,7 @@ button.ui-button::-moz-focus-inner {
 	left: 2px;
 }
 .ui-datepicker .ui-datepicker-next-hover {
-	right: 1px;
+	right: 2px;
 }
 .ui-datepicker .ui-datepicker-prev span,
 .ui-datepicker .ui-datepicker-next span {
@@ -397,8 +397,8 @@ button.ui-button::-moz-focus-inner {
 	border-left-width: 1px;
 }
 .ui-dialog {
-	/*position: absolute;*//*KKR*/
-	position:fixed;
+	position: absolute;
+	/*position:fixed;*//*KKR*/
 	top: 0;
 	left: 0;
 	/*padding: .2em;KKR*/
@@ -844,8 +844,8 @@ body .ui-tooltip {
 .ui-state-focus,
 .ui-widget-content .ui-state-focus,
 .ui-widget-header .ui-state-focus {
-	/*border: 1px solid #999999;*//*KKR*/
-	background: #dadada url(../images/ui-bg_glass_75_dadada_1x400.png) 50% 50% repeat-x;
+	/*border: 1px solid #999999;
+	background: #dadada url(../images/ui-bg_glass_75_dadada_1x400.png) 50% 50% repeat-x;*//*KKR*/
 	font-weight: normal;
 	color: #212121;
 }
@@ -1157,20 +1157,18 @@ body .ui-tooltip {
 .ui-corner-bottom,
 .ui-corner-left,
 .ui-corner-bl {
-	/*border-bottom-left-radius: 4px;KKR*/
+	/*border-bottom-left-radius: 4px;*/
 }
 .ui-corner-all,
 .ui-corner-bottom,
 .ui-corner-right,
 .ui-corner-br {
-	/*border-bottom-right-radius: 4px;KKR*/
+	/*border-bottom-right-radius: 4px;*/
 }
 
 /* Overlays */
 .ui-widget-overlay {
-	background: #aaaaaa url(../images/ui-bg_flat_0_aaaaaa_40x100.png) 50% 50% repeat-x;
-	opacity: .3;
-	filter: Alpha(Opacity=30);
+	background:url(../images/bg-pp_overlay.png) repeat 0 0;
 }
 .ui-widget-shadow {
 	margin: -8px 0 0 -8px;

@@ -1,0 +1,701 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>04-Health Files Landing Page</title>
+<link type="text/css" rel="stylesheet" href="css/style.css" />
+<link type="text/css" rel="stylesheet" href="css/jquery-ui.css" />
+<script src="js/jquery-1.9.1.min.js" type="text/javascript"></script>
+<script src="js/jquery-migrate-1.1.1.min.js" type="text/javascript"></script>
+<script src="js/jquery-ui.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+	//popup For Upload
+	$(function() {
+		$( "#pp_upload" ).dialog({
+			autoOpen: false,
+			modal         : true,
+			width         : "auto",
+			height        : "auto",
+			draggable     : false,
+			closeOnEscape : true,
+			resizable: false ,
+			open: function(){ $('.ui-widget-overlay').bind('click',function(){ $('#pp_upload').dialog('close'); }); }
+		});
+		$(".ui-dialog .ui-dialog-titlebar").hide();
+		$( "#upload_pp" ).click(function() { $( "#pp_upload" ).dialog( "open" ); });
+		$("a.a_close").click(function(event){ event.preventDefault(); $( "#pp_upload" ).dialog("close"); });
+		$(".row3 .rwrap #pp_close").click(function(event){ event.preventDefault(); $( "#pp_upload" ).dialog("close"); });
+		/*Add Label popup*/
+		$( ".popup_ADL" ).dialog({
+			autoOpen: false,
+			modal         : true,
+			width         : "auto",
+			height        : "auto",
+			draggable     : false,
+			closeOnEscape : true,
+			resizable: false ,
+			open: function(){ $('.ui-widget-overlay').bind('click',function(){ $('.popup_ADL').dialog('close'); }); }
+		});
+		$(".ui-dialog .ui-dialog-titlebar").hide();
+		$( ".open_ppADL" ).click(function() { $( ".popup_ADL" ).dialog( "open" ); });
+		$("a.a_close").click(function(event){ event.preventDefault(); $( ".popup_ADL" ).dialog("close"); });
+		$(".row3 .rwrap .close_ppADL").click(function(event){ event.preventDefault(); $( ".popup_ADL" ).dialog("close"); });
+		/*Share popup*/
+		$( ".popup_FS" ).dialog({
+			autoOpen: false,
+			modal         : true,
+			width         : "auto",
+			height        : "auto",
+			draggable     : false,
+			closeOnEscape : true,
+			resizable: false ,
+			open: function(){ $('.ui-widget-overlay').bind('click',function(){ $('.popup_FS').dialog('close'); }); }
+		});
+		$(".ui-dialog .ui-dialog-titlebar").hide();
+		$( ".open_ppFS" ).click(function() { $( ".popup_FS" ).dialog( "open" ); });
+		$("a.a_close").click(function(event){ event.preventDefault(); $( ".popup_FS" ).dialog("close"); });
+		$(".row3 .rwrap .close_ppFS").click(function(event){ event.preventDefault(); $( ".popup_FS" ).dialog("close"); });
+	});
+	//dropdown menu in the files listing section
+	$(function() {  
+		$(".healthfiles #main .flist table td.c4 .cls_options").mousemove(function(){
+			$(this).css({"position":"relative"});
+		});
+		
+		$(".healthfiles #main .flist table td.c4 .cls_options").mouseleave(function(){
+		   $(this).css({"position":""});
+		});
+	});
+	
+</script>
+
+</head>
+
+<body>
+<div id="header">
+	<div class="nrow"><div class="container">&nbsp;</div></div>
+    <div class="mrow clearfix">
+    	<div class="container clearfix">
+        
+        	<div id="logo"><h1><a href="#">Viam Health</a></h1></div>
+            
+            <ul id="main-menu">
+                <li><a href="#">Goals</a></li>
+                <li><a href="#">Journals</a></li>
+                <li class="active"><a href="#">Files<em>5</em></a></li>
+                <li><a href="#">Remainders</a></li>
+            </ul>
+            
+            <div class="u_col">
+				<div class="u_box clearfix">
+                	<div class="ub_inr">
+                        <div class="u_img"><a href="#"><img width="25" height="25" alt="User Image" src="images/thumb/s_img1.jpg" /></a></div>
+                        <div class="u_nam"><a href="#">Sharat Khurana</a></div>
+                        <div class="dd_lnks pp_box">
+                            <div class="twrap">&nbsp;</div>
+                            <div class="mwrap">
+                                <ul>
+                                    <li class="active"><a href="#">Profile Details</a></li>
+                                    <li><a href="#">Account Settings</a></li>
+                                    <li><a href="#">Privacy Settings</a></li>
+                                    <li><a href="#">Logout</a></li>
+                                </ul>
+                            </div>
+                            <div class="bwrap">&nbsp;</div>
+                        </div>
+					</div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <div class="hrow">
+        <div class="container cls_rel">
+        	<h1>Health Files</h1>
+            <a id="upload_pp" class="bnt_upld" href="javascript:void(0);">Upload</a>
+        </div>
+    </div>
+</div><!--E.O.header-->
+<div id="content" class="container healthfiles clearfix">
+	<div id="sidebar">
+		<div class="rc_block">
+        	<div class="rc_tb">
+            	<div class="rc_bb">
+                	<div class="rc_lb">
+                    	<div class="rc_rb">
+                        	<div class="rc_tlc">
+                            	<div class="rc_trc">
+                                    <div class="rc_blc">
+                                        <div class="rc_brc">
+                                        	<div class="rc_inp">
+                                            	<div class="sb_list1">
+                                                	<h3>Family Profiles (6)</h3>
+                                                    <ul>
+                                                    	<li class="active">
+                                                        	<div class="c1">
+                                                            	<a href="#"><img src="images/thumb/img_grey.jpg" width="25" height="25" alt="Img" /></a>
+                                                            </div>
+                                                            <div class="c2"> <a href="#">Sharat Khurana</a> </div>
+                                                        </li>
+                                                        <li>
+                                                        	<div class="c1">
+                                                            	<a href="#"><img src="images/thumb/img_grey.jpg" width="25" height="25" alt="Img" /></a>
+                                                            </div>
+                                                            <div class="c2"> <a href="#">Tripti Khurana</a> </div>
+                                                        </li>
+                                                        <li>
+                                                        	<div class="c1">
+                                                            	<a href="#"><img src="images/thumb/img_grey.jpg" width="25" height="25" alt="Img" /></a>
+                                                            </div>
+                                                            <div class="c2"> <a href="#">Deesha Khurana</a> </div>
+                                                        </li>
+                                                        <li>
+                                                        	<div class="c1">
+                                                            	<a href="#"><img src="images/thumb/img_grey.jpg" width="25" height="25" alt="Img" /></a>
+                                                            </div>
+                                                            <div class="c2"> <a href="#">Rehaan Khurana</a> </div>
+                                                        </li>
+                                                        <li>
+                                                        	<div class="c1">
+                                                            	<a href="#"><img src="images/thumb/img_grey.jpg" width="25" height="25" alt="Img" /></a>
+                                                            </div>
+                                                            <div class="c2"> <a href="#">Dharamjeet Khurana</a></div>
+                                                        </li>
+                                                        <li>
+                                                        	<div class="c1">
+                                                            	<a href="#"><img src="images/thumb/img_grey.jpg" width="25" height="25" alt="Img" /></a>
+                                                            </div>
+                                                            <div class="c2"> <a href="#">Parmeet Khurana</a> </div>
+                                                        </li>
+                                                    </ul>
+                                                    <div class="b_row">
+                                                    	<div class="b_btn s_grn"><span><input type="submit" value="Add" /></span></div>
+                                                    	<div class="b_btn s_blu"><span><input type="submit" value="Invite" /></span></div>
+                                                        <span class="rc_ble">&nbsp;</span><span class="rc_bre">&nbsp;</span>                                                    
+													</div>
+                                              	</div>
+                                            </div>
+                                        </div>
+									</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div><!--E.O.sidebar-->
+    <div id="main">
+    	<div class="rc_block">
+        	<div class="rc_tb">
+            	<div class="rc_bb">
+                	<div class="rc_lb">
+                    	<div class="rc_rb">
+                        	<div class="rc_tlc">
+                            	<div class="rc_trc">
+                                    <div class="rc_blc">
+                                        <div class="rc_brc">
+                                        	<div class="rc_inp">
+												<div class="bd_block">                                                
+<div class="blk-dshbrd">
+    <div class="flist">               
+        <table cellpadding="0" cellspacing="0">
+            <tr>
+                <th class="c1">File Name</th>
+                <th class="c2">Label</th>
+                <th class="c3">Date</th>
+                <th class="c4">Action</th>
+            </tr>
+            <tr>
+                <td class="c1"><div class="xlsx">Blood Report.xlsx<span>Created Today by Admin - 8.5 KB</span></div></td>
+                <td class="c2">Label Text</td>
+                <td class="c3">08/may/2013</td>
+                <td class="c4">
+                    <div class="cls_options"> Options
+                        <div class="option-menu">
+                            <div class="rc_block">
+                                <div class="rc_tb">
+                                    <div class="rc_bb">
+                                        <div class="rc_lb">
+                                            <div class="rc_rb">
+                                                <div class="rc_tlc">
+                                                    <div class="rc_trc">
+                                                        <div class="rc_blc">
+                                                            <div class="rc_brc">
+                                                                <div class="rc_inp">
+                                                                    <div class="sb_list1">
+                                                                        <ul>
+                                                                            <li class="download"><a href="#">Download</a></li>
+                                                                            <li class="share"><a class="open_ppFS" href="javascript:void(0);">Share</a></li>
+                                                                            <li class="add"><a class="open_ppADL" href="javascript:void(0);">Add Label</a></li>
+                                                                            <li class="delete"><a href="#">Delete</a></li>
+                                                                        </ul>
+                                                                    </div>
+                                                                </div>    
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                           </div>
+                                       </div>
+                                    </div>
+                                </div>                                
+                            </div>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="c1"><div class="txt">Doctor Conctact Details.txt<span>Created Today by Admin - 11 KB</span></div></td>
+                <td class="c2">Label Text</td>
+                <td class="c3">08/may/2013</td>
+                <td class="c4">
+                	<div class="cls_options">Options
+                    	<div class="option-menu">
+                            <div class="rc_block">
+                                <div class="rc_tb">
+                                    <div class="rc_bb">
+                                        <div class="rc_lb">
+                                            <div class="rc_rb">
+                                                <div class="rc_tlc">
+                                                    <div class="rc_trc">
+                                                        <div class="rc_blc">
+                                                            <div class="rc_brc">
+                                                                <div class="rc_inp">
+                                                                    <div class="sb_list1">
+                                                                        <ul>
+                                                                            <li class="download"><a href="#">Download</a></li>
+                                                                            <li class="share"><a class="open_ppFS" href="javascript:void(0);">Share</a></li>
+                                                                            <li class="add"><a class="open_ppADL" href="javascript:void(0);">Add Label</a></li>
+                                                                            <li class="delete"><a href="#">Delete</a></li>
+                                                                        </ul>
+                                                                    </div>
+                                                                </div>    
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                           </div>
+                                       </div>
+                                    </div>
+                                </div>                                
+                            </div>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="c1"><div class="zip">Medical Billes.zip<span>Created Today by Admin - 6.6 KB</span></div></td>
+                <td class="c2">Label Text</td>
+                <td class="c3">08/may/2013</td>
+                <td class="c4">
+                	<div class="cls_options">Options
+                    	<div class="option-menu">
+                            <div class="rc_block">
+                                <div class="rc_tb">
+                                    <div class="rc_bb">
+                                        <div class="rc_lb">
+                                            <div class="rc_rb">
+                                                <div class="rc_tlc">
+                                                    <div class="rc_trc">
+                                                        <div class="rc_blc">
+                                                            <div class="rc_brc">
+                                                                <div class="rc_inp">
+                                                                    <div class="sb_list1">
+                                                                        <ul>
+                                                                            <li class="download"><a href="#">Download</a></li>
+                                                                            <li class="share"><a class="open_ppFS" href="javascript:void(0);">Share</a></li>
+                                                                            <li class="add"><a class="open_ppADL" href="javascript:void(0);">Add Label</a></li>
+                                                                            <li class="delete"><a href="#">Delete</a></li>
+                                                                        </ul>
+                                                                    </div>
+                                                                </div>    
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                           </div>
+                                       </div>
+                                    </div>
+                                </div>                                
+                            </div>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="c1"><div class="pdf">Scan Report.pdf<span>Created Today by Admin - 8.9 KB</span></div></td>
+                <td class="c2">Label Text</td>
+                <td class="c3">08/may/2013</td>
+                <td class="c4">
+                	<div class="cls_options">Options
+                    	<div class="option-menu">
+                            <div class="rc_block">
+                                <div class="rc_tb">
+                                    <div class="rc_bb">
+                                        <div class="rc_lb">
+                                            <div class="rc_rb">
+                                                <div class="rc_tlc">
+                                                    <div class="rc_trc">
+                                                        <div class="rc_blc">
+                                                            <div class="rc_brc">
+                                                                <div class="rc_inp">
+                                                                    <div class="sb_list1">
+                                                                        <ul>
+                                                                            <li class="download"><a href="#">Download</a></li>
+                                                                            <li class="share"><a class="open_ppFS" href="javascript:void(0);">Share</a></li>
+                                                                            <li class="add"><a class="open_ppADL" href="javascript:void(0);">Add Label</a></li>
+                                                                            <li class="delete"><a href="#">Delete</a></li>
+                                                                        </ul>
+                                                                    </div>
+                                                                </div>    
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                           </div>
+                                       </div>
+                                    </div>
+                                </div>                                
+                            </div>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="c1">
+                    <div class="tiff">X-Ray.tiff<span>Created Today by Admin - 7.0 KB</span></div>
+                    <div class="sub-links">
+                        <ul>
+                            <li><a href="#">Xray</a></li>
+                            <li><a href="#">Chest</a></li>
+                            <li><a href="#">Fever</a></li>
+                            <li class="btn_plus"><a href="#">Add</a></li>
+                        </ul>
+                    </div>
+                </td>
+                <td class="c2">Label Text</td>
+                <td class="c3">08/may/2013</td>
+                <td class="c4">
+                	<div class="cls_options">Options
+                    	<div class="option-menu">
+                            <div class="rc_block">
+                                <div class="rc_tb">
+                                    <div class="rc_bb">
+                                        <div class="rc_lb">
+                                            <div class="rc_rb">
+                                                <div class="rc_tlc">
+                                                    <div class="rc_trc">
+                                                        <div class="rc_blc">
+                                                            <div class="rc_brc">
+                                                                <div class="rc_inp">
+                                                                    <div class="sb_list1">
+                                                                        <ul>
+                                                                            <li class="download"><a href="#">Download</a></li>
+                                                                            <li class="share"><a class="open_ppFS" href="javascript:void(0);">Share</a></li>
+                                                                            <li class="add"><a class="open_ppADL" href="javascript:void(0);">Add Label</a></li>
+                                                                            <li class="delete"><a href="#">Delete</a></li>
+                                                                        </ul>
+                                                                    </div>
+                                                                </div>    
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                           </div>
+                                       </div>
+                                    </div>
+                                </div>                                
+                            </div>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="c1"><div class="pptx">Illness Report.pptx<span>Created Today by Admin - 237.2 KB</span></div></td>
+                <td class="c2">Label Text</td>
+                <td class="c3">08/may/2013</td>
+                <td class="c4">
+	                <div class="cls_options">Options
+                    	<div class="option-menu">
+                            <div class="rc_block">
+                                <div class="rc_tb">
+                                    <div class="rc_bb">
+                                        <div class="rc_lb">
+                                            <div class="rc_rb">
+                                                <div class="rc_tlc">
+                                                    <div class="rc_trc">
+                                                        <div class="rc_blc">
+                                                            <div class="rc_brc">
+                                                                <div class="rc_inp">
+                                                                    <div class="sb_list1">
+                                                                        <ul>
+                                                                            <li class="download"><a href="#">Download</a></li>
+                                                                            <li class="share"><a class="open_ppFS" href="javascript:void(0);">Share</a></li>
+                                                                            <li class="add"><a class="open_ppADL" href="javascript:void(0);">Add Label</a></li>
+                                                                            <li class="delete"><a href="#">Delete</a></li>
+                                                                        </ul>
+                                                                    </div>
+                                                                </div>    
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                           </div>
+                                       </div>
+                                    </div>
+                                </div>                                
+                            </div>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="c1"><div class="docx">Prescription.docx<span>Created Today by Admin - 35.5 KB</span></div></td>
+                <td class="c2">Label Text</td>
+                <td class="c3">08/may/2013</td>
+                <td class="c4">
+                	<div class="cls_options">Options
+                    	<div class="option-menu">
+                            <div class="rc_block">
+                                <div class="rc_tb">
+                                    <div class="rc_bb">
+                                        <div class="rc_lb">
+                                            <div class="rc_rb">
+                                                <div class="rc_tlc">
+                                                    <div class="rc_trc">
+                                                        <div class="rc_blc">
+                                                            <div class="rc_brc">
+                                                                <div class="rc_inp">
+                                                                    <div class="sb_list1">
+                                                                        <ul>
+                                                                            <li class="download"><a href="#">Download</a></li>
+                                                                            <li class="share"><a class="open_ppFS" href="javascript:void(0);">Share</a></li>
+                                                                            <li class="add"><a class="open_ppADL" href="javascript:void(0);">Add Label</a></li>
+                                                                            <li class="delete"><a href="#">Delete</a></li>
+                                                                        </ul>
+                                                                    </div>
+                                                                </div>    
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                           </div>
+                                       </div>
+                                    </div>
+                                </div>                                
+                            </div>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="c1"><div class="jpg">Doctor Note.jpg<span>Created Today by Admin - 108.4 KB</span></div></td>
+                <td class="c2">Label Text</td>
+                <td class="c3">08/may/2013</td>
+                <td class="c4">
+                	<div class="cls_options">Options
+                    	<div class="option-menu">
+                            <div class="rc_block">
+                                <div class="rc_tb">
+                                    <div class="rc_bb">
+                                        <div class="rc_lb">
+                                            <div class="rc_rb">
+                                                <div class="rc_tlc">
+                                                    <div class="rc_trc">
+                                                        <div class="rc_blc">
+                                                            <div class="rc_brc">
+                                                                <div class="rc_inp">
+                                                                    <div class="sb_list1">
+                                                                        <ul>
+                                                                            <li class="download"><a href="#">Download</a></li>
+                                                                            <li class="share"><a class="open_ppFS" href="javascript:void(0);">Share</a></li>
+                                                                            <li class="add"><a class="open_ppADL" href="javascript:void(0);">Add Label</a></li>
+                                                                            <li class="delete"><a href="#">Delete</a></li>
+                                                                        </ul>
+                                                                    </div>
+                                                                </div>    
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                           </div>
+                                       </div>
+                                    </div>
+                                </div>                                
+                            </div>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        </table>
+        <div class="brow clearfix">
+            <p class="f_lft">Showing 1 to 10 of 10</p>
+            <p class="f_rgt">Last Updated <span>11 February 2013</span></p>
+        </div>
+    </div>
+</div><!--E.O.blk-dshbrd-->
+                                                </div>
+                                            </div>
+                                        </div>
+									</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div><!--E.O.main-->
+</div><!--E.O.content-->
+<div id="footer">
+	<div class="container"><p>&copy; 2013. VIAM HEALTH</p></div>
+<!--Upload Popup-->
+<div id="pp_upload" class="pp_block layout1">
+	<div class="twrap">&nbsp;</div>
+	<div class="mwrap">
+    	<div class="row1">
+        	<h2>Upload Files</h2>
+            <a href="#" class="a_close">Close</a>
+        </div>
+        <div class="row2">
+        	<div class="rwrap">
+            	<div class="r1-2">
+					<div class="clearfix"><label>Add File</label></div>
+                    <div class="noti">
+                    	<div class="t">
+                        	<div class="b">
+                            	<div class="m">
+                                	<ul>
+                                    	<li>
+										- Drag and drop files here from your desktop -
+                                        </li>
+                                  	</ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <input type="file" class="cls_browse"/>
+                </div>
+                <div class="r2">
+                    <div class="tab-block">
+                    	<div class="tlink">
+                        	<ul class="clearfix">
+                                <li class="active"><a href="#">Label</a></li>                                
+                            </ul>
+                        </div>
+                        <div class="tmain-2">
+                            <textarea rows="1" cols="1"></textarea>
+                        	<p>Or, select from labels</p>
+                            <ul>
+                                <li><a href="#">Chest,</a></li>
+                                <li><a href="#">Fever,</a></li>
+                                <li><a href="#">XRay,</a></li>
+                                <li><a href="#">Prescriptions,</a></li>
+                                <li><a href="#">Doctors Note,</a></li>
+                                <li><a href="#">Others,</a></li>
+                                <li><a href="#">Medical Bills</a></li>                            
+                            </ul>
+                                
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row3">
+        	<div class="rwrap clearfix">
+            	<p><span>Note:</span> This goal will appear under your Health Monitor tab</p>
+                <div id="pp_close" class="b_btn s_gry"><span><input type="submit" value="Cancel" /></span></div>
+				<div class="b_btn s_grn"><span><input type="submit" value="Save" /></span></div>
+            </div>
+        </div>
+	</div>
+	<div class="bwrap">&nbsp;</div>
+</div>
+<!--E.O.Upload Popup-->
+<!--Add Label Popup-->
+<div class="pp_block layout1 popup_ADL">
+	<div class="twrap">&nbsp;</div>
+	<div class="mwrap">
+    	<div class="row1">
+        	<h2>Add Label</h2>
+            <a href="#" class="a_close">Close</a>
+        </div>
+        <div class="row2">
+        	<div class="rwrap">
+                <div class="ffields">
+                    <div class="fields"><input type="text" value="File Name..." /></div>
+                </div>
+                <div class="r2">
+                    <div class="tab-block">
+                    	<div class="tlink">
+                        	<ul class="clearfix">
+                                <li class="active"><a href="#">Label</a></li>                                
+                            </ul>
+                        </div>
+                        <div class="tmain-2">
+                            <textarea rows="1" cols="1"></textarea>
+                        	<p>Or, select from labels</p>
+                            <ul>
+                                <li><a href="#">Chest,</a></li>
+                                <li><a href="#">Fever,</a></li>
+                                <li><a href="#">XRay,</a></li>
+                                <li><a href="#">Prescriptions,</a></li>
+                                <li><a href="#">Doctors Note,</a></li>
+                                <li><a href="#">Others,</a></li>
+                                <li><a href="#">Medical Bills</a></li>                            
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row3">
+        	<div class="rwrap clearfix">
+            	<p><span>Note:</span> This goal will appear under your Health Monitor tab</p>
+                <div class="b_btn s_gry close_ppADL"><span><input type="submit" value="Cancel" /></span></div>
+				<div class="b_btn s_grn"><span><input type="submit" value="Save" /></span></div>
+            </div>
+        </div>
+	</div>
+	<div class="bwrap">&nbsp;</div>
+</div>
+<!--E.O.Add Label Popup-->
+<!--Share-popup-->
+<div class="pp_block layout1 popup_FS">
+    <div class="twrap">&nbsp;</div>
+    <div class="mwrap">
+        <div class="row1">
+            <h2>Share</h2>
+            <a class="a_close" href="#">Close</a>
+        </div>
+        <div class="row2">
+            <div class="formfields">
+                <form action="">
+                    <label>Share With:</label>
+                    <input type="text" value="Enter email address" />
+                    <label>Message:</label>
+<textarea rows="1" cols="1">
+I would like to share this file with you.
+
+- Sharat Khurana
+</textarea>
+                </form>
+            </div>
+        </div>
+        <div class="row3">
+            <div class="rwrap clearfix">
+                <div class="b_btn s_gry close_ppFS"><span><input type="submit" value="Cancel" /></span></div>
+                <div class="b_btn s_blu"><span><input type="submit" value="Share" /></span></div>
+            </div>
+        </div>
+    </div>
+    <div class="bwrap">&nbsp;</div>
+</div>
+<!--E.O.Share-popup-->
+
+</div>
+</body>
+</html>

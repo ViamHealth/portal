@@ -1,0 +1,1255 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>03-Health_Monitor Landing Page</title>
+<link type="text/css" rel="stylesheet" href="css/style.css" />
+<link type="text/css" rel="stylesheet" href="css/jquery-ui.css" />
+<link rel="stylesheet" type="text/css" href="css/dd.css" />
+<script src="js/jquery-1.9.1.min.js" type="text/javascript"></script>
+<script src="js/jquery-migrate-1.1.1.min.js" type="text/javascript"></script>
+<script src="js/jquery-ui.js" type="text/javascript"></script>
+<script type="text/javascript">
+	//Simple Tab For The Popbox
+	$(document).ready(function(){
+		$('.healthmonitor #main .bd_block .trow ul li a').click(function(event){
+			event.preventDefault();
+			cur_o = $(this);
+			$('.healthmonitor #main .bd_block .trow ul li').each(function(){ 
+				$(this).removeClass("active");
+			});
+			cur_o.parents("li").addClass("active");
+			$("[id^=ctab]").each(function(){ 
+				$(this).hide();
+			});
+			var rel_v = cur_o.attr("rel");
+			$(rel_v).show();
+		});
+	});
+	/* Popup Script */
+	$(function() {
+		/*To Get The Weight Value Popup*/
+		$( "#popup_WT" ).dialog({
+			autoOpen: false,
+			modal         : true,
+			width         : "auto",
+			height        : "auto",
+			draggable     : false,
+			closeOnEscape : true,
+			resizable: false ,
+			open: function(){ $('.ui-widget-overlay').bind('click',function(){ $('#popup_WT').dialog('close'); }); }
+		});
+		$(".ui-dialog .ui-dialog-titlebar").hide();
+		$( "#open_ppWT" ).click(function() { $( "#popup_WT" ).dialog( "open" ); });
+		$("a.a_close").click(function(event){ event.preventDefault(); $( "#popup_WT" ).dialog("close"); });
+		$(".row3 .rwrap #close_ppWT").click(function(event){ event.preventDefault(); $( "#popup_WT" ).dialog("close"); });
+		/*To Get The Blood Presure Value Popup*/
+		$( "#popup_BP" ).dialog({
+			autoOpen: false,
+			modal         : true,
+			width         : "auto",
+			height        : "auto",
+			draggable     : false,
+			closeOnEscape : true,
+			resizable: false ,
+			open: function(){ $('.ui-widget-overlay').bind('click',function(){ $('#popup_BP').dialog('close'); }); }
+		});
+		$(".ui-dialog .ui-dialog-titlebar").hide();
+		$( "#open_ppBP" ).click(function() { $( "#popup_BP" ).dialog( "open" ); });
+		$("a.a_close").click(function(event){ event.preventDefault(); $( "#popup_BP" ).dialog("close"); });
+		$(".row3 .rwrap #close_ppBP").click(function(event){ event.preventDefault(); $( "#popup_BP" ).dialog("close"); });
+		/*To Get The Blood Glucose Value Popup*/
+		$( "#popup_BG" ).dialog({
+			autoOpen: false,
+			modal         : true,
+			width         : "auto",
+			height        : "auto",
+			draggable     : false,
+			closeOnEscape : true,
+			resizable: false ,
+			open: function(){ $('.ui-widget-overlay').bind('click',function(){ $('#popup_BG').dialog('close'); }); }
+		});
+		$(".ui-dialog .ui-dialog-titlebar").hide();
+		$( "#open_ppBG" ).click(function() { $( "#popup_BG" ).dialog( "open" ); });
+		$("a.a_close").click(function(event){ event.preventDefault(); $( "#popup_BG" ).dialog("close"); });
+		$(".row3 .rwrap #close_ppBG").click(function(event){ event.preventDefault(); $( "#popup_BG" ).dialog("close"); });
+		/*To Get The Cholestreal Value Popup*/
+		$( "#popup_CHL" ).dialog({
+			autoOpen: false,
+			modal         : true,
+			width         : "auto",
+			height        : "auto",
+			draggable     : false,
+			closeOnEscape : true,
+			resizable: false ,
+			open: function(){ $('.ui-widget-overlay').bind('click',function(){ $('#popup_CHL').dialog('close'); }); }
+		});
+		$(".ui-dialog .ui-dialog-titlebar").hide();
+		$( "#open_ppCHL" ).click(function() { $( "#popup_CHL" ).dialog( "open" ); });
+		$("a.a_close").click(function(event){ event.preventDefault(); $( "#popup_CHL" ).dialog("close"); });
+		$(".row3 .rwrap #close_ppCHL").click(function(event){ event.preventDefault(); $( "#popup_CHL" ).dialog("close"); });
+		/*To Manage Goals Popup*/
+		$(".pp_block.layout1.popup_MG").dialog({
+			autoOpen: false,
+			modal         : true,
+			width         : "auto",
+			height        : "auto",
+			draggable     : false,
+			closeOnEscape : true,
+			resizable: false ,
+			open: function(){ $('.ui-widget-overlay').bind('click',function(){ $('.popup_MG').dialog('close'); }); }
+		});
+		$(".ui-dialog .ui-dialog-titlebar").hide();
+		$( ".open_ppMG" ).click(function() {
+			var rel_v = $(this).attr("rel");
+			$(".popup_MG .pp_tglb ul li").each(function(){ 
+				cur_o = $(this);
+				if(cur_o.find(".tgl_title p").hasClass('clshide'))
+				{
+					cur_o.find(".tgl_title p").removeClass('clshide');
+					cur_o.find(".tgl_title p").addClass('clsdisp');
+				}
+				cur_o.find(".tgl_main").hide();
+			});			
+			$(".popup_MG "+rel_v+" .tgl_main").show();
+			if($(".popup_MG "+rel_v+" .tgl_title p").hasClass('clsdisp'))
+			{
+				$(".popup_MG "+rel_v+" .tgl_title p").removeClass('clsdisp');
+				$(".popup_MG "+rel_v+" .tgl_title p").addClass('clshide');
+			}
+			$( ".popup_MG" ).dialog( "open" ); 
+		});
+		$("a.a_close").click(function(event){ event.preventDefault(); $( ".popup_MG" ).dialog("close"); });
+		$(".pp_block.layout1 .row3 .rwrap .b_btn.close_ppMG").click(function(event){ event.preventDefault(); $( ".popup_MG" ).dialog("close"); });
+		
+	});
+	/*Date Picker Script*/
+	$(function() {
+		$(".disp_dp.fld_box").datepicker({
+			showOtherMonths: true,
+			selectOtherMonths: true,
+			"dateFormat": "DD, d MM, yy"
+		});
+		$(".disp_dp.fld_box").datepicker("setDate", new Date());
+	});
+	/*Custom Spinner*/
+	$(function() {
+		/*Spinner in the weight popup*/
+		$("#adj_weight a.inc").click(function(event){
+			event.preventDefault(); 
+			var wight_v = $("#Gweight").val();
+			wight_v++; 
+			$("#Gweight").val(wight_v); 
+			$("p.wval").html(wight_v+"kg");
+		});
+		$("#adj_weight a.dec").click(function(event){
+			event.preventDefault(); 
+			var wight_v = $("#Gweight").val();
+			wight_v--; 
+			$("#Gweight").val(wight_v); 
+			$("p.wval").html(wight_v+"kg");		
+		});
+		$("#cwight_arr a.u_arw").click(function(event){
+			event.preventDefault();
+			var wight_v = $("#cwight").val();
+			wight_v++;
+			$("#cwight").val(wight_v);
+			$("div#CW.w_val").html(wight_v+" kg");
+		});
+		/*Spinners in the manage goals popup*/
+		$("#cwight_arr a.d_arw").click(function(event){
+			event.preventDefault();
+			var wight_v = $("#cwight").val();
+			wight_v--;
+			$("#cwight").val(wight_v);
+			$("div#CW.w_val").html(wight_v+" kg");		
+		});
+		$("#gwight_arr a.u_arw_grn").click(function(event){
+			event.preventDefault();
+			var wight_v = $("#gwight").val();
+			wight_v++;
+			$("#gwight").val(wight_v);
+			$("div#GW.w_val").html(wight_v+" kg");
+		});
+		$("#gwight_arr a.d_arw_red").click(function(event){
+			event.preventDefault();
+			var wight_v = $("#gwight").val();
+			wight_v--;
+			$("#gwight").val(wight_v);
+			$("div#GW.w_val").html(wight_v+" kg");		
+		});
+	});
+	//Toggle
+	$(function(){
+		$(".pp_tglb ul li .tgl_title p").click(function(){
+			$(this).parents("li").find(".tgl_main").slideToggle();
+			if($(this).hasClass("clsdisp"))
+			{
+				$(this).removeClass("clsdisp");
+				$(this).addClass("clshide");
+			}else{
+				$(this).removeClass("clshide");
+				$(this).addClass("clsdisp");
+			}
+		});
+	});
+	
+	
+</script>
+
+</head>
+
+<body>
+<div id="header">
+	<div class="nrow"><div class="container">&nbsp;</div></div>
+    <div class="mrow clearfix">
+    	<div class="container clearfix">
+        
+        	<div id="logo"><h1><a href="#">Viam Health</a></h1></div>
+            
+            <ul id="main-menu">
+                <li class="active"><a href="#">Goals</a></li>
+                <li><a href="#">Journals</a></li>
+                <li><a href="#">Files<em>5</em></a></li>
+                <li><a href="#">Remainders</a></li>
+            </ul>
+            
+            <div class="u_col">
+				<div class="u_box clearfix">
+                	<div class="ub_inr">
+                        <div class="u_img"><a href="#"><img width="25" height="25" alt="User Image" src="images/thumb/s_img1.jpg" /></a></div>
+                        <div class="u_nam"><a href="#">Sharat Khurana</a></div>
+                            <div class="dd_lnks pp_box">
+                                <div class="twrap">&nbsp;</div>
+                                <div class="mwrap">
+                                    <ul>
+                                        <li class="active"><a href="#">Profile Details</a></li>
+                                        <li><a href="#">Account Settings</a></li>
+                                        <li><a href="#">Privacy Settings</a></li>
+                                        <li><a href="#">Logout</a></li>
+                                    </ul>
+                                </div>
+                                <div class="bwrap">&nbsp;</div>
+                            </div>
+					</div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <div class="hrow">
+        <div class="container clearfix"> <h1>Goals</h1> </div>
+    </div>
+</div><!--E.O.header-->
+<div id="content" class="container healthmonitor clearfix">
+	<div id="sidebar">
+    	<div class="rc_block">
+        	<div class="rc_tb">
+            	<div class="rc_bb">
+                	<div class="rc_lb">
+                    	<div class="rc_rb">
+                        	<div class="rc_tlc">
+                            	<div class="rc_trc">
+                                    <div class="rc_blc">
+                                        <div class="rc_brc">
+                                        	<div class="rc_inp">
+                                            	<div class="sb_list1">
+                                                	<h3>Family Profiles (6)</h3>
+                                                    <ul>
+                                                    	<li class="active">
+                                                        	<div class="c1">
+                                                            	<a href="#"><img src="images/thumb/img_grey.jpg" width="25" height="25" alt="Img" /></a>
+                                                            </div>
+                                                            <div class="c2"> <a href="#">Sharat Khurana</a> </div>
+
+                                                        </li>
+                                                        <li>
+                                                        	<div class="c1">
+                                                            	<a href="#"><img src="images/thumb/img_grey.jpg" width="25" height="25" alt="Img" /></a>
+                                                            </div>
+                                                            <div class="c2"> <a href="#">Tripti Khurana</a> </div>
+                                                        </li>
+                                                        <li>
+                                                        	<div class="c1">
+                                                            	<a href="#"><img src="images/thumb/img_grey.jpg" width="25" height="25" alt="Img" /></a>
+                                                            </div>
+                                                            <div class="c2"> <a href="#">Deesha Khurana</a> </div>
+                                                        </li>
+                                                        <li>
+                                                        	<div class="c1">
+                                                            	<a href="#"><img src="images/thumb/img_grey.jpg" width="25" height="25" alt="Img" /></a>
+                                                            </div>
+                                                            <div class="c2"> <a href="#">Rehaan Khurana</a> </div>
+                                                        </li>
+                                                        <li>
+                                                        	<div class="c1">
+                                                            	<a href="#"><img src="images/thumb/img_grey.jpg" width="25" height="25" alt="Img" /></a>
+                                                            </div>
+                                                            <div class="c2"> <a href="#">Dharamjeet Khurana</a></div>
+                                                        </li>
+                                                        <li>
+                                                        	<div class="c1">
+                                                            	<a href="#"><img src="images/thumb/img_grey.jpg" width="25" height="25" alt="Img" /></a>
+                                                            </div>
+                                                            <div class="c2"> <a href="#">Parmeet Khurana</a> </div>
+                                                        </li>
+                                                    </ul>
+                                                    <div class="b_row">
+                                                    	<div class="b_btn s_grn"><span><input type="submit" value="Add" /></span></div>
+                                                    	<div class="b_btn s_blu"><span><input type="submit" value="Invite" /></span></div>
+                                                        <span class="rc_ble">&nbsp;</span><span class="rc_bre">&nbsp;</span>                                                    
+													</div>
+                                              	</div>
+                                            </div>
+                                        </div>
+									</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div><!--E.O.sidebar-->
+    <div id="main">
+    	<div class="rc_block">
+        	<div class="rc_tb">
+            	<div class="rc_bb">
+                	<div class="rc_lb">
+                    	<div class="rc_rb">
+                        	<div class="rc_tlc">
+                            	<div class="rc_trc">
+                                    <div class="rc_blc">
+                                        <div class="rc_brc">
+                                        	<div class="rc_inp">
+												<div class="bd_block clearfix">
+    <div class="trow clearfix">
+        <ul>
+            <li class="clsd active"><a rel="#ctab1" href="javascript:void(0);">Day</a></li>
+            <li class="clsw"><a rel="#ctab2" href="javascript:void(0);">Week</a></li>
+            <li class="clsm"><a rel="#ctab3" href="javascript:void(0);">Month</a></li>
+        </ul>
+        <input type="button" value="Today" />
+        <p class="cls_clndr">2012</p>
+    </div>
+    <div id="ctab1" style="">
+        <div class="tit">
+            <h2>Goals (4) (For The Day)</h2>
+        </div>
+        <div class="sub-block clearfix">
+            <ul>
+                <li class="active f_lft">
+                    <div class="rc_block-blue">
+                        <div class="rc_tb">
+                            <div class="rc_bb">
+                                <div class="rc_lb">
+                                    <div class="rc_rb">
+                                        <div class="rc_tlc">
+                                            <div class="rc_trc">
+                                                <div class="rc_blc">
+                                                    <div class="rc_brc">
+                                                        <div class="rc_inp">
+	<div class="blk-hd clearfix">
+    	<p>Weight&nbsp;<span style="font-weight:normal">AVG Weight</span>&nbsp;<span style="font-weight:bold">69 kg</span></p>
+        <div class="dd_options">
+	        <a class="cls_settings" href="javascript:void(0);">icon</a>
+            <div class="pop-up-menu pp_box">
+                <div class="twrap">&nbsp;</div>
+                <div class="mwrap"> 
+                    <div class="cls_ddmenu">
+                        <ul>
+                            <li><a id="open_ppWT" href="javascript:void(0);">Add New Value</a></li>
+                            <li><a href="#">Edit</a></li>
+                            <li><a rel="#MGW" class="open_ppMG" href="javascript:void(0);">Manage Goals</a></li>
+                        </ul>
+                    </div> 
+                </div>
+                <div class="bwrap">&nbsp;</div>
+            </div>
+        </div>
+    </div>
+    <div class="chart-bx">
+        <img src="images/chart-1.jpg" width="278" height="256" alt="chart"/>
+    </div>
+                                                        </div>
+                                                    </div>
+                                                </div>        		
+                                            </div>
+                                        </div>
+                                     </div>           
+                                 </div>
+                              </div>
+                           </div>
+                       </div>
+                    </li>
+                <li class="f_rgt">
+                    <div class="rc_block-blue">
+                        <div class="rc_tb">
+                            <div class="rc_bb">
+                                <div class="rc_lb">
+                                    <div class="rc_rb">
+                                        <div class="rc_tlc">
+                                            <div class="rc_trc">
+                                                <div class="rc_blc">
+                                                    <div class="rc_brc">
+                                                        <div class="rc_inp">
+    <div class="blk-hd clearfix">
+	    <p>Blood Pressure&nbsp;<span style="font-weight:normal">AVG Blood Pressure</span>&nbsp;<span style="font-weight:bold">100/69 mmHg</span></p>
+        <div class="dd_options">
+            <a class="cls_settings" href="javascript:void(0);">icon</a>
+            <div class="pop-up-menu pp_box">
+                <div class="twrap">&nbsp;</div>
+                <div class="mwrap"> 
+                    <div class="cls_ddmenu">
+                        <ul>
+                            <li><a id="open_ppBP" href="javascript:void(0);">Add New Value</a></li>
+                            <li><a href="#">Edit</a></li>
+                            <li><a rel="#MGBP" class="open_ppMG" href="javascript:void(0);">Manage Goals</a></li>
+                        </ul>
+                    </div> 
+                </div>
+                <div class="bwrap">&nbsp;</div>
+            </div>
+        </div>
+	</div>
+    <div class="chart-bx">
+        <img src="images/chart-2.jpg" width="278" height="256" alt="chart" />
+    </div>
+                                                        </div>
+                                                    </div>
+                                                </div>        		
+                                            </div>
+                                        </div>
+                                     </div>           
+                                 </div>
+                              </div>
+                           </div>
+                       </div>
+                </li>
+                <li class="f_lft">
+                    <div class="rc_block-blue">
+                        <div class="rc_tb">
+                            <div class="rc_bb">
+                                <div class="rc_lb">
+                                    <div class="rc_rb">
+                                        <div class="rc_tlc">
+                                            <div class="rc_trc">
+                                                <div class="rc_blc">
+                                                    <div class="rc_brc">
+                                                        <div class="rc_inp">
+    <div class="blk-hd clearfix">
+        <p>Blood Glucose&nbsp;<span style="font-weight:normal">AVG Weight</span>&nbsp;<span style="font-weight:bold">82 mg</span></p>
+        <div class="dd_options">
+        	<a class="cls_settings" href="javascript:void(0);">icon</a>
+            <div class="pop-up-menu pp_box">
+                <div class="twrap">&nbsp;</div>
+                <div class="mwrap"> 
+                    <div class="cls_ddmenu">
+                        <ul>
+                            <li><a id="open_ppBG" href="javascript:void(0);">Add New Value</a></li>
+                            <li><a href="#">Edit</a></li>
+                            <li><a rel="#MGBG" class="open_ppMG" href="javascript:void(0);">Manage Goals</a></li>
+                        </ul>
+                    </div> 
+                </div>
+                <div class="bwrap">&nbsp;</div>
+            </div>
+        </div>
+	</div>
+    <div class="chart-bx">
+	    <img src="images/chart-3.jpg" width="278" height="256" alt="chart" />
+    </div>
+                                                        </div>
+                                                    </div>
+                                                </div>        		
+                                            </div>
+                                        </div>
+                                     </div>           
+                                 </div>
+                              </div>
+                           </div>
+                       </div>
+                </li>
+                <li class="f_rgt">
+                    <div class="rc_block-blue">
+                        <div class="rc_tb">
+                            <div class="rc_bb">
+                                <div class="rc_lb">
+                                    <div class="rc_rb">
+                                        <div class="rc_tlc">
+                                            <div class="rc_trc">
+                                                <div class="rc_blc">
+                                                    <div class="rc_brc">
+                                                        <div class="rc_inp">
+    <div class="blk-hd clearfix">
+        <p> Calories&nbsp;<span style="font-weight:normal">Intake / Burn</span></p>
+        <div class="dd_options">
+            <a class="cls_settings" href="javascript:void(0);">icon</a>
+            <div class="pop-up-menu pp_box">
+                <div class="twrap">&nbsp;</div>
+                <div class="mwrap"> 
+                    <div class="cls_ddmenu">
+                        <ul>
+                            <li><a id="open_ppCHL" href="javascript:void(0);">Add New Value</a></li>
+                            <li><a href="#">Edit</a></li>
+                            <li><a rel="#MGCHL" class="open_ppMG" href="javascript:void(0);">Manage Goals</a></li>
+                        </ul>
+                    </div> 
+                </div>
+                <div class="bwrap">&nbsp;</div>
+            </div>
+        </div>
+    </div>
+    <div class="chart-bx">
+	    <img src="images/chart-4.jpg" width="278" height="256" alt="chart" />
+    </div>
+                                                        </div>
+                                                    </div>
+                                                </div>        		
+                                            </div>
+                                        </div>
+                                     </div>           
+                                 </div>
+                              </div>
+                           </div>
+                       </div>
+                </li>
+            </ul>
+        </div>
+    </div><!--e.o.ctab1-->
+    
+    <div id="ctab2" style="display:none;">
+        <div class="tit">
+            <h2>Goals (4) (For The Week)</h2>
+        </div>
+        <div class="sub-block clearfix">
+            <ul>
+                <li class="active f_lft">
+                    <div class="rc_block-blue">
+                        <div class="rc_tb">
+                            <div class="rc_bb">
+                                <div class="rc_lb">
+                                    <div class="rc_rb">
+                                        <div class="rc_tlc">
+                                            <div class="rc_trc">
+                                                <div class="rc_blc">
+                                                    <div class="rc_brc">
+                                                        <div class="rc_inp">
+	<div class="blk-hd clearfix">
+    	<p>Weight&nbsp;<span style="font-weight:normal">AVG Weight</span>&nbsp;<span style="font-weight:bold">69 kg</span></p>
+        <div class="dd_options">
+	        <a class="cls_settings" href="javascript:void(0);">icon</a>
+            <div class="pop-up-menu pp_box">
+                <div class="twrap">&nbsp;</div>
+                <div class="mwrap"> 
+                    <div class="cls_ddmenu">
+                        <ul>
+                            <li><a href="#">Add New Value</a></li>
+                            <li><a href="#">Edit</a></li>
+                            <li><a href="#">Manage Goals</a></li>
+                        </ul>
+                    </div> 
+                </div>
+                <div class="bwrap">&nbsp;</div>
+            </div>
+        </div>
+    </div>
+    <div class="chart-bx">
+        <img src="images/chart-1.jpg" width="278" height="256" alt="chart"/>
+    </div>
+                                                        </div>
+                                                    </div>
+                                                </div>        		
+                                            </div>
+                                        </div>
+                                     </div>           
+                                 </div>
+                              </div>
+                           </div>
+                       </div>
+                    </li>
+                <li class="f_rgt">
+                    <div class="rc_block-blue">
+                        <div class="rc_tb">
+                            <div class="rc_bb">
+                                <div class="rc_lb">
+                                    <div class="rc_rb">
+                                        <div class="rc_tlc">
+                                            <div class="rc_trc">
+                                                <div class="rc_blc">
+                                                    <div class="rc_brc">
+                                                        <div class="rc_inp">
+    <div class="blk-hd clearfix">
+	    <p>Blood Pressure&nbsp;<span style="font-weight:normal">AVG Blood Pressure</span>&nbsp;<span style="font-weight:bold">100/69 mmHg</span></p>
+        <div class="dd_options">
+            <a class="cls_settings" href="javascript:void(0);">icon</a>
+            <div class="pop-up-menu pp_box">
+                <div class="twrap">&nbsp;</div>
+                <div class="mwrap"> 
+                    <div class="cls_ddmenu">
+                        <ul>
+                            <li><a href="#">Add New Value</a></li>
+                            <li><a href="#">Edit</a></li>
+                            <li><a href="#">Manage Goals</a></li>
+                        </ul>
+                    </div> 
+                </div>
+                <div class="bwrap">&nbsp;</div>
+            </div>
+        </div>
+	</div>
+    <div class="chart-bx">
+        <img src="images/chart-2.jpg" width="278" height="256" alt="chart" />
+    </div>
+                                                        </div>
+                                                    </div>
+                                                </div>        		
+                                            </div>
+                                        </div>
+                                     </div>           
+                                 </div>
+                              </div>
+                           </div>
+                       </div>
+                </li>
+                <li class="f_lft">
+                    <div class="rc_block-blue">
+                        <div class="rc_tb">
+                            <div class="rc_bb">
+                                <div class="rc_lb">
+                                    <div class="rc_rb">
+                                        <div class="rc_tlc">
+                                            <div class="rc_trc">
+                                                <div class="rc_blc">
+                                                    <div class="rc_brc">
+                                                        <div class="rc_inp">
+    <div class="blk-hd clearfix">
+        <p>Blood Glucose&nbsp;<span style="font-weight:normal">AVG Weight</span>&nbsp;<span style="font-weight:bold">82 mg</span></p>
+        <div class="dd_options">
+        	<a class="cls_settings" href="javascript:void(0);">icon</a>
+            <div class="pop-up-menu pp_box">
+                <div class="twrap">&nbsp;</div>
+                <div class="mwrap"> 
+                    <div class="cls_ddmenu">
+                        <ul>
+                            <li><a href="#">Add New Value</a></li>
+                            <li><a href="#">Edit</a></li>
+                            <li><a href="#">Manage Goals</a></li>
+                        </ul>
+                    </div> 
+                </div>
+                <div class="bwrap">&nbsp;</div>
+            </div>
+        </div>
+	</div>
+    <div class="chart-bx">
+	    <img src="images/chart-3.jpg" width="278" height="256" alt="chart" />
+    </div>
+                                                        </div>
+                                                    </div>
+                                                </div>        		
+                                            </div>
+                                        </div>
+                                     </div>           
+                                 </div>
+                              </div>
+                           </div>
+                       </div>
+                </li>
+                <li class="f_rgt">
+                    <div class="rc_block-blue">
+                        <div class="rc_tb">
+                            <div class="rc_bb">
+                                <div class="rc_lb">
+                                    <div class="rc_rb">
+                                        <div class="rc_tlc">
+                                            <div class="rc_trc">
+                                                <div class="rc_blc">
+                                                    <div class="rc_brc">
+                                                        <div class="rc_inp">
+    <div class="blk-hd clearfix">
+        <p> Calories&nbsp;<span style="font-weight:normal">Intake / Burn</span></p>
+        <div class="dd_options">
+            <a class="cls_settings" href="javascript:void(0);">icon</a>
+            <div class="pop-up-menu pp_box">
+                <div class="twrap">&nbsp;</div>
+                <div class="mwrap"> 
+                    <div class="cls_ddmenu">
+                        <ul>
+                            <li><a href="#">Add New Value</a></li>
+                            <li><a href="#">Edit</a></li>
+                            <li><a href="#">Manage Goals</a></li>
+                        </ul>
+                    </div> 
+                </div>
+                <div class="bwrap">&nbsp;</div>
+            </div>
+        </div>
+    </div>
+    <div class="chart-bx">
+	    <img src="images/chart-4.jpg" width="278" height="256" alt="chart" />
+    </div>
+                                                        </div>
+                                                    </div>
+                                                </div>        		
+                                            </div>
+                                        </div>
+                                     </div>           
+                                 </div>
+                              </div>
+                           </div>
+                       </div>
+                </li>
+            </ul>
+        </div>
+    </div><!--e.o.ctab2-->
+    
+    <div id="ctab3" style="display:none;">
+        <div class="tit">
+            <h2>Goals (4) (For The Month)</h2>
+        </div>
+        <div class="sub-block clearfix">
+            <ul>
+                <li class="active f_lft">
+                    <div class="rc_block-blue">
+                        <div class="rc_tb">
+                            <div class="rc_bb">
+                                <div class="rc_lb">
+                                    <div class="rc_rb">
+                                        <div class="rc_tlc">
+                                            <div class="rc_trc">
+                                                <div class="rc_blc">
+                                                    <div class="rc_brc">
+                                                        <div class="rc_inp">
+	<div class="blk-hd clearfix">
+    	<p>Weight&nbsp;<span style="font-weight:normal">AVG Weight</span>&nbsp;<span style="font-weight:bold">69 kg</span></p>
+        <div class="dd_options">
+	        <a class="cls_settings" href="javascript:void(0);">icon</a>
+            <div class="pop-up-menu pp_box">
+                <div class="twrap">&nbsp;</div>
+                <div class="mwrap"> 
+                    <div class="cls_ddmenu">
+                        <ul>
+                            <li><a href="#">Add New Value</a></li>
+                            <li><a href="#">Edit</a></li>
+                            <li><a href="#">Manage Goals</a></li>
+                        </ul>
+                    </div> 
+                </div>
+                <div class="bwrap">&nbsp;</div>
+            </div>
+        </div>
+    </div>
+    <div class="chart-bx">
+        <img src="images/chart-1.jpg" width="278" height="256" alt="chart"/>
+    </div>
+                                                        </div>
+                                                    </div>
+                                                </div>        		
+                                            </div>
+                                        </div>
+                                     </div>           
+                                 </div>
+                              </div>
+                           </div>
+                       </div>
+                    </li>
+                <li class="f_rgt">
+                    <div class="rc_block-blue">
+                        <div class="rc_tb">
+                            <div class="rc_bb">
+                                <div class="rc_lb">
+                                    <div class="rc_rb">
+                                        <div class="rc_tlc">
+                                            <div class="rc_trc">
+                                                <div class="rc_blc">
+                                                    <div class="rc_brc">
+                                                        <div class="rc_inp">
+    <div class="blk-hd clearfix">
+	    <p>Blood Pressure&nbsp;<span style="font-weight:normal">AVG Blood Pressure</span>&nbsp;<span style="font-weight:bold">100/69 mmHg</span></p>
+        <div class="dd_options">
+            <a class="cls_settings" href="javascript:void(0);">icon</a>
+            <div class="pop-up-menu pp_box">
+                <div class="twrap">&nbsp;</div>
+                <div class="mwrap"> 
+                    <div class="cls_ddmenu">
+                        <ul>
+                            <li><a href="#">Add New Value</a></li>
+                            <li><a href="#">Edit</a></li>
+                            <li><a href="#">Manage Goals</a></li>
+                        </ul>
+                    </div> 
+                </div>
+                <div class="bwrap">&nbsp;</div>
+            </div>
+        </div>
+	</div>
+    <div class="chart-bx">
+        <img src="images/chart-2.jpg" width="278" height="256" alt="chart" />
+    </div>
+                                                        </div>
+                                                    </div>
+                                                </div>        		
+                                            </div>
+                                        </div>
+                                     </div>           
+                                 </div>
+                              </div>
+                           </div>
+                       </div>
+                </li>
+                <li class="f_lft">
+                    <div class="rc_block-blue">
+                        <div class="rc_tb">
+                            <div class="rc_bb">
+                                <div class="rc_lb">
+                                    <div class="rc_rb">
+                                        <div class="rc_tlc">
+                                            <div class="rc_trc">
+                                                <div class="rc_blc">
+                                                    <div class="rc_brc">
+                                                        <div class="rc_inp">
+    <div class="blk-hd clearfix">
+        <p>Blood Glucose&nbsp;<span style="font-weight:normal">AVG Weight</span>&nbsp;<span style="font-weight:bold">82 mg</span></p>
+        <div class="dd_options">
+        	<a class="cls_settings" href="javascript:void(0);">icon</a>
+            <div class="pop-up-menu pp_box">
+                <div class="twrap">&nbsp;</div>
+                <div class="mwrap"> 
+                    <div class="cls_ddmenu">
+                        <ul>
+                            <li><a href="#">Add New Value</a></li>
+                            <li><a href="#">Edit</a></li>
+                            <li><a href="#">Manage Goals</a></li>
+                        </ul>
+                    </div> 
+                </div>
+                <div class="bwrap">&nbsp;</div>
+            </div>
+        </div>
+	</div>
+    <div class="chart-bx">
+	    <img src="images/chart-3.jpg" width="278" height="256" alt="chart" />
+    </div>
+                                                        </div>
+                                                    </div>
+                                                </div>        		
+                                            </div>
+                                        </div>
+                                     </div>           
+                                 </div>
+                              </div>
+                           </div>
+                       </div>
+                </li>
+                <li class="f_rgt">
+                    <div class="rc_block-blue">
+                        <div class="rc_tb">
+                            <div class="rc_bb">
+                                <div class="rc_lb">
+                                    <div class="rc_rb">
+                                        <div class="rc_tlc">
+                                            <div class="rc_trc">
+                                                <div class="rc_blc">
+                                                    <div class="rc_brc">
+                                                        <div class="rc_inp">
+    <div class="blk-hd clearfix">
+        <p> Calories&nbsp;<span style="font-weight:normal">Intake / Burn</span></p>
+        <div class="dd_options">
+            <a class="cls_settings" href="javascript:void(0);">icon</a>
+            <div class="pop-up-menu pp_box">
+                <div class="twrap">&nbsp;</div>
+                <div class="mwrap"> 
+                    <div class="cls_ddmenu">
+                        <ul>
+                            <li><a href="#">Add New Value</a></li>
+                            <li><a href="#">Edit</a></li>
+                            <li><a href="#">Manage Goals</a></li>
+                        </ul>
+                    </div> 
+                </div>
+                <div class="bwrap">&nbsp;</div>
+            </div>
+        </div>
+    </div>
+    <div class="chart-bx">
+	    <img src="images/chart-4.jpg" width="278" height="256" alt="chart" />
+    </div>
+                                                        </div>
+                                                    </div>
+                                                </div>        		
+                                            </div>
+                                        </div>
+                                     </div>           
+                                 </div>
+                              </div>
+                           </div>
+                       </div>
+                </li>
+            </ul>
+        </div>
+    </div><!--e.o.ctab3-->
+
+												</div><!--E.O.bd_block-->
+                                            </div>
+                                        </div>
+									</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div><!--E.O.main-->
+</div><!--E.O.content-->
+<div id="footer"><div class="container"><p>&copy; 2013. VIAM HEALTH</p></div></div><!--E.O.Footer-->
+<!--Custom BG image for the select boxes-->
+<script src="js/jquery-1.3.2.min.js" type="text/javascript"></script>
+<script type="text/javascript" src="js/jquery.dd.js"></script>
+<script type="text/javascript">
+var jq = jQuery.noConflict();
+jq(function($){
+		$("select").msDropDown();
+	});
+</script>
+
+<!--Popup For The Weight-->
+<div id="popup_WT" class="pp_block layout1">
+    <div class="twrap">&nbsp;</div>
+    <div class="mwrap">
+        <div class="row1">
+            <h2>Enter Weight</h2>
+            <a class="a_close" href="#">Close</a>
+        </div>
+        <div class="row2">
+            <div class="ppcols clearfix">
+                <div class="clft">
+                    <div class="fields">
+                        <label>Current Weight</label>
+                        <div class="frow clearfix">
+                        	<p class="wval">77Kg</p>
+                            <input id="Gweight" name="Gweight" type="hidden" value="77" />
+                            <div class="spnr" id="adj_weight">
+                                <a class="inc" href="#">Increase</a>
+                                <a class="dec" href="#">Decrease</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>                
+                <div class="crgt">
+                    <div class="clndr_block">
+                    	<label>Select a Date :</label>
+                        <input name="disp_dp" class="disp_dp fld_box" type="text" value="" />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row3">
+            <div class="rwrap clearfix">
+                <div id="close_ppWT" class="b_btn s_gry"><span><input type="submit" value="Cancel" /></span></div>
+                <div class="b_btn s_grn"><span><input type="submit" value="Save" /></span></div>
+            </div>
+        </div>
+    </div>
+    <div class="bwrap">&nbsp;</div>
+</div>
+<!--E.O.Popup For The Weight-->
+
+<!--Popup For The Blood Pressure-->
+<div id="popup_BP" class="pp_block layout1">
+    <div class="twrap">&nbsp;</div>
+    <div class="mwrap">
+        <div class="row1">
+            <h2>Enter Blood Pressure</h2>
+            <a class="a_close" href="#">Close</a>
+        </div>
+        <div class="row2">
+            <div class="ppcols clearfix">
+                <div class="clft">
+                    <div class="fields">
+                        <label>Diastolic</label>
+                        <input type="text" class="txtbox" />
+                    </div>
+                    <div class="fields">
+                        <label>Systolic</label>
+                        <input type="text" class="txtbox" />
+                    </div>
+                    <div class="fields last">
+                        <label>Pulse</label>
+                        <input type="text" class="txtbox" />
+                    </div>
+                </div>                
+                <div class="crgt">
+                    <div class="clndr_block">
+                    	<label>Select a Date :</label>
+                        <input name="disp_dp" class="disp_dp fld_box" type="text" value="" />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row3">
+            <div class="rwrap clearfix">
+                <div id="close_ppBP" class="b_btn s_gry"><span><input type="submit" value="Cancel" /></span></div>
+                <div class="b_btn s_grn"><span><input type="submit" value="Save" /></span></div>
+            </div>
+        </div>
+    </div>
+    <div class="bwrap">&nbsp;</div>
+</div>
+<!--E.O.Popup For The Blood Pressure-->
+
+<!--Popup For Blood Glucose-->
+<div id="popup_BG" class="pp_block layout1">
+    <div class="twrap">&nbsp;</div>
+    <div class="mwrap">
+        <div class="row1">
+            <h2>Enter Blood Glucose</h2>
+            <a class="a_close" href="#">Close</a>
+        </div>
+        <div class="row2">
+            <div class="ppcols clearfix">
+                <div class="clft">
+                    <div class="fields">
+                        <label>Current Glucose</label>
+                        <input type="text" class="txtbox" />
+                    </div>
+                    <div class="fields">
+                        <label>Test Type</label>
+                        <div id="ttype">
+                            <select id="cmbo_ttype" name="cmbo_ttype">
+                                <option>Select a test type...</option>
+                                <option>Fasting (Before Meal)</option>
+                                <option>Before Meal</option>
+                                <option>After Meal</option>
+                            </select>
+						</div>
+                    </div>
+                </div>
+                <div class="crgt">
+                    <div class="clndr_block">
+                    	<label>Select a Date :</label>
+                        <input name="disp_dp" class="disp_dp fld_box" type="text" value="" />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row3">
+            <div class="rwrap clearfix">
+                <div id="close_ppBG" class="b_btn s_gry"><span><input type="submit" value="Cancel" /></span></div>
+                <div class="b_btn s_grn"><span><input type="submit" value="Save" /></span></div>
+            </div>
+        </div>
+    </div>
+    <div class="bwrap">&nbsp;</div>
+</div>
+<!--E.O.Popup For Blood Glucose-->
+
+<!--Popup For Cholesteral-->
+<div id="popup_CHL" class="pp_block layout1">
+    <div class="twrap">&nbsp;</div>
+    <div class="mwrap">
+        <div class="row1">
+            <h2>Enter Cholesteral</h2>
+            <a class="a_close" href="#">Close</a>
+        </div>
+        <div class="row2">
+            <div class="ppcols clearfix">
+                <div class="clft">
+                    <div class="fields">
+                        <label>HDL</label>
+                        <input type="text" class="txtbox" />
+                    </div>
+                    <div class="fields">
+                        <label>LDL</label>
+                        <input type="text" class="txtbox" />
+                    </div>
+                    <div class="fields">
+                        <label>Triglycerides</label>
+                        <input type="text" class="txtbox" />
+                    </div>
+                    <div class="fields last">
+                        <label>Total</label>
+                        <input type="text" class="txtbox" />
+                    </div>
+                </div>
+                <div class="crgt">
+                    <div class="clndr_block">
+                    	<label>Select a Date :</label>
+                        <input name="disp_dp" class="disp_dp fld_box" type="text" value="" />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row3">
+            <div class="rwrap clearfix">
+                <div id="close_ppCHL" class="b_btn s_gry"><span><input type="submit" value="Cancel" /></span></div>
+                <div class="b_btn s_grn"><span><input type="submit" value="Save" /></span></div>
+            </div>
+        </div>
+    </div>
+    <div class="bwrap">&nbsp;</div>
+</div>
+<!--E.O.Popup For Cholesteral-->
+
+<!--Popup For Manage goal-->
+<div class="pp_block layout1 popup_MG">
+    <div class="twrap">&nbsp;</div>
+    <div class="mwrap">
+        <div class="row1">
+            <h2>Manage Goals</h2>
+            <a class="a_close" href="#">Close</a>
+        </div>
+        <div class="row2">
+            <div class="rwrap">
+                <div class="r3 trow">
+                    <div class="pp_tglb">
+                    	<ul>
+                        	<li id="MGW">
+                                <div class="tgl_title"><p class="clsdisp">Weight</p></div>
+                                <div class="tgl_main clearfix" style="display:none;">
+                                	<div class="opt_bar"><a href="#">Delete</a></div>
+                                    <div class="cols c1">
+                                    	<h3>Current Weight</h3>
+                                        <div class="clearfix">
+                                            <div id="CW" class="c_lft w_val">77 kg</div>
+                                            <input type="hidden" name="cwight" value="77" id="cwight" />
+                                            <div class="c_rgt" id="cwight_arr">
+                                                <a class="u_arw" href="#">Up</a>
+                                                <a class="d_arw" href="#">Down</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="cols c2">
+                                    	<h3>Goal Weight</h3>
+                                        <div class="clearfix">
+                                            <div id="GW" class="c_lft w_val">77 kg</div>
+                                            <input type="hidden" name="gwight" value="77" id="gwight" />
+                                            <div class="c_rgt" id="gwight_arr">
+                                                <a class="u_arw_grn" href="#">Up</a>
+                                                <a class="d_arw_red" href="#">Down</a>
+                                            </div>
+                                        </div>
+                                        <p>Ideal weight is 68-72kg</p>
+                                    </div>
+                                    <div class="cols c3">
+                                    	<h3>Goal Time</h3>
+                                        <div class="clearfix">
+                                        	<div class="f_lft">&nbsp;</div>
+                                            <select id="sel_period1" name="sel_period1">
+                                            	<option>3 Months</option>
+                                                <option>6 Months</option>
+                                                <option>9 Months</option>
+                                                <option>1 Year</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                        	<li id="MGBP">
+                                <div class="tgl_title"><p class="clsdisp">Blood Pressure - BP</p></div>
+                                <div class="tgl_main clearfix" style="display:none;">
+	                                <div class="opt_bar"><a href="#">Delete</a></div>
+                                    <div class="cols c1">
+                                    	<h3>Current BP</h3>
+                                        <input type="text" value="Diastolic" />
+                                        <input type="text" value="Systolic" />
+                                        <input type="text" value="Pulse" />
+                                    </div>
+                                    <div class="cols c2">
+                                    	<h3>Goal BP</h3>
+                                        <input type="text" value="Diastolic" />
+                                        <input type="text" value="Systolic" />
+                                        <input type="text" value="Pulse" />
+                                    </div>
+                                    <div class="cols c3">
+                                    	<h3>Goal Time</h3>
+                                        <div class="clearfix">
+                                        	<div class="f_lft">&nbsp;</div>
+                                            <select id="sel_period2" name="sel_period2">
+                                                <option>1 week</option>
+                                                <option>1 month</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                        	<li id="MGBG">
+                                <div class="tgl_title">
+	                                <p class="clsdisp">Blood Glucose - BG</p>
+                                </div>
+                                <div class="tgl_main clearfix" style="display:none;">
+                                	<div class="opt_bar"><a href="#">Delete</a></div>
+                                	<div class="cols c1">
+                                    	<h3>Current BG</h3>
+                                        <input type="text" value="Fasting" />
+                                        <input type="text" value="Before Meal" />
+                                        <input type="text" value="After Meal" />
+                                    </div>
+                                    <div class="cols c2">
+                                    	<h3>Goal BG</h3>
+                                        <input type="text" value="Fasting" />
+                                        <input type="text" value="Before Meal" />
+                                        <input type="text" value="After Meal" />
+                                    </div>
+                                    <div class="cols c3">
+                                    	<h3>Goal Time</h3>
+                                        <div class="clearfix">
+                                        	<div class="f_lft">&nbsp;</div>
+                                            <select id="sel_period3" name="sel_period3">
+                                                <option>1 week</option>
+                                                <option>1 month</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                        	<li id="MGCHL" class="nomrgn">
+                            	<div class="tgl_title"><p class="clsdisp">Cholesterol</p></div>
+                                <div class="tgl_main clearfix" style="display:none;">
+                                	<div class="opt_bar"><a href="#">Delete</a></div>
+                                	<div class="cols c1">
+                                    	<h3>Current Cholesterol</h3>
+                                        <input type="text" value="HDL" />
+                                        <input type="text" value="LDL" />
+                                        <input type="text" value="Triglycerides" />
+                                        <input type="text" value="Total" />
+                                    </div>
+                                    <div class="cols c2">
+                                    	<h3>Goal Cholesterol</h3>
+                                        <input type="text" value="HDL" />
+                                        <input type="text" value="LDL" />
+                                        <input type="text" value="Triglycerides" />
+                                        <input type="text" value="Total" />
+                                    </div>
+                                    <div class="cols c3">
+                                    	<h3>Goal Time</h3>
+                                        <div class="clearfix">
+                                        	<div class="f_lft">&nbsp;</div>
+                                            <select id="sel_period4" name="sel_period4">
+                                                <option>10 Days</option>
+                                                <option>20 Days</option>
+                                                <option>1 month</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row3">
+            <div class="rwrap clearfix">
+                <p><span>Note:</span> This goal will appear under your Health Monitor tab</p>
+                <div class="b_btn s_gry close_ppMG"><span><input type="submit" value="Cancel" /></span></div>
+                <div class="b_btn s_grn"><span><input type="submit" value="Save" /></span></div>
+            </div>
+        </div>
+    </div>
+    <div class="bwrap">&nbsp;</div>
+</div>
+<!--E.O.Popup For Manage goal-->
+</body>
+</html>
