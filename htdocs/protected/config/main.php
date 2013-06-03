@@ -77,6 +77,11 @@ return array(
 
 	// application components
 	'components'=>array(
+		'urlManager'=>array(
+		    'urlFormat'=>'path',
+		    'showScriptName'=>false,
+		     'caseSensitive'=>false,        
+		),		
 		'user'=>array(
 			// enable cookie-based authentication
             'class' => 'WebUser',
