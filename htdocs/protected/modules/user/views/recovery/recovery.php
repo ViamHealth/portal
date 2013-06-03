@@ -4,7 +4,9 @@
 /* @var $form CActiveForm  */
 ?>
 
-<div class="login-reg-left">&nbsp;</div>
+<div class="login-reg-left">
+	<img src="../images/healthy2.jpg"/>
+</div>
 <div class="login-reg-right">
 <div class="login-form">
 	<?php if(Yii::app()->user->hasFlash('recoveryMessage')) { ?>

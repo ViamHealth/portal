@@ -73,5 +73,11 @@
 	<div id="body">
 		<?php echo $content; ?>
 	</div>
+	<!--<div class="footer">
+		<div class="footerContent">
+			<div class="copy">© 2013 by Viam Health</div>
+
+		</div>
+	</div>-->	
 </body>
 </html>
