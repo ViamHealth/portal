@@ -7,7 +7,8 @@
 // CWebApplication properties can be configured here.
 return array(
 	'basePath'=>dirname(__FILE__).DIRECTORY_SEPARATOR.'..',
-	'name'=>'My Web Application',
+	'name'=>'Viam Health',
+	'defaultController' => 'RegistrationController',
 
 	// preloading 'log' component
 	'preload'=>array('log'),
@@ -27,7 +28,48 @@ return array(
 			// If removed, Gii defaults to localhost only. Edit carefully to taste.
 			'ipFilters'=>array('127.0.0.1','::1'),
 		),
-		
+
+		'user' => array(
+			'debug' => false,
+			'userTable' => 'user',
+			'translationTable' => 'translation',
+			'passwordRequirements' => array(                                        
+			      'minLen' => 4,
+			      'maxLen' => 16,
+			      'maxRepetition' => 2,
+			      'minDigits' => 3,
+			      ),
+			'loginType' => '7',			
+			'hybridAuthProviders' => array('Facebook', 'Twitter'),
+		),
+
+		'usergroup' => array(
+			'usergroupTable' => 'usergroup',
+			'usergroupMessageTable' => 'user_group_message',
+		),
+		'membership' => array(
+			'membershipTable' => 'membership',
+			'paymentTable' => 'payment',
+		),
+		'friendship' => array(
+			'friendshipTable' => 'friendship',
+		),
+		'profile' => array(
+			'privacySettingTable' => 'privacysetting',
+			'profileFieldTable' => 'profile_field',
+			'profileTable' => 'profile',
+			'profileCommentTable' => 'profile_comment',
+			'profileVisitTable' => 'profile_visit',
+		),
+		'role' => array(
+			'roleTable' => 'role',
+			'userRoleTable' => 'user_role',
+			'actionTable' => 'action',
+			'permissionTable' => 'permission',
+		),
+		'message' => array(
+			'messageTable' => 'message',
+		),		
 	),
 
 	// application components
@@ -51,7 +93,8 @@ return array(
 			//'connectionString' => 'sqlite:'.dirname(__FILE__).'/../data/testdrive.db',
 			'connectionString'=>'mysql:host=localhost;dbname=viam',
 			'username'=>'root',
-			'password'=>''
+			'password'=>'',
+			'tablePrefix' => '',
 		),
 		// uncomment the following to use a MySQL database
 		/*
