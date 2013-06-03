@@ -2,6 +2,7 @@ portal
 ======
 
 ViamHealths Portal Code Base
+Current working branch - "initial-setup". 
 
 1. Database dump 
 -----------------------
@@ -15,6 +16,8 @@ The folder database has files named as schema_<date and time of creation>.sql an
 The setup is ready for Nginx + PHP-FPM based webserver installation.
 
 The ops folder has the nginx/nginx.conf and php/php.ini which if you replace in your setup should work absolutely fine.
+
+Make sure you have dev.viam.com as the virtual host on your local. The whole setup assumes that you have dev.viam.com.
 
 3. Requirements
 ------------------
