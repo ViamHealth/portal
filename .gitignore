@@ -7,5 +7,5 @@ softwares/yii-debug-toolbar
 softwares/yii-user
 softwares/yii-user-management
 softwares/yiiplayground
-htdocs/protected/runtime/application.log 
+htdocs/protected/runtime
 htdocs/assets
