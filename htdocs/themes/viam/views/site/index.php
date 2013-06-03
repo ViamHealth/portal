@@ -9,7 +9,17 @@ $this->pageTitle=Yii::app()->name;
 </div>
 
 <div id="core-panel">
-	<div id="left-panel">&nbsp;</div>
+	<div id="left-panel">
+		<?php $this->widget('EBootstrapSidebar', array(
+					'items'=>array(
+							array(
+								'label' => 
+								),
+						),
+				):
+
+		?>
+	</div>
 	<div id="main-panel">&nbsp;</div>
 </div>
 

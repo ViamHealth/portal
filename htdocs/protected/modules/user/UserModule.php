@@ -57,7 +57,7 @@ class UserModule extends CWebModule
 	public $loginUrl = array("/user/login");
 	public $logoutUrl = array("/user/logout");
 	public $profileUrl = array("/user/profile");
-	public $returnUrl = array("/viam/profile");
+	public $returnUrl = array("/viam/UserBMIProfile");
 	public $returnLogoutUrl = array("/user/login");
 	
 	
