@@ -10,14 +10,14 @@ $this->pageTitle=Yii::app()->name;
 
 <div id="core-panel">
 	<div id="left-panel">
-		<?php $this->widget('EBootstrapSidebar', array(
+		<?php /*$this->widget('EBootstrapSidebar', array(
 					'items'=>array(
 							array(
 								'label' => 
 								),
 						),
 				):
-
+*/
 		?>
 	</div>
 	<div id="main-panel">&nbsp;</div>
