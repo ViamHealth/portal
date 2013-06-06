@@ -74,7 +74,7 @@ return array(
 		),
 		*/
 	),
-
+ 
 	// application components
 	'components'=>array(
 		'urlManager'=>array(
