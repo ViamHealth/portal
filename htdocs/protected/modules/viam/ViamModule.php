@@ -11,6 +11,9 @@ class ViamModule extends CWebModule
 		$this->setImport(array(
 			'viam.models.*',
 			'viam.components.*',
+			'user.models.*',
+			'user.components.*'
+			//'ext.restfullapi.components.*',
 		));
 	}
 
