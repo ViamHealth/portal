@@ -98,8 +98,6 @@ class HealthfileTag extends CActiveRecord
 	public function beforeSave() {
     if ($this->isNewRecord)
         $this->created_at = new CDbExpression('NOW()');
-    else
-        $this->updated_at = new CDbExpression('NOW()');
  
     return parent::beforeSave();
   }
