@@ -115,9 +115,6 @@ class ERestController extends Controller
 	 */ 
 	public function filterRestAccessRules( $c )
 	{
-		//Temporary gate pass for all requests
-		$c->run(); 
-		return;
 		
 		Yii::app()->clientScript->reset(); //Remove any scripts registered by Controller Class
 		Yii::app()->onException = array($this, 'onException'); //Register Custom Exception

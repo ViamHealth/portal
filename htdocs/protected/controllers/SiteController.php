@@ -45,6 +45,8 @@ class SiteController extends Controller
 		{
 			if(Yii::app()->request->isAjaxRequest)
 				echo $error['message'];
+			else if (stripos($_SERVER['REQUEST_URI'],'/api/') === 0 )
+				echo json_encode(array('message'=>$error['message']));
 			else
 				$this->render('error', $error);
 		}
