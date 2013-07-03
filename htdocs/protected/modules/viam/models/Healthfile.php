@@ -25,6 +25,9 @@ class Healthfile extends CActiveRecord
 	 * @param string $className active record class name.
 	 * @return Healthfile the static model class
 	 */
+	//Temporary var to make forms simple
+	public $tagsCsv;
+
 	public static function model($className=__CLASS__)
 	{
 		return parent::model($className);
@@ -46,8 +49,7 @@ class Healthfile extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('user_id, name, description, mime_type, stored_url, created_at, updated_at, updated_by', 'required'),
-			array('user_id, updated_by', 'numerical', 'integerOnly'=>true),
+			array('description', 'required'),
 			array('name, mime_type, stored_url', 'length', 'max'=>256),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
@@ -76,8 +78,8 @@ class Healthfile extends CActiveRecord
 		return array(
 			'id' => 'ID',
 			'user_id' => 'User',
-			'name' => 'Name',
-			'description' => 'Description',
+			'name' => 'File Name',
+			'description' => 'Label',
 			'mime_type' => 'Mime Type',
 			'stored_url' => 'Stored Url',
 			'created_at' => 'Created At',
@@ -137,4 +139,11 @@ class Healthfile extends CActiveRecord
   	}
   	return $tags;
   }
+
+  public function behaviors()
+    {
+        return array('ESaveRelatedBehavior' => array(
+                'class' => 'application.components.ESaveRelatedBehavior')
+        );
+    }
 }

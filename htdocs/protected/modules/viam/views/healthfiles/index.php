@@ -43,6 +43,7 @@ $this->pageTitle=Yii::app()->name;
           'header'=>'File Name',
           'type'=>'raw',
           //TODO: Need template for Tags
+          //TODO: Find better way to show children tags
           'value'=>'"<a href=\"".$data->stored_url."\" >".$data->name."</a></br>".implode(", ",$data->getTagsArray())',
         ),
         array(

@@ -40,8 +40,7 @@ class HealthfileTag extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('healthfile_id, tag, created_at', 'required'),
-			array('healthfile_id', 'numerical', 'integerOnly'=>true),
+			array('tag', 'required'),
 			array('tag', 'length', 'max'=>64),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
