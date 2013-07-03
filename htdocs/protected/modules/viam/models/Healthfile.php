@@ -88,25 +88,34 @@ class Healthfile extends CActiveRecord
 
 	/**
 	 * Retrieves a list of models based on the current search/filter conditions.
+	 * @param array $filters criterias to filter on
 	 * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
 	 */
-	public function search()
+	public function search($filters=array())
 	{
 		// Warning: Please modify the following code to remove attributes that
 		// should not be searched.
 
 		$criteria=new CDbCriteria;
 
-		$criteria->compare('id',$this->id);
-		$criteria->compare('user_id',$this->user_id);
-		$criteria->compare('name',$this->name,true);
-		$criteria->compare('description',$this->description,true);
-		$criteria->compare('mime_type',$this->mime_type,true);
-		$criteria->compare('stored_url',$this->stored_url,true);
-		$criteria->compare('created_at',$this->created_at,true);
-		$criteria->compare('updated_at',$this->updated_at,true);
-		$criteria->compare('updated_by',$this->updated_by);
-
+		if(is_array($filters) && count($filters)){
+			if(isset($filters['user_id'])){
+				$criteria->compare('user_id',$filters['user_id']);
+				//hardcoding order for now
+				$criteria->order = 'updated_at DESC, created_at DESC';
+			}
+		}
+		else {
+			$criteria->compare('id',$this->id);
+			$criteria->compare('user_id',$this->user_id);
+			$criteria->compare('name',$this->name,true);
+			$criteria->compare('description',$this->description,true);
+			$criteria->compare('mime_type',$this->mime_type,true);
+			$criteria->compare('stored_url',$this->stored_url,true);
+			$criteria->compare('created_at',$this->created_at,true);
+			$criteria->compare('updated_at',$this->updated_at,true);
+			$criteria->compare('updated_by',$this->updated_by);
+		}
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
 		));
@@ -119,5 +128,13 @@ class Healthfile extends CActiveRecord
         $this->updated_at = new CDbExpression('NOW()');
  
     return parent::beforeSave();
+  }
+
+  public function getTagsArray(){
+  	$tags = array();
+  	foreach ($this->healthfileTags as $key => $value) {
+  		$tags[] = $value->tag;
+  	}
+  	return $tags;
   }
 }

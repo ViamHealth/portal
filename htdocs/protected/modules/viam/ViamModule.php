@@ -12,7 +12,7 @@ class ViamModule extends CWebModule
 			'viam.models.*',
 			'viam.components.*',
 			'user.models.*',
-			'user.components.*'
+			'user.components.*',
 			//'ext.restfullapi.components.*',
 		));
 	}

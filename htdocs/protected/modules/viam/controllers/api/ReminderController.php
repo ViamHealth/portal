@@ -1,5 +1,5 @@
 <?php
-class ReminderController  extends ERestController
+class ReminderController  extends VERestController
 {
 
 }
