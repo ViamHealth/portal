@@ -29,6 +29,7 @@ class HealthmonitorController extends Controller
         'params'=>array(':profile_id'=>Yii::app()->user->id)
         )
       );
+    //Make ENUM for goal type. Consider abstracting the common goal properties
     if($weightGoalId != null )$goalsIdArr['weight'] = $weightGoalId->id;
 		$this->render('index',array( 'profile_id'=>Yii::app()->user->id));
 	}
