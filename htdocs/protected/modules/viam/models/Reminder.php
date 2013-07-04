@@ -134,6 +134,7 @@ class Reminder extends CActiveRecord
         $this->created_at = new CDbExpression('NOW()');
     else
         $this->updated_at = new CDbExpression('NOW()');
+    $this->updated_by = Yii::app()->user->id;
  
     return parent::beforeSave();
   }
