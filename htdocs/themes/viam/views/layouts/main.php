@@ -37,6 +37,7 @@
         'items'=>array(
             array('label'=>'Viam Health', 'url'=>array('/site/index')),
             array('label'=>'Journals', 'url'=>array('/site/page', 'view'=>'about'), 'visible'=>!Yii::app()->user->isGuest),
+            array('label'=>'Goals', 'url'=>array('/viam/healthmonitor'), 'visible'=>!Yii::app()->user->isGuest),
             array('label'=>'Files', 'url'=>array('/viam/healthfiles'), 'visible'=>!Yii::app()->user->isGuest),
             array('label'=>'Reminders', 'url'=>array('/site/contact'), 'visible'=>!Yii::app()->user->isGuest),
         ),
