@@ -40,6 +40,15 @@ class UserWeightGoal extends CActiveRecord
 		return '{{user_weight_goals}}';
 	}
 
+	public function scopes()
+  {
+      return array(
+          'active'=>array(
+              'condition'=>'status="ACTIVE"',
+          ),
+      );
+  }
+
 	/**
 	 * @return array validation rules for model attributes.
 	 */
@@ -131,4 +140,6 @@ class UserWeightGoal extends CActiveRecord
  
     return parent::beforeSave();
   }
+
+  
 }
