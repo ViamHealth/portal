@@ -22,16 +22,15 @@ class HealthmonitorController extends Controller
 
 	public function actionIndex()
 	{
-		//$HealthfileModel=Healthfile::model();
-    $HealthfileModel = '';
     //Load User goal ids with type
-    $goalsArr['weight']= UserWeightGoal::model()->active()->find(array(
+    $weightGoalId= UserWeightGoal::model()->active()->find(array(
         'select'=>'id',
         'condition'=>'user_id=:profile_id',
         'params'=>array(':profile_id'=>Yii::app()->user->id)
         )
       );
-		$this->render('index',array('HealthfileModel'=>$HealthfileModel, 'profile_id'=>Yii::app()->user->id));
+    if($weightGoalId != null )$goalsIdArr['weight'] = $weightGoalId->id;
+		$this->render('index',array( 'profile_id'=>Yii::app()->user->id));
 	}
 
   public function actionLoadChildByAjax($index)
