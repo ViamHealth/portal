@@ -13,7 +13,20 @@
 </head>
 
 <body>
-	<?php $this->widget('bootstrap.widgets.TbNavbar', array(
+	<?php 
+		if(Yii::app()->user->getIsGuest()!=1) {
+			$user_settings_widget_items = array('label'=>Yii::app()->user->name, 'url'=>'#', 'items'=>array(
+		       array('label'=>'Profile Details', 'url'=>'#'),
+		       array('label'=>'Account Settings', 'url'=>'#'),
+		       array('label'=>'Privacy Settings', 'url'=>'#'),
+		       array('label'=>'Logout', 'url'=>array("/user/logout")),
+		      ));
+		} else {
+			$user_settings_widget_items = array('label'=>'Login', 'url'=>array('/user/login'), 'visible'=>Yii::app()->user->isGuest);
+		}
+		
+
+		$this->widget('bootstrap.widgets.TbNavbar', array(
 		'type'=>'inverse', // null or 'inverse'
     'brand'=>'Viam Health',
     'brandUrl'=>'#',
@@ -23,31 +36,21 @@
         'class'=>'bootstrap.widgets.TbMenu',
         'items'=>array(
             array('label'=>'Viam Health', 'url'=>array('/site/index')),
-            array('label'=>'Journals', 'url'=>array('/site/page', 'view'=>'about')),
-            array('label'=>'Files', 'url'=>array('/viam/healthfiles')),
-            array('label'=>'Reminders', 'url'=>array('/site/contact')),
-            //array('label'=>'Login', 'url'=>array('/site/login'), 'visible'=>Yii::app()->user->isGuest),
-            //array('label'=>'Logout ('.Yii::app()->user->name.')', 'url'=>array('/site/logout'), 'visible'=>!Yii::app()->user->isGuest)
+            array('label'=>'Journals', 'url'=>array('/site/page', 'view'=>'about'), 'visible'=>!Yii::app()->user->isGuest),
+            array('label'=>'Files', 'url'=>array('/viam/healthfiles'), 'visible'=>!Yii::app()->user->isGuest),
+            array('label'=>'Reminders', 'url'=>array('/site/contact'), 'visible'=>!Yii::app()->user->isGuest),
         ),
     	),
     	array(
         'class'=>'bootstrap.widgets.TbMenu',
         'htmlOptions'=>array('class'=>'pull-right'),
         'items'=>array(
-	    		array('label'=>Yii::app()->user->name, 'url'=>'#', 'items'=>array(
-		       array('label'=>'Profile Details', 'url'=>'#'),
-		       array('label'=>'Account Settings', 'url'=>'#'),
-		       array('label'=>'Privacy Settings', 'url'=>'#'),
-		       array('label'=>'Logout', 'url'=>array("/user/logout")),
-		      )
-		    ),
+	    		$user_settings_widget_items
       )),
-				
 				//	            array('label'=>Yii::app()->user->name, 'block'=>true, 'htmlOptions'=>array('class'=>'ub_inr')),
 			
     ),
 	)); ?>
-				<?php //if(Yii::app()->user->getIsGuest()!=1) {?>
 				
 		</div>	
 	</div>

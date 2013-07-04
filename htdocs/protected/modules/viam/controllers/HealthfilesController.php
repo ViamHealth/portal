@@ -2,16 +2,40 @@
 
 class HealthfilesController extends Controller
 {
-	//TODO: Current Profile being watched. Hard Coded for now
-	private $profile_id = 5;
+	//TODO: Current Profile being watched. points to logged in user for now
+
+
+	public function filters()
+  {
+      return array( 'accessControl' ); // perform access control for CRUD operations
+  }
+
+  public function accessRules()
+  {
+      return array(
+          array('allow', // allow authenticated users to access all actions
+              'users'=>array('@'),
+          ),
+          array('deny'),
+      );
+  }
+
+  public function loadModel($id)
+  {
+      $model = Healthfile::model()->find(array(
+      	'condition'=>'id=:id AND user_id=:profile_id',
+      	'params'=>array(':id'=>$id,':profile_id'=>Yii::app()->user->id)
+      	)
+      );
+      if ($model === null)
+          throw new CHttpException(404, 'The requested page does not exist.');
+      return $model;
+  }
 
 	public function actionIndex()
 	{
 		$HealthfileModel=Healthfile::model();
-		
-		$profile_id = $this->profile_id;
-
-		$this->render('index',array('HealthfileModel'=>$HealthfileModel, 'profile_id'=>$profile_id));
+		$this->render('index',array('HealthfileModel'=>$HealthfileModel, 'profile_id'=>Yii::app()->user->id));
 	}
 
 	public function actionUpdate($id)
@@ -46,18 +70,6 @@ class HealthfilesController extends Controller
       // if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
       if (!isset($_GET['ajax']))
           $this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('admin'));
-  }
-
-	public function loadModel($id)
-  {
-      $model = Healthfile::model()->find(array(
-      	'condition'=>'id=:id AND user_id=:profile_id',
-      	'params'=>array(':id'=>$id,':profile_id'=>$this->profile_id)
-      	)
-      );
-      if ($model === null)
-          throw new CHttpException(404, 'The requested page does not exist.');
-      return $model;
   }
 
   public function actionLoadChildByAjax($index)
