@@ -1,7 +1,7 @@
 <?php
 
 // uncomment the following to define a path alias
-// Yii::setPathOfAlias('local','path/to/local-folder');
+//Yii::setPathOfAlias('viam_assets','../modules/viam/assets');
 
 // This is the main Web application configuration. Any writable
 // CWebApplication properties can be configured here.
@@ -97,7 +97,7 @@ return array(
 			'connectionString' => 'mysql:host=localhost;dbname=viam',
 			'emulatePrepare' => true,
 			'username' => 'root',
-			'password' => '',
+			'password' => 'kunal',
 			'charset' => 'utf8',
 			'tablePrefix' => 'tbl_',
 		),
