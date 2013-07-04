@@ -2,11 +2,14 @@
 
 class HealthfilesController extends Controller
 {
+	//TODO: Current Profile being watched. Hard Coded for now
+	private $profile_id = 5;
+
 	public function actionIndex()
 	{
 		$HealthfileModel=Healthfile::model();
-		//TODO: Current Profile being watched. Hard Coded for now
-		$profile_id = 5;
+		
+		$profile_id = $this->profile_id;
 
 		$this->render('index',array('HealthfileModel'=>$HealthfileModel, 'profile_id'=>$profile_id));
 	}
@@ -44,10 +47,14 @@ class HealthfilesController extends Controller
       if (!isset($_GET['ajax']))
           $this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('admin'));
   }
-    
+
 	public function loadModel($id)
   {
-      $model = Healthfile::model()->findByPk($id);
+      $model = Healthfile::model()->find(array(
+      	'condition'=>'id=:id AND user_id=:profile_id',
+      	'params'=>array(':id'=>$id,':profile_id'=>$this->profile_id)
+      	)
+      );
       if ($model === null)
           throw new CHttpException(404, 'The requested page does not exist.');
       return $model;
