@@ -45,6 +45,7 @@ class HealthfileTag extends CActiveRecord
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
 			array('id, healthfile_id, tag, created_at', 'safe', 'on'=>'search'),
+			array('id, healthfile_id, tag', 'safe', 'on'=>'rest'),
 		);
 	}
 
