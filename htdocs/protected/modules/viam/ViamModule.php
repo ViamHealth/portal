@@ -13,6 +13,8 @@ class ViamModule extends CWebModule
 			'viam.components.*',
 			'user.models.*',
 			'user.components.*',
+			'application.components.CURL',
+			'application.components.RESTClient',
 			//'ext.restfullapi.components.*',
 		));
 	}

@@ -1,14 +1,7 @@
-<<<<<<< HEAD
 <div class="view" style="margin: auto">
  <div class="span3" style="border-style: solid; padding: 20px; postion: relative; margin-left: 20px">
       <?php echo CHtml::encode($data->details); ?>
         <div class="col" style="margin-top: 10px">
-=======
-<div class="view color-yellow">
- <div class="span4">
-      <?php echo CHtml::encode($data->details); ?>
-        <div class="col">
->>>>>>> 3f9a33d7a70aee95ed6c29f02f45df1f5d1ecca0
          <p><span>When</span><br />
            <?php echo CHtml::encode($data->start_datetime);?></p>
          </div>
@@ -23,21 +16,13 @@
  			    break;
  		 case 4: echo 'Monthly';} ?></p>
          </div>       
-<<<<<<< HEAD
 
        <div class="b_row" style="overflow: hidden; position: relative">
-=======
-       <div class="b_row">
->>>>>>> 3f9a33d7a70aee95ed6c29f02f45df1f5d1ecca0
        <p>
        <button class="btn btn-medium btn-primary" type="button">Update</button>
        <button class="btn btn-medium" type="button">Delete</button>
        </p>
        </div>
-<<<<<<< HEAD
 
  </div>
-=======
-</div>
->>>>>>> 3f9a33d7a70aee95ed6c29f02f45df1f5d1ecca0
 </div>
