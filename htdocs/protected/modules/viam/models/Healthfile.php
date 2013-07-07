@@ -50,12 +50,10 @@ class Healthfile extends CActiveRecord
 		// will receive user inputs.
 		return array(
 			array('description', 'required'),
-			//array('name, mime_type, stored_url', 'length', 'max'=>256),
+			array('name, mime_type, stored_url', 'length', 'max'=>256),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
 			array('id, user_id, name, description, mime_type, stored_url, created_at, updated_at, updated_by', 'safe', 'on'=>'search'),
-			//For APIs
-			array('id, user_id, name, description, mime_type, stored_url, created_at, updated_at, updated_by', 'safe', 'on'=>'rest'),
 		);
 	}
 
@@ -144,9 +142,9 @@ class Healthfile extends CActiveRecord
   }
 
   public function behaviors()
-  {
-      return array('ESaveRelatedBehavior' => array(
-              'class' => 'application.components.ESaveRelatedBehavior')
-      );
-  }
+    {
+        return array('ESaveRelatedBehavior' => array(
+                'class' => 'application.components.ESaveRelatedBehavior')
+        );
+    }
 }

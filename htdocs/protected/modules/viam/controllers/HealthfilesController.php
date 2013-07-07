@@ -3,8 +3,7 @@
 class HealthfilesController extends Controller
 {
 	//TODO: Current Profile being watched. points to logged in user for now
-
-
+ 	
 	public function filters()
   {
       return array( 'accessControl' ); // perform access control for CRUD operations
@@ -34,22 +33,10 @@ class HealthfilesController extends Controller
 
 	public function actionIndex()
 	{
+		
 		$HealthfileModel=Healthfile::model();
 		$this->render('index',array('HealthfileModel'=>$HealthfileModel, 'profile_id'=>Yii::app()->user->id));
 	}
-
-//Temporary code. to be deleted
-  public function actionApiIndex()
-  {
-    $rest = new RESTClient();
-    $rest->initialize(array('server' => 'http://dev.viam.com/api/'));
-    //$tweet = $rest->get('statuses/user_timeline/'.$username.'.xml');
-    $res = $rest->get('healthfile');
-    $json_res = json_decode($res);
-    if($json_res->success == true){
-      $hfArr = $json_res->data->healthfile;
-    }
-  }
 
 	public function actionUpdate($id)
 	{
