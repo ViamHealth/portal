@@ -15,8 +15,7 @@
  * @property string $repeat_weekday
  * @property string $repeat_day_interval
  * @property string $status
- * @property string $created_at
- * @property string $updated_at
+ * @property string $created_at * @property string $updated_at
  * @property integer $updated_by
  *
  * The followings are the available model relations:
@@ -102,13 +101,21 @@ class Reminder extends CActiveRecord
 	 * Retrieves a list of models based on the current search/filter conditions.
 	 * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
 	 */
-	public function search()
+	public function search($filters=array())
 	{
 		// Warning: Please modify the following code to remove attributes that
 		// should not be searched.
 
-		$criteria=new CDbCriteria;
+		$criteria= new CDbCriteria;
 
+		if(is_array($filters) && count($filters)){
+			if(isset($filters['user_id'])){
+				$criteria->compare('user_id',$filters['user_id']);
+				//hardcoding order for now
+				$criteria->order = 'updated_at DESC, created_at DESC';
+			}
+		}
+		else {
 		$criteria->compare('id',$this->id);
 		$criteria->compare('user_id',$this->user_id);
 		$criteria->compare('details',$this->details,true);
@@ -123,6 +130,7 @@ class Reminder extends CActiveRecord
 		$criteria->compare('created_at',$this->created_at,true);
 		$criteria->compare('updated_at',$this->updated_at,true);
 		$criteria->compare('updated_by',$this->updated_by);
+		}
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
