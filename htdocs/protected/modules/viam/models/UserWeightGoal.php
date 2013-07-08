@@ -105,13 +105,22 @@ class UserWeightGoal extends CActiveRecord
 	 * Retrieves a list of models based on the current search/filter conditions.
 	 * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
 	 */
-	public function search()
+	public function search($filters=array())
 	{
 		// Warning: Please modify the following code to remove attributes that
 		// should not be searched.
 
 		$criteria=new CDbCriteria;
 
+		if(is_array($filters) && count($filters)){
+			if(isset($filters['user_id'])){
+				$criteria->compare('user_id',$filters['user_id']);
+				$criteria->compare('status','ACTIVE');
+				//hardcoding order for now
+				$criteria->order = 'updated_at DESC, created_at DESC';
+			}
+		}		
+		else {
 		$criteria->compare('id',$this->id);
 		$criteria->compare('user_id',$this->user_id);
 		$criteria->compare('weight',$this->weight);
@@ -122,7 +131,7 @@ class UserWeightGoal extends CActiveRecord
 		$criteria->compare('created_at',$this->created_at,true);
 		$criteria->compare('updated_at',$this->updated_at,true);
 		$criteria->compare('updated_by',$this->updated_by);
-		$criteria->compare('status',$this->status,true);
+		$criteria->compare('status',$this->status,true);}
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,

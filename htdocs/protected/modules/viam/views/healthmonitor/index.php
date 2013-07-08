@@ -6,8 +6,9 @@ $cs->registerScriptFile($assetUrl.'/js/xcharts.js');
 $cs->registerCssFile($assetUrl.'/css/xcharts.css');
 ?>
 
-<br/><br/><br/>Health Monitor Controller
+<h1>Goals</h1>
 
+<?php /*
 <figure style=" height: 300px;" id="myChart"></figure>
 <script>
 var data_gr = {
@@ -45,3 +46,25 @@ var data_gr = {
 
 var myChart = new xChart('bar', data_gr, '#myChart');
 </script>
+*/ ?>
+	 <div class="toolbar pull-right">
+      <i class="icon-calendar"></i>
+      year
+      <div class="btn-group">
+        <button class="btn">Today</button>
+      </div>
+      <div class="btn-group">
+       <button class="btn">Day</button>
+       <button class="btn">Week</button>
+       <button class="btn">Month</button>
+      </div>
+      </div>
+
+<div class="row-fluid">
+<?php $this->widget('bootstrap.widgets.TbListView',array(
+ 'dataProvider'=>UserWeightGoal::model()->search(array('user_id'=>$profile_id)),
+ //'dataProvider'=>UserWeightReading::model()->search(3),
+ 'itemView'=>'_view',
+)); ?>
+
+</div>

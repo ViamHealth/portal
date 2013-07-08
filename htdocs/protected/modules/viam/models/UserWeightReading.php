@@ -86,7 +86,7 @@ class UserWeightReading extends CActiveRecord
 	 * Retrieves a list of models based on the current search/filter conditions.
 	 * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
 	 */
-	public function search()
+	public function search($id)
 	{
 		// Warning: Please modify the following code to remove attributes that
 		// should not be searched.
@@ -94,7 +94,8 @@ class UserWeightReading extends CActiveRecord
 		$criteria=new CDbCriteria;
 
 		$criteria->compare('id',$this->id);
-		$criteria->compare('user_weight_goal_id',$this->user_weight_goal_id);
+		//$criteria->compare('user_weight_goal_id',$this->user_weight_goal_id);
+		$criteria->compare('user_weight_goal_id',$id);
 		$criteria->compare('weight',$this->weight);
 		$criteria->compare('weight_measure',$this->weight_measure,true);
 		$criteria->compare('reading_date',$this->reading_date,true);

@@ -31,9 +31,10 @@ class HealthmonitorController extends Controller
       );
     //Make ENUM for goal type. Consider abstracting the common goal properties
     if($weightGoalId != null )$goalsIdArr['weight'] = $weightGoalId->id;
-		$this->render('index',array( 'profile_id'=>Yii::app()->user->id));
+		$this->render('index',array('profile_id'=>Yii::app()->user->id));
 	}
 
+/*
   public function actionLoadChildByAjax($index)
   {
       $model = new HealthfileTag;
@@ -42,5 +43,6 @@ class HealthmonitorController extends Controller
           'index' => $index,
       ));
   }
-
+*/
+  
 }
