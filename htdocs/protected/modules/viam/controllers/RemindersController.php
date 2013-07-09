@@ -61,15 +61,4 @@ class RemindersController extends Controller
           $this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('admin'));
   }
 
-/*
-  public function actionLoadChildByAjax($index)
-  {
-      $model = new Remindertag;
-      $this->renderPartial('_form_Remindertag', array(
-          'model' => $model,
-          'index' => $index,
-      ));
-  }
-*/
-
 }

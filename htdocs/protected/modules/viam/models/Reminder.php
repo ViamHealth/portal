@@ -15,7 +15,8 @@
  * @property string $repeat_weekday
  * @property string $repeat_day_interval
  * @property string $status
- * @property string $created_at * @property string $updated_at
+ * @property string $created_at 
+ * @property string $updated_at
  * @property integer $updated_by
  *
  * The followings are the available model relations:
