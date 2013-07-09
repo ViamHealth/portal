@@ -14,7 +14,7 @@ class VERestController extends ERestController
 
 	//Supporting HAS_MANY sub resources
 	//TODO: support plural and case insensitive
-	/*public function validateSubResource($subResourceName, $subResourceID=null)
+	public function validateSubResource($subResourceName, $subResourceID=null)
 	{
 		if(is_null($relations = $this->getModel()->relations()))
 			return false;
@@ -26,5 +26,5 @@ class VERestController extends ERestController
 			return filter_var($subResourceID, FILTER_VALIDATE_INT) !== false;
 
 		return true;
-	}*/
+	}
 }

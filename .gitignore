@@ -8,5 +8,3 @@ softwares/yii-user-management
 softwares/yiiplayground
 htdocs/protected/runtime
 htdocs/assets
-*.pyc
-htdocs/protected/runtime/application.log
