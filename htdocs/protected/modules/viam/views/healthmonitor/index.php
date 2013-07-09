@@ -62,7 +62,7 @@ var myChart = new xChart('bar', data_gr, '#myChart');
 
 <div class="row-fluid">
 <?php $this->widget('bootstrap.widgets.TbListView',array(
- 'dataProvider'=>UserWeightGoal::model()->search(array('user_id'=>$profile_id)),
+ 'dataProvider'=>UserWeightGoal::model()->search(array('user_id'=>2)),
  //'dataProvider'=>UserWeightReading::model()->search(3),
  'itemView'=>'_view',
 )); ?>

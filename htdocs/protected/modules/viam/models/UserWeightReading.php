@@ -86,23 +86,32 @@ class UserWeightReading extends CActiveRecord
 	 * Retrieves a list of models based on the current search/filter conditions.
 	 * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
 	 */
-	public function search($id)
+	public function search($filters=array())
 	{
 		// Warning: Please modify the following code to remove attributes that
 		// should not be searched.
 
 		$criteria=new CDbCriteria;
 
+		if(is_array($filters) && count($filters)){
+			if(isset($filters['user_weight_goal_id'])){
+				$criteria->compare('user_weight_goal_id',$filters['user_weight_goal_id']);
+		//$criteria->compare('status','ACTIVE');
+			//hardcoding order for now
+				$criteria->order = 'reading_date DESC';
+		}}
+		else
+		{
 		$criteria->compare('id',$this->id);
-		//$criteria->compare('user_weight_goal_id',$this->user_weight_goal_id);
-		$criteria->compare('user_weight_goal_id',$id);
+		$criteria->compare('user_weight_goal_id',$this->user_weight_goal_id);
+		//$criteria->compare('user_weight_goal_id',$id);
 		$criteria->compare('weight',$this->weight);
 		$criteria->compare('weight_measure',$this->weight_measure,true);
 		$criteria->compare('reading_date',$this->reading_date,true);
 		$criteria->compare('created_at',$this->created_at,true);
 		$criteria->compare('updated_at',$this->updated_at,true);
 		$criteria->compare('updated_by',$this->updated_by);
-
+	 	}
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
 		));
