@@ -7,9 +7,28 @@ $cs->registerCssFile($assetUrl.'/css/xcharts.css');
 ?>
 
 <div class="view">
-  <div class="span5" style="border-style: solid; padding: 20px; postion: relative; margin-left: 20px">
+  <div class="span5" style="border-radius: 5px; border: 1px solid #ccc; postion: relative; margin-left: 20px; background: #ffffff">
 
       <div>
+
+<div class="top" style="border-bottom: 1px solid #ccc; padding: 10px">
+
+<i class="icon-move"></i>
+<b style="font-size: 16px;"> Weight </b> <span style="font-size: 12px;margin-left: 5px"> Avg. Weight </span> 
+
+<div class="dropdown pull-right">
+  <a class="dropdown-toggle" id="dLabel" role="button" data-toggle="dropdown" data-target="#" href="/page.html">
+    <i class="icon-large icon-cog"></i>
+    <b class="caret"></b>
+  </a>
+  <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel" style="padding: 5px">
+    <li>Add New Value</li>
+    <li>Edit</li>
+    <li>Manage Goals</li>
+  </ul>
+</div>
+
+</div>
 
 <?php 
 $variable=Yii::app()->db->createCommand("SELECT id,reading_date,weight,weight_measure FROM tbl_user_weight_readings WHERE user_weight_goal_id=$data->id")->queryall();
