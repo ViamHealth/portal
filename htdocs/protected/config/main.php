@@ -99,7 +99,7 @@ return array(
 			'connectionString' => 'mysql:host=localhost;dbname=viam',
 			'emulatePrepare' => true,
 			'username' => 'root',
-			'password' => 'kunal',
+			'password' => '',
 			'charset' => 'utf8',
 			'tablePrefix' => 'tbl_',
 		),

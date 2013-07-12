@@ -4,7 +4,6 @@ class HealthmonitorController extends Controller
 {
 	//TODO: Current Profile being watched. points to logged in user for now
 
-
 	public function filters()
   {
       return array( 'accessControl' ); // perform access control for CRUD operations
@@ -20,6 +19,18 @@ class HealthmonitorController extends Controller
       );
   }
 
+  public function loadActiveGoal()
+  {
+      $model = UserWeightGoal::model()->find(array(
+        'condition'=>'status=:active AND user_id=:profile_id',
+        'params'=>array(':active'=>'ACTIVE',':profile_id'=>Yii::app()->user->id)
+        )
+      );
+      if ($model === null)
+          throw new CHttpException(404, 'The requested page does not exist.');
+      return $model;
+  }
+
 	public function actionIndex()
 	{
     //Load User goal ids with type
@@ -30,7 +41,8 @@ class HealthmonitorController extends Controller
         )
       );
     //Make ENUM for goal type. Consider abstracting the common goal properties
-    if($weightGoalId != null )$goalsIdArr['weight'] = $weightGoalId->id;
+    if($weightGoalId != null )$goalsIdArr['weight'] = $weightGoalId->id; 
+    //$UserWeightGoalModel = $this->loadActiveGoal();
 		$this->render('index',array('profile_id'=>Yii::app()->user->id));
 	}
 
