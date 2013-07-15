@@ -19,10 +19,10 @@
 		       array('label'=>'Profile Details', 'url'=>'#'),
 		       array('label'=>'Account Settings', 'url'=>'#'),
 		       array('label'=>'Privacy Settings', 'url'=>'#'),
-		       array('label'=>'Logout', 'url'=>array("/user/logout")),
+		       array('label'=>'Logout', 'url'=>array("/site/logout")),
 		      ));
 		} else {
-			$user_settings_widget_items = array('label'=>'Login', 'url'=>array('/user/login'), 'visible'=>Yii::app()->user->isGuest);
+			$user_settings_widget_items = array('label'=>'Login', 'url'=>array('/site/login'), 'visible'=>Yii::app()->user->isGuest);
 		}
 		
 

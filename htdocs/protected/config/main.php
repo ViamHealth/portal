@@ -19,8 +19,8 @@ return array(
 	'import'=>array(
 		'application.models.*',
     'application.components.*',
-    'application.modules.user.models.*',
-    'application.modules.user.components.*',
+    //'application.modules.user.models.*',
+    //'application.modules.user.components.*',
     'application.modules.viam.components.*',
     'application.modules.viam.models.*',
     'ext.restfullyii.components.*' ,
@@ -28,7 +28,7 @@ return array(
 
 	'modules'=>array(
 				'viam'=>array(),
-        'user'=>array(
+        /*'user'=>array(
             # encrypting method (php hash function)
             'hash' => 'md5',
             # send activation email
@@ -49,7 +49,7 @@ return array(
             'returnUrl' => array('/user/profile'),
             # page after logout
             'returnLogoutUrl' => array('/user/login'),
-        ),		
+        ),*/	
 		// uncomment the following to enable the Gii tool
     'gii'=>array(
 			'class'=>'system.gii.GiiModule',
@@ -133,5 +133,8 @@ return array(
 	'params'=>array(
 		// this is used in contact page
 		'adminEmail'=>'webmaster@example.com',
+		'apiServer' => 'http://127.0.0.1:8080/',
+		//TODO:make auth class
+		'token'=>'',
 	),
 );
