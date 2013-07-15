@@ -1,7 +1,7 @@
 # Create your views here.
 from django.contrib.auth.models import User, Group
 from rest_framework import viewsets
-from api.models import Healthfiles, HealthfileTags
+from api.models import Healthfile, HealthfileTag
 from api.serializers import UserSerializer, GroupSerializer, HealthfileSerializer, HealthfileTagSerializer
 from rest_framework.authtoken.models import Token
 from django.core.signals import request_started
@@ -29,12 +29,12 @@ class HealthfileViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows groups to be viewed or edited.
     """
-    queryset = Healthfiles.objects.all()
+    queryset = Healthfile.objects.all()
     serializer_class = HealthfileSerializer
 
 class HealthfileTagViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows groups to be viewed or edited.
     """
-    queryset = HealthfileTags.objects.all()
+    queryset = HealthfileTag.objects.all()
     serializer_class = HealthfileTagSerializer

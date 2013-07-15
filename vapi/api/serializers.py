@@ -14,10 +14,10 @@ class GroupSerializer(serializers.HyperlinkedModelSerializer):
 
 class HealthfileSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
-        model = Healthfiles
+        model = Healthfile
         fields = ('id', 'user','tags','name' ,'description','mime_type','stored_url','created_at','updated_at','updated_by')
 
 class HealthfileTagSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
-        model = HealthfileTags
+        model = HealthfileTag
         fields = ('id','tag' ,'healthfile')	

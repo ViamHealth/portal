@@ -15,15 +15,15 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 
 
-class HealthfileTags(models.Model):
+class HealthfileTag(models.Model):
     id = models.AutoField(primary_key=True)
-    healthfile = models.ForeignKey('Healthfiles', related_name="tags")
+    healthfile = models.ForeignKey('Healthfile', related_name="tags")
     tag = models.CharField(max_length=64L)
     created_at = models.DateTimeField()
     class Meta:
         db_table = 'tbl_healthfile_tags'
 
-class Healthfiles(models.Model):
+class Healthfile(models.Model):
     id = models.AutoField(primary_key=True)
     user = models.ForeignKey('auth.User', related_name="+")
     name = models.CharField(max_length=256L)
@@ -36,7 +36,7 @@ class Healthfiles(models.Model):
     class Meta:
         db_table = 'tbl_healthfiles'
 
-class Reminders(models.Model):
+class Reminder(models.Model):
     id = models.AutoField(primary_key=True)
     user = models.ForeignKey('auth.User', related_name="+")
     details = models.TextField()
@@ -54,7 +54,7 @@ class Reminders(models.Model):
     class Meta:
         db_table = 'tbl_reminders'
 
-class UserWeightGoals(models.Model):
+class UserWeightGoal(models.Model):
     id = models.AutoField(primary_key=True)
     user = models.ForeignKey('auth.User', related_name="+")
     weight = models.IntegerField()
@@ -69,9 +69,9 @@ class UserWeightGoals(models.Model):
     class Meta:
         db_table = 'tbl_user_weight_goals'
 
-class UserWeightReadings(models.Model):
+class UserWeightReading(models.Model):
     id = models.AutoField(primary_key=True)
-    user_weight_goal = models.ForeignKey(UserWeightGoals, related_name="readings")
+    user_weight_goal = models.ForeignKey('UserWeightGoal', related_name="readings")
     weight = models.IntegerField()
     weight_measure = models.CharField(max_length=12L)
     reading_date = models.DateField()
