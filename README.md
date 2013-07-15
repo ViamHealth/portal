@@ -13,6 +13,7 @@ cd GIT.ROOT/softwares/virtualenv-1.9/
 sudo python setup.py install
 
 cd ~ 
+
 python virtualenv.py VIRTUALENV.NAME
 
 source ~/VIRTUALENV.NAME/bin/activate
@@ -28,6 +29,7 @@ pip install djangorestframework
 pip install django-filter
 
 If MySQL-python installation fails , you will need mysql dev and mysql-python packages (installed via apt/yum etc )
+
 eg. on ubuntu , packages libmysqlclient-dev and python-mysqldb are required. Find appropiate packages for your distro.
 
 cd GIT.ROOT/vapi
