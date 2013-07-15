@@ -12,6 +12,7 @@ router.register(r'healthfiletags', views.HealthfileTagViewSet)
 from django.contrib import admin
 admin.autodiscover()
 
+obtain_auth_token = views.ObtainAuthToken.as_view()
 urlpatterns = patterns('',
     # Examples:
     # url(r'^$', 'vapi.views.home', name='home'),
@@ -19,7 +20,7 @@ urlpatterns = patterns('',
     #url(r'^', include('api.urls')),
     url(r'^', include(router.urls)),
     #url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
-    url(r'^api-token-auth/', 'rest_framework.authtoken.views.obtain_auth_token'),
+    url(r'^api-token-auth/', obtain_auth_token),
 
     #Uncomment the admin/doc line below to enable admin documentation:
     #url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
