@@ -1,6 +1,6 @@
 window.User = Backbone.Model.extend({
 
-    urlRoot:"http://127.0.0.1:8080/users/",
+    urlRoot:_api_url+"users/",
 
     initialize:function () {
         //this.reports = new UserCollection();
@@ -13,7 +13,7 @@ window.UserCollection = Backbone.Collection.extend({
 
     model: User,
 
-    url:"http://127.0.0.1:8080/users/",
+    url:_api_url+"users/",
 
     /*findByName:function (key) {
         var url = (key == '') ? '../api/employees' : "../api/employees/search/" + key;
