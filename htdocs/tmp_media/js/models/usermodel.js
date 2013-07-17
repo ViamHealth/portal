@@ -30,3 +30,12 @@ window.UserCollection = Backbone.Collection.extend({
     }*/
 
 });
+
+window.healthFile = Backbone.Model.extend({
+    urlRoot:_api_url+"healthfiles",
+});
+
+window.healthFiles = Backbone.Collection.extend({
+    model: healthFile,
+    url:_api_url+"healthfiles",
+});

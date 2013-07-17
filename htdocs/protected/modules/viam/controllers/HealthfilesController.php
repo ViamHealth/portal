@@ -22,6 +22,13 @@ class HealthfilesController extends Controller
 
   public function loadModel($id)
   {
+    $rest = new RESTClient();
+    $rest->initialize(array('server' => 'http://127.0.0.1:8080/'));
+    $rest->set_header('Authorization','Token '.Yii::app()->params->token);
+    $res = $rest->get('healthfiles/'.$id);
+    //TOD:check for status code
+    $res = json_decode($res);
+var_dump($res);die();
       $model = Healthfile::model()->find(array(
       	'condition'=>'id=:id AND user_id=:profile_id',
       	'params'=>array(':id'=>$id,':profile_id'=>Yii::app()->user->id)
@@ -34,7 +41,17 @@ class HealthfilesController extends Controller
 
 	public function actionIndex()
 	{
+    $rest = new RESTClient();
+    $rest->initialize(array('server' => 'http://127.0.0.1:8080/'));
+    $rest->set_header('Authorization','Token '.Yii::app()->user->token);
+    $res = $rest->get('healthfiles/');
+    //TOD:check for status code
+    $res = json_decode($res);
+    foreach ($res as $key => $value) {
+      $resa[$key] = $value;
+    }
 		$HealthfileModel=Healthfile::model();
+var_dump($HealthfileModel);die();    
 		$this->render('index',array('HealthfileModel'=>$HealthfileModel, 'profile_id'=>Yii::app()->user->id));
 	}
 

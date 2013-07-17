@@ -5,7 +5,7 @@ from api import views
 router = routers.DefaultRouter(trailing_slash=False)
 router.register(r'users', views.UserViewSet)
 router.register(r'groups', views.GroupViewSet)
-router.register(r'healthfiles', views.HealthfileViewSet)
+router.register(r'healthfiles', views.HealthfilesViewSet)
 router.register(r'healthfiletags', views.HealthfileTagViewSet)
 
 # Uncomment the next two lines to enable the admin:
@@ -18,6 +18,7 @@ urlpatterns = patterns('',
     # url(r'^$', 'vapi.views.home', name='home'),
     # url(r'^vapi/', include('vapi.foo.urls')),
     #url(r'^', include('api.urls')),
+    #url(r'^healthfiles/$', views.HealthfileViewSet.as_view(), name='healthfile-view'),
     url(r'^', include(router.urls)),
     #url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     url(r'^api-token-auth/', obtain_auth_token),

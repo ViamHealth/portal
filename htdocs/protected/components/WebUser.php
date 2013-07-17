@@ -80,6 +80,7 @@ class WebUser extends CWebUser
                                                 'email'=>$user->email,
                                                 'username'=>$user->username,
                                                 'url'=>$user->url,
+                                                'token' => Yii::app()->params->token,
                                                 //'create_at'=>$user->create_at,
                                                 //'lastvisit_at'=>$user->lastvisit_at,
                                                 ), array());

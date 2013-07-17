@@ -33,7 +33,8 @@ window.Router = Backbone.Router.extend({
 
     routes: {
         "": "home",
-        "users/:id": "userDetails"
+        "users/:id": "userDetails",
+        "files": "healthFiles",
     },
 
     initialize: function () {
@@ -70,16 +71,29 @@ window.Router = Backbone.Router.extend({
             },
             error: function(model, response, options){
                 console.log('error');
-                console.log(model);
+            }
+        });
+    },
+
+    healthFiles: function () {
+        var healthfiles = new healthFiles();
+        healthfiles.fetch({
+            success: function (data, response) {
+                console.log('files fecthed');
+                console.log(data);
                 console.log(response);
-                console.log(options);
+                // instead of creating new instances
+                $('#content').html(new HealthFileView({model: data}).render().el);
+            },
+            error: function(model, response, options){
+                console.log('error');
             }
         });
     }
 
 });
 
-templateLoader.load(["HomeView",  "HeaderView", "UserView", "UserSummaryView", "UserListItemView"],
+templateLoader.load(["HomeView",  "HeaderView", "UserView", "UserSummaryView", "UserListItemView", "HealthFilesView", "HealthFileView"],
     function () {
         app = new Router();
         Backbone.history.start();

@@ -11,6 +11,11 @@ from rest_framework import parsers
 from rest_framework import renderers
 from rest_framework.response import Response
 from rest_framework.authtoken.serializers import AuthTokenSerializer
+from rest_framework import generics
+from rest_framework.decorators import api_view
+from rest_framework.mixins import DestroyModelMixin
+from rest_framework.reverse import reverse
+from rest_framework.response import Response
 
 #Temporary create code for all users once.
 #for user in User.objects.all():
@@ -31,11 +36,15 @@ class GroupViewSet(viewsets.ModelViewSet):
     queryset = Group.objects.all()
     serializer_class = GroupSerializer
 
-class HealthfileViewSet(viewsets.ModelViewSet):
+class HealthfilesViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows groups to be viewed or edited.
     """
     queryset = Healthfile.objects.all()
+    serializer_class = HealthfileSerializer
+
+class HealthfileViewSet(generics.ListCreateAPIView):
+    model = Healthfile
     serializer_class = HealthfileSerializer
 
 class HealthfileTagViewSet(viewsets.ModelViewSet):
