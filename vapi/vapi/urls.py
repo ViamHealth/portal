@@ -3,8 +3,6 @@ from rest_framework import routers
 from api import views
 
 router = routers.DefaultRouter(trailing_slash=True)
-router.register(r'users', views.UserViewsSet)
-#router.register(r'users/current', views.UserCurrentViewSet.as_view())
 router.register(r'groups', views.GroupViewSet)
 router.register(r'healthfiles', views.HealthfilesViewSet)
 router.register(r'healthfiletags', views.HealthfileTagViewSet)
@@ -17,14 +15,12 @@ admin.autodiscover()
 urlpatterns = patterns('',
     # Examples:
     # url(r'^$', 'vapi.views.home', name='home'),
-    # url(r'^vapi/', include('vapi.foo.urls')),
     #url(r'^', include('api.urls')),
-    #url(r'^healthfiles/$', views.HealthfileViewSet.as_view(), name='healthfile-view'),
     url(r'^', include(router.urls)),
-    #url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     #url(r'^api-token-auth/', obtain_auth_token),
-    url(r'^users/me', views.UserCurrentViewSet.as_view()),
-    url(r'^users/family', views.UserFamilyViewSet.as_view()),
+    url(r'^users/$', views.UserList.as_view({'get': 'list','post': 'create'}),name='user-list'),
+    url(r'^users/me/$', views.UserList.as_view({'get': 'current_user'}), name='snippet-highlight'),
+    url(r'^users/(?P<pk>[0-9]+)/$', views.UserDetail.as_view(),name='user-detail'),
 
     #Uncomment the admin/doc line below to enable admin documentation:
     #url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
