@@ -44,3 +44,4 @@ To test server hit http://127.0.0.1:8080/ or 127.0.0.1:8080/admin
 
 To get your token make a POST call to http://127.0.0.1:8080/api-token-auth/ with username and password are POST data
 
+curl -X GET http://127.0.0.1:8080/users/ -H 'Authorization: Token d444ff73068d26e420a0a873ca9804790612b757'

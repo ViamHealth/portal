@@ -15,6 +15,26 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 
 
+class UsersMap(models.Model):
+    id = models.AutoField(primary_key=True)
+    initiatior_user = models.ForeignKey('auth.User', related_name="+")
+    connected_user = models.ForeignKey('auth.User', related_name="+")
+    connection_status = models.CharField(max_length=18L)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    class Meta:
+        db_table = 'tbl_users_map'
+
+class UserGroupSet(models.Model):
+    id = models.AutoField(primary_key=True)
+    user = models.ForeignKey('auth.User', related_name="+")
+    group = models.ForeignKey('auth.User', related_name="+")
+    connection_status = models.CharField(max_length=18L)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    class Meta:
+        db_table = 'tbl_user_group_set'
+
 class HealthfileTag(models.Model):
     id = models.AutoField(primary_key=True)
     healthfile = models.ForeignKey('Healthfile', related_name="tags")
