@@ -14,6 +14,18 @@ from rest_framework.authtoken.models import Token
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
+class UserProfile(models.Model):  
+    user = models.ForeignKey('auth.User', unique=True)
+    location = models.CharField(max_length=140)  
+    gender = models.CharField(max_length=140)  
+    #profile_picture = models.ImageField(upload_to='thumbpath', blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    class Meta:
+        db_table = 'tbl_user_profiles'
+
+    def __unicode__(self):
+        return u'Profile of user: %s' % self.user.username
 
 class UsersMap(models.Model):
     id = models.AutoField(primary_key=True)
@@ -101,3 +113,4 @@ class UserWeightReading(models.Model):
     class Meta:
         db_table = 'tbl_user_weight_readings'
 
+User.profile = property(lambda u: UserProfile.objects.get_or_create(user=u)[0])

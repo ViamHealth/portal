@@ -1,8 +1,8 @@
 # Create your views here.
-from django.contrib.auth.models import User, Group, AnonymousUser
+from django.contrib.auth.models import User, AnonymousUser
 from rest_framework import viewsets
 from api.models import *
-from api.serializers import UserSerializer, GroupSerializer, HealthfileSerializer, HealthfileTagSerializer
+from api.serializers import *
 from rest_framework.authtoken.models import Token
 from django.core.signals import request_started
 from rest_framework.views import APIView
@@ -34,7 +34,33 @@ for user in User.objects.all():
 #    serializer_class = UserSerializer
 
 #TODO: Move to mixins for less  code
-class UserList(viewsets.ViewSet):
+class UserView(viewsets.ViewSet):
+    def check_permission(self, request , pk):
+        #temp for dev
+        #if(isinstance(request.user, AnonymousUser)):
+        #    return True
+
+        has_permission = False
+        pk = int(pk)
+        user_id = int(request.user.id)
+        if user_id == pk:
+            return True
+        qqueryset = UsersMap.objects.filter(
+            Q(connection_status='ACTIVE'),
+            Q(initiatior_user_id=user_id) | Q(connected_user_id=user_id)
+        )
+        users = [p.connected_user for p in qqueryset]
+        for u in users:
+            if u.id == pk:
+                has_permission = True
+        return has_permission
+
+    def get_object(self, pk):
+        try:
+            return User.objects.get(pk=pk)
+        except User.DoesNotExist:
+            return Response(status=status.HTTP_404_BAD_REQUEST)
+
     def list(self, request, format=None):
         qqueryset = UsersMap.objects.filter(
             Q(connection_status='ACTIVE'),
@@ -56,8 +82,47 @@ class UserList(viewsets.ViewSet):
         serializer = UserSerializer(request.user)
         return Response(serializer.data)
 
+    def retrieve(self, request, pk=None):
+        if self.check_permission(request, pk) == False:
+            return Response(status=status.HTTP_404_BAD_REQUEST)
+        user = self.get_object(pk)
+        serializer = UserSerializer(user)
+        return Response(serializer.data)
+
+    def update(self, request, pk=None):
+        if self.check_permission(request, pk) == False:
+            return Response(status=status.HTTP_404_BAD_REQUEST)
+        user = self.get_object(pk)
+        serializer = UserSerializer(user, data=request.DATA)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def partial_update(self, request, pk=None):
+        pass
+
+    """
+    def destroy(self, request, pk=None):
+        snippet = self.get_object(pk)
+        snippet.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+    """
+
+    @link()
+    def profile(self, request, pk=None):
+        if self.check_permission(request, pk) == False:
+            return Response(status=status.HTTP_404_BAD_REQUEST)
+        profile = self.get_object(pk).get_profile()
+        serializer = UserProfileSerializer(profile)
+        return Response(serializer.data)
+"""
 class UserDetail(APIView):
     def check_permission(self, request , pk):
+        #temp
+        if(isinstance(request.user, AnonymousUser)):
+            return True
+
         has_permission = False
         pk = int(pk)
         user_id = int(request.user.id)
@@ -101,12 +166,14 @@ class UserDetail(APIView):
         snippet.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-class GroupViewSet(viewsets.ModelViewSet):
-    """
-    API endpoint that allows groups to be viewed or edited.
-    """
-    queryset = Group.objects.all()
-    serializer_class = GroupSerializer
+    @link()
+    def profile(self, request):
+        if self.check_permission(request, pk) == False:
+            return Response(status=status.HTTP_404_BAD_REQUEST)
+        profile = self.get_object(pk).get_profile()
+        serializer = UserProfileSerializer(profile)
+        return Response(serializer.data)
+"""
 
 class HealthfilesViewSet(viewsets.ModelViewSet):
     """
