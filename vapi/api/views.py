@@ -74,6 +74,9 @@ class UserView(viewsets.ViewSet):
         serializer = UserSerializer(data=request.DATA)
         if serializer.is_valid():
             serializer.save()
+            if not isinstance(request.user, AnonymousUser):
+                umap = UsersMap(initiatior_user_id=request.user.id, connected_user_id=serializer.data.get('id'),connection_status='ACTIVE');
+                umap.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 

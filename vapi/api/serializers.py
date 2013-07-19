@@ -13,7 +13,7 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
     profile = UserProfileSerializer(required=False)
     class Meta:
         model = User
-        fields = ('url', 'username', 'email', 'first_name', 'last_name', 'profile')
+        fields = ('id', 'url', 'username', 'email', 'first_name', 'last_name', 'profile')
 
 class HealthfileSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
