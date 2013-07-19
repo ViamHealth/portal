@@ -68,7 +68,7 @@ class UserView(viewsets.ViewSet):
         )
         users = [p.initiatior_user for p in qqueryset]
         for p in qqueryset:
-            users.append((p.connected_user))
+            users.append(p.connected_user)
         serializer = UserSerializer(users, many=True)
         return Response(serializer.data)
 
@@ -126,6 +126,18 @@ class UserView(viewsets.ViewSet):
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+class ReminderView(viewsets.ViewSet):
+    def list(self, request, format=None):
+        qqueryset = UsersMap.objects.filter(
+            Q(connection_status='ACTIVE'),
+            Q(initiatior_user_id=request.user.id) | Q(connected_user_id=request.user.id)
+        )
+        users = [p.initiatior_user for p in qqueryset]
+        for p in qqueryset:
+            users.append(p.connected_user)
+        queryset = Reminder.objects.filter(user__in=users)
+        serializer = ReminderSerializer(queryset, many=True)
+        return Response(serializer.data)
 """
 class UserDetail(APIView):
     def check_permission(self, request , pk):
