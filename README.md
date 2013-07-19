@@ -50,4 +50,6 @@ curl -X GET http://127.0.0.1:8080/users/1/ -H 'Authorization: Token d444ff73068d
 
 curl -X GET http://127.0.0.1:8080/users/ -H 'Authorization: Token d444ff73068d26e420a0a873ca9804790612b757';
 
-curl -X GET http://127.0.0.1:8080/users/me/ -H 'Authorization: Token d444ff73068d26e420a0a873ca9804790612b757';
+curl -X GET http://127.0.0.1:8080/users/me/ -H 'Authorization: Token d444ff73068d26e420a0a873ca9804790612b757'
+
+curl -H 'Authorization: Token d444ff73068d26e420a0a873ca9804790612b757' -X PUT http://127.0.0.1:8080/users/1/profile/ -d "location=delhi&gender=m"

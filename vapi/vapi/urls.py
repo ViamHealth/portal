@@ -20,7 +20,7 @@ urlpatterns = patterns('',
     url(r'^users/$', views.UserView.as_view({'get': 'list','post': 'create'}),name='user-list'),
     url(r'^users/me/$', views.UserView.as_view({'get': 'current_user'}), name='snippet-highlight'),
     url(r'^users/(?P<pk>[0-9]+)/$', views.UserView.as_view({'get': 'retrieve', 'put': 'update'}),name='user-detail'),
-    url(r'^users/(?P<pk>[0-9]+)/profile/$', views.UserView.as_view({'get':'profile'}),name='profile-detail'),
+    url(r'^users/(?P<pk>[0-9]+)/profile/$', views.UserView.as_view({'put':'update_profile'}),name='profile-detail'),
 
     #Uncomment the admin/doc line below to enable admin documentation:
     #url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
