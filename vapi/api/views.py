@@ -1,4 +1,9 @@
 # Create your views here.
+#TODOs
+#Optimize has_permission
+#Change the table for usermap
+#implement delete for user - break connection
+#implement delete for others - status inactive
 from django.contrib.auth.models import User, AnonymousUser
 from rest_framework import viewsets
 from api.models import *
@@ -6,12 +11,8 @@ from api.serializers import *
 from rest_framework.authtoken.models import Token
 from django.core.signals import request_started
 from rest_framework.views import APIView
-from rest_framework import status
-from rest_framework import parsers
-from rest_framework import renderers
-from rest_framework.response import Response
 #from rest_framework.authtoken.serializers import AuthTokenSerializer
-from rest_framework import generics
+from rest_framework import generics, permissions, renderers, parsers, status
 from rest_framework.decorators import api_view, link, action
 from rest_framework.mixins import DestroyModelMixin
 from rest_framework.reverse import reverse
@@ -24,14 +25,66 @@ from django.http import Http404
 #Temporary create code for all users once.
 for user in User.objects.all():
     Token.objects.get_or_create(user=user)
-    
 
-#class UserViewSet(viewsets.ModelViewSet):
-#    """
-#    API endpoint that allows users to be viewed or edited.
-#    """
-#    queryset = User.objects.all()
-#    serializer_class = UserSerializer
+class FamilyPermission(permissions.BasePermission):
+    #TODO:optimize function
+    def has_permission(self, request, view):
+        pprint.pprint('kunal')
+        has_permission = False
+        family_user_id = request.QUERY_PARAMS.get('user_id', None)
+        if family_user_id is None:
+            #List page and
+            #Current user is the family user
+            return True
+        
+        family_user_id = int(family_user_id)
+        user_id = int(request.user.id)
+        if user_id == family_user_id:
+            #Current user is the family user
+            return True
+            #Q(connection_status='ACTIVE'),
+        qqueryset = UsersMap.objects.filter(
+             Q(initiatior_user_id=user_id) , Q(connected_user_id=family_user_id) | 
+             Q(connected_user_id=family_user_id) , Q(initiatior_user= user_id)
+        )
+        users = [p.initiatior_user for p in qqueryset]
+        for p in qqueryset:
+            users.append(p.connected_user)
+        for u in users:
+            if u.id == family_user_id:
+                has_permission = True
+        return has_permission
+
+    def has_object_permission(self, request, view, obj=None):
+        if request is None:
+            request = self.request
+        #Is there no clean way to get request var !!
+        pprint.pprint('kunal222')
+
+        has_permission = False
+        if obj is not None:
+           #Object level authentication. check if current object's user is mapped with current login user
+           family_user_id =  obj.user.id
+        
+        family_user_id = int(family_user_id)
+        user_id = int(request.user.id)
+        if user_id == family_user_id:
+            #Current user is the family user
+            return True
+            #Q(connection_status='ACTIVE'),
+        qqueryset = UsersMap.objects.filter(
+             Q(initiatior_user_id=user_id) , Q(connected_user_id=family_user_id) | 
+             Q(connected_user_id=family_user_id) , Q(initiatior_user= user_id)
+        )
+        users = [p.initiatior_user for p in qqueryset]
+        for p in qqueryset:
+            users.append(p.connected_user)
+        for u in users:
+            if u.id == family_user_id:
+                has_permission = True
+        return has_permission
+
+    
 
 #TODO: Move to mixins for less  code
 class UserView(viewsets.ViewSet):
@@ -126,67 +179,67 @@ class UserView(viewsets.ViewSet):
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-class ReminderView(generics.ListCreateAPIView):
+class ReminderView(viewsets.ModelViewSet):
     serializer_class = ReminderSerializer
     filter_fields = ('user')
+    model = Reminder
+    permission_classes = (permissions.IsAuthenticated,FamilyPermission,)
 
-    def check_permission(self):
-        has_permission = False
-        pk = self.request.QUERY_PARAMS.get('user_id', None)
-        user_id = int(self.request.user.id)
-        if user_id == pk:
-            return True
-        qqueryset = UsersMap.objects.filter(
-            Q(connection_status='ACTIVE'),
-            Q(initiatior_user_id=user_id) | Q(connected_user_id=user_id)
-        )
-        users = [p.initiatior_user for p in qqueryset]
-        for p in qqueryset:
-            users.append(p.connected_user)
-        for u in users:
-            if u.id == pk:
-                has_permission = True
-        return has_permission
+    def get_object(self):
+        pk = self.kwargs.get('pk')
+        pprint.pprint(pk)
+        if pk is not None:
+            try:
+                reminder = Reminder.objects.get(pk=pk)
+                self.check_object_permissions(self.request, reminder)
+                return reminder
+                #FamilyPermission.has_object_permission(FamilyPermission,obj=reminder)
+            except Reminder.DoesNotExist:
+                raise Http404
 
     def get_queryset(self):
         queryset = Reminder.objects.all()
+        if self.request.method not in permissions.SAFE_METHODS:
+            return queryset
+        pprint.pprint('view')
         user = self.request.QUERY_PARAMS.get('user_id', None)
-        self.check_permission()
         if user is not None:
             queryset = queryset.filter(user=user)
         else:
             queryset = queryset.filter(user=self.request.user)
         return queryset
-    """
-    def get_queryset(self):
-        qqueryset = UsersMap.objects.filter(
-            Q(connection_status='ACTIVE'),
-            Q(initiatior_user_id=self.request.user.id) | Q(connected_user_id=self.request.user.id)
-        )
-        users = [p.initiatior_user for p in qqueryset]
-        for p in qqueryset:
-            users.append(p.connected_user)
-        return Reminder.objects.filter(user__in=users)
-    """
 
 
-class HealthfilesViewSet(viewsets.ModelViewSet):
-    """
-    API endpoint that allows groups to be viewed or edited.
-    """
-    queryset = Healthfile.objects.all()
+class HealthfileViewSet(viewsets.ModelViewSet):
     serializer_class = HealthfileSerializer
-
-class HealthfileViewSet(generics.ListCreateAPIView):
+    filter_fields = ('user')
     model = Healthfile
-    serializer_class = HealthfileSerializer
+    permission_classes = (permissions.IsAuthenticated,FamilyPermission,)
+
+    def get_queryset(self):
+        queryset = Healthfile.objects.all()
+        user = self.request.QUERY_PARAMS.get('user_id', None)
+        if user is not None:
+            queryset = queryset.filter(user=user)
+        else:
+            queryset = queryset.filter(user=self.request.user)
+        return queryset
+
 
 class HealthfileTagViewSet(viewsets.ModelViewSet):
-    """
-    API endpoint that allows groups to be viewed or edited.
-    """
-    queryset = HealthfileTag.objects.all()
     serializer_class = HealthfileTagSerializer
+    filter_fields = ('user')
+    model = HealthfileTag
+    permission_classes = (permissions.IsAuthenticated,FamilyPermission,)
+
+    def get_queryset(self):
+        queryset = HealthfileTag.objects.all()
+        user = self.request.QUERY_PARAMS.get('user_id', None)
+        if user is not None:
+            queryset = queryset.filter(user=user)
+        else:
+            queryset = queryset.filter(user=self.request.user)
+        return queryset
 
 #class ObtainAuthToken(APIView):
 #    throttle_classes = ()
@@ -204,26 +257,6 @@ class HealthfileTagViewSet(viewsets.ModelViewSet):
 
 """
 class RemindersView(viewsets.ViewSet):
-
-    def check_permission(self, request , pk):
-        #temp for dev
-        #if(isinstance(request.user, AnonymousUser)):
-        #    return True
-
-        has_permission = False
-        pk = int(pk)
-        user_id = int(request.user.id)
-        if user_id == pk:
-            return True
-        qqueryset = UsersMap.objects.filter(
-            Q(connection_status='ACTIVE'),
-            Q(initiatior_user_id=user_id) | Q(connected_user_id=user_id)
-        )
-        users = [p.connected_user for p in qqueryset]
-        for u in users:
-            if u.id == pk:
-                has_permission = True
-        return has_permission
 
     def get_object(self, pk):
         try:
@@ -260,25 +293,6 @@ class RemindersView(viewsets.ViewSet):
 
 """
 class UserDetail(APIView):
-    def check_permission(self, request , pk):
-        #temp
-        if(isinstance(request.user, AnonymousUser)):
-            return True
-
-        has_permission = False
-        pk = int(pk)
-        user_id = int(request.user.id)
-        if user_id == pk:
-            return True
-        qqueryset = UsersMap.objects.filter(
-            Q(connection_status='ACTIVE'),
-            Q(initiatior_user_id=user_id) | Q(connected_user_id=user_id)
-        )
-        users = [p.connected_user for p in qqueryset]
-        for u in users:
-            if u.id == pk:
-                has_permission = True
-        return has_permission
 
     def get_object(self, pk):
         try:
