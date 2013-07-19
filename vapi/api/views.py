@@ -126,7 +126,111 @@ class UserView(viewsets.ViewSet):
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-class ReminderView(viewsets.ViewSet):
+class ReminderView(generics.ListCreateAPIView):
+    serializer_class = ReminderSerializer
+    filter_fields = ('user')
+
+    def check_permission(self):
+        has_permission = False
+        pk = self.request.QUERY_PARAMS.get('user_id', None)
+        user_id = int(self.request.user.id)
+        if user_id == pk:
+            return True
+        qqueryset = UsersMap.objects.filter(
+            Q(connection_status='ACTIVE'),
+            Q(initiatior_user_id=user_id) | Q(connected_user_id=user_id)
+        )
+        users = [p.initiatior_user for p in qqueryset]
+        for p in qqueryset:
+            users.append(p.connected_user)
+        for u in users:
+            if u.id == pk:
+                has_permission = True
+        return has_permission
+
+    def get_queryset(self):
+        queryset = Reminder.objects.all()
+        user = self.request.QUERY_PARAMS.get('user_id', None)
+        self.check_permission()
+        if user is not None:
+            queryset = queryset.filter(user=user)
+        else:
+            queryset = queryset.filter(user=self.request.user)
+        return queryset
+    """
+    def get_queryset(self):
+        qqueryset = UsersMap.objects.filter(
+            Q(connection_status='ACTIVE'),
+            Q(initiatior_user_id=self.request.user.id) | Q(connected_user_id=self.request.user.id)
+        )
+        users = [p.initiatior_user for p in qqueryset]
+        for p in qqueryset:
+            users.append(p.connected_user)
+        return Reminder.objects.filter(user__in=users)
+    """
+
+
+class HealthfilesViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows groups to be viewed or edited.
+    """
+    queryset = Healthfile.objects.all()
+    serializer_class = HealthfileSerializer
+
+class HealthfileViewSet(generics.ListCreateAPIView):
+    model = Healthfile
+    serializer_class = HealthfileSerializer
+
+class HealthfileTagViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows groups to be viewed or edited.
+    """
+    queryset = HealthfileTag.objects.all()
+    serializer_class = HealthfileTagSerializer
+
+#class ObtainAuthToken(APIView):
+#    throttle_classes = ()
+#    permission_classes = ()
+#    parser_classes = (parsers.FormParser, parsers.MultiPartParser, parsers.JSONParser,)
+#    renderer_classes = (renderers.JSONRenderer,) 
+#    model = Token
+
+#    def post(self, request):
+#        serializer = AuthTokenSerializer(data=request.DATA)
+#        if serializer.is_valid():
+#            token, created = Token.objects.get_or_create(user=serializer.object['user'])
+#            return Response({'token': token.key, 'user_id': serializer.object['user'].id})
+#        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+"""
+class RemindersView(viewsets.ViewSet):
+
+    def check_permission(self, request , pk):
+        #temp for dev
+        #if(isinstance(request.user, AnonymousUser)):
+        #    return True
+
+        has_permission = False
+        pk = int(pk)
+        user_id = int(request.user.id)
+        if user_id == pk:
+            return True
+        qqueryset = UsersMap.objects.filter(
+            Q(connection_status='ACTIVE'),
+            Q(initiatior_user_id=user_id) | Q(connected_user_id=user_id)
+        )
+        users = [p.connected_user for p in qqueryset]
+        for u in users:
+            if u.id == pk:
+                has_permission = True
+        return has_permission
+
+    def get_object(self, pk):
+        try:
+            return Reminder.objects.get(pk=pk)
+        except Reminder.DoesNotExist:
+            return Response(status=status.HTTP_404_BAD_REQUEST)
+
     def list(self, request, format=None):
         qqueryset = UsersMap.objects.filter(
             Q(connection_status='ACTIVE'),
@@ -138,6 +242,22 @@ class ReminderView(viewsets.ViewSet):
         queryset = Reminder.objects.filter(user__in=users)
         serializer = ReminderSerializer(queryset, many=True)
         return Response(serializer.data)
+
+    def create(self, request, format=None):
+        reminder = request.DATA
+        if not isinstance(request.user, AnonymousUser):
+            reminder.updated_by = request.user
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        pp = pprint.PrettyPrinter(indent=4)
+        pp.pprint(reminder)
+        serializer = ReminderSerializer(data=reminder)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+"""
+
 """
 class UserDetail(APIView):
     def check_permission(self, request , pk):
@@ -196,39 +316,3 @@ class UserDetail(APIView):
         serializer = UserProfileSerializer(profile)
         return Response(serializer.data)
 """
-
-class ReminderViewSet(viewsets.ModelViewSet):
-    model = Reminder
-    serializer_class = ReminderSerializer
-
-class HealthfilesViewSet(viewsets.ModelViewSet):
-    """
-    API endpoint that allows groups to be viewed or edited.
-    """
-    queryset = Healthfile.objects.all()
-    serializer_class = HealthfileSerializer
-
-class HealthfileViewSet(generics.ListCreateAPIView):
-    model = Healthfile
-    serializer_class = HealthfileSerializer
-
-class HealthfileTagViewSet(viewsets.ModelViewSet):
-    """
-    API endpoint that allows groups to be viewed or edited.
-    """
-    queryset = HealthfileTag.objects.all()
-    serializer_class = HealthfileTagSerializer
-
-#class ObtainAuthToken(APIView):
-#    throttle_classes = ()
-#    permission_classes = ()
-#    parser_classes = (parsers.FormParser, parsers.MultiPartParser, parsers.JSONParser,)
-#    renderer_classes = (renderers.JSONRenderer,) 
-#    model = Token
-
-#    def post(self, request):
-#        serializer = AuthTokenSerializer(data=request.DATA)
-#        if serializer.is_valid():
-#            token, created = Token.objects.get_or_create(user=serializer.object['user'])
-#            return Response({'token': token.key, 'user_id': serializer.object['user'].id})
-#        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
