@@ -15,10 +15,15 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
         model = User
         fields = ('id', 'url', 'username', 'email', 'first_name', 'last_name', 'profile')
 
+class ReminderSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = Reminder
+        fields = ('id', 'user','details','start_datetime' ,'repeat_mode','repeat_day','repeat_hour','repeat_min','repeat_weekday','repeat_day_interval','status','created_at','updated_at')
+
 class HealthfileSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Healthfile
-        fields = ('id', 'user','tags','name' ,'description','mime_type','stored_url','created_at','updated_at','updated_by')
+        fields = ('id', 'user','tags','name' ,'description','mime_type','stored_url','created_at','updated_at')
 
 class HealthfileTagSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:

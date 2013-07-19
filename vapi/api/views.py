@@ -66,7 +66,9 @@ class UserView(viewsets.ViewSet):
             Q(connection_status='ACTIVE'),
             Q(initiatior_user_id=request.user.id) | Q(connected_user_id=request.user.id)
         )
-        users = [p.connected_user for p in qqueryset]
+        users = [p.initiatior_user for p in qqueryset]
+        for p in qqueryset:
+            users.append((p.connected_user))
         serializer = UserSerializer(users, many=True)
         return Response(serializer.data)
 
@@ -182,6 +184,10 @@ class UserDetail(APIView):
         serializer = UserProfileSerializer(profile)
         return Response(serializer.data)
 """
+
+class ReminderViewSet(viewsets.ModelViewSet):
+    model = Reminder
+    serializer_class = ReminderSerializer
 
 class HealthfilesViewSet(viewsets.ModelViewSet):
     """

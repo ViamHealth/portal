@@ -4,6 +4,7 @@ from api import views
 
 router = routers.DefaultRouter(trailing_slash=True)
 router.register(r'healthfiles', views.HealthfilesViewSet)
+router.register(r'reminders', views.ReminderViewSet)
 router.register(r'healthfiletags', views.HealthfileTagViewSet)
 
 # Uncomment the next two lines to enable the admin:

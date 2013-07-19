@@ -69,7 +69,6 @@ class Healthfile(models.Model):
         db_table = 'tbl_healthfiles'
 
 class Reminder(models.Model):
-    id = models.AutoField(primary_key=True)
     user = models.ForeignKey('auth.User', related_name="+")
     details = models.TextField()
     start_datetime = models.DateTimeField()
