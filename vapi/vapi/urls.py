@@ -3,9 +3,9 @@ from rest_framework import routers
 from api import views
 
 router = routers.DefaultRouter(trailing_slash=True)
-router.register(r'healthfiles', views.HealthfileViewSet)
-router.register(r'reminders', views.ReminderViewSet)
-router.register(r'healthfiletags', views.HealthfileTagViewSet)
+router.register(r'users/healthfiles', views.HealthfileViewSet)
+router.register(r'users/reminders', views.ReminderViewSet)
+router.register(r'users/healthfiletags', views.HealthfileTagViewSet)
 
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
