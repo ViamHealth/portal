@@ -81,7 +81,27 @@ class FamilyPermission(permissions.BasePermission):
                 has_permission = True
         return has_permission
 
-    
+def global_get_object(view, model):
+    pk = view.kwargs.get('pk')
+    if pk is not None:
+        try:
+            queryset = model.objects.get(pk=pk)
+            view.check_object_permissions(view.request, queryset)
+            return queryset
+        except model.DoesNotExist:
+            #return Response(status=status.HTTP_404_NOT_FOUND)
+            raise Http404
+
+def global_get_queryset(view, model):
+    queryset = model.objects.all()
+    if view.request.method not in permissions.SAFE_METHODS:
+        return queryset
+    user = view.request.QUERY_PARAMS.get('user_id', None)
+    if user is not None:
+        queryset = queryset.filter(user=user)
+    else:
+        queryset = queryset.filter(user=view.request.user)
+    return queryset    
 
 #TODO: Move to mixins for less  code
 class UserView(viewsets.ViewSet):
@@ -189,26 +209,10 @@ class ReminderViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticated,FamilyPermission,)
 
     def get_object(self):
-        pk = self.kwargs.get('pk')
-        if pk is not None:
-            try:
-                reminder = Reminder.objects.get(pk=pk)
-                self.check_object_permissions(self.request, reminder)
-                return reminder
-                #FamilyPermission.has_object_permission(FamilyPermission,obj=reminder)
-            except Reminder.DoesNotExist:
-                raise Http404
+        return global_get_object(self,Reminder)
 
     def get_queryset(self):
-        queryset = Reminder.objects.all()
-        if self.request.method not in permissions.SAFE_METHODS:
-            return queryset
-        user = self.request.QUERY_PARAMS.get('user_id', None)
-        if user is not None:
-            queryset = queryset.filter(user=user)
-        else:
-            queryset = queryset.filter(user=self.request.user)
-        return queryset
+        return global_get_queryset(self, Reminder)
 
 class GoalViewSet(APIView):
     """
@@ -221,7 +225,7 @@ class GoalViewSet(APIView):
         Return a list all goals for a authenticated user or its family member.
         """ 
         try:       
-            querysetW = UserWeightGoal.objects.get(status='ACTIsVE')
+            querysetW = UserWeightGoal.objects.get(status='ACTIVE')
             serializerW = UserWeightGoalSerializer(querysetW, many=False)
             serializer = []
             serializer.append(serializerW.data)
@@ -231,7 +235,7 @@ class GoalViewSet(APIView):
             result = {"count": 0, "next": None, "previous":None , "results": []}
             response = Response(result, status=status.HTTP_200_OK)
             return response
-        
+
 
 class UserWeightGoalViewSet(viewsets.ModelViewSet):
     serializer_class = UserWeightGoalSerializer
@@ -240,26 +244,10 @@ class UserWeightGoalViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticated,FamilyPermission,)
 
     def get_object(self):
-        pk = self.kwargs.get('pk')
-        if pk is not None:
-            try:
-                queryset = UserWeightGoal.objects.get(pk=pk)
-                self.check_object_permissions(self.request, queryset)
-                return queryset
-            except UserWeightGoal.DoesNotExist:
-                #return Response(status=status.HTTP_404_NOT_FOUND)
-                raise Http404
+        return global_get_object(self,UserWeightGoal)
 
     def get_queryset(self):
-        queryset = UserWeightGoal.objects.all()
-        if self.request.method not in permissions.SAFE_METHODS:
-            return queryset
-        user = self.request.QUERY_PARAMS.get('user_id', None)
-        if user is not None:
-            queryset = queryset.filter(user=user)
-        else:
-            queryset = queryset.filter(user=self.request.user)
-        return queryset
+        return global_get_queryset(self, UserWeightGoal)
 
 class HealthfileViewSet(viewsets.ModelViewSet):
     serializer_class = HealthfileSerializer
