@@ -86,25 +86,42 @@ class Reminder(models.Model):
         db_table = 'tbl_reminders'
 
 class UserWeightGoal(models.Model):
-    id = models.AutoField(primary_key=True)
+    MEASURE_CHOICES = (
+        ('METRIC','METRIC'),
+        ('STANDARD','STANDARD')
+    )
+    INTERVAL_UNIT_CHOICES = (
+        ('DAY','DAY'),
+        ('WEEK','WEEK'),
+        ('MONTH','MONTH'),
+        ('YEAR','YEAR'),
+    )
+    GOAL_STATUS_CHOICES = (
+        ('ACTIVE','ACTIVE'),
+        ('DELETED','DELETED')
+    )
     user = models.ForeignKey('auth.User', related_name="+")
     weight = models.IntegerField()
-    weight_measure = models.CharField(max_length=12L)
+    weight_measure = models.CharField(max_length=12L, choices=MEASURE_CHOICES, default='METRIC')
     target_date = models.DateField()
     interval_num = models.IntegerField()
-    interval_unit = models.CharField(max_length=6L)
+    interval_unit = models.CharField(max_length=6L, choices=INTERVAL_UNIT_CHOICES)
     created_at = models.DateTimeField()
     updated_at = models.DateTimeField()
     updated_by = models.ForeignKey('auth.User', related_name="+", db_column='updated_by')
-    status = models.CharField(max_length=64L)
+    status = models.CharField(max_length=64L, choices=GOAL_STATUS_CHOICES, default='ACTIVE')
     class Meta:
         db_table = 'tbl_user_weight_goals'
 
 class UserWeightReading(models.Model):
+    MEASURE_CHOICES = (
+        ('METRIC','METRIC'),
+        ('STANDARD','STANDARD')
+    )
     id = models.AutoField(primary_key=True)
     user_weight_goal = models.ForeignKey('UserWeightGoal', related_name="readings")
     weight = models.IntegerField()
-    weight_measure = models.CharField(max_length=12L)
+    weight_measure = models.CharField(max_length=12L, choices=MEASURE_CHOICES, default='METRIC')
     reading_date = models.DateField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

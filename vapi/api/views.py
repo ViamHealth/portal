@@ -20,7 +20,7 @@ from rest_framework.response import Response
 import pprint
 from django.db.models import Q
 from django.http import Http404
-
+from itertools import chain
 
 #Temporary create code for all users once.
 for user in User.objects.all():
@@ -210,6 +210,56 @@ class ReminderViewSet(viewsets.ModelViewSet):
             queryset = queryset.filter(user=self.request.user)
         return queryset
 
+class GoalViewSet(APIView):
+    """
+    View to list all goals for a authenticated user or its family member.
+
+    * Requires token authentication.
+    """
+    def get(self, request, format=None):
+        """
+        Return a list all goals for a authenticated user or its family member.
+        """ 
+        try:       
+            querysetW = UserWeightGoal.objects.get(status='ACTIsVE')
+            serializerW = UserWeightGoalSerializer(querysetW, many=False)
+            serializer = []
+            serializer.append(serializerW.data)
+            response = Response(serializer, status=status.HTTP_200_OK)
+            return response
+        except :
+            result = {"count": 0, "next": None, "previous":None , "results": []}
+            response = Response(result, status=status.HTTP_200_OK)
+            return response
+        
+
+class UserWeightGoalViewSet(viewsets.ModelViewSet):
+    serializer_class = UserWeightGoalSerializer
+    filter_fields = ('user')
+    model = UserWeightGoal
+    permission_classes = (permissions.IsAuthenticated,FamilyPermission,)
+
+    def get_object(self):
+        pk = self.kwargs.get('pk')
+        if pk is not None:
+            try:
+                queryset = UserWeightGoal.objects.get(pk=pk)
+                self.check_object_permissions(self.request, queryset)
+                return queryset
+            except UserWeightGoal.DoesNotExist:
+                #return Response(status=status.HTTP_404_NOT_FOUND)
+                raise Http404
+
+    def get_queryset(self):
+        queryset = UserWeightGoal.objects.all()
+        if self.request.method not in permissions.SAFE_METHODS:
+            return queryset
+        user = self.request.QUERY_PARAMS.get('user_id', None)
+        if user is not None:
+            queryset = queryset.filter(user=user)
+        else:
+            queryset = queryset.filter(user=self.request.user)
+        return queryset
 
 class HealthfileViewSet(viewsets.ModelViewSet):
     serializer_class = HealthfileSerializer

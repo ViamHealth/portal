@@ -1,8 +1,31 @@
 from django.contrib.auth.models import User
 from api.models import *
 from rest_framework import serializers
+"""
+from django.contrib.auth import authenticate
 
 
+class AuthTokenSerializer(serializers.Serializer):
+    username = serializers.CharField()
+    password = serializers.CharField()
+
+    def validate(self, attrs):
+        username = attrs.get('username')
+        password = attrs.get('password')
+
+        if username and password:
+            user = authenticate(username=username, password=password)
+
+            if user:
+                if not user.is_active:
+                    raise serializers.ValidationError('User account is disabled.')
+                attrs['user'] = user
+                return attrs
+            else:
+                raise serializers.ValidationError('Unable to login with provided credentials.')
+        else:
+            raise serializers.ValidationError('Must include "username" and "password"')
+"""
 
 class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:
@@ -29,6 +52,18 @@ class HealthfileTagSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = HealthfileTag
         fields = ('id','tag' ,'healthfile')
+
+class UserWeightGoalSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = UserWeightGoal
+        fields = ('id', 'user','weight','weight_measure' ,'target_date','interval_num','interval_unit','created_at','updated_at','updated_by')
+
+class GoalSerializer(serializers.HyperlinkedModelSerializer):
+    weight = UserWeightGoalSerializer
+    
+    class Meta():
+        fields = ('weight')
+
 
 #class AuthTokenSerializer(serializers.Serializer):
 #    username = serializers.CharField()

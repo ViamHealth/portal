@@ -6,6 +6,9 @@ router = routers.DefaultRouter(trailing_slash=True)
 router.register(r'healthfiles', views.HealthfileViewSet)
 router.register(r'reminders', views.ReminderViewSet)
 router.register(r'healthfiletags', views.HealthfileTagViewSet)
+router.register(r'goals/weight', views.UserWeightGoalViewSet)
+#router.register(r'goals', views.GoalViewSet)
+
 
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
@@ -20,6 +23,7 @@ urlpatterns = patterns('',
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     #url(r'^api-token-auth/', obtain_auth_token),
     url(r'^users/$', views.UserView.as_view({'get': 'list','post': 'create'}),name='user-list'),
+    url(r'^goals/$', views.GoalViewSet.as_view(),name='goal-list'),
     url(r'^users/me/$', views.UserView.as_view({'get': 'current_user'}), name='snippet-highlight'),
     url(r'^users/(?P<pk>[0-9]+)/$', views.UserView.as_view({'get': 'retrieve', 'put': 'update'}),name='user-detail'),
     url(r'^users/(?P<pk>[0-9]+)/profile/$', views.UserView.as_view({'put':'update_profile'}),name='profile-detail'),
