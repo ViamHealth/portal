@@ -29,7 +29,6 @@ for user in User.objects.all():
 class FamilyPermission(permissions.BasePermission):
     #TODO:optimize function
     def has_permission(self, request, view):
-        pprint.pprint('kunal')
         has_permission = False
         family_user_id = request.QUERY_PARAMS.get('user_id', None)
         if family_user_id is None:
@@ -179,7 +178,7 @@ class UserView(viewsets.ViewSet):
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-class ReminderView(viewsets.ModelViewSet):
+class ReminderViewSet(viewsets.ModelViewSet):
     serializer_class = ReminderSerializer
     filter_fields = ('user')
     model = Reminder
@@ -187,7 +186,6 @@ class ReminderView(viewsets.ModelViewSet):
 
     def get_object(self):
         pk = self.kwargs.get('pk')
-        pprint.pprint(pk)
         if pk is not None:
             try:
                 reminder = Reminder.objects.get(pk=pk)
@@ -201,7 +199,6 @@ class ReminderView(viewsets.ModelViewSet):
         queryset = Reminder.objects.all()
         if self.request.method not in permissions.SAFE_METHODS:
             return queryset
-        pprint.pprint('view')
         user = self.request.QUERY_PARAMS.get('user_id', None)
         if user is not None:
             queryset = queryset.filter(user=user)
@@ -216,8 +213,21 @@ class HealthfileViewSet(viewsets.ModelViewSet):
     model = Healthfile
     permission_classes = (permissions.IsAuthenticated,FamilyPermission,)
 
+    def get_object(self):
+        pk = self.kwargs.get('pk')
+        if pk is not None:
+            try:
+                hf = Healthfile.objects.get(pk=pk)
+                self.check_object_permissions(self.request, hf)
+                return hf
+                #FamilyPermission.has_object_permission(FamilyPermission,obj=reminder)
+            except Healthfile.DoesNotExist:
+                raise Http404
+
     def get_queryset(self):
         queryset = Healthfile.objects.all()
+        if self.request.method not in permissions.SAFE_METHODS:
+            return queryset
         user = self.request.QUERY_PARAMS.get('user_id', None)
         if user is not None:
             queryset = queryset.filter(user=user)

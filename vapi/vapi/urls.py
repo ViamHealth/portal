@@ -4,7 +4,7 @@ from api import views
 
 router = routers.DefaultRouter(trailing_slash=True)
 router.register(r'healthfiles', views.HealthfileViewSet)
-router.register(r'reminders', views.ReminderView)
+router.register(r'reminders', views.ReminderViewSet)
 router.register(r'healthfiletags', views.HealthfileTagViewSet)
 
 # Uncomment the next two lines to enable the admin:
@@ -22,10 +22,6 @@ urlpatterns = patterns('',
     url(r'^users/me/$', views.UserView.as_view({'get': 'current_user'}), name='snippet-highlight'),
     url(r'^users/(?P<pk>[0-9]+)/$', views.UserView.as_view({'get': 'retrieve', 'put': 'update'}),name='user-detail'),
     url(r'^users/(?P<pk>[0-9]+)/profile/$', views.UserView.as_view({'put':'update_profile'}),name='profile-detail'),
-    #url(r'^reminders/$', views.ReminderView.as_view({'get': 'list','post': 'create'}),name='reminder-list'),
-    #url(r'^reminders/$', views.ReminderView.as_view(),name='reminder-list'),
-    #url(r'^reminders/(?P<pk>[0-9]+)/$', views.ReminderView.as_view(),name='reminder-detail'),
-    #url(r'^users/(?P<pk>[0-9]+)/reminders/$', views.ReminderView.as_view(),name='reminder-list'),
 
     #Uncomment the admin/doc line below to enable admin documentation:
     #url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
