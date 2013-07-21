@@ -1,6 +1,8 @@
 {% extends "rest_framework/base.html" %}
 
 {% block branding %}
-<a class='brand' href='http://127.0.0.1:8080/'>ViamHealth REST API <span class="version">{{ version }}</span></a>
+<a class='brand' href='http://127.0.0.1:8080/'>ViamHealth REST API 
+	<span class="version">{% block version %} 0.1{% endblock %}</span>
+</a>
 {% endblock %}
 ...  # Override blocks with required customizations
