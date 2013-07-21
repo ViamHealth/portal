@@ -57,8 +57,6 @@ class FamilyPermission(permissions.BasePermission):
     def has_object_permission(self, request, view, obj=None):
         if request is None:
             request = self.request
-        #Is there no clean way to get request var !!
-        pprint.pprint('kunal222')
 
         has_permission = False
         if obj is not None:
@@ -101,7 +99,9 @@ class UserView(viewsets.ViewSet):
             Q(connection_status='ACTIVE'),
             Q(initiatior_user_id=user_id) | Q(connected_user_id=user_id)
         )
-        users = [p.connected_user for p in qqueryset]
+        users = [p.initiatior_user for p in qqueryset]
+        for p in qqueryset:
+            users.append(p.connected_user)
         for u in users:
             if u.id == pk:
                 has_permission = True
@@ -115,12 +115,16 @@ class UserView(viewsets.ViewSet):
 
     def list(self, request, format=None):
         qqueryset = UsersMap.objects.filter(
-            Q(connection_status='ACTIVE'),
+            #Q(connection_status='ACTIVE'),
             Q(initiatior_user_id=request.user.id) | Q(connected_user_id=request.user.id)
         )
+        #if len(qqueryset) == 0:
         users = [p.initiatior_user for p in qqueryset]
         for p in qqueryset:
             users.append(p.connected_user)
+        users.append(request.user)
+        users = list(set(users))
+        
         serializer = UserSerializer(users, many=True)
         return Response(serializer.data)
 
