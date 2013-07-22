@@ -2,6 +2,15 @@
 /* @var $this SiteController */
 
 $this->pageTitle=Yii::app()->name;
+$this->breadcrumbs=array(
+	'Goals',
+);
+?>
+
+<link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/xcharts.min.css" />
+<?php
+		Yii::app()->clientScript->registerScriptFile(Yii::app()->baseUrl.'/js/d3.js');
+		Yii::app()->clientScript->registerScriptFile(Yii::app()->baseUrl.'/js/xcharts.min.js');
 ?>
 
 <figure style="width: 300px; height: 300px;" id="myChart"></figure>

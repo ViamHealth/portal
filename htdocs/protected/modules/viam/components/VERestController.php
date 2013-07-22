@@ -12,6 +12,16 @@ class VERestController extends ERestController
 		return;
 	}
 
+	public function outputHelper($message, $results, $totalCount=0, $model=null)
+	{
+		if(is_null($model))
+			$model = lcfirst(get_class($this->model));
+		else
+			$model = lcfirst($model);	
+
+		$this->renderJson($this->allToArray($results));
+	}
+
 	//Supporting HAS_MANY sub resources
 	//TODO: support plural and case insensitive
 	/*public function validateSubResource($subResourceName, $subResourceID=null)

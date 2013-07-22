@@ -8,9 +8,9 @@
 return array(
 	'basePath'=>dirname(__FILE__).DIRECTORY_SEPARATOR.'..',
 	'name'=>'Viam Health',
-
+	'theme' => 'booster',
 	// preloading 'log' component
-	'preload'=>array('log'),
+	'preload'=>array('bootstrap','log'),
 
 	// autoloading model and component classes
 	'import'=>array(
@@ -26,6 +26,9 @@ return array(
 			'password'=>'vi@m',
 			// If removed, Gii defaults to localhost only. Edit carefully to taste.
 			'ipFilters'=>array('127.0.0.1','::1'),
+			'generatorPaths'=>array(
+                'bootstrap.gii',
+            ),
 		),
 		
 	),
@@ -36,6 +39,11 @@ return array(
 			// enable cookie-based authentication
 			'allowAutoLogin'=>true,
 		),
+		'bootstrap'=>array(
+	        'class'=>'ext.bootstrap.components.Bootstrap',
+	        'responsiveCss' => true,
+	        'fontAwesomeCss' => true,
+    	),
 		// uncomment the following to enable URLs in path-format
 		/*
 		'urlManager'=>array(
