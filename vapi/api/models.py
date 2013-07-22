@@ -112,6 +112,8 @@ class UserWeightGoal(models.Model):
     status = models.CharField(max_length=64L, choices=GOAL_STATUS_CHOICES, default='ACTIVE')
     class Meta:
         db_table = 'tbl_user_weight_goals'
+    def __unicode__(self):
+        return u'%s %s' % (self.id, self.user.username)
 
 class UserWeightReading(models.Model):
     MEASURE_CHOICES = (
@@ -128,5 +130,7 @@ class UserWeightReading(models.Model):
     updated_by = models.ForeignKey('auth.User', related_name="+", db_column='updated_by')
     class Meta:
         db_table = 'tbl_user_weight_readings'
+    def __unicode__(self):
+        return u'%s %s' % (self.id, self.user_weight_goal)
 
 User.profile = property(lambda u: UserProfile.objects.get_or_create(user=u)[0])
