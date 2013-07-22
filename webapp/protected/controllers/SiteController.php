@@ -27,12 +27,23 @@ class SiteController extends Controller
 	 */
 	public function actionIndex()
 	{
-		var_dump(Yii::app()->user->token);
 		// renders the view file 'protected/views/site/index.php'
 		// using the default layout 'protected/views/layouts/main.php'
 		$this->render('index');
 	}
 
+	public function actionGetweightgoal()
+	{
+		$rest = new RESTClient();
+		$rest->initialize(array('server' => 'http://127.0.0.1:8080/'));
+		$rest->set_header('Authorization','Token '.Yii::app()->user->token);
+		$res = $rest->get('goals/weight/');
+		//Set User Data
+		$res = json_decode($res);
+		$goal = $res->results;
+		$count = $res->count;
+		echo json_encode($goal);
+	}
 	/**
 	 * This is the action to handle external exceptions.
 	 */
