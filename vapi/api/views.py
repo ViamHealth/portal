@@ -249,6 +249,21 @@ class UserWeightGoalViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         return global_get_queryset(self, UserWeightGoal)
 
+    @action()
+    def set_reading(self, request, pk=None):
+        if pk is not None:
+            reading = UserWeightReading.get_object()
+            serializer = UserWeightReadingSerializer(data=request.DATA)
+            if serializer.is_valid():                
+                reading.set_user_weight_goal(pk)
+                reading.set_user_weight_goal(serializer.data['weight'])
+                reading.set_user_weight_goal(serializer.data['weight_measure'])
+                reading.set_user_weight_goal(serializer.data['reading_date'])
+                reading.save()
+                return Response({'status': 'reading set'})
+            else:
+                return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
+
 class HealthfileViewSet(viewsets.ModelViewSet):
     serializer_class = HealthfileSerializer
     filter_fields = ('user')
