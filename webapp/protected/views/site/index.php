@@ -13,12 +13,23 @@ $this->breadcrumbs=array(
 		Yii::app()->clientScript->registerScriptFile(Yii::app()->baseUrl.'/js/xcharts.min.js');
 ?>
 
-<figure style="width: 300px; height: 300px;" id="myChart"></figure>
+<div class="row guttered">
+      <div class="span5">
+      	<figure style="height: 300px;" id="myChart"></figure>
+      </div>      	
+      <div class="span7">
+      	<figure style="height: 300px;" id="myChart2"></figure>
+      </div>
+</div>
+
 <script type="text/javascript">
 jQuery.get('/index.php?r=site/getweightgoal', function(data){
 	data = $.parseJSON(data);
+	console.log(data);
 	var o = data[0]['readings'];
 	var count = data[0]['readings'].length;
+	var target_weight = data[0]['weight'];
+	target_weight = 100;
 	var set = [];
 	for(i=0;i<count;i++)
 	{
@@ -30,15 +41,48 @@ jQuery.get('/index.php?r=site/getweightgoal', function(data){
 	var data = {
 		xScale : "ordinal",
 		yScale : "linear",
-		//yMin: 0,
-		//yMax: 150,
-		type : "bar",
+		yMin: 30,
+		yMax: target_weight,
+		type : "line",
 		main :[{
-			className: ".pizza",
+			className: ".goal-weight",
 			data: set
 		}],
 	};
-	var myChart = new xChart('bar', data, '#myChart');
+	var myChart = new xChart('line', data, '#myChart');
+})
+
+</script>
+
+
+<script type="text/javascript">
+jQuery.get('/index.php?r=site/getweightgoal', function(data){
+	data = $.parseJSON(data);
+	console.log(data);
+	var o = data[0]['readings'];
+	var count = data[0]['readings'].length;
+	var target_weight = data[0]['weight'];
+	target_weight = 100;
+	var set = [];
+	for(i=0;i<count;i++)
+	{
+	  set.push({
+	  x : o[i].reading_date,
+	  y : o[i].weight
+	});
+	}
+	var data = {
+		xScale : "ordinal",
+		yScale : "linear",
+		yMin: 30,
+		yMax: target_weight,
+		type : "line",
+		main :[{
+			className: ".goal-weight",
+			data: set
+		}],
+	};
+	var myChart = new xChart('line', data, '#myChart2');
 })
 
 </script>
