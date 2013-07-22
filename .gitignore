@@ -10,3 +10,5 @@ htdocs/protected/runtime
 htdocs/assets
 *.pyc
 htdocs/protected/runtime/application.log
+webapp/protected/runtime/application.log
+webapp/assets/*
