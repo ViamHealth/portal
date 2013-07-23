@@ -247,7 +247,8 @@ class UserWeightGoalViewSet(viewsets.ModelViewSet):
         return global_get_object(self,UserWeightGoal)
 
     def get_queryset(self):
-        return global_get_queryset(self, UserWeightGoal)
+        queryset = global_get_queryset(self, UserWeightGoal)
+        return queryset.filter(status='ACTIVE')
 
     @action()
     def set_reading(self, request, pk=None):
