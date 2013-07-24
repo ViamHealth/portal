@@ -3,8 +3,29 @@ portal
 
 ViamHealths Portal Code Base
 
+Instructions to install Website
+===============================
+
+edit /etc/php5/fpm/pool.d/www.conf and change 'listen *** sock' to 'listen 9000'
+
+Create database viam2 in mysql
+
+change nginx settings to point to webapp instead of htdocs ( for document root)
+
+restart php-fpm and nginx
+
+mkdir webapp/assets
+
+chmod 777 -R webapp/assets
+
+chmod 777 protected/runtime
+
+Website will work after API installation is complete
+
 Instructions to install API Framework
 ======================================
+
+make sure you have database named viam2 in mysql
 
 Install Virtualenv (optional , recommended)
 
@@ -14,9 +35,9 @@ sudo python setup.py install
 
 cd ~ 
 
-python virtualenv.py VIRTUALENV.NAME
+virtualenv VIRTUALENV.DIR.NAME
 
-source ~/VIRTUALENV.NAME/bin/activate
+source ~/VIRTUALENV.DIR.NAME/bin/activate
 
 pip install yolk
 
