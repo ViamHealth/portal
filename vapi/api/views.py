@@ -250,16 +250,21 @@ class UserWeightGoalViewSet(viewsets.ModelViewSet):
         queryset = global_get_queryset(self, UserWeightGoal)
         return queryset.filter(status='ACTIVE')
 
-    @action()
+    @action(methods=['POST'])
     def set_reading(self, request, pk=None):
         if pk is not None:
-            reading = UserWeightReading.get_object()
-            serializer = UserWeightReadingSerializer(data=request.DATA)
-            if serializer.is_valid():                
-                reading.set_user_weight_goal(pk)
-                reading.set_user_weight_goal(serializer.data['weight'])
-                reading.set_user_weight_goal(serializer.data['weight_measure'])
-                reading.set_user_weight_goal(serializer.data['reading_date'])
+            try:
+                reading = UserWeightReading.objects.get(reading_date=request.DATA['reading_date'])
+            except UserWeightReading.DoesNotExist:
+                wgoal = UserWeightGoal.objects.get(id=pk)
+                reading = UserWeightReading(user_weight_goal=wgoal,updated_by = request.user)
+            data = request.DATA.copy()
+            data['user_weight_goal'] = '/goals/weight/'+pk+'/'
+            serializer = UserWeightReadingSerializer(data=data)
+            if serializer.is_valid(): 
+                setattr(reading, 'weight', serializer.data['weight'])
+                setattr(reading, 'weight_measure', serializer.data['weight_measure'])
+                setattr(reading, 'reading_date', serializer.data['reading_date'])
                 reading.save()
                 return Response({'status': 'reading set'})
             else:

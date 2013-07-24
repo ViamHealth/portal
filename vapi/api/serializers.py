@@ -56,7 +56,8 @@ class HealthfileTagSerializer(serializers.HyperlinkedModelSerializer):
 class UserWeightReadingSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = UserWeightReading
-        fields = ('id','user_weight_goal', 'weight','weight_measure' ,'reading_date','created_at','updated_at','updated_by')
+        #fields = ('id','user_weight_goal', 'weight','weight_measure' ,'reading_date','created_at','updated_at','updated_by')
+        fields = ('id','user_weight_goal', 'weight','weight_measure' ,'reading_date','created_at','updated_at')
 
 class UserWeightReadingListSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
