@@ -30,12 +30,29 @@ class GoalsController extends Controller
 
 	public function actionIndex()
 	{
-    $UserGoalReadingModel = UserWeightReading::model();
-		$this->render('index',array(
-      'profile_id'=>Yii::app()->user->id,
-      'UserGoalReadingModel'=>$UserGoalReadingModel,
-      )
-    );
+    //TODO: Optimize the no. of calls
+    $rest = $this->getRestObject();
+    $res = $rest->get('goals/weight/');
+    //Set User Data
+    $res = json_decode($res);
+    $goal = $res->results;
+    if($res->count > 0 ){
+      $UserGoalReadingModel = UserWeightReading::model();
+      $this->render('index',array(
+        'weight_view' => '_view_weight',
+        'profile_id'=>Yii::app()->user->id,
+        'wModel'=>$UserGoalReadingModel,
+        )
+      );
+    } else {
+      $UserWeightGoalModel = UserWeightGoal::model();
+  		$this->render('index',array(
+        'weight_view' => '_edit_weight',
+        'profile_id'=>Yii::app()->user->id,
+        'wModel'=>$UserWeightGoalModel
+        )
+      );
+    }
 	}  
 
   public function actionGetweightgoal()
