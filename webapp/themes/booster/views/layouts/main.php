@@ -41,7 +41,7 @@
 			),
 		),
 		//'<form class="navbar-search pull-left" action=""><input type="text" class="search-query span2" placeholder="Search"></form>',
-		(!Yii::app()->user->isGuest) ? '<p class="navbar-text pull-right">Logged in as <a href="#">'.Yii::app()->user->username.'</a></p>' : '',
+		(!Yii::app()->user->isGuest) ? '<p class="navbar-text pull-right"><a href="#">'.Yii::app()->user->name.'</a></p>' : '',
 		/*array(
 			'class' => 'bootstrap.widgets.TbMenu',
 			'htmlOptions' => array('class' => 'pull-right'),

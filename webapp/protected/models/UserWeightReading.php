@@ -46,7 +46,7 @@ class UserWeightReading extends CActiveRecord
 		// will receive user inputs.
 		return array(
 			array('user_weight_goal_id, weight, weight_measure, reading_date, created_at, updated_at, updated_by', 'required'),
-			array('user_weight_goal_id, weight, updated_by', 'numerical', 'integerOnly'=>true),
+			//array('user_weight_goal_id, weight, updated_by', 'numerical', 'integerOnly'=>true),
 			array('weight_measure', 'length', 'max'=>12),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
