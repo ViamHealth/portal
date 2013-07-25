@@ -106,8 +106,8 @@ class UserWeightGoal(models.Model):
     target_date = models.DateField()
     interval_num = models.IntegerField()
     interval_unit = models.CharField(max_length=6L, choices=INTERVAL_UNIT_CHOICES)
-    created_at = models.DateTimeField()
-    updated_at = models.DateTimeField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
     updated_by = models.ForeignKey('auth.User', related_name="+", db_column='updated_by')
     status = models.CharField(max_length=64L, choices=GOAL_STATUS_CHOICES, default='ACTIVE')
     class Meta:

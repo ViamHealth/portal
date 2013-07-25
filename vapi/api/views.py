@@ -11,8 +11,9 @@ from api.serializers import *
 from rest_framework.authtoken.models import Token
 from django.core.signals import request_started
 from rest_framework.views import APIView
+from rest_framework.generics import ListAPIView
 #from rest_framework.authtoken.serializers import AuthTokenSerializer
-from rest_framework import generics, permissions, renderers, parsers, status
+from rest_framework import permissions, renderers, parsers, status
 from rest_framework.decorators import api_view, link, action
 from rest_framework.mixins import DestroyModelMixin
 from rest_framework.reverse import reverse
@@ -21,6 +22,7 @@ import pprint
 from django.db.models import Q
 from django.http import Http404
 from itertools import chain
+import time 
 
 #Temporary create code for all users once.
 for user in User.objects.all():
@@ -85,7 +87,7 @@ def global_get_object(view, model):
     pk = view.kwargs.get('pk')
     if pk is not None:
         try:
-            queryset = model.objects.get(pk=pk)
+            queryset = model.objects.get(pk=pk, status='ACTIVE')
             view.check_object_permissions(view.request, queryset)
             return queryset
         except model.DoesNotExist:
@@ -93,7 +95,7 @@ def global_get_object(view, model):
             raise Http404
 
 def global_get_queryset(view, model):
-    queryset = model.objects.all()
+    queryset = model.objects.filter(status='ACTIVE')
     if view.request.method not in permissions.SAFE_METHODS:
         return queryset
     user = view.request.QUERY_PARAMS.get('user_id', None)
@@ -214,7 +216,7 @@ class ReminderViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         return global_get_queryset(self, Reminder)
 
-class GoalViewSet(APIView):
+class GoalViewSet(ListAPIView):
     """
     View to list all goals for a authenticated user or its family member.
 
@@ -224,14 +226,25 @@ class GoalViewSet(APIView):
         """
         Return a list all goals for a authenticated user or its family member.
         """ 
+        serializer = []
         try:       
             querysetW = UserWeightGoal.objects.get(status='ACTIVE')
             serializerW = UserWeightGoalSerializer(querysetW, many=False)
-            serializer = []
             serializer.append(serializerW.data)
+        except:
+            print 'No weight goal'
+        #Temporary adding reminders to list. to test list of different serializers
+        try:
+            querysetR = Reminder.objects.get(status='ACTIVE')
+            serializerR = ReminderSerializer(querysetR, many=False)
+            serializer.append(serializerR.data)
+        except:
+            print 'no reminder'
+
+        if serializer:
             response = Response(serializer, status=status.HTTP_200_OK)
             return response
-        except :
+        else:
             result = {"count": 0, "next": None, "previous":None , "results": []}
             response = Response(result, status=status.HTTP_200_OK)
             return response
@@ -243,12 +256,21 @@ class UserWeightGoalViewSet(viewsets.ModelViewSet):
     model = UserWeightGoal
     permission_classes = (permissions.IsAuthenticated,FamilyPermission,)
 
+    """
+    def get_serializer_class(self):
+        if self.request.user.is_staff:
+            return FullAccountSerializer
+    return BasicAccountSerializer
+    """
+
     def get_object(self):
         return global_get_object(self,UserWeightGoal)
 
     def get_queryset(self):
-        queryset = global_get_queryset(self, UserWeightGoal)
-        return queryset.filter(status='ACTIVE')
+        return global_get_queryset(self, UserWeightGoal)
+
+    def pre_save(self, obj):
+        obj.updated_by = self.request.user
 
     @action(methods=['POST'])
     def set_reading(self, request, pk=None):
