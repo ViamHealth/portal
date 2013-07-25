@@ -162,7 +162,7 @@ class UserView(viewsets.ViewSet):
 
     @link()
     def current_user(self, request):
-        serializer = UserSerializer(request.user)
+        serializer = UserSerializer(request.user, context={'request': request})
         return Response(serializer.data)
 
     def retrieve(self, request, pk=None):

@@ -70,8 +70,8 @@ class UserWeightGoalSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = UserWeightGoal
-        exclude = ('readings','created_at','updated_at','updated_by',)
-        #fields = ('id', 'user','readings','weight','weight_measure' ,'target_date','interval_num','interval_unit','created_at','updated_at','updated_by')
+        exclude = ('created_at','updated_at','updated_by',)
+        fields = ('id', 'url','user','readings','weight','weight_measure' ,'target_date','interval_num','interval_unit','created_at','updated_at','updated_by')
 
 class GoalSerializer(serializers.HyperlinkedModelSerializer):
     weight = UserWeightGoalSerializer
