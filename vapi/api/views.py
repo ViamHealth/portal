@@ -226,11 +226,14 @@ class GoalViewSet(ListAPIView):
         """
         Return a list all goals for a authenticated user or its family member.
         """ 
+        resp = {'count':0 , 'results':[], 'previous':None, 'next':None}
+        
         serializer = []
         try:       
             querysetW = UserWeightGoal.objects.get(status='ACTIVE')
             serializerW = UserWeightGoalSerializer(querysetW, many=False)
             serializer.append(serializerW.data)
+            resp['count'] = resp['count'] + 1
         except:
             print 'No weight goal'
         #Temporary adding reminders to list. to test list of different serializers
@@ -238,16 +241,14 @@ class GoalViewSet(ListAPIView):
             querysetR = Reminder.objects.get(status='ACTIVE')
             serializerR = ReminderSerializer(querysetR, many=False)
             serializer.append(serializerR.data)
+            resp['count'] = resp['count'] + 1
         except:
             print 'no reminder'
 
-        if serializer:
-            response = Response(serializer, status=status.HTTP_200_OK)
-            return response
-        else:
-            result = {"count": 0, "next": None, "previous":None , "results": []}
-            response = Response(result, status=status.HTTP_200_OK)
-            return response
+        resp['results'] = serializer;
+        response = Response(resp, status=status.HTTP_200_OK)
+        return response
+
 
 
 class UserWeightGoalViewSet(viewsets.ModelViewSet):
