@@ -65,9 +65,6 @@ class Controller extends CController
             {
                 $this->current_user_id = Yii::app()->user->id;   
             }
-            
-            //var_dump($family);
-            //die();
         }
         //optionally include code here if its an authenticated user
         return true;
@@ -96,6 +93,16 @@ class Controller extends CController
         }
 
         return $family;
+    }
+
+    public function createUrl($route,$params=array(),$ampersand='&')
+    {
+        if($this->getCurrentUserId() != Yii::app()->user->id)
+        {
+            if(strpos($route, '/u/') !== 0)
+                $route = '/u/'.$this->getCurrentUserId().$route;
+        }
+        return parent::createUrl($route,$params,$ampersand);
     }
 
 }
