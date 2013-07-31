@@ -20,7 +20,14 @@
 </head>
 
 <body>
-
+<?php
+$family = $this->getFamilyUsers();
+foreach ($family as $key => $value) {
+	//if($value->id != $this->getCurrentUserId())
+		$family_array[] = array('label' => $value->username, 'url' => array('/u/'.$value->id.'/reminders/index'), 'visible' => !Yii::app()->user->isGuest,);
+}
+$family_array[] = array('label' => 'Logout', 'url' => array('/site/logout'), 'visible' => !Yii::app()->user->isGuest,);
+?>
 <div class="container" id="page">
 	<?php $this->widget('bootstrap.widgets.TbNavbar', array(
 	'type' => 'inverse', // null or 'inverse'
@@ -52,9 +59,8 @@
 
 			'items' => array(
 				array('label' => Yii::app()->user->name, 'url' => '#', 'visible' => !Yii::app()->user->isGuest,
-					'items' => array(
-						array('label' => 'Logout', 'url' => array('/site/logout'), 'visible' => !Yii::app()->user->isGuest,) , 
-					),
+					'items' =>
+						$family_array
 				),
 			),
 		),

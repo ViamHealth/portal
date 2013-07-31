@@ -24,7 +24,7 @@ class RemindersController extends Controller
   {
       $model = Reminder::model()->find(array(
       	'condition'=>'id=:id AND user_id=:profile_id',
-      	'params'=>array(':id'=>$id,':profile_id'=>Yii::app()->user->id)
+      	'params'=>array(':id'=>$id,':profile_id'=>$this->getCurrentUserId())
       	)
       );
       if ($model === null)
@@ -35,7 +35,7 @@ class RemindersController extends Controller
 	public function actionIndex()
 	{
 		$ReminderModel=Reminder::model();
-		$this->render('index',array('ReminderModel'=>$ReminderModel, 'profile_id'=>Yii::app()->user->id));
+		$this->render('index',array('ReminderModel'=>$ReminderModel, 'profile_id'=>$this->getCurrentUserId()));
 	}
 
   public function actionAdd()

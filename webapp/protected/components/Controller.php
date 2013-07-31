@@ -21,6 +21,14 @@ class Controller extends CController
 	 */
 	public $breadcrumbs=array();
 
+    private $fuid;
+
+    private $current_user_id;
+
+    private $familyFetched = false;
+
+    private $family = array();
+
 	public function beforeAction($action)
     {
         Yii::app()->user->setReturnUrl(Yii::app()->request->getUrl());
@@ -37,6 +45,30 @@ class Controller extends CController
             	}
             }
         }
+        else
+        {
+            $this->fuid =  Yii::app()->request->getParam('fuid',null);
+            $fuidIsFamily = false;
+            if($this->fuid)
+            {
+                $family = $this->getFamilyUsers();
+                foreach ($family as $key => $value) {
+                    if($value->id == $this->fuid)
+                        $fuidIsFamily = true;
+                }
+                if($fuidIsFamily == true)
+                    $this->current_user_id = $this->fuid;
+                else
+                    $this->current_user_id = Yii::app()->user->id;   
+            }
+            else
+            {
+                $this->current_user_id = Yii::app()->user->id;   
+            }
+            
+            //var_dump($family);
+            //die();
+        }
         //optionally include code here if its an authenticated user
         return true;
     }
@@ -45,4 +77,25 @@ class Controller extends CController
     {
         return VApi::apiCall($method, $url, $params);
     }
+
+    public function getCurrentUserId()
+    {
+        return $this->current_user_id;
+    }
+
+    public function getFamilyUsers()
+    {
+        if($this->familyFetched)
+            return $this->family;
+
+        $family = array();
+        if (!Yii::app()->user->isGuest ){
+            $family = VApi::apiCall('get', 'users/');
+            $this->family = $family;
+            $this->familyFetched = true;
+        }
+
+        return $family;
+    }
+
 }
