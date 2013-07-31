@@ -48,7 +48,7 @@ class RemindersController extends Controller
       $attributes['start_datetime'] = strtotime($attributes['start_datetime']);
       $model->attributes = $attributes;
       if($model->save(true,$attributes)){
-        $this->redirect(array('index'));
+        $this->redirect(array('reminders/index'));
       }
     }
 
@@ -62,7 +62,7 @@ class RemindersController extends Controller
 			$model->attributes = $_POST['Reminder'];
       $model->start_datetime = strtotime($model->start_datetime);
       if($model->save())
-        $this->redirect(array('index'));
+        $this->redirect(array('reminders/index'));
 		}
     //TODO: design a model view helper module
     $model->start_datetime = date('Y-m-d', $model->start_datetime);
@@ -75,7 +75,7 @@ class RemindersController extends Controller
     $model = $this->loadModel($id);
     $model->status = 'DELETED';
     if($model->save())
-        $this->redirect(array('index'));
+        $this->redirect(array('reminders/index'));
     /*
       $this->loadModel($id)->delete();
 

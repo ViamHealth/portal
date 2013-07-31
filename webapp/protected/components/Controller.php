@@ -32,8 +32,11 @@ class Controller extends CController
 	public function beforeAction($action)
     {
         Yii::app()->user->setReturnUrl(Yii::app()->request->getUrl());
-        if (Yii::app()->user->isGuest ){
+        if (Yii::app()->user->isGuest || !isset(Yii::app()->user->token)){
+            //TODO: YII Session management not setting isGuest as true for some reason. Need to figure this out
+            Yii::app()->user->__id =null;
         	if(($this->id == "site" && $action->id == "login")){
+                return true;
         		//Login page
         	}
         	else{
@@ -72,6 +75,8 @@ class Controller extends CController
 
     protected function apiCall($method, $url, $params =array())
     {
+        if($this->getCurrentUserId() != Yii::app()->user->id)
+            $url = $url.'?user_id='.$this->getCurrentUserId();
         return VApi::apiCall($method, $url, $params);
     }
 
@@ -100,7 +105,11 @@ class Controller extends CController
         if($this->getCurrentUserId() != Yii::app()->user->id)
         {
             if(strpos($route, '/u/') !== 0)
-                $route = '/u/'.$this->getCurrentUserId().$route;
+                if(strpos($route,'/') === 0)
+                    $route = '/u/'.$this->getCurrentUserId().$route;
+                else
+                    $route = '/u/'.$this->getCurrentUserId().'/'.$route;
+            //echo $route." 000 ";
         }
         return parent::createUrl($route,$params,$ampersand);
     }

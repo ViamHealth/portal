@@ -49,11 +49,14 @@ return array(
 		'urlManager'=>array(
 			'urlFormat'=>'path',
 			'rules'=>array(
+				'u/<fuid:\d+>/<controller:\w+>/<action:\w+>/<id:\d+>'=>'<controller>/<action>',
 				'u/<fuid:\d+>/<controller:\w+>/<action:\w+>'=>'<controller>/<action>',
+				'u/<fuid:\d+>/<controller:\w+>/<id:\d+>'=>'<controller>/view',
+				'u/<fuid:\d+>/<controller:\w+>/<action:\w+>'=>'<controller>/<action>',
+
 				'<controller:\w+>/<action:\w+>/<id:\d+>'=>'<controller>/<action>',
 				'<controller:\w+>/<action:\w+>'=>'<controller>/<action>',
 				'<controller:\w+>/<id:\d+>'=>'<controller>/view',
-				'<controller:\w+>/<action:\w+>/<id:\d+>'=>'<controller>/<action>',
 				'<controller:\w+>/<action:\w+>'=>'<controller>/<action>',
 			),
 		),
@@ -85,11 +88,11 @@ return array(
 					'levels'=>'error, warning',
 				),
 				// uncomment the following to show log messages on web pages
-				/*
+				
 				array(
 					'class'=>'CWebLogRoute',
 				),
-				*/
+				
 			),
 		),
 	),

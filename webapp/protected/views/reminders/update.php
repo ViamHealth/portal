@@ -13,7 +13,7 @@ $this->breadcrumbs=array(
 
 
 <?php $form = $this->beginWidget('bootstrap.widgets.TbActiveForm', array(
-      'action'=>Yii::app()->createUrl('reminders/update/'.$model->id),
+      'action'=>$this->createUrl('/reminders/update/'.$model->id),
       'id'=>'verticalForm',
       'htmlOptions'=>array('class'=>'well well-large span3'),
 )); ?>
@@ -25,6 +25,6 @@ $this->breadcrumbs=array(
       'options'=>array('format'=>'yyyy-mm-dd'),
       )); 
       ?>
-      <?php $this->widget('bootstrap.widgets.TbButton', array('buttonType'=>'submit', 'label'=>'Add')); ?>
+      <?php $this->widget('bootstrap.widgets.TbButton', array('buttonType'=>'submit', 'label'=>'Modify')); ?>
 </div>
 <?php $this->endWidget(); ?>

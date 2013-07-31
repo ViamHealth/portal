@@ -21,18 +21,23 @@
 
 <body>
 <?php
-$family = $this->getFamilyUsers();
-$current_profile_name = Yii::app()->user->username;
-foreach ($family as $key => $value) {
-	if($value->id != $this->getCurrentUserId()){
-		$family_array[] = array('label' => $value->username, 'url' => array('/u/'.$value->id.'/site/index'), 'visible' => !Yii::app()->user->isGuest,);
+$family_array = array();
+$current_profile_name = '';
+if(!Yii::app()->user->isGuest)
+{
+	$family = $this->getFamilyUsers();
+	$current_profile_name = Yii::app()->user->username;
+	foreach ($family as $key => $value) {
+		if($value->id != $this->getCurrentUserId()){
+			$family_array[] = array('label' => $value->username, 'url' => array('/u/'.$value->id.'/site/index'), 'visible' => !Yii::app()->user->isGuest,);
+		}
+		else {
+			$current_profile_name = $value->username;
+		}
+			
 	}
-	else {
-		$current_profile_name = $value->username;
-	}
-		
+	$family_array[] = array('label' => 'Logout', 'url' => array('/site/logout'), 'visible' => !Yii::app()->user->isGuest,);
 }
-$family_array[] = array('label' => 'Logout', 'url' => array('/site/logout'), 'visible' => !Yii::app()->user->isGuest,);
 ?>
 <div class="container" id="page">
 	<?php $this->widget('bootstrap.widgets.TbNavbar', array(

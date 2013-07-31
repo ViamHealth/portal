@@ -8,6 +8,11 @@ class VApi
 	public static function apiCall($method, $url, $params =array())
 	{
 		$rest = new RESTClient();
+        $fuid =  Yii::app()->request->getParam('fuid',null);
+        if($fuid)
+        {
+            $url = $url."?user_id=$fuid";
+        }
         $rest->initialize(array('server' => 'http://127.0.0.1:8080/'));
         $rest->set_header('Authorization','Token '.Yii::app()->user->token);
         switch($method){

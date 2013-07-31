@@ -44,15 +44,27 @@ class FamilyPermission(permissions.BasePermission):
             #Current user is the family user
             return True
             #Q(connection_status='ACTIVE'),
+
+        #TODO: improve this code
         qqueryset = UsersMap.objects.filter(
-             Q(initiatior_user_id=user_id) , Q(connected_user_id=family_user_id) | 
-             Q(connected_user_id=family_user_id) , Q(initiatior_user= user_id)
+             Q(initiatior_user_id=user_id) | Q(connected_user_id=family_user_id) 
         )
         users = [p.initiatior_user for p in qqueryset]
         for p in qqueryset:
             users.append(p.connected_user)
+
+        qqueryset2 = UsersMap.objects.filter(
+             Q(connected_user_id=user_id) | Q(initiatior_user_id= family_user_id)
+        )
+        users2 = [p.initiatior_user for p in qqueryset2]
+        for p in qqueryset2:
+            users2.append(p.connected_user)
+             
         for u in users:
-            if u.id == family_user_id:
+            if int(u.id) == int(family_user_id):
+                has_permission = True
+        for u in users2:
+            if int(u.id) == int(family_user_id):
                 has_permission = True
         return has_permission
 
@@ -71,15 +83,26 @@ class FamilyPermission(permissions.BasePermission):
             #Current user is the family user
             return True
             #Q(connection_status='ACTIVE'),
+        #TODO: improve this code
         qqueryset = UsersMap.objects.filter(
-             Q(initiatior_user_id=user_id) , Q(connected_user_id=family_user_id) | 
-             Q(connected_user_id=family_user_id) , Q(initiatior_user= user_id)
+             Q(initiatior_user_id=user_id) | Q(connected_user_id=family_user_id) 
         )
         users = [p.initiatior_user for p in qqueryset]
         for p in qqueryset:
             users.append(p.connected_user)
+
+        qqueryset2 = UsersMap.objects.filter(
+             Q(connected_user_id=user_id) | Q(initiatior_user_id= family_user_id)
+        )
+        users2 = [p.initiatior_user for p in qqueryset2]
+        for p in qqueryset2:
+            users2.append(p.connected_user)
+             
         for u in users:
-            if u.id == family_user_id:
+            if int(u.id) == int(family_user_id):
+                has_permission = True
+        for u in users2:
+            if int(u.id) == int(family_user_id):
                 has_permission = True
         return has_permission
 
@@ -147,7 +170,7 @@ class UserView(viewsets.ViewSet):
         users.append(request.user)
         users = list(set(users))
         
-        serializer = UserSerializer(users, many=True)
+        serializer = UserSerializer(users, many=True, context={'request': request})
         return Response(serializer.data)
 
     def create(self, request, format=None):
