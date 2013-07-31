@@ -33,15 +33,34 @@
 			'items' => array(
 				array('label' => 'Home', 'url' => array('/site/index')),
 				//array('label' => 'About', 'url' => array('/site/page', 'view' => 'about')),
-				array('label' => 'Goals', 'url' => array('/goals/index'), 'visible' => !Yii::app()->user->isGuest),
+	//			array('label' => 'Goals', 'url' => array('/goals/index'), 'visible' => !Yii::app()->user->isGuest),
+				array('label' => 'Goals', 'url' => '#', 'visible' => !Yii::app()->user->isGuest, 
+					'items' => array(
+						array('label' => 'Weight', 'url' => array('/goalsweight/index'), 'visible' => !Yii::app()->user->isGuest),
+					)
+				),
 				array('label' => 'Reminders', 'url' => array('/reminders/index'), 'visible' => !Yii::app()->user->isGuest),
+				array('label' => 'Files', 'url' => array('/healthfiles/index'), 'visible' => !Yii::app()->user->isGuest),
 				//array('label' => 'Contact', 'url' => array('/site/contact')),
 				array('label' => 'Login', 'url' => array('/site/login'), 'visible' => Yii::app()->user->isGuest),
-				array('label' => 'Logout (' . Yii::app()->user->name . ')', 'url' => array('/site/logout'), 'visible' => !Yii::app()->user->isGuest)
+//				array('label' => 'Logout (' . Yii::app()->user->name . ')', 'url' => array('/site/logout'), 'visible' => !Yii::app()->user->isGuest)
 			),
 		),
+		array(
+			'class' => 'bootstrap.widgets.TbMenu',
+			'htmlOptions' => array('class' => 'pull-right'),
+
+			'items' => array(
+				array('label' => Yii::app()->user->name, 'url' => '#', 'visible' => !Yii::app()->user->isGuest,
+					'items' => array(
+						array('label' => 'Logout', 'url' => array('/site/logout'), 'visible' => !Yii::app()->user->isGuest,) , 
+					),
+				),
+			),
+		),
+
 		//'<form class="navbar-search pull-left" action=""><input type="text" class="search-query span2" placeholder="Search"></form>',
-		(!Yii::app()->user->isGuest) ? '<p class="navbar-text pull-right"><a href="#">'.Yii::app()->user->name.'</a></p>' : '',
+		//(!Yii::app()->user->isGuest) ? '<p class="navbar-text pull-right"><a href="#">'.Yii::app()->user->name.'</a></p>' : '',
 		/*array(
 			'class' => 'bootstrap.widgets.TbMenu',
 			'htmlOptions' => array('class' => 'pull-right'),
@@ -50,8 +69,6 @@
 				'---',
 				array('label' => 'Dropdown', 'url' => '#', 'items' => array(
 					array('label' => 'Action', 'url' => '#'),
-					array('label' => 'Another action', 'url' => '#'),
-					array('label' => 'Something else here', 'url' => '#'),
 					'---',
 					array('label' => 'Separated link', 'url' => '#'),
 				)),

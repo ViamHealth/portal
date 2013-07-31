@@ -138,7 +138,32 @@ class Reminder extends CActiveRecord
 		));
 	}
 
-	public function beforeSave() {
+	public function save($runValidation=true,$attributes=null)
+	{
+		if(!$runValidation || $this->validate($attributes))
+		{
+			
+			$attributes['start_datetime'] = strtotime($attributes['start_datetime'])/100;
+			var_dump($attributes);
+			$attributes['user'] = Yii::app()->user->url;
+			//$attributes['updated_by'] = Yii::app()->user->url;
+			$attributes['repeat_mode'] = 'NONE';
+			$attributes['repeat_day'] = 0;
+			$attributes['repeat_hour'] = 0;
+			$attributes['repeat_min'] = 0;
+			$attributes['repeat_weekday'] = 0;
+			$attributes['repeat_day_interval'] = 0;
+			$attributes['status'] = 'ACTIVE';
+			$a = VApi::apiCall('post', 'reminders/', $attributes);
+			var_dump($a);die("aa");
+			//return $this->getIsNewRecord() ? $this->insert($attributes) : $this->update($attributes);
+		}
+		else{
+			die("asdfdsf");
+		}
+			return false;
+	}
+	/*public function beforeSave() {
     if ($this->isNewRecord)
         $this->created_at = new CDbExpression('NOW()');
     else
@@ -146,5 +171,5 @@ class Reminder extends CActiveRecord
     $this->updated_by = Yii::app()->user->id;
  
     return parent::beforeSave();
-  }
+  }*/
 }

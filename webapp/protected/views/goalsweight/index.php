@@ -12,7 +12,7 @@ $this->breadcrumbs=array(
 ?>
 
 <div class="row guttered">
-  <div class="span4">
+  <div class="">
   	<?php $form = $this->beginWidget('bootstrap.widgets.TbActiveForm', array(
 	      'action'=>Yii::app()->createUrl('goalsweight/setreading'),
 	      'id'=>'inlineForm',
@@ -64,19 +64,19 @@ jQuery.get('/index.php?r=goalsweight/getweightgoal', function(data){
 			});
 		}
 		var data = {
-			xScale : "ordinal",
+			xScale : "time",
 			yScale : "linear",
 			//yMin: 30,
 			//yMax: target_weight,
-			//type : "line",
+			type : "line",
 			main :[{
 				className: ".goal-weight",
 				data: set
 			}],
 		};
 		var opts = {
-		  //"dataFormatX": function (x) { return d3.time.format('%Y-%m-%d').parse(x); },
-		  "dataFormatX": function (x) { return x; },
+		  "dataFormatX": function (x) { return d3.time.format('%Y-%m-%d').parse(x); },
+		  //"dataFormatX": function (x) { return x; },
 		  //"tickFormatX": function (x) { return d3.time.format('%A')(x); },
 		  "mouseover": function (d, i) {
 		    var pos = $(this).offset();

@@ -51,7 +51,7 @@ class RemindersController extends Controller
       $model->repeat_weekday = 0;
       $model->repeat_day_interval = 0;
       $model->status = 'ACTIVE';
-      if($model->save(false)){
+      if($model->save(true,$_POST['Reminder'])){
         var_dump($model);
         if(!$model->id)
           die("not saving");

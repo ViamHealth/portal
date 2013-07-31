@@ -38,10 +38,17 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
         model = User
         fields = ('id', 'url', 'username', 'email', 'first_name', 'last_name', 'profile')
 
-class ReminderSerializer(serializers.HyperlinkedModelSerializer):
+class ReminderListSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Reminder
-        exclude = ('created_at','updated_at','updated_by',)
+        #exclude = ('created_at','updated_at','updated_by','status')
+        fields = ('url', 'user','details','start_datetime' ,'repeat_mode','repeat_day','repeat_hour','repeat_min','repeat_weekday','repeat_day_interval','created_at','updated_at')
+
+class ReminderSerializer(serializers.HyperlinkedModelSerializer):
+    updated_by = Field(soure='updated_by', required=False)
+    class Meta:
+        model = Reminder
+        exclude = ('created_at','updated_at')
         #fields = ('id', 'user','details','start_datetime' ,'repeat_mode','repeat_day','repeat_hour','repeat_min','repeat_weekday','repeat_day_interval','status','created_at','updated_at','updated_by')
 
 class HealthfileSerializer(serializers.HyperlinkedModelSerializer):
@@ -66,12 +73,17 @@ class UserWeightReadingListSerializer(serializers.HyperlinkedModelSerializer):
         fields = ('weight','weight_measure' ,'reading_date')
 
 class UserWeightGoalSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = UserWeightGoal
+        exclude = ('created_at','updated_at','updated_by','status')
+        #fields = ('id', 'url','user','readings','weight','weight_measure' ,'target_date','interval_num','interval_unit','created_at','updated_at','updated_by')
+
+class UserWeightGoalListSerializer(serializers.HyperlinkedModelSerializer):
     readings = UserWeightReadingListSerializer(required=False)
 
     class Meta:
         model = UserWeightGoal
-        exclude = ('created_at','updated_at','updated_by',)
-        fields = ('id', 'url','user','readings','weight','weight_measure' ,'target_date','interval_num','interval_unit','created_at','updated_at','updated_by')
+        fields = ('id', 'url','user','readings','weight','weight_measure' ,'target_date','interval_num','interval_unit','created_at','updated_at')
 
 class GoalSerializer(serializers.HyperlinkedModelSerializer):
     weight = UserWeightGoalSerializer

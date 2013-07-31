@@ -45,7 +45,9 @@ class GoalsweightController extends Controller
       "reading_date"=>addslashes($post['reading_date']),
     );
     $res = $this->apiCall('post','goals/weight/'.$id.'/set-reading/', $post_data);
-    echo json_encode($res);
+    if($res->status == 'reading set')
+      $this->redirect(array('index'));
+    else echo "error";
   }
 
   public function actionIndex()

@@ -25,7 +25,9 @@ $this->breadcrumbs=array(
       <?php echo $form->textAreaRow($ReminderModel, 'details', array('class'=>'span3', 'rows'=>5)); ?>
       <?php echo $form->datepickerRow($ReminderModel, 'start_datetime',
       array(
-      'prepend'=>'<i class="icon-calendar"></i>')); 
+      'prepend'=>'<i class="icon-calendar"></i>',
+      'options'=>array('format'=>'yyyy-mm-dd'),
+      )); 
       ?>
       <?php $this->widget('bootstrap.widgets.TbButton', array('buttonType'=>'submit', 'label'=>'Add')); ?>
 </div>

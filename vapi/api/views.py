@@ -216,6 +216,19 @@ class ReminderViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         return global_get_queryset(self, Reminder)
 
+    def pre_save(self, obj):
+        obj.updated_by = self.request.user
+        if obj.user is None:
+            obj.user = self.request.user
+
+    def create(self, request, format=None):
+        reminder = request.DATA
+        serializer = ReminderSerializer(data=reminder)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 class GoalViewSet(ListAPIView):
     """
     View to list all goals for a authenticated user or its family member.
@@ -231,7 +244,7 @@ class GoalViewSet(ListAPIView):
         serializer = []
         try:       
             querysetW = UserWeightGoal.objects.get(status='ACTIVE')
-            serializerW = UserWeightGoalSerializer(querysetW, many=False)
+            serializerW = UserWeightGoalListSerializer(querysetW, many=False)
             serializer.append(serializerW.data)
             resp['count'] = resp['count'] + 1
         except:
@@ -252,17 +265,17 @@ class GoalViewSet(ListAPIView):
 
 
 class UserWeightGoalViewSet(viewsets.ModelViewSet):
-    serializer_class = UserWeightGoalSerializer
+    #serializer_class = UserWeightGoalSerializer
     filter_fields = ('user')
     model = UserWeightGoal
     permission_classes = (permissions.IsAuthenticated,FamilyPermission,)
 
-    """
+    
     def get_serializer_class(self):
-        if self.request.user.is_staff:
-            return FullAccountSerializer
-    return BasicAccountSerializer
-    """
+        if self.request.method in permissions.SAFE_METHODS:
+            return UserWeightGoalListSerializer
+        return UserWeightGoalSerializer
+    
 
     def get_object(self):
         return global_get_object(self,UserWeightGoal)
