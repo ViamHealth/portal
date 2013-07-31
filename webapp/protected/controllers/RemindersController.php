@@ -44,7 +44,6 @@ class RemindersController extends Controller
     $model=Reminder::model();
     if(isset($_POST['Reminder'])){
       $attributes = $_POST['Reminder'];
-      $attributes['start_datetime'] = strtotime($attributes['start_datetime']);
       $attributes['status'] = 'ACTIVE';
       $model->attributes = $attributes;
       if($model->save(true,$attributes)){
@@ -54,19 +53,20 @@ class RemindersController extends Controller
 
     //$this->render('view',array('model'=>$model));
   }
-/*
+
 	public function actionUpdate($id)
 	{
 		$model = $this->loadModel($id);
-		
 		if(isset($_POST['Reminder'])){
 			$model->attributes = $_POST['Reminder'];
       if($model->save())
         $this->redirect(array('index'));
 		}
+    //TODO: design a model view helper module
+    $model->start_datetime = date('Y-m-d', $model->start_datetime);
 		$this->render('update',array('model'=>$model));
 	}
-*/
+
   
 	public function actionDelete($id)
   {

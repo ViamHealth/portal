@@ -27,7 +27,7 @@
       $this->widget('bootstrap.widgets.TbButton',array(
         'label' => 'Modify',
         'type' => 'primary',
-        'url' => $this->createUrl('reminders/update')
+        'url' => $this->createUrl('reminders/update/'.$data->id)
       ));
       $this->widget('bootstrap.widgets.TbButton',array(
         'label' => 'Delete',

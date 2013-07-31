@@ -17,6 +17,9 @@ class VApi
             case 'post': 
                 $result = $rest->post($url, $params);
                 break;
+            case 'put': 
+                $result = $rest->put($url, $params);
+                break;
             default:
                 throw new CHttpException(500, 'Illegal API call.');
         }

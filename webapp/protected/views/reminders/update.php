@@ -9,21 +9,17 @@ $this->breadcrumbs=array(
 ); ?>
 
 
-<h1>Reminders</h1>
+<h1>Update Reminder</h1>
 
 
-<?php $this->widget('bootstrap.widgets.TbListView',array(
- 'dataProvider'=>$ReminderModel->search(array('user_id'=>$profile_id)),
- 'itemView'=>'_view',
-)); ?>
 <?php $form = $this->beginWidget('bootstrap.widgets.TbActiveForm', array(
-      'action'=>Yii::app()->createUrl('reminders/add'),
+      'action'=>Yii::app()->createUrl('reminders/update/'.$model->id),
       'id'=>'verticalForm',
       'htmlOptions'=>array('class'=>'well well-large span3'),
 )); ?>
 <div>
-      <?php echo $form->textAreaRow($ReminderModel, 'details', array('class'=>'span3', 'rows'=>5)); ?>
-      <?php echo $form->datepickerRow($ReminderModel, 'start_datetime',
+      <?php echo $form->textAreaRow($model, 'details', array('class'=>'span3', 'rows'=>5)); ?>
+      <?php echo $form->datepickerRow($model, 'start_datetime',
       array(
       'prepend'=>'<i class="icon-calendar"></i>',
       'options'=>array('format'=>'yyyy-mm-dd'),
@@ -32,4 +28,3 @@ $this->breadcrumbs=array(
       <?php $this->widget('bootstrap.widgets.TbButton', array('buttonType'=>'submit', 'label'=>'Add')); ?>
 </div>
 <?php $this->endWidget(); ?>
-
