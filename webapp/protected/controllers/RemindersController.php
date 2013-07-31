@@ -45,6 +45,7 @@ class RemindersController extends Controller
     if(isset($_POST['Reminder'])){
       $attributes = $_POST['Reminder'];
       $attributes['status'] = 'ACTIVE';
+      $attributes['start_datetime'] = strtotime($attributes['start_datetime']);
       $model->attributes = $attributes;
       if($model->save(true,$attributes)){
         $this->redirect(array('index'));
@@ -59,6 +60,7 @@ class RemindersController extends Controller
 		$model = $this->loadModel($id);
 		if(isset($_POST['Reminder'])){
 			$model->attributes = $_POST['Reminder'];
+      $model->start_datetime = strtotime($model->start_datetime);
       if($model->save())
         $this->redirect(array('index'));
 		}
@@ -70,11 +72,17 @@ class RemindersController extends Controller
   
 	public function actionDelete($id)
   {
+    $model = $this->loadModel($id);
+    $model->status = 'DELETED';
+    if($model->save())
+        $this->redirect(array('index'));
+    /*
       $this->loadModel($id)->delete();
 
       // if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
       if (!isset($_GET['ajax']))
           $this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('admin'));
+    */
   }
 
 }

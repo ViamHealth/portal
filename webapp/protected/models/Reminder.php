@@ -112,6 +112,7 @@ class Reminder extends CActiveRecord
 		if(is_array($filters) && count($filters)){
 			if(isset($filters['user_id'])){
 				$criteria->compare('user_id',$filters['user_id']);
+				$criteria->compare('status',$filters['status']);
 				//hardcoding order for now
 				$criteria->order = 'updated_at DESC, created_at DESC';
 			}
@@ -144,7 +145,6 @@ class Reminder extends CActiveRecord
 		if(!$runValidation || $this->validate($attributes))
 		{
 			$attributes['user'] = Yii::app()->user->url;
-			$attributes['start_datetime'] = strtotime($attributes['start_datetime']);
 			/*$attributes['repeat_mode'] = 'NONE';
 			$attributes['repeat_day'] = 0;
 			$attributes['repeat_hour'] = 0;
@@ -153,10 +153,13 @@ class Reminder extends CActiveRecord
 			$attributes['repeat_day_interval'] = 0;
 			$attributes['status'] = 'ACTIVE';*/
 			$url = 'reminders/';
+			$method = 'post';
 			if(isset($attributes['id'])){
 				$url = $url.$attributes['id'].'/';
+				$method = 'put';
 			}
-			$a = VApi::apiCall('put', $url, $attributes);
+			$a = VApi::apiCall($method, $url, $attributes);
+			//var_dump($a);die();
 			return true;
 			//return $this->getIsNewRecord() ? $this->insert($attributes) : $this->update($attributes);
 		}

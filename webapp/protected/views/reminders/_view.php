@@ -9,7 +9,7 @@
     <div>
     <?php echo CHtml::encode($data->details); ?>
       <p><span>When</span><br />
-      <?php echo CHtml::encode($data->start_datetime);?></p>
+      <?php echo CHtml::encode(date('Y-m-d',$data->start_datetime));?></p>
     </div>
     <div class="col">
       <p><span>Repeat</span><br />
@@ -32,7 +32,7 @@
       $this->widget('bootstrap.widgets.TbButton',array(
         'label' => 'Delete',
         'type' => 'danger',
-        'url' => $this->createUrl('reminders/delete')
+        'url' => $this->createUrl('reminders/delete/'.$data->id)
       ));
       ?>
       </div>

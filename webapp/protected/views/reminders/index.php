@@ -13,7 +13,7 @@ $this->breadcrumbs=array(
 
 
 <?php $this->widget('bootstrap.widgets.TbListView',array(
- 'dataProvider'=>$ReminderModel->search(array('user_id'=>$profile_id)),
+ 'dataProvider'=>$ReminderModel->search(array('user_id'=>$profile_id, 'status'=>'ACTIVE')),
  'itemView'=>'_view',
 )); ?>
 <?php $form = $this->beginWidget('bootstrap.widgets.TbActiveForm', array(
