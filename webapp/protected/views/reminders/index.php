@@ -17,7 +17,7 @@ $this->breadcrumbs=array(
  'itemView'=>'_view',
 )); ?>
 <?php $form = $this->beginWidget('bootstrap.widgets.TbActiveForm', array(
-      'action'=>Yii::app()->createUrl('reminders/add'),
+      'action'=>$this->createUrl('/reminders/add'),
       'id'=>'verticalForm',
       'htmlOptions'=>array('class'=>'well well-large span3'),
 )); ?>
