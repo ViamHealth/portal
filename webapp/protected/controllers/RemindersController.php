@@ -40,21 +40,14 @@ class RemindersController extends Controller
 
   public function actionAdd()
   {
+    
     $model=Reminder::model();
     if(isset($_POST['Reminder'])){
-      $model->attributes = $_POST['Reminder'];
-      $model->user_id = Yii::app()->user->id;
-      $model->repeat_mode = 'NONE';
-      $model->repeat_day = 0;
-      $model->repeat_hour = 0;
-      $model->repeat_min = 0;
-      $model->repeat_weekday = 0;
-      $model->repeat_day_interval = 0;
-      $model->status = 'ACTIVE';
-      if($model->save(true,$_POST['Reminder'])){
-        var_dump($model);
-        if(!$model->id)
-          die("not saving");
+      $attributes = $_POST['Reminder'];
+      $attributes['start_datetime'] = strtotime($attributes['start_datetime']);
+      $attributes['status'] = 'ACTIVE';
+      $model->attributes = $attributes;
+      if($model->save(true,$attributes)){
         $this->redirect(array('index'));
       }
     }

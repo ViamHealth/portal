@@ -205,10 +205,15 @@ class UserView(viewsets.ViewSet):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class ReminderViewSet(viewsets.ModelViewSet):
-    serializer_class = ReminderSerializer
+    #serializer_class = ReminderSerializer
     filter_fields = ('user')
     model = Reminder
     permission_classes = (permissions.IsAuthenticated,FamilyPermission,)
+
+    def get_serializer_class(self):
+        if self.request.method in permissions.SAFE_METHODS:
+            return ReminderListSerializer
+        return ReminderSerializer
 
     def get_object(self):
         return global_get_object(self,Reminder)
@@ -216,15 +221,11 @@ class ReminderViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         return global_get_queryset(self, Reminder)
 
-    def pre_save(self, obj):
-        obj.updated_by = self.request.user
-        if obj.user is None:
-            obj.user = self.request.user
-
     def create(self, request, format=None):
         reminder = request.DATA
         serializer = ReminderSerializer(data=reminder)
         if serializer.is_valid():
+            serializer.object.updated_by = self.request.user
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

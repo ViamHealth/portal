@@ -69,10 +69,18 @@ class Healthfile(models.Model):
         db_table = 'tbl_healthfiles'
 
 class Reminder(models.Model):
+    REPEAT_MODE_CHOICES = (
+        ('NONE','NONE'),
+        ('MONTHLY','MONTHLY'),
+        ('WEEKLY','WEEKLY'),
+        ('DAILY','DAILY'),
+        ('N_DAYS_INTERVAL','N_DAYS_INTERVAL'),
+        ('X_WEEKDAY_MONTHLY','X_WEEKDAY_MONTHLY'),
+    )
     user = models.ForeignKey('auth.User', related_name="+")
     details = models.TextField()
     start_datetime = models.IntegerField()
-    repeat_mode = models.CharField(max_length=32L,blank=True)
+    repeat_mode = models.CharField(max_length=32L,blank=True,choices=REPEAT_MODE_CHOICES, default='NONE')
     repeat_day = models.CharField(max_length=2L,blank=True)
     repeat_hour = models.CharField(max_length=2L,blank=True)
     repeat_min = models.CharField(max_length=2L,blank=True)

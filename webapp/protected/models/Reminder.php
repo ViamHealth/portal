@@ -7,7 +7,7 @@
  * @property integer $id
  * @property integer $user_id
  * @property string $details
- * @property string $start_datetime
+ * @property integer $start_datetime
  * @property string $repeat_mode
  * @property string $repeat_day
  * @property string $repeat_hour
@@ -51,12 +51,12 @@ class Reminder extends CActiveRecord
 		// will receive user inputs.
 		return array(
 			array('user_id, details, start_datetime', 'required'),
-			array('user_id, updated_by', 'numerical', 'integerOnly'=>true),
-			array('repeat_mode', 'length', 'max'=>32),
-			array('repeat_day, repeat_hour, repeat_min', 'length', 'max'=>2),
-			array('repeat_weekday', 'length', 'max'=>9),
-			array('repeat_day_interval', 'length', 'max'=>3),
-			array('status', 'length', 'max'=>18),
+			#array('user_id, updated_by', 'numerical', 'integerOnly'=>true),
+			#array('repeat_mode', 'length', 'max'=>32),
+			#array('repeat_day, repeat_hour, repeat_min', 'length', 'max'=>2),
+			#array('repeat_weekday', 'length', 'max'=>9),
+			#array('repeat_day_interval', 'length', 'max'=>3),
+			#array('status', 'length', 'max'=>18),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
 			array('id, user_id, details, start_datetime, repeat_mode, repeat_day, repeat_hour, repeat_min, repeat_weekday, repeat_day_interval, status, created_at, updated_at, updated_by', 'safe'),
@@ -142,26 +142,23 @@ class Reminder extends CActiveRecord
 	{
 		if(!$runValidation || $this->validate($attributes))
 		{
-			
-			$attributes['start_datetime'] = strtotime($attributes['start_datetime'])/100;
 			var_dump($attributes);
 			$attributes['user'] = Yii::app()->user->url;
-			//$attributes['updated_by'] = Yii::app()->user->url;
-			$attributes['repeat_mode'] = 'NONE';
+			/*$attributes['repeat_mode'] = 'NONE';
 			$attributes['repeat_day'] = 0;
 			$attributes['repeat_hour'] = 0;
 			$attributes['repeat_min'] = 0;
 			$attributes['repeat_weekday'] = 0;
 			$attributes['repeat_day_interval'] = 0;
-			$attributes['status'] = 'ACTIVE';
+			$attributes['status'] = 'ACTIVE';*/
 			$a = VApi::apiCall('post', 'reminders/', $attributes);
-			var_dump($a);die("aa");
+			return true;
 			//return $this->getIsNewRecord() ? $this->insert($attributes) : $this->update($attributes);
 		}
 		else{
-			die("asdfdsf");
-		}
 			return false;
+		}
+			
 	}
 	/*public function beforeSave() {
     if ($this->isNewRecord)
