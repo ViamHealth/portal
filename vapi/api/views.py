@@ -248,9 +248,30 @@ class ReminderViewSet(viewsets.ModelViewSet):
         reminder = request.DATA
         serializer = ReminderSerializer(data=reminder)
         if serializer.is_valid():
+            fuser = request.QUERY_PARAMS.get('user_id', None)
+            if fuser is not None:
+                fuserObj = User.objects.get(pk=fuser)
+                serializer.object.user = fuserObj
+            else:
+                serializer.object.user = self.request.user
             serializer.object.updated_by = self.request.user
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def update(self, request, pk=None):
+        user = self.get_object()
+        serializer = ReminderSerializer(user, data=request.DATA, context={'request': request})
+        if serializer.is_valid():
+            fuser = request.QUERY_PARAMS.get('user_id', None)
+            if fuser is not None:
+                fuserObj = User.objects.get(pk=fuser)
+                serializer.object.user = fuserObj
+            else:
+                serializer.object.user = self.request.user
+            serializer.object.updated_by = self.request.user
+            serializer.save()
+            return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class GoalViewSet(ListAPIView):
