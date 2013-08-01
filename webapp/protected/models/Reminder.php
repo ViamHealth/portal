@@ -22,8 +22,13 @@
  * The followings are the available model relations:
  * @property Users $user
  */
-class Reminder extends CActiveRecord
+class Reminder extends VCActiveRecord
 {
+	public function resourceUrl()
+    {
+    	return 'reminders/';
+    }
+    
 	/**
 	 * Returns the static model of the specified AR class.
 	 * @param string $className active record class name.
@@ -141,33 +146,16 @@ class Reminder extends CActiveRecord
 
 	public function save($runValidation=true,$attributes=null)
 	{
-		if(empty($attributes)) $attributes = $this->attributes;
-		if(!$runValidation || $this->validate($attributes))
-		{
-			$attributes['user'] = Yii::app()->user->url;
-			/*$attributes['repeat_mode'] = 'NONE';
-			$attributes['repeat_day'] = 0;
-			$attributes['repeat_hour'] = 0;
-			$attributes['repeat_min'] = 0;
-			$attributes['repeat_weekday'] = 0;
-			$attributes['repeat_day_interval'] = 0;
-			$attributes['status'] = 'ACTIVE';*/
-			$url = 'reminders/';
-			$method = 'post';
-			if(isset($attributes['id'])){
-				$url = $url.$attributes['id'].'/';
-				$method = 'put';
-			}
-			$a = VApi::apiCall($method, $url, $attributes);
-			//var_dump($a);die();
-			return true;
-			//return $this->getIsNewRecord() ? $this->insert($attributes) : $this->update($attributes);
-		}
-		else{
-			return false;
-		}
-			
+		/*$attributes['repeat_mode'] = 'NONE';
+		$attributes['repeat_day'] = 0;
+		$attributes['repeat_hour'] = 0;
+		$attributes['repeat_min'] = 0;
+		$attributes['repeat_weekday'] = 0;
+		$attributes['repeat_day_interval'] = 0;
+		$attributes['status'] = 'ACTIVE';*/
+		return parent::save($runValidation,$attributes);
 	}
+	
 	/*public function beforeSave() {
     if ($this->isNewRecord)
         $this->created_at = new CDbExpression('NOW()');

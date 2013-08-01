@@ -16,7 +16,7 @@ class VApi
         {
             $url = $url."?user_id=$fuid";
         }
-        $rest->initialize(array('server' => 'http://127.0.0.1:8080/'));
+        $rest->initialize(array('server' => self::$apiBaseUrl));
         $rest->set_header('Authorization','Token '.Yii::app()->user->token);
         switch($method){
             case 'get': 
@@ -35,7 +35,7 @@ class VApi
  
 	}
 
-    public static function getToken($params=array()){
+    public static function fetchToken($params=array()){
         if(empty($params))
             return false;
         if(isset($params['username']) && isset($params['password']))
@@ -48,7 +48,7 @@ class VApi
             if(! $result = $rest->post($url, $post_data))
             {
                 //return false;
-                throw new CHttpException(500, 'API Server down', 500);
+                throw new CHttpException(500, 'API Server down');
             }
             else
             {
@@ -57,5 +57,37 @@ class VApi
             
 
         }
+    }
+
+    //TO Be used only with Get requests
+    public static function getData($response=array())
+    {
+        if(isset($response->results))
+            return $response->results;
+        else
+            throw new CHttpException(500, 'API Server error');
+    }
+
+    //NBelow functions not used
+    //TO Be used only with non Safe requests
+    public static function getDataArray($response=array())
+    {
+        if(empty($response))
+            throw new CHttpException(500, 'API Server error');
+        $res = self::jsonToArray($response);
+        return $res;
+    }
+
+    public static function jsonToArray($response)
+    {
+        foreach ($response as $key => $value) {
+            if (is_object($value)) {
+
+                //$res[$key] = self::jsonToArray($value);
+            } else{
+                $res[$key] = $value;    
+            }
+        }
+        return $res;
     }
 }

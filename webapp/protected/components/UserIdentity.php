@@ -35,7 +35,7 @@ class UserIdentity extends CUserIdentity
 	 */
 	public function authenticate() 
 	{
-		$res = VApi::getToken(
+		$res = VApi::fetchToken(
 			array(
 				'username'=>$this->username,
 				'password'=>$this->password
@@ -48,7 +48,7 @@ class UserIdentity extends CUserIdentity
 			$this->errorCode=self::ERROR_NONE;
 			$this->user->_token = $res->token;
 			Yii::app()->user->setState('token', $this->user->_token);
-
+			
 			$res = VApi::apiCall('get','users/me/');
 
 			$this->user->setAttribute('email',$res->username);

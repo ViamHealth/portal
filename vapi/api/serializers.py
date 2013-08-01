@@ -42,7 +42,7 @@ class ReminderListSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Reminder
         exclude = ('updated_by',)
-        #fields = ('url', 'user','details','start_datetime' ,'repeat_mode','repeat_day','repeat_hour','repeat_min','repeat_weekday','repeat_day_interval','created_at','updated_at')
+        fields = ('id','url', 'user','details','start_datetime' ,'repeat_mode','repeat_day','repeat_hour','repeat_min','repeat_weekday','repeat_day_interval','created_at','updated_at')
 
 class ReminderSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:

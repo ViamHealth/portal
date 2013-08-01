@@ -34,7 +34,7 @@
  * @property TblUsersMap[] $tblUsersMaps
  * @property TblUsersMap[] $tblUsersMaps1
  */
-class AuthUser extends CActiveRecord
+class AuthUser extends VCActiveRecord
 {
 	public $_token;
 	/**
@@ -150,5 +150,21 @@ class AuthUser extends CActiveRecord
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
 		));
+	}
+
+	//NOT USed
+	public  static function getMe()
+	{
+		$res = VApi::apiCall('get','users/me/');
+		$d = VApi::getDataArray($res);
+		
+
+		//var_dump($res);
+		//die();
+		$user = AuthUser::model();
+
+		$a = $user->setAttributes($d);
+		var_dump($a);die();
+
 	}
 }
