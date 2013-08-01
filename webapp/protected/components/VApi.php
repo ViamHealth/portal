@@ -11,7 +11,8 @@ class VApi
 	{
 		$rest = new RESTClient();
         $fuid =  Yii::app()->request->getParam('fuid',null);
-        if($fuid)
+        //TODO:Hacky!!
+        if($fuid && ( $url !='users/' && $url !='/users/me/'))
         {
             $url = $url."?user_id=$fuid";
         }

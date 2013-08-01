@@ -34,11 +34,16 @@ class Controller extends CController
         Yii::app()->user->setReturnUrl(Yii::app()->request->getUrl());
         if (Yii::app()->user->isGuest || !isset(Yii::app()->user->token)){
             //TODO: YII Session management not setting isGuest as true for some reason. Need to figure this out
-            Yii::app()->user->__id =null;
+            if(isset(Yii::app()->user->__id))
+                Yii::app()->user->__id =null;
         	if(($this->id == "site" && $action->id == "login")){
                 return true;
         		//Login page
         	}
+            else if(($this->id == "site" && $action->id == "error")){
+                return true;
+                //Error page
+            }
         	else{
         		if(Yii::app()->request->isAjaxRequest){
         			die("user not logged in");
@@ -50,6 +55,7 @@ class Controller extends CController
         }
         else
         {
+            //optionally include code here if its an authenticated user
             $this->fuid =  Yii::app()->request->getParam('fuid',null);
             $fuidIsFamily = false;
             if($this->fuid)
@@ -69,14 +75,14 @@ class Controller extends CController
                 $this->current_user_id = Yii::app()->user->id;   
             }
         }
-        //optionally include code here if its an authenticated user
+        
         return true;
     }
 
     protected function apiCall($method, $url, $params =array())
     {
-        if($this->getCurrentUserId() != Yii::app()->user->id)
-            $url = $url.'?user_id='.$this->getCurrentUserId();
+        //if($this->getCurrentUserId() != Yii::app()->user->id)
+        //    $url = $url.'?user_id='.$this->getCurrentUserId();
         return VApi::apiCall($method, $url, $params);
     }
 

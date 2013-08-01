@@ -36,6 +36,7 @@ if(!Yii::app()->user->isGuest)
 		}
 			
 	}
+	$family_array[] = array('label' => 'Add User', 'url' => array('/user/update'), 'visible' => !Yii::app()->user->isGuest,);
 	$family_array[] = array('label' => 'Logout', 'url' => array('/site/logout'), 'visible' => !Yii::app()->user->isGuest,);
 }
 ?>
