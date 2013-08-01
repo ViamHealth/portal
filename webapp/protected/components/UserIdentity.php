@@ -35,34 +35,29 @@ class UserIdentity extends CUserIdentity
 	 */
 	public function authenticate() 
 	{
-		$rest = new RESTClient();
-		#$rest->initialize(array('server' => Yii::app()->params->apiServerHost.':'.Yii::app()->params->apiServerPort));
-		$rest->initialize(array('server' => 'http://127.0.0.1:8080/'));
-		$res = $rest->post('api-token-auth/',
+		$res = VApi::getToken(
 			array(
 				'username'=>$this->username,
 				'password'=>$this->password
 				)
-			);
-		//TOD:check for status code
-		$res = json_decode($res);
-
+		);
 		if(isset($res->non_field_erros)){
 			$this->errorCode=self::ERROR_PASSWORD_INVALID;
 		}
 		else if(isset($res->token)){
 			$this->errorCode=self::ERROR_NONE;
 			$this->user->_token = $res->token;
-			$rest->initialize(array('server' => 'http://127.0.0.1:8080/'));
-			$rest->set_header('Authorization','Token '.$this->user->_token);
-			$res = $rest->get('users/me/');
-			//Set User Data
-			$res = json_decode($res);
+			Yii::app()->user->setState('token', $this->user->_token);
+
+			$res = VApi::apiCall('get','users/me/');
+
 			$this->user->setAttribute('email',$res->username);
 			$this->user->setAttribute('name',$res->username);
+
 			Yii::app()->user->setState('username', $this->user->username);
-			Yii::app()->user->setState('token', $this->user->_token);
 			Yii::app()->user->setState('url', 'http://127.0.0.1:8080/users/'.$this->user->id.'/');
+		} else {
+			
 		}
 		/*
 		if ($this->user === null)
