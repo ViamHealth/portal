@@ -23,29 +23,23 @@ from django.db.models import Q
 from django.http import Http404
 from itertools import chain
 import time 
+from django.shortcuts import get_object_or_404
 
 #Temporary create code for all users once.
 for user in User.objects.all():
     Token.objects.get_or_create(user=user)
 
 class FamilyPermission(permissions.BasePermission):
-    #TODO:optimize function
-    def has_permission(self, request, view):
-        has_permission = False
-        family_user_id = request.QUERY_PARAMS.get('user_id', None)
-        if family_user_id is None:
-            #List page and
-            #Current user is the family user
-            return True
-        
-        family_user_id = int(family_user_id)
-        user_id = int(request.user.id)
+    def check_family_permission(self,user_id, family_user_id):
+        """
+        User id : current authenticated user
+        Family User id : current profile
+        """
         if user_id == family_user_id:
-            #Current user is the family user
             return True
             #Q(connection_status='ACTIVE'),
-
         #TODO: improve this code
+        has_permission = False
         qqueryset = UsersMap.objects.filter(
              Q(initiatior_user_id=user_id) | Q(connected_user_id=family_user_id) 
         )
@@ -68,6 +62,21 @@ class FamilyPermission(permissions.BasePermission):
                 has_permission = True
         return has_permission
 
+    #TODO:optimize function
+    def has_permission(self, request, view):
+        has_permission = False
+        family_user_id = request.QUERY_PARAMS.get('user_id', None)
+        if family_user_id is None:
+            #List page and
+            #Current user is the family user
+            return True
+        family_user_id = int(family_user_id)
+        user_id = int(request.user.id)
+        return self.check_family_permission(user_id, family_user_id)
+
+    """
+    Not needed right now. Permission layer controlled by get_queryset
+    """
     def has_object_permission(self, request, view, obj=None):
         if request is None:
             request = self.request
@@ -79,34 +88,24 @@ class FamilyPermission(permissions.BasePermission):
         
         family_user_id = int(family_user_id)
         user_id = int(request.user.id)
-        if user_id == family_user_id:
-            #Current user is the family user
-            return True
-            #Q(connection_status='ACTIVE'),
-        #TODO: improve this code
-        qqueryset = UsersMap.objects.filter(
-             Q(initiatior_user_id=user_id) | Q(connected_user_id=family_user_id) 
-        )
-        users = [p.initiatior_user for p in qqueryset]
-        for p in qqueryset:
-            users.append(p.connected_user)
+        return self.check_family_permission(user_id, family_user_id)
+        
+"""
+function to get object , with ACTIVE status
 
-        qqueryset2 = UsersMap.objects.filter(
-             Q(connected_user_id=user_id) | Q(initiatior_user_id= family_user_id)
-        )
-        users2 = [p.initiatior_user for p in qqueryset2]
-        for p in qqueryset2:
-            users2.append(p.connected_user)
-             
-        for u in users:
-            if int(u.id) == int(family_user_id):
-                has_permission = True
-        for u in users2:
-            if int(u.id) == int(family_user_id):
-                has_permission = True
-        return has_permission
+"""
 
-def global_get_object(view, model):
+def global_get_object(view):
+    queryset = view.get_queryset()
+    filter = {}
+    filter[view.lookup_field] = view.kwargs[view.lookup_field]
+    model = get_object_or_404(queryset, **filter)
+    #Redundant as queryset will have auto check
+    #view.check_object_permissions(view.request, model)
+    return model
+
+
+def global_get_object_old(view, model):
     pk = view.kwargs.get('pk')
     if pk is not None:
         try:
@@ -117,6 +116,10 @@ def global_get_object(view, model):
             #return Response(status=status.HTTP_404_NOT_FOUND)
             raise Http404
 
+"""
+function to get queryset , with ACTIVE status and current user / family user
+
+"""
 def global_get_queryset(view, model):
     queryset = model.objects.filter(status='ACTIVE')
     if view.request.method not in permissions.SAFE_METHODS:
@@ -127,6 +130,36 @@ def global_get_queryset(view, model):
     else:
         queryset = queryset.filter(user=view.request.user)
     return queryset    
+
+"""
+function to get object's User
+
+"""
+def global_get_user_object(request):
+        fuser = request.QUERY_PARAMS.get('user_id', None)
+        if fuser is not None:
+            fuserObj = User.objects.get(pk=fuser)
+            return fuserObj
+        else:
+            return request.user
+        return
+
+"""
+function used for creating and updating]
+"""
+def global_create_update(request, view, pk=None):
+    serializerObj = view.get_serializer_class()
+    if pk is not None:
+        mObj = view.get_object()
+        serializer = serializerObj(mObj, data=request.DATA, context={'request': request})
+    else:
+        serializer = serializerObj(data=request.DATA, context={'request': request})
+    if serializer.is_valid():
+        serializer.object.user = global_get_user_object(request)
+        serializer.object.updated_by = request.user
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 #TODO: Move to mixins for less  code
 class UserView(viewsets.ViewSet):
@@ -227,6 +260,50 @@ class UserView(viewsets.ViewSet):
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
+
+class HealthfileViewSet(viewsets.ModelViewSet):
+
+    """
+    Manage all healthfiles for a user ( authenticated or family member)
+    * Requires token authentication.
+    * CRUD of fields created_at & updated_at are handled by API only.
+    * User field is not to be passed to the API via POST params. It will be ignored if passed.
+    * For family user, pass user_id in URL . ie append ?user_id=$user_id
+    * For current logged in user, API automatically picks up  the user
+
+    """
+
+    filter_fields = ('user')
+    model = Healthfile
+    permission_classes = (permissions.IsAuthenticated,FamilyPermission,)
+
+    def get_serializer_class(self):
+        if self.request.method in permissions.SAFE_METHODS:
+            return HealthfileSerializer
+        return HealthfileSerializer
+
+    """
+    def get_object(self):
+        return global_get_object(self)
+    """
+
+    def get_queryset(self):
+        return global_get_queryset(self, Healthfile)
+
+
+    def create(self, request, format=None):
+        """
+        Create a healthfile for a user ( authenticated or family member)
+        """
+        return global_create_update(request, self, None)
+
+    def update(self, request, pk=None):
+        """
+        Update a healthfile for a user ( authenticated or family member)
+        """
+        return global_create_update(request, self, pk)        
+
 class ReminderViewSet(viewsets.ModelViewSet):
     #serializer_class = ReminderSerializer
     filter_fields = ('user')
@@ -238,41 +315,29 @@ class ReminderViewSet(viewsets.ModelViewSet):
             return ReminderListSerializer
         return ReminderSerializer
 
+    """
     def get_object(self):
-        return global_get_object(self,Reminder)
-
+        return global_get_object(self)
+    """
+    
     def get_queryset(self):
         return global_get_queryset(self, Reminder)
 
     def create(self, request, format=None):
-        reminder = request.DATA
-        serializer = ReminderSerializer(data=reminder)
-        if serializer.is_valid():
-            fuser = request.QUERY_PARAMS.get('user_id', None)
-            if fuser is not None:
-                fuserObj = User.objects.get(pk=fuser)
-                serializer.object.user = fuserObj
-            else:
-                serializer.object.user = self.request.user
-            serializer.object.updated_by = self.request.user
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return global_create_update(request, self, None)
 
     def update(self, request, pk=None):
-        user = self.get_object()
-        serializer = ReminderSerializer(user, data=request.DATA, context={'request': request})
+        return global_create_update(request, self, pk)
+        """
+        reminder = self.get_object()
+        serializer = ReminderSerializer(reminder, data=request.DATA, context={'request': request})
         if serializer.is_valid():
-            fuser = request.QUERY_PARAMS.get('user_id', None)
-            if fuser is not None:
-                fuserObj = User.objects.get(pk=fuser)
-                serializer.object.user = fuserObj
-            else:
-                serializer.object.user = self.request.user
+            serializer.object.user = global_get_user_object(self)
             serializer.object.updated_by = self.request.user
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        """
 
 class GoalViewSet(ListAPIView):
     """
@@ -323,7 +388,7 @@ class UserWeightGoalViewSet(viewsets.ModelViewSet):
     
 
     def get_object(self):
-        return global_get_object(self,UserWeightGoal)
+        return global_get_object(self)
 
     def get_queryset(self):
         return global_get_queryset(self, UserWeightGoal)
@@ -351,6 +416,7 @@ class UserWeightGoalViewSet(viewsets.ModelViewSet):
             else:
                 return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
 
+"""
 class HealthfileViewSet(viewsets.ModelViewSet):
     serializer_class = HealthfileSerializer
     filter_fields = ('user')
@@ -378,7 +444,7 @@ class HealthfileViewSet(viewsets.ModelViewSet):
         else:
             queryset = queryset.filter(user=self.request.user)
         return queryset
-
+"""
 
 class HealthfileTagViewSet(viewsets.ModelViewSet):
     serializer_class = HealthfileTagSerializer

@@ -14,6 +14,11 @@ from rest_framework.authtoken.models import Token
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
+GLOBAL_STATUS_CHOICES = (
+        ('ACTIVE','ACTIVE'),
+        ('DELETED','DELETED')
+    )
+
 class UserProfile(models.Model):  
     user = models.ForeignKey('auth.User', unique=True)
     location = models.CharField(max_length=140)  
@@ -48,20 +53,24 @@ class UserGroupSet(models.Model):
         db_table = 'tbl_user_group_set'
 
 class HealthfileTag(models.Model):
-    id = models.AutoField(primary_key=True)
+    # does not have a status field
+    #id = models.AutoField(primary_key=True)
     healthfile = models.ForeignKey('Healthfile', related_name="tags")
     tag = models.CharField(max_length=64L)
     created_at = models.DateTimeField()
+    updated_at = models.DateTimeField(auto_now=True)
+    updated_by = models.ForeignKey('auth.User', related_name="+", db_column='updated_by')
     class Meta:
         db_table = 'tbl_healthfile_tags'
 
 class Healthfile(models.Model):
-    id = models.AutoField(primary_key=True)
+    #id = models.AutoField(primary_key=True)
     user = models.ForeignKey('auth.User', related_name="+")
     name = models.CharField(max_length=256L)
     description = models.TextField()
     mime_type = models.CharField(max_length=256L)
     stored_url = models.CharField(max_length=256L)
+    status = models.CharField(max_length=18L, choices=GLOBAL_STATUS_CHOICES, default='ACTIVE', db_index=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     updated_by = models.ForeignKey('auth.User', related_name="+", db_column='updated_by')
@@ -86,7 +95,7 @@ class Reminder(models.Model):
     repeat_min = models.CharField(max_length=2L,blank=True)
     repeat_weekday = models.CharField(max_length=9L,blank=True)
     repeat_day_interval = models.CharField(max_length=3L,blank=True)
-    status = models.CharField(max_length=18L,blank=True)
+    status = models.CharField(max_length=18L, choices=GLOBAL_STATUS_CHOICES, default='ACTIVE', db_index=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     updated_by = models.ForeignKey('auth.User', related_name="+", db_column='updated_by')
@@ -104,10 +113,7 @@ class UserWeightGoal(models.Model):
         ('MONTH','MONTH'),
         ('YEAR','YEAR'),
     )
-    GOAL_STATUS_CHOICES = (
-        ('ACTIVE','ACTIVE'),
-        ('DELETED','DELETED')
-    )
+    
     user = models.ForeignKey('auth.User', related_name="+")
     weight = models.IntegerField()
     weight_measure = models.CharField(max_length=12L, choices=MEASURE_CHOICES, default='METRIC')
@@ -117,7 +123,7 @@ class UserWeightGoal(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     updated_by = models.ForeignKey('auth.User', related_name="+", db_column='updated_by')
-    status = models.CharField(max_length=64L, choices=GOAL_STATUS_CHOICES, default='ACTIVE')
+    status = models.CharField(max_length=18L, choices=GLOBAL_STATUS_CHOICES, default='ACTIVE', db_index=True)
     class Meta:
         db_table = 'tbl_user_weight_goals'
     def __unicode__(self):
