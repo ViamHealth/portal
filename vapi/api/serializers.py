@@ -36,13 +36,13 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
     profile = UserProfileSerializer(required=False)
     class Meta:
         model = User
-        fields = ('id', 'username', 'email', 'first_name', 'last_name', 'profile')
+        fields = ('id', 'url', 'username', 'email', 'first_name', 'last_name', 'profile')
 
 class ReminderListSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Reminder
         exclude = ('updated_by',)
-        fields = ('id', 'user','details','start_datetime' ,'repeat_mode','repeat_day','repeat_hour','repeat_min','repeat_weekday','repeat_day_interval','created_at','updated_at')
+        fields = ('id','url', 'user','details','start_datetime' ,'repeat_mode','repeat_day','repeat_hour','repeat_min','repeat_weekday','repeat_day_interval','created_at','updated_at')
 
 class ReminderSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
@@ -61,12 +61,12 @@ class HealthfileSerializer(serializers.HyperlinkedModelSerializer):
         #exclude = ('created_at','updated_at','updated_by',)
         exclude = ('updated_by',)
         #optional_fields = ('user')
-        fields = ('id','user','tags','name' ,'description','mime_type','stored_url','status','created_at','updated_at')
+        fields = ('id', 'url','user','tags','name' ,'description','mime_type','stored_url','status','created_at','updated_at')
 
 class HealthfileTagListSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = HealthfileTag
-        fields = ('id','tag' ,'healthfile','created_at','updated_at')
+        fields = ('id','url','tag' ,'healthfile','created_at','updated_at')
 
 class HealthfileTagSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:

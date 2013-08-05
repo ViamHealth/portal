@@ -46,39 +46,20 @@ class FamilyPermission(permissions.BasePermission):
             #Q(connection_status='ACTIVE'),
         #TODO: improve this code
         has_permission = False
+
         qqueryset = UserGroupSet.objects.filter(user_id__in=[user_id,family_user_id],group_id__in=[user_id,family_user_id])
         for p in qqueryset:
-            if(p.user_id != p.group_id):
-                has_permission = true
+            has_permission = True
 
-        """
-        qqueryset = UsersMap.objects.filter(
-             Q(initiatior_user_id=user_id) | Q(connected_user_id=family_user_id) 
-        )
-        users = [p.initiatior_user for p in qqueryset]
-        for p in qqueryset:
-            users.append(p.connected_user)
-
-        qqueryset2 = UsersMap.objects.filter(
-             Q(connected_user_id=user_id) | Q(initiatior_user_id= family_user_id)
-        )
-        users2 = [p.initiatior_user for p in qqueryset2]
-        for p in qqueryset2:
-            users2.append(p.connected_user)
-             
-        for u in users:
-            if int(u.id) == int(family_user_id):
-                has_permission = True
-        for u in users2:
-            if int(u.id) == int(family_user_id):
-                has_permission = True
-        """
         return has_permission
 
     #TODO:optimize function
     def has_permission(self, request, view):
         has_permission = False
         family_user_id = request.QUERY_PARAMS.get('user_id', None)
+        if family_user_id is None:
+            family_user_id = view.kwargs.get('pk')
+        
         if family_user_id is None:
             #List page and
             #Current user is the family user
@@ -183,33 +164,65 @@ def api_root(request, format=None):
         'logged-in user': reverse('user-me', request=request, format=format),
         #'user profile crud': reverse('profile-detail', request=request, format=format),
         'signup': reverse('user-signup', request=request, format=format),
-        #'reminders': reverse('reminders', request=request, format=format),
+        'reminders': reverse('reminder-list', request=request, format=format),
         
         
     })
 
 class SignupView(viewsets.ViewSet):
     model = User
-    def get_serializer_class(self):
-        return UserSerializer
     permission_classes=(permissions.AllowAny,)
 
+    def get_serializer_class(self):
+        return UserSerializer
+    
     @action(methods=['POST',])
     def user_signup(self, request, format=None):
-        #serializer = UserSerializer(data=request.DATA)
-        #if serializer.is_valid():
-        #    serializer.object.status = 'ACTIVE'
-        #    serializer.save()
-        #    umap = UserGroupSet(group=serializer.data.get('id'), user=serializer.data.get('id'),connection_status='ACTIVE');
-        #    umap.save()
-        #    return Response(serializer.data, status=status.HTTP_201_CREATED)
-        #return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         return global_create_update(request, self, None)
 
 #TODO: Move to mixins for less  code
 class UserView(viewsets.ViewSet):
-    permission_classes = (permissions.IsAuthenticated,FamilyPermission,)
+    """
+    CRUD for authenticated user or its family member
+    * Requires token authentication.
+    * CRUD of fields created_at & updated_at are handled by API only.
+    * ============
+    * GET /users/ - List of users accessible to current logged in user
+    * GET /users/me/ - get current logged in user
+    * GET /users/<pk>/ - get user with id <pk>
+    * POST /users/ - Create new family user for current logged in user
+    * PUT /users/<pk> - get user with id <pk>
+    * PUT /users/<pk> - Update user with id <pk>
+    * PUT /users/<pk>/profile/ - update profile of user with id <pk>
+    * DELETE /users/<pk> - Delete users with id <pk>
+    * ============
+    """
+    permission_classes = (permissions.IsAuthenticated,)
 
+    def has_permission_user_view(self, request):
+        family_user_id = self.kwargs.get('pk')
+        if family_user_id is None:
+            return True
+        family_user_id = int(family_user_id)
+        user_id = int(request.user.id)
+        if user_id == family_user_id:
+            return True
+        has_permission = False
+        
+        qqueryset = UserGroupSet.objects.filter(user_id__in=[user_id,family_user_id],group_id__in=[user_id,family_user_id])
+        for p in qqueryset:
+            if(p.user_id != p.group_id):
+                has_permission = True
+        return has_permission
+
+    def get_object(self, pk):
+        try:
+            if self.has_permission_user_view(self.request):
+                return User.objects.get(pk=pk)
+            else:
+                return False                
+        except User.DoesNotExist:
+            return False
 
     def list(self, request, format=None):
         qqueryset = UserGroupSet.objects.filter(group=request.user,status='ACTIVE')
@@ -236,17 +249,20 @@ class UserView(viewsets.ViewSet):
 
     @link()
     def current_user(self, request):
-        pprint.pprint(request.user)
         serializer = UserSerializer(request.user, context={'request': request})
         return Response(serializer.data)
 
     def retrieve(self, request, pk=None):
         user = self.get_object(pk)
+        if user is False:
+            return Response( status=status.HTTP_404_NOT_FOUND)
         serializer = UserSerializer(user)
         return Response(serializer.data)
 
     def update(self, request, pk=None):
         user = self.get_object(pk)
+        if user is False:
+            return Response(status=status.HTTP_404_NOT_FOUND)
         serializer = UserSerializer(user, data=request.DATA)
         if serializer.is_valid():
             serializer.save()
@@ -258,6 +274,8 @@ class UserView(viewsets.ViewSet):
 
     def destroy(self, request, pk=None):
         user = self.get_object(pk)
+        if user is False:
+            return Response( status=status.HTTP_404_NOT_FOUND)
         user.update(status='DELETED')
         UserGroupSet.objects.filter(group=request.user.id).update(status='DELETED')
         UserGroupSet.objects.filter(user=request.user.id).update(status='DELETED')
@@ -317,7 +335,17 @@ class HealthfileViewSet(viewsets.ModelViewSet):
         return global_create_update(request, self, pk)        
 
 class ReminderViewSet(viewsets.ModelViewSet):
-    #serializer_class = ReminderSerializer
+    """
+    Manage all healthfiles for a user ( authenticated or family member)
+    * Requires token authentication.
+    * CRUD of fields created_at & updated_at are handled by API only.
+    * User field is not to be passed to the API via POST params. It will be ignored if passed.
+    * For family user, pass user_id in URL . ie append ?user_id=$user_id
+    * For current logged in user, API automatically picks up  the user
+    * Allowed methods - GET , POST , PUT , DELETE
+
+    """
+
     filter_fields = ('user')
     model = Reminder
     permission_classes = (permissions.IsAuthenticated,FamilyPermission,)
@@ -340,16 +368,11 @@ class ReminderViewSet(viewsets.ModelViewSet):
 
     def update(self, request, pk=None):
         return global_create_update(request, self, pk)
-        """
-        reminder = self.get_object()
-        serializer = ReminderSerializer(reminder, data=request.DATA, context={'request': request})
-        if serializer.is_valid():
-            serializer.object.user = global_get_user_object(self)
-            serializer.object.updated_by = self.request.user
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        """
+
+    def destroy(self, request, pk=None):
+        m = self.get_object(pk)
+        m.update(status='DELETED')
+        return Response(status=status.HTTP_204_NO_CONTENT)
 """
 class GoalViewSet(ListAPIView):
     def get(self, request, format=None):
