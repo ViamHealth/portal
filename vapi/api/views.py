@@ -22,11 +22,17 @@ import pprint
 from django.db.models import Q
 from django.http import Http404
 from itertools import chain
-import time 
+import time
+from datetime import datetime, timedelta
 from django.shortcuts import get_object_or_404
 
 #Temporary create code for all users once.
 for user in User.objects.all():
+    enddate = datetime.today() - timedelta(days=7)
+    pprint.pprint('deleting since the datetime')
+    pprint.pprint(enddate)
+    Token.objects.filter(created__lt=enddate).delete()
+    #TODO: custom algo for creating token string
     Token.objects.get_or_create(user=user)
 
 class FamilyPermission(permissions.BasePermission):
@@ -40,6 +46,12 @@ class FamilyPermission(permissions.BasePermission):
             #Q(connection_status='ACTIVE'),
         #TODO: improve this code
         has_permission = False
+        qqueryset = UserGroupSet.objects.filter(user_id__in=[user_id,family_user_id],group_id__in=[user_id,family_user_id])
+        for p in qqueryset:
+            if(p.user_id != p.group_id):
+                has_permission = true
+
+        """
         qqueryset = UsersMap.objects.filter(
              Q(initiatior_user_id=user_id) | Q(connected_user_id=family_user_id) 
         )
@@ -60,6 +72,7 @@ class FamilyPermission(permissions.BasePermission):
         for u in users2:
             if int(u.id) == int(family_user_id):
                 has_permission = True
+        """
         return has_permission
 
     #TODO:optimize function
@@ -161,76 +174,78 @@ def global_create_update(request, view, pk=None):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
+
+@api_view(['GET',])
+def api_root(request, format=None):
+    return Response({
+        'users': reverse('user-list', request=request, format=format),
+        'logged-in user': reverse('user-me', request=request, format=format),
+        #'user profile crud': reverse('profile-detail', request=request, format=format),
+        'signup': reverse('user-signup', request=request, format=format),
+        #'reminders': reverse('reminders', request=request, format=format),
+        
+        
+    })
+
+class SignupView(viewsets.ViewSet):
+    model = User
+    def get_serializer_class(self):
+        return UserSerializer
+    permission_classes=(permissions.AllowAny,)
+
+    @action(methods=['POST',])
+    def user_signup(self, request, format=None):
+        #serializer = UserSerializer(data=request.DATA)
+        #if serializer.is_valid():
+        #    serializer.object.status = 'ACTIVE'
+        #    serializer.save()
+        #    umap = UserGroupSet(group=serializer.data.get('id'), user=serializer.data.get('id'),connection_status='ACTIVE');
+        #    umap.save()
+        #    return Response(serializer.data, status=status.HTTP_201_CREATED)
+        #return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return global_create_update(request, self, None)
+
 #TODO: Move to mixins for less  code
 class UserView(viewsets.ViewSet):
-    def check_permission(self, request , pk):
-        #temp for dev
-        #if(isinstance(request.user, AnonymousUser)):
-        #    return True
+    permission_classes = (permissions.IsAuthenticated,FamilyPermission,)
 
-        has_permission = False
-        pk = int(pk)
-        user_id = int(request.user.id)
-        if user_id == pk:
-            return True
-        qqueryset = UsersMap.objects.filter(
-            Q(connection_status='ACTIVE'),
-            Q(initiatior_user_id=user_id) | Q(connected_user_id=user_id)
-        )
-        users = [p.initiatior_user for p in qqueryset]
-        for p in qqueryset:
-            users.append(p.connected_user)
-        for u in users:
-            if u.id == pk:
-                has_permission = True
-        return has_permission
-
-    def get_object(self, pk):
-        try:
-            return User.objects.get(pk=pk)
-        except User.DoesNotExist:
-            return Response(status=status.HTTP_404_BAD_REQUEST)
 
     def list(self, request, format=None):
-        qqueryset = UsersMap.objects.filter(
-            #Q(connection_status='ACTIVE'),
-            Q(initiatior_user_id=request.user.id) | Q(connected_user_id=request.user.id)
-        )
-        #if len(qqueryset) == 0:
-        users = [p.initiatior_user for p in qqueryset]
-        for p in qqueryset:
-            users.append(p.connected_user)
-        users.append(request.user)
+        qqueryset = UserGroupSet.objects.filter(group=request.user,status='ACTIVE')
+        users = [p.user for p in qqueryset]
         users = list(set(users))
         
         serializer = UserSerializer(users, many=True, context={'request': request})
         return Response(serializer.data)
 
+
     def create(self, request, format=None):
         serializer = UserSerializer(data=request.DATA)
+        serializer.object.status = 'ACTIVE'
         if serializer.is_valid():
             serializer.save()
             if not isinstance(request.user, AnonymousUser):
-                umap = UsersMap(initiatior_user_id=request.user.id, connected_user_id=serializer.data.get('id'),connection_status='ACTIVE');
+                umap = UserGroupSet(group=request.user.id, user=serializer.data.get('id'),connection_status='ACTIVE');
+                umap.save()
+            else:
+                umap = UserGroupSet(group=serializer.data.get('id'), user=serializer.data.get('id'),connection_status='ACTIVE');
                 umap.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     @link()
     def current_user(self, request):
+        pprint.pprint(request.user)
         serializer = UserSerializer(request.user, context={'request': request})
         return Response(serializer.data)
 
     def retrieve(self, request, pk=None):
-        if self.check_permission(request, pk) == False:
-            return Response(status=status.HTTP_404_BAD_REQUEST)
         user = self.get_object(pk)
         serializer = UserSerializer(user)
         return Response(serializer.data)
 
     def update(self, request, pk=None):
-        if self.check_permission(request, pk) == False:
-            return Response(status=status.HTTP_404_BAD_REQUEST)
         user = self.get_object(pk)
         serializer = UserSerializer(user, data=request.DATA)
         if serializer.is_valid():
@@ -241,19 +256,16 @@ class UserView(viewsets.ViewSet):
     def partial_update(self, request, pk=None):
         pass
 
-    """
     def destroy(self, request, pk=None):
-        snippet = self.get_object(pk)
-        snippet.delete()
+        user = self.get_object(pk)
+        user.update(status='DELETED')
+        UserGroupSet.objects.filter(group=request.user.id).update(status='DELETED')
+        UserGroupSet.objects.filter(user=request.user.id).update(status='DELETED')
         return Response(status=status.HTTP_204_NO_CONTENT)
-    """
 
     @action(methods=['PUT'])
     def update_profile(self, request, pk=None):
-        if self.check_permission(request, pk) == False:
-            return Response(status=status.HTTP_404_BAD_REQUEST)
         profile = self.get_object(pk).get_profile()
-
         serializer = UserProfileSerializer(profile, data=request.DATA)
         if serializer.is_valid():
             serializer.save()
@@ -338,17 +350,9 @@ class ReminderViewSet(viewsets.ModelViewSet):
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         """
-
+"""
 class GoalViewSet(ListAPIView):
-    """
-    View to list all goals for a authenticated user or its family member.
-
-    * Requires token authentication.
-    """
     def get(self, request, format=None):
-        """
-        Return a list all goals for a authenticated user or its family member.
-        """ 
         resp = {'count':0 , 'results':[], 'previous':None, 'next':None}
         
         serializer = []
@@ -415,7 +419,7 @@ class UserWeightGoalViewSet(viewsets.ModelViewSet):
                 return Response({'status': 'reading set'})
             else:
                 return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
-
+"""
 """
 class HealthfileViewSet(viewsets.ModelViewSet):
     serializer_class = HealthfileSerializer
@@ -475,78 +479,3 @@ class HealthfileTagViewSet(viewsets.ModelViewSet):
 #            return Response({'token': token.key, 'user_id': serializer.object['user'].id})
 #        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-"""
-class RemindersView(viewsets.ViewSet):
-
-    def get_object(self, pk):
-        try:
-            return Reminder.objects.get(pk=pk)
-        except Reminder.DoesNotExist:
-            return Response(status=status.HTTP_404_BAD_REQUEST)
-
-    def list(self, request, format=None):
-        qqueryset = UsersMap.objects.filter(
-            Q(connection_status='ACTIVE'),
-            Q(initiatior_user_id=request.user.id) | Q(connected_user_id=request.user.id)
-        )
-        users = [p.initiatior_user for p in qqueryset]
-        for p in qqueryset:
-            users.append(p.connected_user)
-        queryset = Reminder.objects.filter(user__in=users)
-        serializer = ReminderSerializer(queryset, many=True)
-        return Response(serializer.data)
-
-    def create(self, request, format=None):
-        reminder = request.DATA
-        if not isinstance(request.user, AnonymousUser):
-            reminder.updated_by = request.user
-        else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        pp = pprint.PrettyPrinter(indent=4)
-        pp.pprint(reminder)
-        serializer = ReminderSerializer(data=reminder)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-"""
-
-"""
-class UserDetail(APIView):
-
-    def get_object(self, pk):
-        try:
-            return User.objects.get(pk=pk)
-        except User.DoesNotExist:
-            return Response(status=status.HTTP_404_BAD_REQUEST)
-
-    def get(self, request, pk, format=None):
-        if self.check_permission(request, pk) == False:
-            return Response(status=status.HTTP_404_BAD_REQUEST)
-        user = self.get_object(pk)
-        serializer = UserSerializer(user)
-        return Response(serializer.data)
-
-    def put(self, request, pk, format=None):
-        if self.check_permission(request, pk) == False:
-            return Response(status=status.HTTP_404_BAD_REQUEST)
-        user = self.get_object(pk)
-        serializer = UserSerializer(user, data=request.DATA)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    def delete(self, request, pk, format=None):
-        snippet = self.get_object(pk)
-        snippet.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
-
-    @link()
-    def profile(self, request):
-        if self.check_permission(request, pk) == False:
-            return Response(status=status.HTTP_404_BAD_REQUEST)
-        profile = self.get_object(pk).get_profile()
-        serializer = UserProfileSerializer(profile)
-        return Response(serializer.data)
-"""

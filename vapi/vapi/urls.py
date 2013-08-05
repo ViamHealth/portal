@@ -6,7 +6,7 @@ router = routers.DefaultRouter(trailing_slash=True)
 router.register(r'healthfiles', views.HealthfileViewSet)
 router.register(r'reminders', views.ReminderViewSet)
 router.register(r'healthfiletags', views.HealthfileTagViewSet)
-router.register(r'goals/weight', views.UserWeightGoalViewSet)
+#router.register(r'goals/weight', views.UserWeightGoalViewSet)
 #router.register(r'goals', views.GoalViewSet)
 
 
@@ -19,14 +19,18 @@ urlpatterns = patterns('',
     # Examples:
     # url(r'^$', 'vapi.views.home', name='home'),
     #url(r'^', include('api.urls')),
-    url(r'^', include(router.urls)),
+    url(r'^$', views.api_root),
+    #url(r'^$', include(router.urls)),
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     #url(r'^api-token-auth/', obtain_auth_token),
     url(r'^api-token-auth/', 'rest_framework.authtoken.views.obtain_auth_token'),
+    url(r'^signup/$', views.SignupView.as_view({'post': 'user_signup'}), name='user-signup'),
     url(r'^users/$', views.UserView.as_view({'get': 'list','post': 'create'}),name='user-list'),
-    url(r'^goals/$', views.GoalViewSet.as_view(),name='goal-list'),
-    url(r'^goals/weight/(?P<pk>[0-9]+)/set-reading/$', views.UserWeightGoalViewSet.as_view({'post':'set_reading'}),name='goal-weight-reading-detail'),
-    url(r'^users/me/$', views.UserView.as_view({'get': 'current_user'}), name='snippet-highlight'),
+    url(r'^users/me/$', views.UserView.as_view({'get': 'current_user'}), name='user-me'),
+    #url(r'^goals/$', views.GoalViewSet.as_view(),name='goal-list'),
+    #url(r'^goals/weight/(?P<pk>[0-9]+)/set-reading/$', views.UserWeightGoalViewSet.as_view({'post':'set_reading'}),name='goal-weight-reading-detail'),
+    
+    
     url(r'^users/(?P<pk>[0-9]+)/$', views.UserView.as_view({'get': 'retrieve', 'put': 'update'}),name='user-detail'),
     url(r'^users/(?P<pk>[0-9]+)/profile/$', views.UserView.as_view({'put':'update_profile'}),name='profile-detail'),
 

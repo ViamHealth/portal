@@ -26,12 +26,14 @@ class UserProfile(models.Model):
     #profile_picture = models.ImageField(upload_to='thumbpath', blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    #updated_by = models.ForeignKey('auth.User', related_name="+", db_column='updated_by')
     class Meta:
         db_table = 'tbl_user_profiles'
 
     def __unicode__(self):
         return u'Profile of user: %s' % self.user.username
-
+"""
+Removed in favour of GroupSet
 class UsersMap(models.Model):
     id = models.AutoField(primary_key=True)
     initiatior_user = models.ForeignKey('auth.User', related_name="+")
@@ -41,30 +43,27 @@ class UsersMap(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     class Meta:
         db_table = 'tbl_users_map'
-
+"""
 class UserGroupSet(models.Model):
-    id = models.AutoField(primary_key=True)
-    user = models.ForeignKey('auth.User', related_name="+")
     group = models.ForeignKey('auth.User', related_name="+")
-    connection_status = models.CharField(max_length=18L)
+    user = models.ForeignKey('auth.User', related_name="+")
+    status = models.CharField(max_length=18L)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    updated_by = models.ForeignKey('auth.User', related_name="+", db_column='updated_by')
     class Meta:
         db_table = 'tbl_user_group_set'
 
 class HealthfileTag(models.Model):
-    # does not have a status field
-    #id = models.AutoField(primary_key=True)
     healthfile = models.ForeignKey('Healthfile', related_name="tags")
     tag = models.CharField(max_length=64L)
-    created_at = models.DateTimeField()
+    created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     updated_by = models.ForeignKey('auth.User', related_name="+", db_column='updated_by')
     class Meta:
         db_table = 'tbl_healthfile_tags'
 
 class Healthfile(models.Model):
-    #id = models.AutoField(primary_key=True)
     user = models.ForeignKey('auth.User', related_name="+")
     name = models.CharField(max_length=256L)
     description = models.TextField()
@@ -102,6 +101,8 @@ class Reminder(models.Model):
     class Meta:
         db_table = 'tbl_reminders'
 
+"""
+Will be released with all sub modules
 class UserWeightGoal(models.Model):
     MEASURE_CHOICES = (
         ('METRIC','METRIC'),
@@ -146,5 +147,6 @@ class UserWeightReading(models.Model):
         db_table = 'tbl_user_weight_readings'
     def __unicode__(self):
         return u'%s %s' % (self.id, self.user_weight_goal)
+"""
 
 User.profile = property(lambda u: UserProfile.objects.get_or_create(user=u)[0])
