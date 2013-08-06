@@ -63,6 +63,8 @@ python manage.py syncdb
 
 This command will also create an admin user
 
+python manage.py collectstatic
+
 python manage.py runserver 127.0.0.1:8080
 
 To test server hit http://127.0.0.1:8080/ or 127.0.0.1:8080/admin
