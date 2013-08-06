@@ -3,6 +3,7 @@ portal
 
 ViamHealths Portal Code Base
 
+
 Instructions to install Website
 ===============================
 
@@ -92,3 +93,24 @@ curl -H 'Authorization: Token d444ff73068d26e420a0a873ca9804790612b757' -X POST 
 HealthFiles
 ===========
 curl -H 'Authorization: Token d444ff73068d26e420a0a873ca9804790612b757' -X POST http://127.0.0.1:8080/healthfiles/?user_id=2 -d "tags=&name=abd&description=ijio&mime_type=a&stored_url=b&status=ACTIVE&created_at=2013-07-22 00:48:04&updated_at=2013-07-22 00:48:04"
+
+
+2. Setup of Web Servers
+-----------------------
+
+The setup is ready for Nginx + PHP-FPM based webserver installation.
+
+The ops folder has the nginx/nginx.conf and php/php.ini which if you replace in your setup should work absolutely fine.
+
+Make sure you have dev.viam.com as the virtual host on your local. The whole setup assumes that you have dev.viam.com.
+
+3. Requirements
+------------------
+
+All requirements will be dumped in PM folder.
+
+4. UX Designs
+-----------------
+
+All user experience either the HTML-js-css way or pdf way will be kept in frontend folder.
+
