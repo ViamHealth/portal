@@ -52,16 +52,27 @@ class ReminderSerializer(serializers.HyperlinkedModelSerializer):
 #class HealthfileListSerializer(serializers.HyperlinkedModelSerializer):
 #    class Meta:
 #        model = Healthfile
-#        fields = ('id', 'url','user','tags','name' ,'description','mime_type','stored_url','status','created_at','updated_at')
+#        fields = ('id', 'url','user','tags','name' ,'description','mime_type','file','status','created_at','updated_at')
 
 class HealthfileSerializer(serializers.HyperlinkedModelSerializer):
     user = serializers.Field(source='user.id')
+    download_url = serializers.Field(source='download_url')
+
     class Meta:
         model = Healthfile
-        #exclude = ('created_at','updated_at','updated_by',)
-        exclude = ('updated_by',)
-        #optional_fields = ('user')
-        fields = ('id', 'url','user','tags','name' ,'description','mime_type','stored_url','status','created_at','updated_at')
+        fields = ('id', 'url','user','tags','name' ,'description','mime_type','download_url')
+
+class HealthfileEditSerializer(serializers.HyperlinkedModelSerializer):
+    user = serializers.Field(source='user.id')
+    class Meta:
+        model = Healthfile
+        fields = ('description',)
+
+class HealthfileUploadSerializer(serializers.HyperlinkedModelSerializer):
+    user = serializers.Field(source='user.id')
+    class Meta:
+        model = Healthfile
+        fields = ('file',)
 
 class HealthfileTagListSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:

@@ -25,12 +25,14 @@ from itertools import chain
 import time
 from datetime import datetime, timedelta
 from django.shortcuts import get_object_or_404
+from rest_framework.parsers import MultiPartParser
+import mimetypes
 
 #Temporary create code for all users once.
 for user in User.objects.all():
     enddate = datetime.today() - timedelta(days=7)
-    pprint.pprint('deleting since the datetime')
-    pprint.pprint(enddate)
+    #pprint.pprint('deleting since the datetime')
+    #pprint.pprint(enddate)
     Token.objects.filter(created__lt=enddate).delete()
     #TODO: custom algo for creating token string
     Token.objects.get_or_create(user=user)
@@ -141,13 +143,15 @@ def global_get_user_object(request):
 """
 function used for creating and updating]
 """
-def global_create_update(request, view, pk=None):
+def global_create_update(request, view, pk=None, data=None):
     serializerObj = view.get_serializer_class()
+    if data is None:
+        data = request.DATA
     if pk is not None:
         mObj = view.get_object()
-        serializer = serializerObj(mObj, data=request.DATA, context={'request': request})
+        serializer = serializerObj(mObj, data=data, context={'request': request})
     else:
-        serializer = serializerObj(data=request.DATA, context={'request': request})
+        serializer = serializerObj(data=data, context={'request': request})
     if serializer.is_valid():
         serializer.object.user = global_get_user_object(request)
         serializer.object.updated_by = request.user
@@ -178,7 +182,7 @@ class SignupView(viewsets.ViewSet):
     
     @action(methods=['POST',])
     def user_signup(self, request, format=None):
-        return global_create_update(request, self, None)
+        return global_create_update(request, self, None, None)
 
 #TODO: Move to mixins for less  code
 class UserView(viewsets.ViewSet):
@@ -297,42 +301,41 @@ class HealthfileViewSet(viewsets.ModelViewSet):
     """
     Manage all healthfiles for a user ( authenticated or family member)
     * Requires token authentication.
-    * CRUD of fields created_at & updated_at are handled by API only.
-    * User field is not to be passed to the API via POST params. It will be ignored if passed.
-    * For family user, pass user_id in URL . ie append ?user_id=$user_id
-    * For current logged in user, API automatically picks up  the user
 
     """
 
-    filter_fields = ('user')
+    #filter_fields = ('user')
     model = Healthfile
     permission_classes = (permissions.IsAuthenticated,FamilyPermission,)
 
+    def get_queryset(self):
+       return global_get_queryset(self, Healthfile)
+
+    def pre_save(self, obj):
+        file = self.request.FILES.get('file',None)
+        if file is not None:
+            obj.file = self.request.FILES['file']
+            obj.uploading_file = True
+        obj.user = global_get_user_object(self.request)
+        obj.updated_by = self.request.user
+
+    #parser_classes = (MultiPartParser,)
+    
     def get_serializer_class(self):
         if self.request.method in permissions.SAFE_METHODS:
             return HealthfileSerializer
-        return HealthfileSerializer
+        else:
+            file = self.request.FILES.get('file',None)
+            if file is not None:
+                return HealthfileUploadSerializer
+            else:
+                return HealthfileEditSerializer
+    
+    def destroy(self, request, pk=None):
+        m = self.get_object(pk)
+        m.update(status='DELETED')
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
-    """
-    def get_object(self):
-        return global_get_object(self)
-    """
-
-    def get_queryset(self):
-        return global_get_queryset(self, Healthfile)
-
-
-    def create(self, request, format=None):
-        """
-        Create a healthfile for a user ( authenticated or family member)
-        """
-        return global_create_update(request, self, None)
-
-    def update(self, request, pk=None):
-        """
-        Update a healthfile for a user ( authenticated or family member)
-        """
-        return global_create_update(request, self, pk)        
 
 class ReminderViewSet(viewsets.ModelViewSet):
     """
@@ -364,10 +367,10 @@ class ReminderViewSet(viewsets.ModelViewSet):
         return global_get_queryset(self, Reminder)
 
     def create(self, request, format=None):
-        return global_create_update(request, self, None)
+        return global_create_update(request, self, None, None)
 
     def update(self, request, pk=None):
-        return global_create_update(request, self, pk)
+        return global_create_update(request, self, pk, None)
 
     def destroy(self, request, pk=None):
         m = self.get_object(pk)

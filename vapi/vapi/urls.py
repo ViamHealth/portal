@@ -20,7 +20,7 @@ urlpatterns = patterns('',
     # url(r'^$', 'vapi.views.home', name='home'),
     #url(r'^', include('api.urls')),
     url(r'^$', views.api_root),
-    #url(r'^', include(router.urls)),
+    url(r'^', include(router.urls)),
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     #url(r'^api-token-auth/', obtain_auth_token),
     url(r'^api-token-auth/', 'rest_framework.authtoken.views.obtain_auth_token'),
@@ -30,7 +30,6 @@ urlpatterns = patterns('',
 
     url(r'^reminders/$', views.ReminderViewSet.as_view({'get':'list','post':'create'}),name='reminder-list'),
     url(r'^reminders/(?P<pk>[0-9]+)/$', views.ReminderViewSet.as_view({'get':'retrieve','put':'update','delete':'destroy'}),name='reminder-detail'),
-
 
     #url(r'^goals/$', views.GoalViewSet.as_view(),name='goal-list'),
     #url(r'^goals/weight/(?P<pk>[0-9]+)/set-reading/$', views.UserWeightGoalViewSet.as_view({'post':'set_reading'}),name='goal-weight-reading-detail'),

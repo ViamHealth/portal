@@ -13,7 +13,7 @@ from django.contrib.auth.models import User, Group
 from rest_framework.authtoken.models import Token
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-import hashlib, os
+import hashlib, os, mimetypes, pprint
 
 GLOBAL_STATUS_CHOICES = (
         ('ACTIVE','ACTIVE'),
@@ -69,17 +69,36 @@ class HealthfileTag(models.Model):
         db_table = 'tbl_healthfile_tags'
 
 class Healthfile(models.Model):
+    def get_healthfile_path(self, filename):
+        return 'healthfiles/'+hashlib.sha224(str(self.id)).hexdigest()
+
     user = models.ForeignKey('auth.User', related_name="+")
-    name = models.CharField(max_length=256L)
-    description = models.TextField()
-    mime_type = models.CharField(max_length=256L)
-    stored_url = models.CharField(max_length=256L)
+    name = models.CharField(max_length=256L,blank=True)
+    description = models.TextField(blank=True)
+    mime_type = models.CharField(max_length=256L,blank=True)
+    file = models.FileField(upload_to=get_healthfile_path, blank=True, editable=True,)
     status = models.CharField(max_length=18L, choices=GLOBAL_STATUS_CHOICES, default='ACTIVE', db_index=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     updated_by = models.ForeignKey('auth.User', related_name="+", db_column='updated_by')
+    #TODO: Use forms instead of using this flag
+    uploading_file = False
+
     class Meta:
         db_table = 'tbl_healthfiles'
+
+    def download_url(self):
+        return 'http://viamhealth-docsbucket.s3.amazonaws.com/media/'+ str(self.file)
+
+    def save(self, *args, **kwargs):
+        if self.uploading_file:
+            hfile = self.file
+            self.name = hfile.name
+            mime_type = mimetypes.guess_type(hfile.name)[0]
+            if mime_type is None:
+                mime_type = "application/octet-stream"
+            self.mime_type = mime_type
+        super(Healthfile, self).save(*args, **kwargs)
 
 class Reminder(models.Model):
     REPEAT_MODE_CHOICES = (
