@@ -30,7 +30,7 @@ class AuthTokenSerializer(serializers.Serializer):
 class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserProfile
-        fields = ( 'location', 'gender')
+        fields = ( 'location', 'gender','profile_picture', 'date_of_birth')
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
     profile = UserProfileSerializer(required=False)

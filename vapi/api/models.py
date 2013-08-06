@@ -13,6 +13,7 @@ from django.contrib.auth.models import User, Group
 from rest_framework.authtoken.models import Token
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+import hashlib, os
 
 GLOBAL_STATUS_CHOICES = (
         ('ACTIVE','ACTIVE'),
@@ -20,10 +21,14 @@ GLOBAL_STATUS_CHOICES = (
     )
 
 class UserProfile(models.Model):  
+    def get_profile_image_path(self, filename): 
+        return 'users/profile_picture_'+hashlib.sha224(str(self.user.id)).hexdigest()+os.path.splitext(filename)[1]
+
     user = models.ForeignKey('auth.User', unique=True)
-    location = models.CharField(max_length=140)  
+    location = models.CharField(max_length=140,blank=True)  
     gender = models.CharField(max_length=140)  
-    #profile_picture = models.ImageField(upload_to='thumbpath', blank=True)
+    profile_picture = models.ImageField(upload_to=get_profile_image_path, blank=True)
+    date_of_birth = models.DateField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     #updated_by = models.ForeignKey('auth.User', related_name="+", db_column='updated_by')

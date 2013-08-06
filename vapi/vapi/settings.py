@@ -137,6 +137,7 @@ INSTALLED_APPS = (
     'rest_framework',
     'rest_framework.authtoken',
     'api',
+    'storages',
 )
 
 # A sample logging configuration. The only tangible logging
@@ -177,3 +178,16 @@ REST_FRAMEWORK = {
         ),
     'PAGINATE_BY': 5
 }
+
+DEFAULT_FILE_STORAGE = 'api.s3utils.MediaS3BotoStorage' 
+STATICFILES_STORAGE = 'api.s3utils.StaticS3BotoStorage'
+
+AWS_ACCESS_KEY_ID = ''
+AWS_SECRET_ACCESS_KEY = ''
+AWS_STORAGE_BUCKET_NAME = ''
+
+S3_URL = 'http://%s.s3.amazonaws.com' % AWS_STORAGE_BUCKET_NAME
+STATIC_DIRECTORY = '/static/'
+MEDIA_DIRECTORY = '/media/'
+STATIC_URL = S3_URL + STATIC_DIRECTORY
+MEDIA_URL = S3_URL + MEDIA_DIRECTORY
