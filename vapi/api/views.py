@@ -185,7 +185,7 @@ class SignupView(viewsets.ViewSet):
         if serializer.is_valid():
             serializer.save()
             user = User.objects.get(pk=serializer.object.id)
-            pserializer = UserSerializer(user)
+            pserializer = UserSerializer(user, context={'request': request})
             return Response(pserializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -258,7 +258,7 @@ class UserView(viewsets.ViewSet):
 
     def retrieve(self, request, pk=None):
         user = self.get_object(pk)
-        serializer = UserSerializer(user)
+        serializer = UserSerializer(user, context={'request': request})
         return Response(serializer.data)
 
     def update(self, request, pk=None):
@@ -314,20 +314,18 @@ class HealthfileViewSet(viewsets.ModelViewSet):
 
     """
 
-    #filter_fields = ('user')
+    filter_fields = ('user')
     model = Healthfile
     permission_classes = (permissions.IsAuthenticated,FamilyPermission,)
 
     def get_queryset(self):
        return global_get_queryset(self, Healthfile)
 
-    def get_object(self, pk=None):
-        obj = Healthfile.objects.get(pk=pk)
+    def get_object(self, pk):
         try:
-            pprint.pprint(self.check_object_permissions(self.request, obj))
-        except permissions.PermissionDenied:
-            pprint.pprint('permission deinded')
-        return obj
+            return Healthfile.objects.get(pk=pk,status='ACTIVE')
+        except Healthfile.DoesNotExist:
+            raise Http404
 
     def pre_save(self, obj):
         file = self.request.FILES.get('file',None)
@@ -352,6 +350,8 @@ class HealthfileViewSet(viewsets.ModelViewSet):
     def destroy(self, request, pk=None):
         m = self.get_object(pk)
         m.status = 'DELETED'
+        m.updated_by = self.request.user
+        m.save()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
@@ -367,14 +367,16 @@ class ReminderViewSet(viewsets.ModelViewSet):
 
     """
 
-    filter_fields = ('user')
+    #filter_fields = ('user')
     model = Reminder
     permission_classes = (permissions.IsAuthenticated,FamilyPermission,)
+    serializer_class = ReminderSerializer
 
-    def get_serializer_class(self):
-        if self.request.method in permissions.SAFE_METHODS:
-            return ReminderListSerializer
-        return ReminderSerializer
+    def get_object(self, pk=None):
+        try:
+            return Reminder.objects.get(pk=pk,status='ACTIVE')
+        except Reminder.DoesNotExist:
+            raise Http404
     
     def pre_save(self, obj):
         obj.user = global_get_user_object(self.request)
@@ -383,6 +385,10 @@ class ReminderViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         return global_get_queryset(self, Reminder)
 
+    def retrieve(self, request, pk=None):
+        m = self.get_object(pk)
+        serializer = ReminderSerializer(m,context={'request': request})
+        return Response(serializer.data)
 
     """
     def create(self, request, format=None):
@@ -393,7 +399,9 @@ class ReminderViewSet(viewsets.ModelViewSet):
     """
     def destroy(self, request, pk=None):
         m = self.get_object(pk)
-        m.update(status='DELETED')
+        m.status='DELETED'
+        m.updated_by = self.request.user
+        m.save()
         return Response(status=status.HTTP_204_NO_CONTENT)
 """
 class GoalViewSet(ListAPIView):

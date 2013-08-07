@@ -54,16 +54,11 @@ class UserCreateSerializer(serializers.HyperlinkedModelSerializer):
         model = User
         fields = ('id', 'url', 'first_name', 'last_name','email','username', )
 
-class ReminderListSerializer(serializers.HyperlinkedModelSerializer):
-    class Meta:
-        model = Reminder
-        exclude = ('updated_by',)
-        fields = ('id','url', 'user','details','start_datetime' ,'repeat_mode','repeat_day','repeat_hour','repeat_min','repeat_weekday','repeat_day_interval','created_at','updated_at')
-
 class ReminderSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Reminder
-        exclude = ('created_at','updated_at','updated_by',)
+        fields = ('id','url', 'user','details','start_timestamp' ,'repeat_mode','repeat_day','repeat_hour','repeat_min','repeat_weekday','repeat_day_interval')
+
 
 #class HealthfileListSerializer(serializers.HyperlinkedModelSerializer):
 #    class Meta:

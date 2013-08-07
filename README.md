@@ -44,19 +44,28 @@ pip install yolk
 
 pip install Django
 
-pip install MySQL-python
+pip install MySQL-python 
 
-pip install djangorestframework
+pip install djangorestframework 
 
-pip install django-filter
+pip install django-filter 
 
 If MySQL-python installation fails , you will need mysql dev and mysql-python packages (installed via apt/yum etc )
 
+
 eg. on ubuntu , packages libmysqlclient-dev and python-mysqldb are required. Find appropiate packages for your distro.
 
-pip install django-storages boto
+pip install django-storages boto 
 
 pip install pillow
+
+
+eg.: Centos :- 
+===============
+yum install mysql-devel python-devel
+
+pip install yolk Django MySQL-python djangorestframework django-filter django-storages boto pillow
+
 
 cd GIT.ROOT/vapi
 
@@ -74,48 +83,41 @@ To get your token make a POST call to http://127.0.0.1:8080/api-token-auth/ with
 
 Eg. API calls for users
 
-User Signup
-===========
+**User Signup**
 curl -X POST http://127.0.0.1:8080/signup/ -d "username=curluse1qp&first_name=haha&email=ghu@gmail.com"
 
 
 
 
-Get Current user
-================
+**Get Current user**
 curl -X GET http://127.0.0.1:8080/users/me/ -H 'Authorization: Token d444ff73068d26e420a0a873ca9804790612b757'
 
-Retrieve user
-=============
+**Retrieve user**
 curl -X GET http://127.0.0.1:8080/users/1/ -H 'Authorization: Token d444ff73068d26e420a0a873ca9804790612b757';
 
-List Users
-==========
+**List Users**
 curl -X GET http://127.0.0.1:8080/users/ -H 'Authorization: Token d444ff73068d26e420a0a873ca9804790612b757';
 
-Create family user
-==================
+**Create family user**
 curl -H 'Authorization: Token bbdee5dd1849adb65d7e35d08ac942e6aa3e1dc5' -X POST http://127.0.0.1:8080/users/ -d "username=username5588qp&first_name=fname&email=email@gmail.com"
 
-Update user Profile Picture
-===========================
+**Update user Profile Picture**
 curl -H 'Authorization: Token bbdee5dd1849adb65d7e35d08ac942e6aa3e1dc5' -X PUT http://127.0.0.1:8080/users/22/profile-picture/ -F "profile_picture=@/home/kunal/Downloads/600249_1002029915098_1903163647_n.jpg"
 
-Update user Profile
-===================
+**Update user Profile**
 curl -H 'Authorization: Token bbdee5dd1849adb65d7e35d08ac942e6aa3e1dc5' -X PUT http://127.0.0.1:8080/users/22/profile/ -d "location=delhi&gender=male&date_of_birth=2013-10-09"
 
 
-
+**Reminders**
 curl -H 'Authorization: Token d444ff73068d26e420a0a873ca9804790612b757' -X GET http://127.0.0.1:8080/reminders/
 
 curl -H 'Authorization: Token d444ff73068d26e420a0a873ca9804790612b757' -X GET http://127.0.0.1:8080/reminders/?user_id=9
 
+
 curl -H 'Authorization: Token d444ff73068d26e420a0a873ca9804790612b757' -X POST http://127.0.0.1:8080/goals/weight/ -d "user=http://127.0.0.1:8080/users/1/&weight=20&interval_num=10&interval_unit=DAY&updated_by=http://127.0.0.1:8080/users/1/&target_date=2013-07-22&created_at=2013-07-22 00:48:04&updated_at=2013-07-22 00:48:04"
 
 
-HealthFiles
-===========
+**HealthFiles**
 curl -H 'Authorization: Token d444ff73068d26e420a0a873ca9804790612b757' -X POST http://127.0.0.1:8080/healthfiles/?user_id=2 -d "tags=&name=abd&description=ijio&mime_type=a&stored_url=b&status=ACTIVE&created_at=2013-07-22 00:48:04&updated_at=2013-07-22 00:48:04"
 
 

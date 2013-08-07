@@ -122,7 +122,7 @@ class Reminder(models.Model):
     )
     user = models.ForeignKey('auth.User', related_name="+")
     details = models.TextField()
-    start_datetime = models.IntegerField()
+    start_timestamp = models.IntegerField()
     repeat_mode = models.CharField(max_length=32L,blank=True,choices=REPEAT_MODE_CHOICES, default='NONE')
     repeat_day = models.CharField(max_length=2L,blank=True)
     repeat_hour = models.CharField(max_length=2L,blank=True)
