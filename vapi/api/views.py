@@ -171,6 +171,7 @@ def api_root(request, format=None):
         #'user profile crud': reverse('profile-detail', request=request, format=format),
         'signup': reverse('user-signup', request=request, format=format),
         'reminders': reverse('reminder-list', request=request, format=format),
+        'healthfiles': reverse('healthfile-list', request=request, format=format),
         
         
     })
