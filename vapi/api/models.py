@@ -21,12 +21,16 @@ GLOBAL_STATUS_CHOICES = (
     )
 
 class UserProfile(models.Model):  
+    GENDER_CHOICES = (
+        ('MALE','MALE'),
+        ('FEMALE','FEMALE')
+    )
     def get_profile_image_path(self, filename): 
         return 'users/profile_picture_'+hashlib.sha224(str(self.user.id)).hexdigest()+os.path.splitext(filename)[1]
 
     user = models.ForeignKey('auth.User', unique=True)
     location = models.CharField(max_length=140,blank=True)  
-    gender = models.CharField(max_length=140)  
+    gender = models.CharField(max_length=140, choices=GENDER_CHOICES, blank=True)  
     profile_picture = models.ImageField(upload_to=get_profile_image_path, blank=True)
     date_of_birth = models.DateField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -34,6 +38,13 @@ class UserProfile(models.Model):
     #updated_by = models.ForeignKey('auth.User', related_name="+", db_column='updated_by')
     class Meta:
         db_table = 'tbl_user_profiles'
+
+    def profile_picture_url(self):
+        if self.profile_picture:
+            pic = 'media/'+str(self.profile_picture)
+        else:
+            pic = 'static/api/default_profile_picture_n.jpg'
+        return 'http://viamhealth-docsbucket.s3.amazonaws.com/'+ pic
 
     def __unicode__(self):
         return u'Profile of user: %s' % self.user.username

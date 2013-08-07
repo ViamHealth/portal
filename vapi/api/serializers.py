@@ -28,15 +28,31 @@ class AuthTokenSerializer(serializers.Serializer):
 """
 
 class UserProfileSerializer(serializers.ModelSerializer):
+    profile_picture_url = serializers.Field(source='profile_picture_url')
     class Meta:
         model = UserProfile
-        fields = ( 'location', 'gender','profile_picture', 'date_of_birth')
+        fields = ( 'location', 'gender', 'date_of_birth', 'profile_picture_url')
+
+class UserProfilePicSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserProfile
+        fields = ( 'profile_picture',)
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
     profile = UserProfileSerializer(required=False)
     class Meta:
         model = User
         fields = ('id', 'url', 'username', 'email', 'first_name', 'last_name', 'profile')
+
+class UserEditSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = User
+        fields = ('id', 'url', 'first_name', 'last_name',)
+
+class UserCreateSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = User
+        fields = ('id', 'url', 'first_name', 'last_name','email','username', )
 
 class ReminderListSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
