@@ -132,9 +132,11 @@ class UserView(viewsets.ViewSet):
             umap = UserGroupSet(group=request.user, user=User.objects.get(pk=serializer.data.get('id')),status='ACTIVE',updated_by=request.user);
             umap.save()
             #TODO:check for adding updated_by
-            uprofile = UserProfile(user=User.objects.get(pk=serializer.data.get('id')))
+            user=User.objects.get(pk=serializer.data.get('id'))
+            uprofile = UserProfile(user)
             uprofile.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            pserializer = UserSerializer(user, data=serializer.object, context={'request': request})
+            return Response(pserializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def retrieve(self, request, pk=None):
@@ -144,10 +146,11 @@ class UserView(viewsets.ViewSet):
 
     def update(self, request, pk=None):
         user = self.get_object(pk)
-        serializer = UserEditSerializer(user, data=request.DATA)
+        serializer = UserEditSerializer(user, data=request.DATA, context={'request': request})
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data)
+            pserializer = UserSerializer(user, data=serializer.object, context={'request': request})
+            return Response(pserializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     @link()

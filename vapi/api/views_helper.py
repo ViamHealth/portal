@@ -103,20 +103,24 @@ class ViamModelViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(m)
         return Response(serializer.data)
 
-    def create(self, request, format=None):
-        serializer = self.get_serializer(data=request.DATA,)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    #def create(self, request, format=None):
+    #    serializer = self.get_serializer(data=request.DATA,)
+    #    pprint.pprint('hihii')
+    #    if serializer.is_valid():
+    #        #TODO: bug - not calling pre_save
+    #        serializer.object.user = self.get_user_object()
+    #        serializer.object.updated_by = self.request.user
+    #        serializer.save()
+    #        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    #    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    def update(self, request, pk=None):
-        m = self.get_object(pk)
-        serializer = self.get_serializer(m, data=request.DATA)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    #def update(self, request, pk=None):
+    #    m = self.get_object(pk)
+    #    serializer = self.get_serializer(m, data=request.DATA)
+    #    if serializer.is_valid():
+    #        serializer.save()
+    #        return Response(serializer.data)
+    #    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def destroy(self, request, pk=None):
         m = self.get_object(pk)

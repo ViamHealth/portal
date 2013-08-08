@@ -84,43 +84,75 @@ To get your token make a POST call to http://127.0.0.1:8080/api-token-auth/ with
 Eg. API calls for users
 
 **User Signup**
+
 curl -X POST http://127.0.0.1:8080/signup/ -d "username=curluse1qp&first_name=fnam"
 
 **Get token**
+
 curl -X POST http://127.0.0.1:8080/api-token-auth/ -d"username=uname@email.com&password=pword"
 
 **Get Current user**
+
 curl -H 'Authorization: Token d444ff73068d26e420a0a873ca9804790612b757' -X GET http://127.0.0.1:8080/users/me/ 
 
 **Add token to all requests below this as mentioned above**
+
 **Retrieve user**
+
 -X GET http://127.0.0.1:8080/users/1/
 
 **List Users**
+
 -X GET http://127.0.0.1:8080/users/
 
 **Create family user**
--X POST http://127.0.0.1:8080/users/ -d "username=username@email.com&first_name=fname"
 
-**Update user Profile Picture**
--X PUT http://127.0.0.1:8080/users/22/profile-picture/ -F "profile_picture=@/home/kunal/Downloads/600249_1002029915098_1903163647_n.jpg"
+-X POST http://127.0.0.1:8080/users/ -d "first_name=kunal&last_name=admin&username=kunal2@email.com"
+
+{"id": 3, "url": "http://127.0.0.1:8080/users/3/", "username": "kunal2@email.com", "email": "", "first_name": "kunal", "last_name": "admin", "profile": {"location": "", "gender": "", "date_of_birth": null, "profile_picture_url": "http://viamhealth-docsbucket.s3.amazonaws.com/static/api/default_profile_picture_n.jpg"}}
+
+** Update family user**
+
+-X PUT http://127.0.0.1:8080/users/1/ -d "first_name=kunal&last_name=admin"
+
+{"id": 3, "url": "http://127.0.0.1:8080/users/3/", "username": "kunal2@email.com", "email": "", "first_name": "kunal", "last_name": "admin", "profile": {"location": "", "gender": "", "date_of_birth": null, "profile_picture_url": "http://viamhealth-docsbucket.s3.amazonaws.com/static/api/default_profile_picture_n.jpg"}}
 
 **Update user Profile**
--X PUT http://127.0.0.1:8080/users/22/profile/ -d "location=delhi&gender=MALE&date_of_birth=2013-10-09"
+
+-X PUT http://127.0.0.1:8080/users/1/profile/ -d "location=delhi&gender=MALE&date_of_birth=2013-10-09"
+
+{"location": "delhi", "gender": "MALE", "date_of_birth": "2013-10-09", "profile_picture_url": "http://viamhealth-docsbucket.s3.amazonaws.com/static/api/default_profile_picture_n.jpg"}
+
+**Update user Profile Picture**
+
+-X PUT http://127.0.0.1:8080/users/22/profile-picture/ -F "profile_picture=@/home/kunal/Downloads/600249_1002029915098_1903163647_n.jpg"
+
+{"location": "delhi", "gender": "MALE", "date_of_birth": "2013-10-09", "profile_picture_url": "http://viamhealth-docsbucket.s3.amazonaws.com/media/users/profile_picture_e25388fde8290dc286a6164fa2d97e551b53498dcbf7bc378eb1f178.jpg"}
+
 
 **Reminders**
+
 *filters supported = user*
+*editale fields = 'details','start_timestamp' ,'repeat_mode','repeat_day','repeat_hour','repeat_min','repeat_weekday','repeat_day_interval'*
+*required fields = 'details','start_timestamp' *
 *usual REST methods*
+
 -X GET http://127.0.0.1:8080/reminders/
+
 -X GET http://127.0.0.1:8080/reminders/?user=9
 
 **HealthFiles**
+
 *usual REST methods*
+
 *filters supported = healthfile*
+
 -X GET http://127.0.0.1:8080/healthfiletags/?healthfile=1
 
 **Goal**
+
 *filters supported = user*
+
 -X POST http://127.0.0.1:8080/goals/weight/ -d "user=http://127.0.0.1:8080/users/1/&weight=20&interval_num=10&interval_unit=DAY&updated_by=http://127.0.0.1:8080/users/1/&target_date=2013-07-22&created_at=2013-07-22 00:48:04&updated_at=2013-07-22 00:48:04"
 
 

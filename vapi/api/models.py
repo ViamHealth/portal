@@ -32,7 +32,7 @@ class UserProfile(models.Model):
     location = models.CharField(max_length=140,blank=True)  
     gender = models.CharField(max_length=140, choices=GENDER_CHOICES, blank=True)  
     profile_picture = models.ImageField(upload_to=get_profile_image_path, blank=True)
-    date_of_birth = models.DateField(blank=True)
+    date_of_birth = models.DateField(blank=True,null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     #updated_by = models.ForeignKey('auth.User', related_name="+", db_column='updated_by')
