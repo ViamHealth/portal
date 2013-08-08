@@ -1,6 +1,9 @@
 from django.contrib.auth.models import User
 from api.models import *
 from rest_framework import serializers
+from django.core.validators import validate_email
+from django.core.exceptions import ValidationError
+
 """
 from django.contrib.auth import authenticate
 
@@ -50,11 +53,34 @@ class UserEditSerializer(serializers.HyperlinkedModelSerializer):
         fields = ('id', 'url', 'first_name', 'last_name',)
 
 class UserCreateSerializer(serializers.HyperlinkedModelSerializer):
+    
+    def validate_username(self, attrs, source):
+        value = attrs[source]
+        try:
+            validate_email( value )
+            return attrs
+        except ValidationError:
+            raise serializers.ValidationError("Enter a valid e-mail address.")
     class Meta:
         model = User
-        fields = ('id', 'url', 'first_name', 'last_name','email','username', )
+        fields = ('id', 'url', 'first_name', 'last_name','username', )
+
+
+class UserSignupSerializer(serializers.HyperlinkedModelSerializer):
+    
+    def validate_username(self, attrs, source):
+        value = attrs[source]
+        try:
+            validate_email( value )
+            return attrs
+        except ValidationError:
+            raise serializers.ValidationError("Enter a valid e-mail address.")
+    class Meta:
+        model = User
+        fields = ('username', 'password')
 
 class ReminderSerializer(serializers.HyperlinkedModelSerializer):
+    user = serializers.Field(source='user.id')
     class Meta:
         model = Reminder
         fields = ('id','url', 'user','details','start_timestamp' ,'repeat_mode','repeat_day','repeat_hour','repeat_min','repeat_weekday','repeat_day_interval')
@@ -77,13 +103,15 @@ class HealthfileEditSerializer(serializers.HyperlinkedModelSerializer):
     user = serializers.Field(source='user.id')
     class Meta:
         model = Healthfile
-        fields = ('description',)
+        fields = ('id','url','description',)
 
 class HealthfileUploadSerializer(serializers.HyperlinkedModelSerializer):
     user = serializers.Field(source='user.id')
     class Meta:
         model = Healthfile
         fields = ('file',)
+
+
 
 class HealthfileTagListSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:

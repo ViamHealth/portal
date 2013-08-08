@@ -84,7 +84,7 @@ To get your token make a POST call to http://127.0.0.1:8080/api-token-auth/ with
 Eg. API calls for users
 
 **User Signup**
-curl -X POST http://127.0.0.1:8080/signup/ -d "username=curluse1qp&first_name=haha&email=ghu@gmail.com"
+curl -X POST http://127.0.0.1:8080/signup/ -d "username=curluse1qp&first_name=fnam"
 
 
 
@@ -118,7 +118,7 @@ curl -H 'Authorization: Token d444ff73068d26e420a0a873ca9804790612b757' -X POST 
 
 
 **HealthFiles**
-curl -H 'Authorization: Token d444ff73068d26e420a0a873ca9804790612b757' -X POST http://127.0.0.1:8080/healthfiles/?user_id=2 -d "tags=&name=abd&description=ijio&mime_type=a&stored_url=b&status=ACTIVE&created_at=2013-07-22 00:48:04&updated_at=2013-07-22 00:48:04"
+
 
 
 2. Setup of Web Servers

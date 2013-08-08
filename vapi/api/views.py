@@ -1,9 +1,7 @@
 # Create your views here.
 #TODOs
-#Optimize has_permission
-#Change the table for usermap
-#implement delete for user - break connection
 #implement delete for others - status inactive
+from api.views_helper import *
 from django.contrib.auth.models import User, AnonymousUser
 from rest_framework import viewsets
 from api.models import *
@@ -28,6 +26,7 @@ from django.shortcuts import get_object_or_404
 from rest_framework.parsers import MultiPartParser
 import mimetypes
 from django.core import exceptions
+from django.contrib.auth.hashers import *
 
 #Temporary create code for all users once.
 for user in User.objects.all():
@@ -37,129 +36,6 @@ for user in User.objects.all():
     Token.objects.filter(created__lt=enddate).delete()
     #TODO: custom algo for creating token string
     Token.objects.get_or_create(user=user)
-
-class FamilyPermission(permissions.BasePermission):
-    def check_family_permission(self,user_id, family_user_id):
-        """
-        User id : current authenticated user
-        Family User id : current profile
-        """
-        if user_id == family_user_id:
-            return True
-            #Q(connection_status='ACTIVE'),
-        #TODO: improve this code
-        has_permission = False
-
-        qqueryset = UserGroupSet.objects.filter(user_id__in=[user_id,family_user_id],group_id__in=[user_id,family_user_id],status='ACTIVE')
-        for p in qqueryset:
-            has_permission = True
-
-        return has_permission
-
-    #TODO:optimize function
-    def has_permission(self, request, view):
-        has_permission = False
-        family_user_id = request.QUERY_PARAMS.get('user_id', None)
-        if family_user_id is None:
-            family_user_id = view.kwargs.get('pk')
-        
-        if family_user_id is None:
-            #List page and
-            #Current user is the family user
-            return True
-        family_user_id = int(family_user_id)
-        user_id = int(request.user.id)
-        return self.check_family_permission(user_id, family_user_id)
-
-    """
-    Not needed right now. Permission layer controlled by get_queryset
-    """
-    def has_object_permission(self, request, view, obj=None):
-        if request is None:
-            request = self.request
-
-        has_permission = False
-        if obj is not None:
-           #Object level authentication. check if current object's user is mapped with current login user
-           family_user_id =  obj.user.id
-        
-        family_user_id = int(family_user_id)
-        user_id = int(request.user.id)
-        return self.check_family_permission(user_id, family_user_id)
-        
-"""
-function to get object , with ACTIVE status
-
-"""
-
-def global_get_object(view):
-    queryset = view.get_queryset()
-    filter = {}
-    filter[view.lookup_field] = view.kwargs[view.lookup_field]
-    model = get_object_or_404(queryset, **filter)
-    #Redundant as queryset will have auto check
-    #view.check_object_permissions(view.request, model)
-    return model
-
-
-def global_get_object_old(view, model):
-    pk = view.kwargs.get('pk')
-    if pk is not None:
-        try:
-            queryset = model.objects.get(pk=pk, status='ACTIVE')
-            pprint.pprint(view.check_object_permissions(view.request, queryset))
-            pprint.pprint(queryset)
-            return queryset
-        except model.DoesNotExist:
-            #return Response(status=status.HTTP_404_NOT_FOUND)
-            raise Http404
-
-"""
-function to get queryset , with ACTIVE status and current user / family user
-
-"""
-def global_get_queryset(view, model):
-    queryset = model.objects.filter(status='ACTIVE')
-    if view.request.method not in permissions.SAFE_METHODS:
-        return queryset
-    user = view.request.QUERY_PARAMS.get('user_id', None)
-    if user is not None:
-        queryset = queryset.filter(user=user)
-    else:
-        queryset = queryset.filter(user=view.request.user)
-    return queryset    
-
-"""
-function to get object's User
-
-"""
-def global_get_user_object(request):
-        fuser = request.QUERY_PARAMS.get('user_id', None)
-        if fuser is not None:
-            fuserObj = User.objects.get(pk=fuser)
-            return fuserObj
-        else:
-            return request.user
-        return
-
-"""
-function used for creating and updating]
-"""
-def global_create_update(request, view, pk=None, data=None):
-    serializerObj = view.get_serializer_class()
-    if data is None:
-        data = request.DATA
-    if pk is not None:
-        mObj = view.get_object()
-        serializer = serializerObj(mObj, data=data, context={'request': request})
-    else:
-        serializer = serializerObj(data=data, context={'request': request})
-    if serializer.is_valid():
-        serializer.object.user = global_get_user_object(request)
-        serializer.object.updated_by = request.user
-        serializer.save()
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 
@@ -179,11 +55,13 @@ def api_root(request, format=None):
 class SignupView(viewsets.ViewSet):
     model = User
     permission_classes=(permissions.AllowAny,)
-    
+
     @action(methods=['POST',])
     def user_signup(self, request, format=None):
-        serializer = UserCreateSerializer(data=request.DATA, context={'request': request})
+        serializer = UserSignupSerializer(data=request.DATA, context={'request': request})
         if serializer.is_valid():
+            serializer.object.email = serializer.object.username
+            serializer.object.password = make_password(serializer.object.password)
             serializer.save()
             user = User.objects.get(pk=serializer.object.id)
             pserializer = UserSerializer(user, context={'request': request})
@@ -304,7 +182,8 @@ class UserView(viewsets.ViewSet):
             return Response(pserializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-class HealthfileViewSet(viewsets.ModelViewSet):
+
+class HealthfileViewSet(ViamModelViewSet):
 
     """
     Manage all healthfiles for a user ( authenticated or family member)
@@ -315,28 +194,16 @@ class HealthfileViewSet(viewsets.ModelViewSet):
 
     """
 
-    filter_fields = ('user')
+    #filter_fields = ('user')
     model = Healthfile
-    permission_classes = (permissions.IsAuthenticated,FamilyPermission,)
-
-    def get_queryset(self):
-       return global_get_queryset(self, Healthfile)
-
-    def get_object(self, pk):
-        try:
-            return Healthfile.objects.get(pk=pk,status='ACTIVE')
-        except Healthfile.DoesNotExist:
-            raise Http404
 
     def pre_save(self, obj):
         file = self.request.FILES.get('file',None)
         if file is not None:
             obj.file = self.request.FILES['file']
             obj.uploading_file = True
-        obj.user = global_get_user_object(self.request)
+        obj.user = self.get_user_object()
         obj.updated_by = self.request.user
-
-    #parser_classes = (MultiPartParser,)
     
     def get_serializer_class(self):
         if self.request.method in permissions.SAFE_METHODS:
@@ -347,16 +214,9 @@ class HealthfileViewSet(viewsets.ModelViewSet):
                 return HealthfileUploadSerializer
             else:
                 return HealthfileEditSerializer
-    
-    def destroy(self, request, pk=None):
-        m = self.get_object(pk)
-        m.status = 'DELETED'
-        m.updated_by = self.request.user
-        m.save()
-        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-class ReminderViewSet(viewsets.ModelViewSet):
+class ReminderViewSet(ViamModelViewSet):
     """
     Manage all healthfiles for a user ( authenticated or family member)
     * Requires token authentication.
@@ -370,40 +230,9 @@ class ReminderViewSet(viewsets.ModelViewSet):
 
     #filter_fields = ('user')
     model = Reminder
-    permission_classes = (permissions.IsAuthenticated,FamilyPermission,)
     serializer_class = ReminderSerializer
 
-    def get_object(self, pk=None):
-        try:
-            return Reminder.objects.get(pk=pk,status='ACTIVE')
-        except Reminder.DoesNotExist:
-            raise Http404
-    
-    def pre_save(self, obj):
-        obj.user = global_get_user_object(self.request)
-        obj.updated_by = self.request.user
 
-    def get_queryset(self):
-        return global_get_queryset(self, Reminder)
-
-    def retrieve(self, request, pk=None):
-        m = self.get_object(pk)
-        serializer = ReminderSerializer(m,context={'request': request})
-        return Response(serializer.data)
-
-    """
-    def create(self, request, format=None):
-        return global_create_update(request, self, None, None)
-
-    def update(self, request, pk=None):
-        return global_create_update(request, self, pk, None)
-    """
-    def destroy(self, request, pk=None):
-        m = self.get_object(pk)
-        m.status='DELETED'
-        m.updated_by = self.request.user
-        m.save()
-        return Response(status=status.HTTP_204_NO_CONTENT)
 """
 class GoalViewSet(ListAPIView):
     def get(self, request, format=None):
