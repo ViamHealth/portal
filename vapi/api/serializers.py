@@ -111,17 +111,11 @@ class HealthfileUploadSerializer(serializers.HyperlinkedModelSerializer):
         model = Healthfile
         fields = ('file',)
 
-
-
-class HealthfileTagListSerializer(serializers.HyperlinkedModelSerializer):
-    class Meta:
-        model = HealthfileTag
-        fields = ('id','url','tag' ,'healthfile','created_at','updated_at')
-
 class HealthfileTagSerializer(serializers.HyperlinkedModelSerializer):
+    healthfile = serializers.Field(source='healthfile.id')
     class Meta:
         model = HealthfileTag
-        exclude = ('created_at','updated_at','updated_by',)
+        fields = ('id','url','healthfile','tag')
 
 
 """

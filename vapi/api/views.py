@@ -11,7 +11,7 @@ from django.core.signals import request_started
 from rest_framework.views import APIView
 from rest_framework.generics import ListAPIView
 #from rest_framework.authtoken.serializers import AuthTokenSerializer
-from rest_framework import permissions, renderers, parsers, status
+from rest_framework import permissions, renderers, parsers, status, exceptions
 from rest_framework.decorators import api_view, link, action
 from rest_framework.mixins import DestroyModelMixin
 from rest_framework.reverse import reverse
@@ -25,7 +25,7 @@ from datetime import datetime, timedelta
 from django.shortcuts import get_object_or_404
 from rest_framework.parsers import MultiPartParser
 import mimetypes
-from django.core import exceptions
+#from django.core import exceptions
 from django.contrib.auth.hashers import *
 
 #Temporary create code for all users once.
@@ -48,6 +48,8 @@ def api_root(request, format=None):
         'signup': reverse('user-signup', request=request, format=format),
         'reminders': reverse('reminder-list', request=request, format=format),
         'healthfiles': reverse('healthfile-list', request=request, format=format),
+        'healthfiletags': reverse('healthfiletag-list', request=request, format=format),
+        
         
         
     })
@@ -183,6 +185,22 @@ class UserView(viewsets.ViewSet):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+class ReminderViewSet(ViamModelViewSet):
+    """
+    Manage all healthfiles for a user ( authenticated or family member)
+    * Requires token authentication.
+    * CRUD of fields created_at & updated_at are handled by API only.
+    * User field is not to be passed to the API via POST params. It will be ignored if passed.
+    * For family user, pass user_id in URL . ie append ?user_id=$user_id
+    * For current logged in user, API automatically picks up  the user
+    * Allowed methods - GET , POST , PUT , DELETE
+
+    """
+
+    #filter_fields = ('user')
+    model = Reminder
+    serializer_class = ReminderSerializer
+
 class HealthfileViewSet(ViamModelViewSet):
 
     """
@@ -215,23 +233,33 @@ class HealthfileViewSet(ViamModelViewSet):
             else:
                 return HealthfileEditSerializer
 
-
-class ReminderViewSet(ViamModelViewSet):
+class HealthfileTagViewSet(viewsets.ModelViewSet):
     """
     Manage all healthfiles for a user ( authenticated or family member)
     * Requires token authentication.
-    * CRUD of fields created_at & updated_at are handled by API only.
-    * User field is not to be passed to the API via POST params. It will be ignored if passed.
-    * For family user, pass user_id in URL . ie append ?user_id=$user_id
-    * For current logged in user, API automatically picks up  the user
-    * Allowed methods - GET , POST , PUT , DELETE
+    * Get tags for a healthfile - http://127.0.0.1:8080/healthfiletags/?healthfile=1
 
     """
+    filter_fields = ('healthfile',)
+    model = HealthfileTag
+    serializer_class = HealthfileTagSerializer
 
-    #filter_fields = ('user')
-    model = Reminder
-    serializer_class = ReminderSerializer
-
+    """
+    def list(self, request, format=None):
+        hf = request.DATA
+        pprint.pprint(hf)
+        if hf is None:
+            raise exceptions.MethodNotAllowed('get', detail=None)
+        else:
+            queryset = self.model.objects.all()
+            serializer = HealthfileTagSerializer(queryset, many=True, context={'request': request})
+            return Response(serializer.data)
+    
+    def retrieve(self, request, pk=None):
+        m = self.get_object(pk)
+        serializer = self.get_serializer(m)
+        return Response(serializer.data)
+    """
 
 """
 class GoalViewSet(ListAPIView):
@@ -333,20 +361,7 @@ class HealthfileViewSet(viewsets.ModelViewSet):
         return queryset
 """
 
-class HealthfileTagViewSet(viewsets.ModelViewSet):
-    serializer_class = HealthfileTagSerializer
-    filter_fields = ('user')
-    model = HealthfileTag
-    permission_classes = (permissions.IsAuthenticated,FamilyPermission,)
 
-    def get_queryset(self):
-        queryset = HealthfileTag.objects.all()
-        user = self.request.QUERY_PARAMS.get('user_id', None)
-        if user is not None:
-            queryset = queryset.filter(user=user)
-        else:
-            queryset = queryset.filter(user=self.request.user)
-        return queryset
 
 #class ObtainAuthToken(APIView):
 #    throttle_classes = ()

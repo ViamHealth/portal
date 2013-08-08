@@ -176,7 +176,8 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.TokenAuthentication',
         'rest_framework.authentication.SessionAuthentication',
         ),
-    'PAGINATE_BY': 5
+    'PAGINATE_BY': 5,
+    'DEFAULT_FILTER_BACKENDS': ('rest_framework.filters.DjangoFilterBackend',)
 }
 
 DEFAULT_FILE_STORAGE = 'api.s3utils.MediaS3BotoStorage' 

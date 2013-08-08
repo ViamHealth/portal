@@ -118,7 +118,7 @@ curl -H 'Authorization: Token d444ff73068d26e420a0a873ca9804790612b757' -X POST 
 
 
 **HealthFiles**
-
+Get tags for a healthfile - http://127.0.0.1:8080/healthfiletags/?healthfile=1
 
 
 2. Setup of Web Servers
