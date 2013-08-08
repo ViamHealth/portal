@@ -73,9 +73,6 @@ class UserGroupSet(models.Model):
 class HealthfileTag(models.Model):
     healthfile = models.ForeignKey('Healthfile', related_name="tags")
     tag = models.CharField(max_length=64L)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-    updated_by = models.ForeignKey('auth.User', related_name="+", db_column='updated_by')
     class Meta:
         db_table = 'tbl_healthfile_tags'
 
