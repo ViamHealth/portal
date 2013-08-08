@@ -96,7 +96,10 @@ class Healthfile(models.Model):
         db_table = 'tbl_healthfiles'
 
     def download_url(self):
-        return 'http://viamhealth-docsbucket.s3.amazonaws.com/media/'+ str(self.file)
+        if self.file:
+            return 'http://viamhealth-docsbucket.s3.amazonaws.com/media/'+ str(self.file)
+        else:
+            return ''
 
     def save(self, *args, **kwargs):
         if self.uploading_file:

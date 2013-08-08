@@ -191,7 +191,7 @@ class ReminderViewSet(ViamModelViewSet):
     * Requires token authentication.
     * CRUD of fields created_at & updated_at are handled by API only.
     * User field is not to be passed to the API via POST params. It will be ignored if passed.
-    * For family user, pass user_id in URL . ie append ?user_id=$user_id
+    * For family user, pass user in URL . ie append ?user=$user_id
     * For current logged in user, API automatically picks up  the user
     * Allowed methods - GET , POST , PUT , DELETE
 

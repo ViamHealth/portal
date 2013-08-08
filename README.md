@@ -60,8 +60,8 @@ pip install django-storages boto
 pip install pillow
 
 
-eg.: Centos :- 
-===============
+*eg.: Centos :- *
+
 yum install mysql-devel python-devel
 
 pip install yolk Django MySQL-python djangorestframework django-filter django-storages boto pillow
@@ -86,39 +86,45 @@ Eg. API calls for users
 **User Signup**
 curl -X POST http://127.0.0.1:8080/signup/ -d "username=curluse1qp&first_name=fnam"
 
-
-
+**Get token**
+curl -X POST http://127.0.0.1:8080/api-token-auth/ -d"username=uname@email.com&password=pword"
 
 **Get Current user**
-curl -X GET http://127.0.0.1:8080/users/me/ -H 'Authorization: Token d444ff73068d26e420a0a873ca9804790612b757'
+curl -H 'Authorization: Token d444ff73068d26e420a0a873ca9804790612b757' -X GET http://127.0.0.1:8080/users/me/ 
 
+**Add token to all requests below this as mentioned above**
 **Retrieve user**
-curl -X GET http://127.0.0.1:8080/users/1/ -H 'Authorization: Token d444ff73068d26e420a0a873ca9804790612b757';
+-X GET http://127.0.0.1:8080/users/1/
 
 **List Users**
-curl -X GET http://127.0.0.1:8080/users/ -H 'Authorization: Token d444ff73068d26e420a0a873ca9804790612b757';
+-X GET http://127.0.0.1:8080/users/
 
 **Create family user**
-curl -H 'Authorization: Token bbdee5dd1849adb65d7e35d08ac942e6aa3e1dc5' -X POST http://127.0.0.1:8080/users/ -d "username=username5588qp&first_name=fname&email=email@gmail.com"
+-X POST http://127.0.0.1:8080/users/ -d "username=username@email.com&first_name=fname"
 
 **Update user Profile Picture**
-curl -H 'Authorization: Token bbdee5dd1849adb65d7e35d08ac942e6aa3e1dc5' -X PUT http://127.0.0.1:8080/users/22/profile-picture/ -F "profile_picture=@/home/kunal/Downloads/600249_1002029915098_1903163647_n.jpg"
+-X PUT http://127.0.0.1:8080/users/22/profile-picture/ -F "profile_picture=@/home/kunal/Downloads/600249_1002029915098_1903163647_n.jpg"
 
 **Update user Profile**
-curl -H 'Authorization: Token bbdee5dd1849adb65d7e35d08ac942e6aa3e1dc5' -X PUT http://127.0.0.1:8080/users/22/profile/ -d "location=delhi&gender=male&date_of_birth=2013-10-09"
-
+-X PUT http://127.0.0.1:8080/users/22/profile/ -d "location=delhi&gender=MALE&date_of_birth=2013-10-09"
 
 **Reminders**
-curl -H 'Authorization: Token d444ff73068d26e420a0a873ca9804790612b757' -X GET http://127.0.0.1:8080/reminders/
-
-curl -H 'Authorization: Token d444ff73068d26e420a0a873ca9804790612b757' -X GET http://127.0.0.1:8080/reminders/?user_id=9
-
-
-curl -H 'Authorization: Token d444ff73068d26e420a0a873ca9804790612b757' -X POST http://127.0.0.1:8080/goals/weight/ -d "user=http://127.0.0.1:8080/users/1/&weight=20&interval_num=10&interval_unit=DAY&updated_by=http://127.0.0.1:8080/users/1/&target_date=2013-07-22&created_at=2013-07-22 00:48:04&updated_at=2013-07-22 00:48:04"
-
+*filters supported = user*
+*usual REST methods*
+-X GET http://127.0.0.1:8080/reminders/
+-X GET http://127.0.0.1:8080/reminders/?user=9
 
 **HealthFiles**
-Get tags for a healthfile - http://127.0.0.1:8080/healthfiletags/?healthfile=1
+*usual REST methods*
+*filters supported = healthfile*
+-X GET http://127.0.0.1:8080/healthfiletags/?healthfile=1
+
+**Goal**
+*filters supported = user*
+-X POST http://127.0.0.1:8080/goals/weight/ -d "user=http://127.0.0.1:8080/users/1/&weight=20&interval_num=10&interval_unit=DAY&updated_by=http://127.0.0.1:8080/users/1/&target_date=2013-07-22&created_at=2013-07-22 00:48:04&updated_at=2013-07-22 00:48:04"
+
+
+
 
 
 2. Setup of Web Servers

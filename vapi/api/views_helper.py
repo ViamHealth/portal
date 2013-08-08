@@ -44,7 +44,7 @@ class FamilyPermission(permissions.BasePermission):
     #TODO:optimize function
     def has_permission(self, request, view):
         has_permission = False
-        family_user_id = request.QUERY_PARAMS.get('user_id', None)
+        family_user_id = request.QUERY_PARAMS.get('user', None)
         
         if family_user_id is None:
             #List page and
@@ -64,10 +64,11 @@ class FamilyPermission(permissions.BasePermission):
 class ViamModelViewSet(viewsets.ModelViewSet):
     
     permission_classes = (permissions.IsAuthenticated,FamilyPermission,)
+    filter_fields = ('user',)
 
     #Custom helper functions
     def get_user_object(self):
-        fuser = self.request.QUERY_PARAMS.get('user_id', None)
+        fuser = self.request.QUERY_PARAMS.get('user', None)
         if fuser is not None:
             return User.objects.get(pk=fuser)
         else:
@@ -78,7 +79,7 @@ class ViamModelViewSet(viewsets.ModelViewSet):
         queryset = self.model.objects.filter(status='ACTIVE')
         if self.request.method not in permissions.SAFE_METHODS:
             return queryset
-        user = self.request.QUERY_PARAMS.get('user_id', None)
+        user = self.request.QUERY_PARAMS.get('user', None)
         if user is not None:
             queryset = queryset.filter(user=user)
         else:
