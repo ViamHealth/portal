@@ -136,8 +136,7 @@ class Reminder(models.Model):
     class Meta:
         db_table = 'tbl_reminders'
 
-"""
-Will be released with all sub modules
+
 class UserWeightGoal(models.Model):
     MEASURE_CHOICES = (
         ('METRIC','METRIC'),
@@ -170,7 +169,6 @@ class UserWeightReading(models.Model):
         ('METRIC','METRIC'),
         ('STANDARD','STANDARD')
     )
-    id = models.AutoField(primary_key=True)
     user_weight_goal = models.ForeignKey('UserWeightGoal', related_name="readings")
     weight = models.IntegerField()
     weight_measure = models.CharField(max_length=12L, choices=MEASURE_CHOICES, default='METRIC')
@@ -182,6 +180,6 @@ class UserWeightReading(models.Model):
         db_table = 'tbl_user_weight_readings'
     def __unicode__(self):
         return u'%s %s' % (self.id, self.user_weight_goal)
-"""
+
 
 User.profile = property(lambda u: UserProfile.objects.get_or_create(user=u)[0])

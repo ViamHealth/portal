@@ -49,6 +49,7 @@ def api_root(request, format=None):
         'reminders': reverse('reminder-list', request=request, format=format),
         'healthfiles': reverse('healthfile-list', request=request, format=format),
         'healthfiletags': reverse('healthfiletag-list', request=request, format=format),
+        'goals/weight': reverse('userweightgoal-list', request=request, format=format),
         
         
         
@@ -263,6 +264,43 @@ class HealthfileTagViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(m)
         return Response(serializer.data)
     """
+class UserWeightGoalViewSet(ViamModelViewSet):
+    """
+    Manage all healthfiles for a user ( authenticated or family member)
+    * Requires token authentication.
+    * CRUD of fields created_at & updated_at are handled by API only.
+    * User field is not to be passed to the API via POST params. It will be ignored if passed.
+    * For family user, pass user in URL . ie append ?user=$user_id
+    * For current logged in user, API automatically picks up  the user
+    * Allowed methods - GET , POST , PUT , DELETE
+
+    """
+
+    #filter_fields = ('user')
+    model = UserWeightGoal
+    serializer_class = UserWeightGoalSerializer
+
+    @action(methods=['POST'])
+    def set_reading(self, request, pk):
+        try:
+            reading = UserWeightReading.objects.get(reading_date=request.DATA['reading_date'])
+            reading.weight = int(request.DATA['weight'])
+            reading.weight_measure = request.DATA['weight_measure']
+            reading.updated_by = request.user
+            serializer = UserWeightReadingSerializer(reading)
+            return Response(serializer.data)    
+        except UserWeightReading.DoesNotExist:
+            try:
+                wgoal = UserWeightGoal.objects.get(id=pk)
+                reading = UserWeightReading(user_weight_goal=wgoal,weight=int(request.DATA['weight']),weight_measure=request.DATA['weight_measure'],reading_date=request.DATA['reading_date'],updated_by=request.user)
+                reading.save()
+                serializer = UserWeightReadingSerializer(reading)
+                return Response(serializer.data)    
+            except:
+                return Response(status=status.HTTP_400_BAD_REQUEST)
+            
+        except:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
 
 """
 class GoalViewSet(ListAPIView):

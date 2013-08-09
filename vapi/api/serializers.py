@@ -117,6 +117,18 @@ class HealthfileTagSerializer(serializers.HyperlinkedModelSerializer):
         model = HealthfileTag
         fields = ('id','url','healthfile','tag')
 
+class UserWeightReadingSerializer(serializers.HyperlinkedModelSerializer):
+    user_weight_goal = serializers.Field(source='user_weight_goal.id')
+    class Meta:
+        model = UserWeightReading
+        fields = ('user_weight_goal','weight','weight_measure' ,'reading_date')
+
+class UserWeightGoalSerializer(serializers.HyperlinkedModelSerializer):
+    readings = UserWeightReadingSerializer(required=False)
+    user = serializers.Field(source='user.id')
+    class Meta:
+        model = UserWeightGoal
+        fields = ('id', 'url','user','readings','weight','weight_measure' ,'target_date','interval_num','interval_unit',)
 
 """
 

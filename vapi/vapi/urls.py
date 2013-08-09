@@ -6,7 +6,7 @@ router = routers.DefaultRouter(trailing_slash=True)
 router.register(r'healthfiles', views.HealthfileViewSet)
 #router.register(r'reminders', views.ReminderViewSet)
 router.register(r'healthfiletags', views.HealthfileTagViewSet)
-#router.register(r'goals/weight', views.UserWeightGoalViewSet)
+router.register(r'goals/weight', views.UserWeightGoalViewSet)
 #router.register(r'goals', views.GoalViewSet)
 
 
@@ -32,7 +32,7 @@ urlpatterns = patterns('',
     url(r'^reminders/(?P<pk>[0-9]+)/$', views.ReminderViewSet.as_view({'get':'retrieve','put':'update','delete':'destroy'}),name='reminder-detail'),
 
     #url(r'^goals/$', views.GoalViewSet.as_view(),name='goal-list'),
-    #url(r'^goals/weight/(?P<pk>[0-9]+)/set-reading/$', views.UserWeightGoalViewSet.as_view({'post':'set_reading'}),name='goal-weight-reading-detail'),
+    url(r'^goals/weight/(?P<pk>[0-9]+)/set-reading/$', views.UserWeightGoalViewSet.as_view({'post':'set_reading'}),name='goal-weight-reading-detail'),
     
     
     url(r'^users/(?P<pk>[0-9]+)/$', views.UserView.as_view({'get': 'retrieve', 'put': 'update','delete':'destroy'}),name='user-detail'),
