@@ -121,7 +121,7 @@ class UserWeightReadingSerializer(serializers.HyperlinkedModelSerializer):
     user_weight_goal = serializers.Field(source='user_weight_goal.id')
     class Meta:
         model = UserWeightReading
-        fields = ('user_weight_goal','weight','weight_measure' ,'reading_date')
+        fields = ('id','url','user_weight_goal','weight','weight_measure' ,'reading_date')
 
 class UserWeightGoalSerializer(serializers.HyperlinkedModelSerializer):
     readings = UserWeightReadingSerializer(required=False)

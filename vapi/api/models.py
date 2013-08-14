@@ -19,6 +19,16 @@ GLOBAL_STATUS_CHOICES = (
         ('ACTIVE','ACTIVE'),
         ('DELETED','DELETED')
     )
+MEASURE_CHOICES = (
+        ('METRIC','METRIC'),
+        ('STANDARD','STANDARD')
+)
+INTERVAL_UNIT_CHOICES = (
+    ('DAY','DAY'),
+    ('WEEK','WEEK'),
+    ('MONTH','MONTH'),
+    ('YEAR','YEAR'),
+)
 
 class UserProfile(models.Model):  
     GENDER_CHOICES = (
@@ -138,16 +148,6 @@ class Reminder(models.Model):
 
 
 class UserWeightGoal(models.Model):
-    MEASURE_CHOICES = (
-        ('METRIC','METRIC'),
-        ('STANDARD','STANDARD')
-    )
-    INTERVAL_UNIT_CHOICES = (
-        ('DAY','DAY'),
-        ('WEEK','WEEK'),
-        ('MONTH','MONTH'),
-        ('YEAR','YEAR'),
-    )
     
     user = models.ForeignKey('auth.User', related_name="+")
     weight = models.IntegerField()
@@ -165,10 +165,6 @@ class UserWeightGoal(models.Model):
         return u'%s %s' % (self.id, self.user.username)
 
 class UserWeightReading(models.Model):
-    MEASURE_CHOICES = (
-        ('METRIC','METRIC'),
-        ('STANDARD','STANDARD')
-    )
     user_weight_goal = models.ForeignKey('UserWeightGoal', related_name="readings")
     weight = models.IntegerField()
     weight_measure = models.CharField(max_length=12L, choices=MEASURE_CHOICES, default='METRIC')
@@ -181,5 +177,35 @@ class UserWeightReading(models.Model):
     def __unicode__(self):
         return u'%s %s' % (self.id, self.user_weight_goal)
 
+class UserBloodPressureGoal(models.Model):
+    user = models.ForeignKey('auth.User', related_name="+")
+    target_date = models.DateField(blank=True)
+    systolic_pressure = models.IntegerField()
+    diastolic_pressure = models.IntegerField()
+    pulse_rate = models.IntegerField()
+    interval_num = models.IntegerField(blank=True)
+    interval_unit = models.CharField(max_length=6L, choices=INTERVAL_UNIT_CHOICES,blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    updated_by = models.ForeignKey('auth.User', related_name="+", db_column='updated_by')
+    status = models.CharField(max_length=18L, choices=GLOBAL_STATUS_CHOICES, default='ACTIVE', db_index=True)
+    class Meta:
+        db_table = 'tbl_user_blood_pressure_goals'
+    def __unicode__(self):
+        return u'%s %s' % (self.id, self.user.username)
+
+class UserBloodPressureReading(models.Model):
+    user_blood_pressure_goal = models.ForeignKey('UserBloodPressureGoal', related_name="readings")
+    systolic_pressure = models.IntegerField()
+    diastolic_pressure = models.IntegerField()
+    pulse_rate = models.IntegerField()
+    reading_date = models.DateField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    updated_by = models.ForeignKey('auth.User', related_name="+", db_column='updated_by')
+    class Meta:
+        db_table = 'tbl_user_weight_readings'
+    def __unicode__(self):
+        return u'%s %s' % (self.id, self.user_weight_goal)
 
 User.profile = property(lambda u: UserProfile.objects.get_or_create(user=u)[0])

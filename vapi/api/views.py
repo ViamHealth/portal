@@ -49,8 +49,8 @@ def api_root(request, format=None):
         'reminders': reverse('reminder-list', request=request, format=format),
         'healthfiles': reverse('healthfile-list', request=request, format=format),
         'healthfiletags': reverse('healthfiletag-list', request=request, format=format),
-        'goals/weight': reverse('userweightgoal-list', request=request, format=format),
-        
+        'userweightgoals': reverse('userweightgoal-list', request=request, format=format),
+        'userweightreadings': reverse('userweightreading-list', request=request, format=format),
         
         
     })
@@ -302,6 +302,34 @@ class UserWeightGoalViewSet(ViamModelViewSet):
         except:
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
+class UserWeightReadingView(viewsets.ModelViewSet):
+    """
+    Manage all healthfiles for a user ( authenticated or family member)
+    * Requires token authentication.
+    * Get readings for a weight goal - http://127.0.0.1:8080/healthfiletags/?user_weight_goal=1
+    """
+    filter_fields = ('user_weight_goal','weight')
+    model = UserWeightReading
+    serializer_class = UserWeightReadingSerializer
+
+    #def get_queryset(self):
+    #    if self.request.GET.get('user_weight_goal',None) is None:
+    #        raise exceptions.MethodNotAllowed('get', detail=None)
+    #    else:
+    #        queryset = super(UserWeightReadingView, self).get_queryset()
+    """
+    def list_new(self, request, format=None):
+        if request.GET.get('user_weight_goal',None) is None:
+            raise exceptions.MethodNotAllowed('get', detail=None)
+        else:
+            return super(UserWeightReadingView, self).list(request, format)
+            #pprint.pprint(request.GET['user_weight_goal'])
+            #queryset = super(UserWeightReadingView, self).get_queryset()
+            #queryset = super(UserWeightReadingView, self).filter_queryset(queryset)
+            #pprint.pprint(queryset)
+            #serializer = UserWeightReadingSerializer(queryset, many=True, context={'request': request})
+            #return Response(serializer.data)
+    """
 """
 class GoalViewSet(ListAPIView):
     def get(self, request, format=None):
