@@ -10,5 +10,6 @@ djangorestframework==2.3.6
 httplib2==0.8
 oauth2==1.5.211
 python-openid==2.2.5
+uWSGI==1.9.14
 wsgiref==0.1.2
 yolk==0.4.3
