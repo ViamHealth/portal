@@ -58,6 +58,20 @@ class UserProfile(models.Model):
 
     def __unicode__(self):
         return u'Profile of user: %s' % self.user.username
+
+class UserBmiProfile(models.Model):  
+    user = models.ForeignKey('auth.User', unique=True)
+    height = models.CharField(max_length=40,blank=True)  
+    height_measure = models.CharField(max_length=40, choices=MEASURE_CHOICES, blank=True)
+    weight = models.CharField(max_length=40,blank=True)  
+    weight_measure = models.CharField(max_length=40, choices=MEASURE_CHOICES, blank=True)  
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    updated_by = models.ForeignKey('auth.User', related_name="+", db_column='updated_by')
+    #status = models.CharField(max_length=18L, choices=GLOBAL_STATUS_CHOICES, default='ACTIVE', db_index=True)
+    class Meta:
+        db_table = 'tbl_user_bmi_profile'
+
 """
 Removed in favour of GroupSet
 class UsersMap(models.Model):
@@ -191,8 +205,6 @@ class UserBloodPressureGoal(models.Model):
     status = models.CharField(max_length=18L, choices=GLOBAL_STATUS_CHOICES, default='ACTIVE', db_index=True)
     class Meta:
         db_table = 'tbl_user_blood_pressure_goals'
-    def __unicode__(self):
-        return u'%s %s' % (self.id, self.user.username)
 
 class UserBloodPressureReading(models.Model):
     user_blood_pressure_goal = models.ForeignKey('UserBloodPressureGoal', related_name="readings")
@@ -204,8 +216,35 @@ class UserBloodPressureReading(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     updated_by = models.ForeignKey('auth.User', related_name="+", db_column='updated_by')
     class Meta:
-        db_table = 'tbl_user_weight_readings'
-    def __unicode__(self):
-        return u'%s %s' % (self.id, self.user_weight_goal)
+        db_table = 'tbl_user_blood_pressure_readings'
+
+class UserCholesterolGoal(models.Model):
+    user = models.ForeignKey('auth.User', related_name="+")
+    target_date = models.DateField(blank=True)
+    hdl = models.IntegerField()
+    ldl = models.IntegerField()
+    triglycerides = models.IntegerField()
+    total_cholesterol = models.IntegerField()
+    interval_num = models.IntegerField(blank=True)
+    interval_unit = models.CharField(max_length=6L, choices=INTERVAL_UNIT_CHOICES,blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    updated_by = models.ForeignKey('auth.User', related_name="+", db_column='updated_by')
+    status = models.CharField(max_length=18L, choices=GLOBAL_STATUS_CHOICES, default='ACTIVE', db_index=True)
+    class Meta:
+        db_table = 'tbl_user_cholesterol_goals'
+
+class UserCholesterolReading(models.Model):
+    user_cholesterol_goal = models.ForeignKey('UserCholesterolGoal', related_name="readings")
+    hdl = models.IntegerField()
+    ldl = models.IntegerField()
+    triglycerides = models.IntegerField()
+    total_cholesterol = models.IntegerField()
+    reading_date = models.DateField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    updated_by = models.ForeignKey('auth.User', related_name="+", db_column='updated_by')
+    class Meta:
+        db_table = 'tbl_user_cholesterol_readings'
 
 User.profile = property(lambda u: UserProfile.objects.get_or_create(user=u)[0])

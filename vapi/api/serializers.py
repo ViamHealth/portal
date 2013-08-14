@@ -85,6 +85,12 @@ class ReminderSerializer(serializers.HyperlinkedModelSerializer):
         model = Reminder
         fields = ('id','url', 'user','details','start_timestamp' ,'repeat_mode','repeat_day','repeat_hour','repeat_min','repeat_weekday','repeat_day_interval')
 
+class UserBmiProfileSerializer(serializers.HyperlinkedModelSerializer):
+    user = serializers.Field(source='user.id')
+    class Meta:
+        model = UserBmiProfile
+        fields = ('id','url', 'user', 'height' ,'height_measure', 'weight' , 'weight_measure')
+
 
 #class HealthfileListSerializer(serializers.HyperlinkedModelSerializer):
 #    class Meta:
@@ -130,31 +136,33 @@ class UserWeightGoalSerializer(serializers.HyperlinkedModelSerializer):
         model = UserWeightGoal
         fields = ('id', 'url','user','readings','weight','weight_measure' ,'target_date','interval_num','interval_unit',)
 
+class UserBloodPressureReadingSerializer(serializers.HyperlinkedModelSerializer):
+    user_blood_pressure_goal = serializers.Field(source='user_blood_pressure_goal.id')
+    class Meta:
+        model = UserBloodPressureReading
+        fields = ('id','url','user_blood_pressure_goal','systolic_pressure','diastolic_pressure', 'pulse_rate' ,'reading_date')
+
+class UserBloodPressureGoalSerializer(serializers.HyperlinkedModelSerializer):
+    readings = UserBloodPressureReadingSerializer(required=False)
+    user = serializers.Field(source='user.id')
+    class Meta:
+        model = UserBloodPressureGoal
+        fields = ('id', 'url','user','readings','systolic_pressure','diastolic_pressure', 'pulse_rate' ,'target_date','interval_num','interval_unit',)
+
+class UserCholesterolReadingSerializer(serializers.HyperlinkedModelSerializer):
+    user_cholesterol_goal = serializers.Field(source='user_cholesterol_goal.id')
+    class Meta:
+        model = UserCholesterolReading
+        fields = ('id','url','user_cholesterol_goal','hdl','ldl', 'triglycerides', 'total_cholesterol' ,'reading_date')
+
+class UserCholesterolGoalSerializer(serializers.HyperlinkedModelSerializer):
+    readings = UserCholesterolReadingSerializer(required=False)
+    user = serializers.Field(source='user.id')
+    class Meta:
+        model = UserCholesterolGoal
+        fields = ('id', 'url','user','readings','hdl','ldl', 'triglycerides', 'total_cholesterol' ,'target_date','interval_num','interval_unit',)
+
 """
-
-class UserWeightReadingSerializer(serializers.HyperlinkedModelSerializer):
-    class Meta:
-        model = UserWeightReading
-        #fields = ('id','user_weight_goal', 'weight','weight_measure' ,'reading_date','created_at','updated_at','updated_by')
-        fields = ('id','user_weight_goal', 'weight','weight_measure' ,'reading_date','created_at','updated_at')
-
-class UserWeightReadingListSerializer(serializers.HyperlinkedModelSerializer):
-    class Meta:
-        model = UserWeightReading
-        fields = ('weight','weight_measure' ,'reading_date')
-
-class UserWeightGoalSerializer(serializers.HyperlinkedModelSerializer):
-    class Meta:
-        model = UserWeightGoal
-        exclude = ('created_at','updated_at','updated_by','status')
-        #fields = ('id', 'url','user','readings','weight','weight_measure' ,'target_date','interval_num','interval_unit','created_at','updated_at','updated_by')
-
-class UserWeightGoalListSerializer(serializers.HyperlinkedModelSerializer):
-    readings = UserWeightReadingListSerializer(required=False)
-
-    class Meta:
-        model = UserWeightGoal
-        fields = ('id', 'url','user','readings','weight','weight_measure' ,'target_date','interval_num','interval_unit','created_at','updated_at')
 
 class GoalSerializer(serializers.HyperlinkedModelSerializer):
     weight = UserWeightGoalSerializer

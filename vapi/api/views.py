@@ -47,10 +47,15 @@ def api_root(request, format=None):
         #'user profile crud': reverse('profile-detail', request=request, format=format),
         'signup': reverse('user-signup', request=request, format=format),
         'reminders': reverse('reminder-list', request=request, format=format),
+        #'bmi-profile': reverse('userbmiprofile-list', request=request, format=format),
         'healthfiles': reverse('healthfile-list', request=request, format=format),
         'healthfiletags': reverse('healthfiletag-list', request=request, format=format),
-        'userweightgoals': reverse('userweightgoal-list', request=request, format=format),
-        'userweightreadings': reverse('userweightreading-list', request=request, format=format),
+        'weight-goals': reverse('userweightgoal-list', request=request, format=format),
+        'weight-readings': reverse('userweightreading-list', request=request, format=format),
+        'blood-pressure-goals': reverse('userbloodpressuregoal-list', request=request, format=format),
+        'blood-pressure-readings': reverse('userbloodpressurereading-list', request=request, format=format),
+        'cholesterol-goals': reverse('usercholesterolgoal-list', request=request, format=format),
+        'cholesterol-readings': reverse('usercholesterolreading-list', request=request, format=format),
         
         
     })
@@ -68,6 +73,7 @@ class SignupView(viewsets.ViewSet):
             serializer.save()
             user = User.objects.get(pk=serializer.object.id)
             pserializer = UserSerializer(user, context={'request': request})
+            UserBmiProfile.objects.get_or_create(user=user,updated_by=user)
             return Response(pserializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -136,6 +142,7 @@ class UserView(viewsets.ViewSet):
             user=User.objects.get(pk=serializer.data.get('id'))
             uprofile = UserProfile(user)
             uprofile.save()
+            UserBmiProfile.objects.get_or_create(user=user,updated_by=user)
             pserializer = UserSerializer(user, data=serializer.object, context={'request': request})
             return Response(pserializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -174,6 +181,23 @@ class UserView(viewsets.ViewSet):
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+    @link()
+    def retrieve_bmi_profile(self, request, pk):
+        user = self.get_object(pk)
+        bmi_profile = UserBmiProfile.objects.get(user=user)
+        serializer = UserBmiProfileSerializer(bmi_profile)
+        return Response(serializer.data)
+
+    @action(methods=['PUT'])
+    def update_bmi_profile(self, request, pk=None):
+        user = self.get_object(pk)
+        bmi_profile = UserBmiProfile.objects.get(user=user)
+        serializer = UserBmiProfileSerializer(bmi_profile, data=request.DATA)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
     @action(methods=['PUT'])
     def update_profile_pic(self, request, pk=None):
         user = self.get_object(pk)
@@ -204,6 +228,7 @@ class ReminderViewSet(ViamModelViewSet):
     #filter_fields = ('user')
     model = Reminder
     serializer_class = ReminderSerializer
+
 
 class HealthfileViewSet(ViamModelViewSet):
 
@@ -308,7 +333,7 @@ class UserWeightReadingView(viewsets.ModelViewSet):
     * Requires token authentication.
     * Get readings for a weight goal - http://127.0.0.1:8080/healthfiletags/?user_weight_goal=1
     """
-    filter_fields = ('user_weight_goal','weight')
+    filter_fields = ('user_weight_goal',)
     model = UserWeightReading
     serializer_class = UserWeightReadingSerializer
 
@@ -330,6 +355,109 @@ class UserWeightReadingView(viewsets.ModelViewSet):
             #serializer = UserWeightReadingSerializer(queryset, many=True, context={'request': request})
             #return Response(serializer.data)
     """
+class UserBloodPressureGoalViewSet(ViamModelViewSet):
+    """
+    Manage all healthfiles for a user ( authenticated or family member)
+    * Requires token authentication.
+    * CRUD of fields created_at & updated_at are handled by API only.
+    * User field is not to be passed to the API via POST params. It will be ignored if passed.
+    * For family user, pass user in URL . ie append ?user=$user_id
+    * For current logged in user, API automatically picks up  the user
+    * Allowed methods - GET , POST , PUT , DELETE
+    * custom actions :- 
+    * POST set_reading - set a new reading / update old reading. Updation is based on reading_date params
+    """
+
+    #filter_fields = ('user')
+    model = UserBloodPressureGoal
+    serializer_class = UserBloodPressureGoalSerializer
+
+    @action(methods=['POST'])
+    def set_reading(self, request, pk):
+        try:
+            reading = UserBloodPressureReading.objects.get(reading_date=request.DATA['reading_date'])
+            reading.systolic_pressure = int(request.DATA['systolic_pressure'])
+            reading.diastolic_pressure = request.DATA['diastolic_pressure']
+            reading.pulse_rate = request.DATA['pulse_rate']
+            reading.updated_by = request.user
+            serializer = UserBloodPressureReadingSerializer(reading)
+            return Response(serializer.data)    
+        except UserBloodPressureReading.DoesNotExist:
+            try:
+                wgoal = UserBloodPressureGoal.objects.get(id=pk)
+                reading = UserBloodPressureReading(user_blood_pressure_goal=wgoal,systolic_pressure=int(request.DATA['systolic_pressure']),diastolic_pressure=request.DATA['diastolic_pressure'],pulse_rate=request.DATA['pulse_rate'],reading_date=request.DATA['reading_date'],updated_by=request.user)
+                reading.save()
+                serializer = UserBloodPressureReadingSerializer(reading)
+                return Response(serializer.data)    
+            except:
+                return Response(status=status.HTTP_400_BAD_REQUEST)
+            
+        except:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+class UserBloodPressureReadingView(viewsets.ModelViewSet):
+    """
+    Manage all healthfiles for a user ( authenticated or family member)
+    * Requires token authentication.
+    * Get readings for a weight goal - http://127.0.0.1:8080/healthfiletags/?user_weight_goal=1
+    """
+    filter_fields = ('user_blood_pressure_goal',)
+    model = UserBloodPressureReading
+    serializer_class = UserBloodPressureReadingSerializer
+
+
+class UserCholesterolGoalViewSet(ViamModelViewSet):
+    """
+    Manage all healthfiles for a user ( authenticated or family member)
+    * Requires token authentication.
+    * CRUD of fields created_at & updated_at are handled by API only.
+    * User field is not to be passed to the API via POST params. It will be ignored if passed.
+    * For family user, pass user in URL . ie append ?user=$user_id
+    * For current logged in user, API automatically picks up  the user
+    * Allowed methods - GET , POST , PUT , DELETE
+    * custom actions :- 
+    * POST set_reading - set a new reading / update old reading. Updation is based on reading_date params
+    """
+
+    #filter_fields = ('user')
+    model = UserCholesterolGoal
+    serializer_class = UserCholesterolGoalSerializer
+
+    @action(methods=['POST'])
+    def set_reading(self, request, pk):
+        try:
+            reading = UserCholesterolReading.objects.get(reading_date=request.DATA['reading_date'])
+            reading.ldl = int(request.DATA['ldl'])
+            reading.hdl = request.DATA['hdl']
+            reading.triglycerides = request.DATA['triglycerides']
+            reading.total_cholesterol = request.DATA['total_cholesterol']
+            reading.updated_by = request.user
+            serializer = UserCholesterolReadingSerializer(reading)
+            return Response(serializer.data)    
+        except UserCholesterolReading.DoesNotExist:
+            try:
+                wgoal = UserCholesterolGoal.objects.get(id=pk)
+                reading = UserCholesterolReading(user_cholesterol_goal=wgoal,ldl=int(request.DATA['ldl']),hdl=request.DATA['hdl'],triglycerides=request.DATA['triglycerides'],total_cholesterol=request.DATA['total_cholesterol'],reading_date=request.DATA['reading_date'],updated_by=request.user)
+                reading.save()
+                serializer = UserCholesterolReadingSerializer(reading)
+                return Response(serializer.data)    
+            except:
+                return Response(status=status.HTTP_400_BAD_REQUEST)
+            
+        except:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+class UserCholesterolReadingView(viewsets.ModelViewSet):
+    """
+    Manage all healthfiles for a user ( authenticated or family member)
+    * Requires token authentication.
+    * Get readings for a weight goal - http://127.0.0.1:8080/healthfiletags/?user_weight_goal=1
+    """
+    filter_fields = ('user_cholesterol_goal',)
+    model = UserCholesterolReading
+    serializer_class = UserCholesterolReadingSerializer
+
+
 """
 class GoalViewSet(ListAPIView):
     def get(self, request, format=None):
