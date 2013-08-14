@@ -1,0 +1,14 @@
+Django==1.5.1
+MySQL-python==1.2.4
+Pillow==2.1.0
+argparse==1.2.1
+boto==2.9.9
+django-filter==0.6
+django-social-auth==0.7.24
+django-storages==1.1.8
+djangorestframework==2.3.6
+httplib2==0.8
+oauth2==1.5.211
+python-openid==2.2.5
+wsgiref==0.1.2
+yolk==0.4.3

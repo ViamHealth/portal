@@ -93,6 +93,8 @@ class UserView(viewsets.ViewSet):
     * PUT /users/<pk> - Update user with id <pk>
     * PUT /users/<pk>/profile/ - update profile of user with id <pk>
     * PUT /users/<pk>/profile-picture/ - upload profile picture of user with id <pk> . Require multpart/form-data
+    * GET /users/<pk>/bmi-profile/ - gets bmi profile of user
+    * PUT /users/<pk>/bmi-profile/ - updates bmi profile of user
     * DELETE /users/<pk> - Delete users with id <pk>
     * ============
     """
