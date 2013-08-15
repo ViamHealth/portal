@@ -73,6 +73,8 @@ python manage.py syncdb
 
 This command will also create an admin user
 
+**Change template directory path in vapi/settings.py**
+
 python manage.py collectstatic
 
 python manage.py runserver 127.0.0.1:8080

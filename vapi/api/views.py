@@ -173,6 +173,16 @@ class UserView(viewsets.ViewSet):
         UserGroupSet.objects.filter(user=pk,group=request.user.id,status='ACTIVE').update(status='DELETED',updated_by=request.user,updated_at=datetime.now())
         return Response(status=status.HTTP_204_NO_CONTENT)
 
+    @action(methods=['POST'])
+    def change_password(self, request, pk):
+        user = self.get_object(pk)
+        serializer = UserPasswordSerializer(user, data=request.DATA)
+        if serializer.is_valid():
+            serializer.object.password = make_password(serializer.object.password)
+            serializer.save()
+            return Response(status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
     @action(methods=['PUT'])
     def update_profile(self, request, pk=None):
         user = self.get_object(pk)

@@ -49,6 +49,8 @@ urlpatterns = patterns('',
     url(r'^users/(?P<pk>[0-9]+)/profile/$', views.UserView.as_view({'put':'update_profile'}),name='profile-detail'),
     url(r'^users/(?P<pk>[0-9]+)/profile-picture/$', views.UserView.as_view({'put':'update_profile_pic'}),name='profile-detail'),
     url(r'^users/(?P<pk>[0-9]+)/bmi-profile/$', views.UserView.as_view({'get':'retrieve_bmi_profile','put':'update_bmi_profile'}),name='userbmiprofile-detail'),
+    url(r'^users/(?P<pk>[0-9]+)/change-password/$', views.UserView.as_view({'post':'change_password'}),name='password-detail'),
+
 
     #Uncomment the admin/doc line below to enable admin documentation:
     #url(r'^admin/doc/', include('django.contrib.admindocs.urls')),

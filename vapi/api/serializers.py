@@ -36,6 +36,12 @@ class UserProfileSerializer(serializers.ModelSerializer):
         model = UserProfile
         fields = ( 'location', 'gender', 'date_of_birth', 'profile_picture_url')
 
+class UserPasswordSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ( 'password',)
+    
+
 class UserProfilePicSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserProfile
