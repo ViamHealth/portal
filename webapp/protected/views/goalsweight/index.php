@@ -37,9 +37,8 @@ $this->breadcrumbs=array(
 </div>
 
 <script type="text/javascript">
-jQuery.get('/index.php?r=goalsweight/getweightgoal', function(data){
+jQuery.get('<?php echo $this->createUrl("/goalsweight/getweightgoal"); ?>', function(data){
 	data = $.parseJSON(data);
-	console.log(data);
 	if(data.count == 0 ){
 		$('#goalWeightChart').html('Set a goal for weight');
 		return;
@@ -51,7 +50,6 @@ jQuery.get('/index.php?r=goalsweight/getweightgoal', function(data){
 		document.body.appendChild(tt);
 		data = data.results;
 		var o = data[0]['readings'];
-		console.log(o);
 		var count = data[0]['readings'].length;
 		var target_weight = data[0]['weight'];
 		target_weight = 100;
@@ -64,7 +62,7 @@ jQuery.get('/index.php?r=goalsweight/getweightgoal', function(data){
 			});
 		}
 		var data = {
-			xScale : "time",
+			xScale : "ordinal",
 			yScale : "linear",
 			//yMin: 30,
 			//yMax: target_weight,
@@ -75,12 +73,11 @@ jQuery.get('/index.php?r=goalsweight/getweightgoal', function(data){
 			}],
 		};
 		var opts = {
-		  "dataFormatX": function (x) { return d3.time.format('%Y-%m-%d').parse(x); },
-		  //"dataFormatX": function (x) { return x; },
+		  //"dataFormatX": function (x) { return d3.time.format('%Y-%m-%d').parse(x); },
+		  "dataFormatX": function (x) { return x; },
 		  //"tickFormatX": function (x) { return d3.time.format('%A')(x); },
 		  "mouseover": function (d, i) {
 		    var pos = $(this).offset();
-		    console.log(pos);
 //		    $(tt).text(d3.time.format('%A')(d.x) + ': ' + d.y)
 			$(tt).text('...')
 		      .css({top: topOffset + pos.top, left: pos.left + leftOffset})

@@ -21,8 +21,13 @@
  * @property AuthUser $user
  * @property UserWeightReadings[] $userWeightReadings
  */
-class UserWeightGoal extends CActiveRecord
+class UserWeightGoal extends VCActiveRecord
 {
+	public function resourceUrl()
+    {
+    	return 'weight-goals/';
+    }
+
 	/**
 	 * Returns the static model of the specified AR class.
 	 * @param string $className active record class name.

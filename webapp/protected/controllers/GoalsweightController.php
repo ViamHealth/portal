@@ -32,29 +32,42 @@ class GoalsweightController extends Controller
 
   public function actionGetweightgoal()
   {
-    $res = $this->apiCall('get','goals/weight/');
+    $res = $this->apiCall('get','weight-goals/');
     echo json_encode($res);
   }
 
   public function actionSetreading()
   {
+    /*$model=UserWeightReading::model();
+    if(isset($_POST['UserWeightReading'])){
+      $attributes = $_POST['UserWeightReading'];
+      //$attributes['status'] = 'ACTIVE';
+      //$attributes['start_timestamp'] = strtotime($attributes['start_timestamp']);
+      $model->attributes = $attributes;
+      if($model->save(true,$attributes)){
+        $this->redirect(array('goalsweight/index'));
+      } else {
+        $this->redirect(array('goalsweight/index'));
+      }
+
+    }*/
+
     $post = $_POST['UserWeightReading'];
     $id =  addslashes($post['user_weight_goal_id']);
     $post_data = array(
       "weight"=>addslashes($post['weight']),
       "reading_date"=>addslashes($post['reading_date']),
+      "weight_measure"=>'METRIC',
     );
-    $res = $this->apiCall('post','goals/weight/'.$id.'/set-reading/', $post_data);
-    if($res->status == 'reading set')
-      $this->redirect(array('index'));
-    else echo "error";
+    $res = VApi::apiCall('post','weight-goals/'.$id.'/set-reading/', $post_data);
+    $this->redirect(array('index'));
   }
 
   public function actionIndex()
   {
     //TODO: Optimize the no. of calls
     
-    $res = $this->apiCall('get','goals/weight/');
+    $res = $this->apiCall('get','weight-goals/');
     $goal = $res->results;
     $user_weight_goal_id = $res->results[0]->id;
 
