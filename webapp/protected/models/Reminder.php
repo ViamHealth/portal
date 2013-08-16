@@ -7,7 +7,7 @@
  * @property integer $id
  * @property integer $user_id
  * @property string $details
- * @property integer $start_datetime
+ * @property integer $start_timestamp
  * @property string $repeat_mode
  * @property string $repeat_day
  * @property string $repeat_hour
@@ -55,7 +55,7 @@ class Reminder extends VCActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('user_id, details, start_datetime', 'required'),
+			array('user_id, details, start_timestamp', 'required'),
 			#array('user_id, updated_by', 'numerical', 'integerOnly'=>true),
 			#array('repeat_mode', 'length', 'max'=>32),
 			#array('repeat_day, repeat_hour, repeat_min', 'length', 'max'=>2),
@@ -64,7 +64,7 @@ class Reminder extends VCActiveRecord
 			#array('status', 'length', 'max'=>18),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, user_id, details, start_datetime, repeat_mode, repeat_day, repeat_hour, repeat_min, repeat_weekday, repeat_day_interval, status, created_at, updated_at, updated_by', 'safe'),
+			array('id, user_id, details, start_timestamp, repeat_mode, repeat_day, repeat_hour, repeat_min, repeat_weekday, repeat_day_interval, status, created_at, updated_at, updated_by', 'safe'),
 		);
 	}
 
@@ -89,7 +89,7 @@ class Reminder extends VCActiveRecord
 			'id' => 'ID',
 			'user_id' => 'User',
 			'details' => 'Reminder',
-			'start_datetime' => 'Date',
+			'start_timestamp' => 'Date',
 			'repeat_mode' => 'Repeat Mode',
 			'repeat_day' => 'Repeat Day',
 			'repeat_hour' => 'Repeat Hour',
@@ -126,7 +126,7 @@ class Reminder extends VCActiveRecord
 		$criteria->compare('id',$this->id);
 		$criteria->compare('user_id',$this->user_id);
 		$criteria->compare('details',$this->details,true);
-		$criteria->compare('start_datetime',$this->start_datetime,true);
+		$criteria->compare('start_timestamp',$this->start_timestamp,true);
 		$criteria->compare('repeat_mode',$this->repeat_mode,true);
 		$criteria->compare('repeat_day',$this->repeat_day,true);
 		$criteria->compare('repeat_hour',$this->repeat_hour,true);

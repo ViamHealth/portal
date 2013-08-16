@@ -23,7 +23,7 @@ $this->breadcrumbs=array(
 )); ?>
 <div>
       <?php echo $form->textAreaRow($ReminderModel, 'details', array('class'=>'span3', 'rows'=>5)); ?>
-      <?php echo $form->datepickerRow($ReminderModel, 'start_datetime',
+      <?php echo $form->datepickerRow($ReminderModel, 'start_timestamp',
       array(
       'prepend'=>'<i class="icon-calendar"></i>',
       'options'=>array('format'=>'yyyy-mm-dd'),

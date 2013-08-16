@@ -21,5 +21,14 @@ class VCActiveRecord extends CActiveRecord
 			return false;
 		}
 	}
+	public function deleteByPk($pk,$condition='',$params=array())
+	{
+	    Yii::trace(get_class($this).'.deleteByPk()','system.db.ar.CActiveRecord');
+	    if(!$pk) return false;
+	    $method = 'delete';
+	    $url = $this->resourceUrl();
+	    $url = $url.$pk.'/';
+	    return VApi::apiCall($method, $url);
+	}
 	
 }

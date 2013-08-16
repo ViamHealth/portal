@@ -19,7 +19,7 @@ $this->breadcrumbs=array(
 )); ?>
 <div>
       <?php echo $form->textAreaRow($model, 'details', array('class'=>'span3', 'rows'=>5)); ?>
-      <?php echo $form->datepickerRow($model, 'start_datetime',
+      <?php echo $form->datepickerRow($model, 'start_timestamp',
       array(
       'prepend'=>'<i class="icon-calendar"></i>',
       'options'=>array('format'=>'yyyy-mm-dd'),

@@ -45,7 +45,7 @@ class RemindersController extends Controller
     if(isset($_POST['Reminder'])){
       $attributes = $_POST['Reminder'];
       $attributes['status'] = 'ACTIVE';
-      $attributes['start_datetime'] = strtotime($attributes['start_datetime']);
+      $attributes['start_timestamp'] = strtotime($attributes['start_timestamp']);
       $model->attributes = $attributes;
       if($model->save(true,$attributes)){
         $this->redirect(array('reminders/index'));
@@ -60,12 +60,12 @@ class RemindersController extends Controller
 		$model = $this->loadModel($id);
 		if(isset($_POST['Reminder'])){
 			$model->attributes = $_POST['Reminder'];
-      $model->start_datetime = strtotime($model->start_datetime);
+      $model->start_timestamp = strtotime($model->start_timestamp);
       if($model->save())
         $this->redirect(array('reminders/index'));
 		}
     //TODO: design a model view helper module
-    $model->start_datetime = date('Y-m-d', $model->start_datetime);
+    $model->start_timestamp = date('Y-m-d', $model->start_timestamp);
 		$this->render('update',array('model'=>$model));
 	}
 
@@ -73,8 +73,7 @@ class RemindersController extends Controller
 	public function actionDelete($id)
   {
     $model = $this->loadModel($id);
-    $model->status = 'DELETED';
-    if($model->save())
+    if($model->delete())
         $this->redirect(array('reminders/index'));
     /*
       $this->loadModel($id)->delete();

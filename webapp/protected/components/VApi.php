@@ -28,9 +28,15 @@ class VApi
             case 'put': 
                 $result = $rest->put($url, $params);
                 break;
+            case 'delete':
+                $result = $rest->delete($url);
+                break;
             default:
                 throw new CHttpException(500, 'Illegal API call.');
         }
+        //TODO Hacky !! Move class away from static functions to avoid these situations
+        if ( $rest->status() == '204' ) return true;
+
         return json_decode($result);
  
 	}

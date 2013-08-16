@@ -9,7 +9,7 @@
     <div>
     <?php echo CHtml::encode($data->details); ?>
       <p><span>When</span><br />
-      <?php echo CHtml::encode(date('Y-m-d',$data->start_datetime));?></p>
+      <?php echo CHtml::encode(date('Y-m-d',$data->start_timestamp));?></p>
     </div>
     <div class="col">
       <p><span>Repeat</span><br />
