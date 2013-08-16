@@ -57,7 +57,7 @@ class UserProfile(models.Model):
         return 'http://viamhealth-docsbucket.s3.amazonaws.com/'+ pic
 
     def __unicode__(self):
-        return u'Profile of user: %s' % self.user.username
+        return u'Profile %s of user: %s' % (self.id, self.user.username)
 
 class UserBmiProfile(models.Model):  
     user = models.ForeignKey('auth.User', unique=True)
@@ -71,6 +71,11 @@ class UserBmiProfile(models.Model):
     #status = models.CharField(max_length=18L, choices=GLOBAL_STATUS_CHOICES, default='ACTIVE', db_index=True)
     class Meta:
         db_table = 'tbl_user_bmi_profile'
+        verbose_name_plural = 'BMI Profiles'
+        verbose_name = 'BMI Profile'
+    def __unicode__(self):
+        return u'BMI Profile %s of user: %s' % (self.id, self.user.username)
+
 
 """
 Removed in favour of GroupSet
@@ -93,12 +98,16 @@ class UserGroupSet(models.Model):
     updated_by = models.ForeignKey('auth.User', related_name="+", db_column='updated_by')
     class Meta:
         db_table = 'tbl_user_group_set'
+    def __unicode__(self):
+        return u' %s - %s' % (self.group.username, self.user.username)
 
 class HealthfileTag(models.Model):
     healthfile = models.ForeignKey('Healthfile', related_name="tags")
     tag = models.CharField(max_length=64L)
     class Meta:
         db_table = 'tbl_healthfile_tags'
+    def __unicode__(self):
+        return u' %s of healthfile %s' % (self.id, self.healthfile)
 
 class Healthfile(models.Model):
     def get_healthfile_path(self, filename):
@@ -118,6 +127,9 @@ class Healthfile(models.Model):
 
     class Meta:
         db_table = 'tbl_healthfiles'
+
+    def __unicode__(self):
+        return u'%s' % self.id
 
     def download_url(self):
         if self.file:
@@ -175,8 +187,10 @@ class UserWeightGoal(models.Model):
     status = models.CharField(max_length=18L, choices=GLOBAL_STATUS_CHOICES, default='ACTIVE', db_index=True)
     class Meta:
         db_table = 'tbl_user_weight_goals'
+        verbose_name_plural = 'Weight Goals'
+        verbose_name = 'Weight Goal'
     def __unicode__(self):
-        return u'%s %s' % (self.id, self.user.username)
+        return u'%s' % (self.id)
 
 class UserWeightReading(models.Model):
     user_weight_goal = models.ForeignKey('UserWeightGoal', related_name="readings")
@@ -188,8 +202,10 @@ class UserWeightReading(models.Model):
     updated_by = models.ForeignKey('auth.User', related_name="+", db_column='updated_by')
     class Meta:
         db_table = 'tbl_user_weight_readings'
+        verbose_name_plural = 'Weight Readings'
+        verbose_name = 'Weight Reading'
     def __unicode__(self):
-        return u'%s %s' % (self.id, self.user_weight_goal)
+        return u'reading %s of goal %s' % (self.id, self.user_weight_goal)
 
 class UserBloodPressureGoal(models.Model):
     user = models.ForeignKey('auth.User', related_name="+")
@@ -205,6 +221,10 @@ class UserBloodPressureGoal(models.Model):
     status = models.CharField(max_length=18L, choices=GLOBAL_STATUS_CHOICES, default='ACTIVE', db_index=True)
     class Meta:
         db_table = 'tbl_user_blood_pressure_goals'
+        verbose_name_plural = 'BP Goals'
+        verbose_name = 'BP Goal'
+    def __unicode__(self):
+        return u'%s' % (self.id)
 
 class UserBloodPressureReading(models.Model):
     user_blood_pressure_goal = models.ForeignKey('UserBloodPressureGoal', related_name="readings")
@@ -217,6 +237,10 @@ class UserBloodPressureReading(models.Model):
     updated_by = models.ForeignKey('auth.User', related_name="+", db_column='updated_by')
     class Meta:
         db_table = 'tbl_user_blood_pressure_readings'
+        verbose_name_plural = 'BP Readings'
+        verbose_name = 'BP Reading'
+    def __unicode__(self):
+        return u'reading %s of goal %s' % (self.id, self.user_blood_pressure_goal)
 
 class UserCholesterolGoal(models.Model):
     user = models.ForeignKey('auth.User', related_name="+")
@@ -233,6 +257,10 @@ class UserCholesterolGoal(models.Model):
     status = models.CharField(max_length=18L, choices=GLOBAL_STATUS_CHOICES, default='ACTIVE', db_index=True)
     class Meta:
         db_table = 'tbl_user_cholesterol_goals'
+        verbose_name_plural = 'Cholesterol Goals'
+        verbose_name = 'Cholesterol Goal'
+    def __unicode__(self):
+        return u'%s' % (self.id)
 
 class UserCholesterolReading(models.Model):
     user_cholesterol_goal = models.ForeignKey('UserCholesterolGoal', related_name="readings")
@@ -246,5 +274,9 @@ class UserCholesterolReading(models.Model):
     updated_by = models.ForeignKey('auth.User', related_name="+", db_column='updated_by')
     class Meta:
         db_table = 'tbl_user_cholesterol_readings'
+        verbose_name_plural = 'Cholesterol Readings'
+        verbose_name = 'Cholesterol Reading'
+    def __unicode__(self):
+        return u'reading %s of goal %s' % (self.id, self.user_cholesterol_goal)
 
 User.profile = property(lambda u: UserProfile.objects.get_or_create(user=u)[0])
