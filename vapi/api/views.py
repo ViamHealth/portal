@@ -89,13 +89,13 @@ class UserView(viewsets.ViewSet):
     * GET /users/me/ - get current logged in user
     * GET /users/<pk>/ - get user with id <pk>
     * POST /users/ - Create new family user for current logged in user
-    * PUT /users/<pk> - get user with id <pk>
-    * PUT /users/<pk> - Update user with id <pk>
+    * PUT /users/<pk>/ - Update user with id <pk>
     * PUT /users/<pk>/profile/ - update profile of user with id <pk>
     * PUT /users/<pk>/profile-picture/ - upload profile picture of user with id <pk> . Require multpart/form-data
     * GET /users/<pk>/bmi-profile/ - gets bmi profile of user
     * PUT /users/<pk>/bmi-profile/ - updates bmi profile of user
-    * DELETE /users/<pk> - Delete users with id <pk>
+    * POST /users/<pk>/change-password/ - change password of user with id <pk>
+    * DELETE /users/<pk>/ - Delete users with id <pk>
     * ============
     """
     permission_classes = (permissions.IsAuthenticated,)
