@@ -21,11 +21,19 @@ class GoalsweightController extends Controller
 
   public function actionAdd()
   {
-    $UserWeightGoalModel = UserWeightGoal::model();
-    $this->renderPartial('index',array(
-      'weight_view' => '_edit_weight',
+    $model = UserWeightGoal::model();
+
+    if(isset($_POST['UserWeightGoal'])){
+      $attributes = $_POST['UserWeightGoal'];
+      $model->attributes = $attributes;
+      if($model->save(true,$attributes)){
+        $this->redirect(array('goalsweight/index'));
+      }
+    }
+    $this->render('_edit_weight',array(
+      //'weight_view' => '_edit_weight',
       'profile_id'=>Yii::app()->user->id,
-      'wModel'=>$UserWeightGoalModel
+      'model'=>$model
       )
     );
   }
@@ -69,9 +77,10 @@ class GoalsweightController extends Controller
     
     $res = $this->apiCall('get','weight-goals/');
     $goal = $res->results;
-    $user_weight_goal_id = $res->results[0]->id;
+    
 
     if($res->count > 0 ){
+      $user_weight_goal_id = $res->results[0]->id;
       $UserGoalReadingModel = UserWeightReading::model();
       $this->render('index',array(
         'profile_id'=>Yii::app()->user->id,
@@ -80,7 +89,7 @@ class GoalsweightController extends Controller
         )
       );
     } else {
-      
+      $this->redirect(array('add'));
     }
   }
 }

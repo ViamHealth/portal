@@ -179,7 +179,7 @@ class UserWeightGoal(models.Model):
     weight = models.IntegerField()
     weight_measure = models.CharField(max_length=12L, choices=MEASURE_CHOICES, default='METRIC')
     target_date = models.DateField(blank=True)
-    interval_num = models.IntegerField(blank=True)
+    interval_num = models.IntegerField(blank=True,default=0)
     interval_unit = models.CharField(max_length=6L, choices=INTERVAL_UNIT_CHOICES,blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
