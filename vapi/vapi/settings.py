@@ -1,6 +1,7 @@
 # Django settings for vapi project.
 
-
+DEBUG = True
+TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
     # ('Your Name', 'your_email@example.com'),
@@ -8,8 +9,23 @@ ADMINS = (
 
 MANAGERS = ADMINS
 
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
+        'NAME': 'viam2',                      # Or path to database file if using sqlite3.
+        # The following settings are not used with sqlite3:
+        'USER': 'root',
+        'PASSWORD': '',
+        'HOST': '',                      # Empty for localhost through domain sockets or '127.0.0.1' for localhost through TCP.
+        'PORT': '',                      # Set to empty string for default.
+    }
+}
+
 AUTH_PROFILE_MODULE = 'api.UserProfile'
 
+# Hosts/domain names that are valid for this site; required if DEBUG is False
+# See https://docs.djangoproject.com/en/1.5/ref/settings/#allowed-hosts
+ALLOWED_HOSTS = [   ]
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
@@ -69,7 +85,7 @@ STATICFILES_FINDERS = (
 )
 
 # Make this unique, and don't share it with anybody.
-SECRET_KEY = 'viam'
+SECRET_KEY = '^2a-22@4m_5s7it^_4uz(ubc83j^021grryxrrn(qd$=$i^v&)'
 
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
@@ -100,7 +116,12 @@ ROOT_URLCONF = 'vapi.urls'
 # Python dotted path to the WSGI application used by Django's runserver.
 WSGI_APPLICATION = 'vapi.wsgi.application'
 
-
+TEMPLATE_DIRS = (
+    '/home/kunal/web/portal/vapi/templates',
+    # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
+    # Always use forward slashes, even on Windows.
+    # Don't forget to use absolute paths, not relative paths.
+)
 
 INSTALLED_APPS = (
     'django.contrib.auth',
@@ -161,3 +182,13 @@ REST_FRAMEWORK = {
 
 DEFAULT_FILE_STORAGE = 'api.s3utils.MediaS3BotoStorage' 
 STATICFILES_STORAGE = 'api.s3utils.StaticS3BotoStorage'
+
+AWS_ACCESS_KEY_ID = ''
+AWS_SECRET_ACCESS_KEY = ''
+AWS_STORAGE_BUCKET_NAME = ''
+
+S3_URL = 'http://%s.s3.amazonaws.com' % AWS_STORAGE_BUCKET_NAME
+STATIC_DIRECTORY = '/static/'
+MEDIA_DIRECTORY = '/media/'
+STATIC_URL = S3_URL + STATIC_DIRECTORY
+MEDIA_URL = S3_URL + MEDIA_DIRECTORY

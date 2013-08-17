@@ -196,14 +196,15 @@ class UserView(viewsets.ViewSet):
     @link()
     def retrieve_bmi_profile(self, request, pk):
         user = self.get_object(pk)
-        bmi_profile = UserBmiProfile.objects.get(user=user)
+        bmi_profile = UserBmiProfile.objects.get_or_create(user=user)[0]
+        pprint.pprint(bmi_profile)
         serializer = UserBmiProfileSerializer(bmi_profile)
         return Response(serializer.data)
 
     @action(methods=['PUT'])
     def update_bmi_profile(self, request, pk=None):
         user = self.get_object(pk)
-        bmi_profile = UserBmiProfile.objects.get(user=user)
+        bmi_profile = UserBmiProfile.objects.get_or_create(user=user)[0]
         serializer = UserBmiProfileSerializer(bmi_profile, data=request.DATA)
         if serializer.is_valid():
             serializer.save()
@@ -332,7 +333,7 @@ class UserWeightGoalViewSet(ViamModelViewSet):
                 reading = UserWeightReading(user_weight_goal=wgoal,weight=int(request.DATA['weight']),weight_measure=request.DATA['weight_measure'],reading_date=request.DATA['reading_date'],updated_by=request.user)
                 reading.save()
                 serializer = UserWeightReadingSerializer(reading)
-                return Response(serializer.data)    
+                return Response(serializer.data,context={'request': request})    
             except:
                 return Response(status=status.HTTP_400_BAD_REQUEST)
             
