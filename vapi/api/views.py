@@ -198,14 +198,14 @@ class UserView(viewsets.ViewSet):
         user = self.get_object(pk)
         bmi_profile = UserBmiProfile.objects.get_or_create(user=user)[0]
         pprint.pprint(bmi_profile)
-        serializer = UserBmiProfileSerializer(bmi_profile)
+        serializer = UserBmiProfileSerializer(bmi_profile, context={'request': request})
         return Response(serializer.data)
 
     @action(methods=['PUT'])
     def update_bmi_profile(self, request, pk=None):
         user = self.get_object(pk)
         bmi_profile = UserBmiProfile.objects.get_or_create(user=user)[0]
-        serializer = UserBmiProfileSerializer(bmi_profile, data=request.DATA)
+        serializer = UserBmiProfileSerializer(bmi_profile, data=request.DATA, context={'request': request})
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
