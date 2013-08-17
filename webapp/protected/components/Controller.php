@@ -44,6 +44,10 @@ class Controller extends CController
                 return true;
                 //Error page
             }
+            else if(($this->id == "site" && $action->id == "heartbeat")){
+                return true;
+                //heartbeat url
+            }
         	else{
         		if(Yii::app()->request->isAjaxRequest){
         			die("user not logged in");

@@ -4,6 +4,35 @@ portal
 ViamHealths Portal Code Base
 
 
+CENTOS Only
+===========
+rpm --import https://fedoraproject.org/static/0608B895.txt 
+
+rpm -ivh http://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm
+
+rpm --import http://rpms.famillecollet.com/RPM-GPG-KEY-remi
+
+rpm -ivh http://rpms.famillecollet.com/enterprise/remi-release-6.rpm
+
+yum install yum-priorities
+
+vi /etc/yum.repos.d/epel.repo add line priority=10 to the [epel]
+
+vi /etc/yum.repos.d/remi.repo add line and change enabled = 1
+
+yum install nginx
+
+###chkconfig --levels 235 nginx on
+
+/etc/init.d/nginx start
+
+yum install php-fpm php-cli php-mysql php-gd curl
+
+####chkconfig --levels 235 php-fpm on
+
+/etc/init.d/php-fpm start
+
+
 Instructions to install Website
 ===============================
 
