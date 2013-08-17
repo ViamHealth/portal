@@ -43,6 +43,7 @@ urlpatterns = patterns('',
     url(r'^weight-goals/(?P<pk>[0-9]+)/set-reading/$', views.UserWeightGoalViewSet.as_view({'post':'set_reading'}),name='goal-weight-reading-detail'),
 
     url(r'^blood-pressure-goals/(?P<pk>[0-9]+)/set-reading/$', views.UserBloodPressureGoalViewSet.as_view({'post':'set_reading'}),name='goal-blood-pressure-reading-detail'),
+    url(r'^cholesterol-goals/(?P<pk>[0-9]+)/set-reading/$', views.UserCholesterolGoalViewSet.as_view({'post':'set_reading'}),name='goal-cholesterol-reading-detail'),
     
     
     url(r'^users/(?P<pk>[0-9]+)/$', views.UserView.as_view({'get': 'retrieve', 'put': 'update','delete':'destroy'}),name='user-detail'),

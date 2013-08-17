@@ -57,6 +57,7 @@ if(!Yii::app()->user->isGuest)
 					'items' => array(
 						array('label' => 'Weight', 'url' => array('/goalsweight/index'), 'visible' => !Yii::app()->user->isGuest),
 						array('label' => 'Blood Pressure', 'url' => array('/goalsbloodpressure/index'), 'visible' => !Yii::app()->user->isGuest),
+						array('label' => 'Cholesterol', 'url' => array('/goalscholesterol/index'), 'visible' => !Yii::app()->user->isGuest),
 					)
 				),
 				array('label' => 'Reminders', 'url' => array('/reminders/index'), 'visible' => !Yii::app()->user->isGuest),
