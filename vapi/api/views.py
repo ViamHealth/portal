@@ -500,6 +500,7 @@ class FoodItemViewSet(viewsets.ModelViewSet):
 class DietTrackerViewSet(ViamModelViewSet):
     model = DietTracker
     serializer_class = DietTrackerSerializer
+    filter_fields = ('meal_type','user',)
 
 
 """

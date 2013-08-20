@@ -11,7 +11,7 @@ router.register(r'blood-pressure-goals', views.UserBloodPressureGoalViewSet)
 router.register(r'blood-pressure-readings', views.UserBloodPressureReadingView)
 router.register(r'cholesterol-goals', views.UserCholesterolGoalViewSet)
 router.register(r'cholesterol-readings', views.UserCholesterolReadingView)
-router.register(r'diettracker', views.DietTrackerViewSet)
+router.register(r'diet-tracker', views.DietTrackerViewSet)
 
 #router.register(r'goals', views.GoalViewSet)
 
