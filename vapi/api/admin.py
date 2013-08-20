@@ -13,8 +13,8 @@ admin.site.register(UserBloodPressureGoal)
 admin.site.register(UserBloodPressureReading)
 admin.site.register(UserCholesterolGoal)
 admin.site.register(UserCholesterolReading)
-
-
+admin.site.register(FoodItem)
+admin.site.register(DietTracker)
 
 
 

@@ -41,6 +41,7 @@ for user in User.objects.all():
 
 @api_view(['GET',])
 def api_root(request, format=None):
+    return Response({})
     return Response({
         'users': reverse('user-list', request=request, format=format),
         'logged-in user': reverse('user-me', request=request, format=format),
@@ -56,7 +57,7 @@ def api_root(request, format=None):
         'blood-pressure-readings': reverse('userbloodpressurereading-list', request=request, format=format),
         'cholesterol-goals': reverse('usercholesterolgoal-list', request=request, format=format),
         'cholesterol-readings': reverse('usercholesterolreading-list', request=request, format=format),
-        
+        #'food-detail': reverse('food-details-detail',request=request, format=format),
         
     })
 
@@ -142,7 +143,7 @@ class UserView(viewsets.ViewSet):
             umap.save()
             #TODO:check for adding updated_by
             user=User.objects.get(pk=serializer.data.get('id'))
-            uprofile = UserProfile(user)
+            uprofile = UserProfile(user=user)
             uprofile.save()
             UserBmiProfile.objects.get_or_create(user=user,updated_by=user)
             pserializer = UserSerializer(user, data=serializer.object, context={'request': request})
@@ -469,6 +470,36 @@ class UserCholesterolReadingView(viewsets.ModelViewSet):
     filter_fields = ('user_cholesterol_goal',)
     model = UserCholesterolReading
     serializer_class = UserCholesterolReadingSerializer
+
+
+class FoodItemViewSet(viewsets.ModelViewSet):
+    model = FoodItem
+    serializer_class = FoodItemSerializer
+    permission_classes = (permissions.IsAuthenticated,)
+
+    #Over riding viewset functions
+    def get_queryset(self):
+        queryset = self.model.objects.filter(status='ACTIVE')
+        return queryset
+        
+    def get_object(self, pk=None):
+        try:
+            return self.model.objects.get(pk=pk,status='ACTIVE')
+        except self.model.DoesNotExist:
+            raise Http404
+
+    def pre_save(self, obj):
+        obj.updated_by = self.request.user
+
+    def retrieve(self, request, pk=None):
+        m = self.get_object(pk)
+        serializer = self.get_serializer(m)
+        return Response(serializer.data)
+
+
+class DietTrackerViewSet(ViamModelViewSet):
+    model = DietTracker
+    serializer_class = DietTrackerSerializer
 
 
 """

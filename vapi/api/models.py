@@ -15,6 +15,8 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 import hashlib, os, mimetypes, pprint
 
+s3_image_root = 'http://viamhealth-docsbucket.s3.amazonaws.com/';
+
 GLOBAL_STATUS_CHOICES = (
         ('ACTIVE','ACTIVE'),
         ('DELETED','DELETED')
@@ -54,7 +56,7 @@ class UserProfile(models.Model):
             pic = 'media/'+str(self.profile_picture)
         else:
             pic = 'static/api/default_profile_picture_n.jpg'
-        return 'http://viamhealth-docsbucket.s3.amazonaws.com/'+ pic
+        return s3_image_root + pic
 
     def __unicode__(self):
         return u'Profile %s of user: %s' % (self.id, self.user.username)
@@ -133,7 +135,7 @@ class Healthfile(models.Model):
 
     def download_url(self):
         if self.file:
-            return 'http://viamhealth-docsbucket.s3.amazonaws.com/media/'+ str(self.file)
+            return s3_image_root + str(self.file)
         else:
             return ''
 
@@ -278,5 +280,93 @@ class UserCholesterolReading(models.Model):
         verbose_name = 'Cholesterol Reading'
     def __unicode__(self):
         return u'reading %s of goal %s' % (self.id, self.user_cholesterol_goal)
+
+class DietTracker(models.Model):
+    MEAL_TYPE_CHOICES = (
+        ('BREAKFAST','BREAKFAST'),
+        ('LUNCH','LUNCH'),
+        ('SNACKS','SNACKS'),
+        ('DINNER','DINNER'),
+    )
+    user = models.ForeignKey('auth.User', related_name="+")
+    food_item = models.ForeignKey('FoodItem', related_name = "food", blank=False)
+    food_quantity_multiplier = models.IntegerField(blank=False)
+    meal_type = models.CharField(max_length=18L, choices=MEAL_TYPE_CHOICES, db_index=True, blank=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    updated_by = models.ForeignKey('auth.User', related_name="+", db_column='updated_by')
+    status = models.CharField(max_length=18L, choices=GLOBAL_STATUS_CHOICES, default='ACTIVE', db_index=True)
+
+    class Meta:
+        db_table = 'tbl_diet_tracker'
+        verbose_name_plural = 'Diet Trackers'
+        verbose_name = 'Diet Tracker'
+
+    def __unicode__(self):
+        return u'id=%s user=%s meal_type=%s food=%s' % (self.id, self.user.id, self.meal_type, self.food_item.name)
+
+class FoodItem(models.Model):
+
+    def get_display_image_path(self, filename): 
+        return 'fooditems/display_image_'+hashlib.sha224(str(self.id)).hexdigest()+os.path.splitext(filename)[1]
+
+    def display_image_url(self):
+        if self.display_image:
+            pic = 'media/'+str(self.display_image)
+        else:
+            pic = 'static/api/default_food_display_image_n.jpg'
+        return s3_image_root + pic
+
+    name = models.TextField(blank=False)
+    display_image = models.ImageField(upload_to=get_display_image_path, blank=True)
+    quantity = models.FloatField(blank=False)
+    quantity_unit = models.TextField(blank=False)
+    calories = models.FloatField(blank=True,default=0)
+    total_fat = models.FloatField(blank=True,default=0)
+    saturated_fat = models.FloatField(blank=True,default=0)
+    polyunsaturated_fat  = models.FloatField(blank=True,default=0)
+    monounsaturated_fat  = models.FloatField(blank=True,default=0)
+    trans_fat     = models.FloatField(blank=True,default=0)
+    cholesterol   = models.FloatField(blank=True,default=0)
+    sodium    = models.FloatField(blank=True,default=0)
+    potassium     = models.FloatField(blank=True,default=0)
+    total_carbohydrates   = models.FloatField(blank=True,default=0)
+    dietary_fiber     = models.FloatField(blank=True,default=0)
+    sugars    = models.FloatField(blank=True,default=0)
+    protein   = models.FloatField(blank=True,default=0)
+    vitamin_a     = models.FloatField(blank=True,default=0)
+    vitamin_c     = models.FloatField(blank=True,default=0)
+    calcium   = models.FloatField(blank=True,default=0)
+    iron  = models.FloatField(blank=True,default=0)
+
+    calories_unit = models.CharField(max_length=64L,blank=True)
+    total_fat_unit = models.CharField(max_length=64L,blank=True)
+    saturated_fat_unit = models.CharField(max_length=64L,blank=True)
+    polyunsaturated_fat_unit = models.CharField(max_length=64L,blank=True)
+    monounsaturated_fat_unit = models.CharField(max_length=64L,blank=True)
+    trans_fat_unit = models.CharField(max_length=64L,blank=True)
+    cholesterol_unit = models.CharField(max_length=64L,blank=True)
+    sodium_unit = models.CharField(max_length=64L,blank=True)
+    potassium_unit = models.CharField(max_length=64L,blank=True)
+    total_carbohydrates_unit = models.CharField(max_length=64L,blank=True)
+    dietary_fiber_unit = models.CharField(max_length=64L,blank=True)
+    sugars_unit = models.CharField(max_length=64L,blank=True)
+    protein_unit = models.CharField(max_length=64L,blank=True)
+    vitamin_a_unit = models.CharField(max_length=64L,blank=True)
+    vitamin_c_unit = models.CharField(max_length=64L,blank=True)
+    calcium_unit = models.CharField(max_length=64L,blank=True)
+    iron_unit = models.CharField(max_length=64L,blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    updated_by = models.ForeignKey('auth.User', related_name="+", db_column='updated_by')
+    status = models.CharField(max_length=18L, choices=GLOBAL_STATUS_CHOICES, default='ACTIVE', db_index=True)
+    class Meta:
+        db_table = 'tbl_food_itemss'
+        verbose_name_plural = 'Food Items'
+        verbose_name = 'Food Item'
+    def __unicode__(self):
+        return u'%s' % self.name
+
+
 
 User.profile = property(lambda u: UserProfile.objects.get_or_create(user=u)[0])
