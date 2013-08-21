@@ -55,7 +55,7 @@ class HealthfilesController extends Controller
   {
     $model = $this->loadModel($id);
     if($model->delete())
-        $this->redirect(array('reminders/index'));
+        $this->redirect(array('healthfiles/index'));
     /*
       $this->loadModel($id)->delete();
 
