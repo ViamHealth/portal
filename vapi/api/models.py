@@ -361,7 +361,7 @@ class FoodItem(models.Model):
     updated_by = models.ForeignKey('auth.User', related_name="+", db_column='updated_by')
     status = models.CharField(max_length=18L, choices=GLOBAL_STATUS_CHOICES, default='ACTIVE', db_index=True)
     class Meta:
-        db_table = 'tbl_food_itemss'
+        db_table = 'tbl_food_items'
         verbose_name_plural = 'Food Items'
         verbose_name = 'Food Item'
     def __unicode__(self):

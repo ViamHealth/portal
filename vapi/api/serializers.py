@@ -102,20 +102,37 @@ class UserBmiProfileSerializer(serializers.HyperlinkedModelSerializer):
 #    class Meta:
 #        model = Healthfile
 #        fields = ('id', 'url','user','tags','name' ,'description','mime_type','file','status','created_at','updated_at')
+"""
+class HealthfileTagSerializer(serializers.HyperlinkedModelSerializer):
+    healthfile = serializers.Field(source='healthfile.id')
+    class Meta:
+        model = HealthfileTag
+        fields = ('id','healthfile','tag')
+"""
+class HealthfileTagAddSerializer(serializers.HyperlinkedModelSerializer):
+    healthfile = serializers.PrimaryKeyRelatedField(many=False)
+    class Meta:
+        model = HealthfileTag
+        fields = ('tag','id','healthfile')
+
+class HealthfileTagListingField(serializers.RelatedField):
+    def to_native(self, value):
+        return '%s' % (value.tag)
 
 class HealthfileSerializer(serializers.HyperlinkedModelSerializer):
     user = serializers.Field(source='user.id')
     download_url = serializers.Field(source='download_url')
-
+    tags = HealthfileTagListingField(many=True)
     class Meta:
         model = Healthfile
         fields = ('id', 'url','user','tags','name' ,'description','mime_type','download_url')
 
 class HealthfileEditSerializer(serializers.HyperlinkedModelSerializer):
     user = serializers.Field(source='user.id')
+    tags = HealthfileTagListingField(many=True,read_only=True)
     class Meta:
         model = Healthfile
-        fields = ('id','url','description',)
+        fields = ('id','url','description','tags')
 
 class HealthfileUploadSerializer(serializers.HyperlinkedModelSerializer):
     user = serializers.Field(source='user.id')
@@ -123,11 +140,7 @@ class HealthfileUploadSerializer(serializers.HyperlinkedModelSerializer):
         model = Healthfile
         fields = ('id','url','file','description')
 
-class HealthfileTagSerializer(serializers.HyperlinkedModelSerializer):
-    healthfile = serializers.Field(source='healthfile.id')
-    class Meta:
-        model = HealthfileTag
-        fields = ('id','url','healthfile','tag')
+
 
 class UserWeightReadingSerializer(serializers.HyperlinkedModelSerializer):
     user_weight_goal = serializers.Field(source='user_weight_goal.id')

@@ -276,33 +276,58 @@ class HealthfileViewSet(ViamModelViewSet):
             else:
                 return HealthfileEditSerializer
 
-class HealthfileTagViewSet(viewsets.ModelViewSet):
-    """
-    Manage all healthfiles for a user ( authenticated or family member)
-    * Requires token authentication.
-    * Get tags for a healthfile - http://127.0.0.1:8080/healthfiletags/?healthfile=1
+    def update(self, request, pk=None):
+        tags_sent = False
+        m = self.get_object(pk)
+        serializer = self.get_serializer(m, data=request.DATA)
+        if serializer.is_valid():
+            serializer.save()
+            #TODO: improve tags creation/deletion
+            data = request.DATA.copy()
+            tags = []
+            tag_objs_up = []
+            tag_objs_create = []
+            for k,v in data.iteritems():
+                if k[:5] == 'tags[':
+                    tags.append(v)
+                    tags_sent = True
 
-    """
+            if tags_sent:
+                id_arr = []
+                for v in tags:
+                    try:
+                        t = HealthfileTag.objects.get(healthfile=m,tag=v)
+                    except HealthfileTag.DoesNotExist:
+                        t = HealthfileTag(tag=v,healthfile=m)
+                    tdata = {}
+                    tdata['tag'] = str(t.tag)
+                    tdata['healthfile'] = m.id
+                    if t.id is not None:
+                        tdata['id'] = t.id
+                        tag_objs_up.append(tdata)
+                        id_arr.append(t.id)
+                    else:
+                        tag_objs_create.append(tdata)
+
+                qt = HealthfileTag.objects.filter(id__in=id_arr)
+
+                HealthfileTag.objects.filter(healthfile=m).exclude(id__in=id_arr).delete()
+
+                tagserializer = HealthfileTagAddSerializer(data=tag_objs_create , many=True)
+                if tagserializer.is_valid():
+                    tagserializer.save()
+                else:
+                    return Response(tagserializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+"""
+class HealthfileTagViewSet(viewsets.ModelViewSet):
     filter_fields = ('healthfile',)
     model = HealthfileTag
     serializer_class = HealthfileTagSerializer
-
-    """
-    def list(self, request, format=None):
-        hf = request.DATA
-        pprint.pprint(hf)
-        if hf is None:
-            raise exceptions.MethodNotAllowed('get', detail=None)
-        else:
-            queryset = self.model.objects.all()
-            serializer = HealthfileTagSerializer(queryset, many=True, context={'request': request})
-            return Response(serializer.data)
     
-    def retrieve(self, request, pk=None):
-        m = self.get_object(pk)
-        serializer = self.get_serializer(m)
-        return Response(serializer.data)
-    """
+"""
 class UserWeightGoalViewSet(ViamModelViewSet):
     """
     Manage all healthfiles for a user ( authenticated or family member)
