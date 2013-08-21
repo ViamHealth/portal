@@ -50,7 +50,6 @@ def api_root(request, format=None):
         'reminders': reverse('reminder-list', request=request, format=format),
         #'bmi-profile': reverse('userbmiprofile-list', request=request, format=format),
         'healthfiles': reverse('healthfile-list', request=request, format=format),
-        'healthfiletags': reverse('healthfiletag-list', request=request, format=format),
         'weight-goals': reverse('userweightgoal-list', request=request, format=format),
         'weight-readings': reverse('userweightreading-list', request=request, format=format),
         'blood-pressure-goals': reverse('userbloodpressuregoal-list', request=request, format=format),

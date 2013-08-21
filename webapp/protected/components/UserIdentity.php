@@ -55,7 +55,7 @@ class UserIdentity extends CUserIdentity
 			$this->user->setAttribute('name',$res->username);
 
 			Yii::app()->user->setState('username', $this->user->username);
-			Yii::app()->user->setState('url', 'http://127.0.0.1:8080/users/'.$this->user->id.'/');
+			Yii::app()->user->setState('url', Yii::app()->params['apiBaseUrl'],'users/'.$this->user->id.'/');
 		} else {
 			
 		}

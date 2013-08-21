@@ -20,6 +20,9 @@ $this->breadcrumbs=array(
 <div>
       <?php echo $form->uneditableRow($model, 'name'); ?>
       <?php echo $form->textAreaRow($model, 'description', array('class'=>'span3', 'rows'=>5)); ?>
+      <?php //echo $form->textAreaRow($model, 'healthfileTags', array('class'=>'span3', 'rows'=>5)); ?>
+      <input type="text" name="Healthfile[tags]" value="<?php echo implode($tag_arr,',') ?>" >
+      <span class="help-block">Enter tags seperated by comma </span>
       <?php $this->widget('bootstrap.widgets.TbButton', array('buttonType'=>'submit', 'label'=>'Modify')); ?>
 </div>
 <?php $this->endWidget(); ?>

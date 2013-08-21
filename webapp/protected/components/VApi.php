@@ -9,6 +9,7 @@ class VApi
 
 	public static function apiCall($method, $url, $params =array())
 	{
+        self::$apiBaseUrl = Yii::app()->params['apiBaseUrl'];
 		$rest = new RESTClient();
         $fuid =  Yii::app()->request->getParam('fuid',null);
         //TODO:Hacky!!
@@ -41,7 +42,9 @@ class VApi
  
 	}
 
-    public static function fetchToken($params=array()){
+    public static function fetchToken($params=array())
+    {
+        self::$apiBaseUrl = Yii::app()->params['apiBaseUrl'];
         if(empty($params))
             return false;
         if(isset($params['username']) && isset($params['password']))

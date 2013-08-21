@@ -136,9 +136,4 @@ class Healthfile extends VCActiveRecord
 	{
 		return 'http://viamhealth-docsbucket.s3.amazonaws.com/'. $this->file;
 	}
-
-	public function getPk()
-	{
-		return $this->id;
-	}
 }

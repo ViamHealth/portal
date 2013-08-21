@@ -41,13 +41,29 @@ class HealthfilesController extends Controller
 	public function actionUpdate($id)
 	{
 		$model = $this->loadModel($id);
+    
 		if(isset($_POST['Healthfile'])){
+      $posted_tags = $_POST['Healthfile']['tags'];
+      $posted_tags = explode(",",$posted_tags);
+      foreach ($posted_tags as $key => $value) {
+        $data['tags['.$key.']'] = $value;  
+      }
 			$model->attributes = $_POST['Healthfile'];
-      if($model->save())
+      $data['description'] = $_POST['Healthfile']['description'];
+      $data['id'] = $model->id;
+      if($model->save(false,$data))
         $this->redirect(array('healthfiles/index'));
 		}
-    //TODO: design a model view helper module
-		$this->render('update',array('model'=>$model));
+
+    $tagdata = HealthfileTag::model()->findAll(array(
+        'condition'=>'healthfile_id=:id ',
+        'params'=>array(':id'=>$id)
+      )
+    );
+    foreach ($tagdata as $tagitem) {
+      $tag_arr[] = $tagitem->tag;
+    }
+		$this->render('update',array('model'=>$model,'tag_arr'=>$tag_arr));
 	}
 
   
@@ -55,7 +71,10 @@ class HealthfilesController extends Controller
   {
     $model = $this->loadModel($id);
     if($model->delete())
+      if (!isset($_GET['ajax']))
         $this->redirect(array('healthfiles/index'));
+      else
+        echo "done";
     /*
       $this->loadModel($id)->delete();
 

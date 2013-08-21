@@ -31,7 +31,7 @@ $this->breadcrumbs=array(
  'Healthfile',
 ); ?>
 
-<input id="fileupload" type="file" name="file" data-url="http://127.0.0.1:8080/healthfiles/" >
+<input id="fileupload" type="file" name="file" data-url="<?php echo Yii::app()->params['apiBaseUrl'] ?>"healthfiles/" >
 <div id="fileupload-status" style="display:none;">Uploading..</div>
         
 
@@ -77,6 +77,11 @@ $this->widget('bootstrap.widgets.TbExtendedGridView', array(
       'value'=>'"<a href=\"".$data->get_download_url()."\" >".$data->name."</a></br>"',
     ),
     array(
+      'header'=>'Tags',
+      'type'=>'raw',
+      'value'=>'"<span class=\"get_tags\" data-id=\"".$data->id."\"></span>"'
+    ),
+    array(
       'name'=>'description',
       'header'=>'Label',
       'type'=>'text',
@@ -111,3 +116,26 @@ $this->widget('bootstrap.widgets.TbExtendedGridView', array(
   ),
 ));
 ?>
+
+<script>
+$(document).ready(function(){
+  $(".get_tags").each(function(index,element){
+    var id = $(element).attr('data-id');
+    var url = "<?php echo Yii::app()->params['apiBaseUrl'] ?>healthfiles/"+id+"/";
+    $.ajax({
+      url: url,
+      dataType: 'json',
+      beforeSend: function(xhr) {
+           xhr.setRequestHeader("Authorization", "Token <?php echo Yii::app()->user->token; ?>");
+           $(element).html('Loading...');
+      },
+      success: function(json){
+        var tags = json.tags;
+        $(element).html(tags.join(","));
+      },
+    });
+
+  });
+});
+
+</script>
