@@ -20,7 +20,7 @@
  * @property AuthUser $updatedBy
  * @property AuthUser $user
  */
-class Healthfile extends CActiveRecord
+class Healthfile extends VCActiveRecord
 {
 	public function resourceUrl()
     {

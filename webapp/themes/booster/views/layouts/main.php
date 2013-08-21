@@ -28,10 +28,10 @@ if(!Yii::app()->user->isGuest)
 	$family = $this->getFamilyUsers();
 	$current_profile_name = Yii::app()->user->username;
 	foreach ($family as $key => $value) {
-		if($value->id != $this->getCurrentUserId()){
+		if(isset($value->id) && $value->id != $this->getCurrentUserId()){
 			$family_array[] = array('label' => $value->username, 'url' => array('/u/'.$value->id.'/site/index'), 'visible' => !Yii::app()->user->isGuest,);
 		}
-		else {
+		else if(isset($value->username)){
 			$current_profile_name = $value->username;
 		}
 			

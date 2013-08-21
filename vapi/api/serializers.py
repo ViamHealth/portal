@@ -121,7 +121,7 @@ class HealthfileUploadSerializer(serializers.HyperlinkedModelSerializer):
     user = serializers.Field(source='user.id')
     class Meta:
         model = Healthfile
-        fields = ('file','description')
+        fields = ('id','url','file','description')
 
 class HealthfileTagSerializer(serializers.HyperlinkedModelSerializer):
     healthfile = serializers.Field(source='healthfile.id')

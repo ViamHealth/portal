@@ -1,5 +1,10 @@
 # Django settings for vapi project.
 
+import warnings
+warnings.filterwarnings(
+        'error', r"DateTimeField received a naive datetime",
+        RuntimeWarning, r'django\.db\.models\.fields')
+
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
@@ -94,11 +99,11 @@ TEMPLATE_LOADERS = (
 #     'django.template.loaders.eggs.Loader',
 )
 
-#XS_SHARING_ALLOWED_ORIGINS = "http://127.0.0.1"
+XS_SHARING_ALLOWED_ORIGINS = "http://localhost"
 
-#XS_SHARING_ALLOWED_METHODS = ['POST','GET','OPTIONS', 'PUT', 'DELETE']
+XS_SHARING_ALLOWED_METHODS = ['POST','GET','OPTIONS', 'PUT', 'DELETE']
 
-#XS_SHARING_ALLOWED_HEADERS = ["Authorization",]
+XS_SHARING_ALLOWED_HEADERS = ["Authorization",]
 
 MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
@@ -106,7 +111,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    #'middleware.xssharing.XsSharingMiddleware',
+    'middleware.xssharing.XsSharingMiddleware',
     # Uncomment the next line for simple clickjacking protection:
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )

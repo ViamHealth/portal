@@ -114,13 +114,13 @@ class ViamModelViewSet(viewsets.ModelViewSet):
     #        return Response(serializer.data, status=status.HTTP_201_CREATED)
     #    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    #def update(self, request, pk=None):
-    #    m = self.get_object(pk)
-    #    serializer = self.get_serializer(m, data=request.DATA)
-    #    if serializer.is_valid():
-    #        serializer.save()
-    #        return Response(serializer.data)
-    #    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    def update(self, request, pk=None):
+        m = self.get_object(pk)
+        serializer = self.get_serializer(m, data=request.DATA)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def destroy(self, request, pk=None):
         m = self.get_object(pk)

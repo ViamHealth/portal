@@ -1,4 +1,27 @@
 <?php
+      
+      Yii::app()->clientScript->registerScriptFile(Yii::app()->baseUrl.'/js/jquery.ui.widget.js');
+      Yii::app()->clientScript->registerScriptFile(Yii::app()->baseUrl.'/js/jquery.iframe-transport.js');
+      Yii::app()->clientScript->registerScriptFile(Yii::app()->baseUrl.'/js/jquery.fileupload.js');
+?>
+<script>
+$(function () {
+    $('#fileupload').fileupload({
+        dataType: 'json',
+        beforeSend: function(xhr) {
+                 xhr.setRequestHeader("Authorization", "Token <?php echo Yii::app()->user->token; ?>")
+              $('#fileupload-status').show();
+            },
+        done: function (e, data) {
+          $('#fileupload-status').hide();
+          var id = data.result.id;
+          window.location.replace("<?php echo $this->createUrl('/healthfiles/update/'); ?>"+'/'+id);
+        }
+    });
+});
+</script>
+
+<?php
 /* @var $this SiteController */
 $this->pageTitle=Yii::app()->name;
 ?>
@@ -8,15 +31,36 @@ $this->breadcrumbs=array(
  'Healthfile',
 ); ?>
 
+<input id="fileupload" type="file" name="file" data-url="http://127.0.0.1:8080/healthfiles/" >
+<div id="fileupload-status" style="display:none;">Uploading..</div>
+        
 
-<h1>Health Files</h1>
 
 
 <?php /*$this->widget('bootstrap.widgets.TbListView',array(
  'dataProvider'=>$model->search(array('user_id'=>$profile_id, 'status'=>'ACTIVE')),
  'itemView'=>'_view',
 ));*/ ?>
+<?php
+/*
+$form = $this->beginWidget(
+    'CActiveForm',
+    array(
+        'id' => 'Healthfile',
+        'enableAjaxValidation' => false,
+        'htmlOptions' => array('enctype' => 'multipart/form-data'),
+        'action' => $this->createUrl('healthfiles/add'),
+        'method' => 'POST',
+    )
+);
 
+//echo $form->labelEx($model, 'file');
+echo $form->fileField($model, 'file');
+echo $form->error($model, 'file');
+ echo CHtml::submitButton('Upload');
+$this->endWidget();
+*/
+?>
 <?php
 $gridColumns = array ( 'name','description','updated_at');
 $i = 0 ;
@@ -25,7 +69,7 @@ $this->widget('bootstrap.widgets.TbExtendedGridView', array(
       'dataProvider'=>$model->search(array('user_id'=>$profile_id, 'status'=>'ACTIVE')),
       'template'=>"{items}",
       'columns' => array(
-           // 'id',
+           //'id',
     array(
       'name'=>'name',
       'header'=>'File Name',
@@ -36,7 +80,7 @@ $this->widget('bootstrap.widgets.TbExtendedGridView', array(
       'name'=>'description',
       'header'=>'Label',
       'type'=>'text',
-      'value'=>'$data->description.$data->getPk()',
+      'value'=>'$data->description',
       //'htmlOptions'=>array('width'=>'1000'),
     ),
     array(

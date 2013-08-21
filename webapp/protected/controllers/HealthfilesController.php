@@ -38,23 +38,6 @@ class HealthfilesController extends Controller
 		$this->render('index',array('model'=>$model, 'profile_id'=>$this->getCurrentUserId()));
 	}
 
-  public function actionAdd()
-  {
-    
-    $model=Healthfile::model();
-    if(isset($_POST['Healthfile'])){
-      $attributes = $_POST['Healthfile'];
-      $attributes['status'] = 'ACTIVE';
-      $attributes['start_timestamp'] = strtotime($attributes['start_timestamp']);
-      $model->attributes = $attributes;
-      if($model->save(true,$attributes)){
-        $this->redirect(array('reminders/index'));
-      }
-    }
-
-    //$this->render('view',array('model'=>$model));
-  }
-
 	public function actionUpdate($id)
 	{
 		$model = $this->loadModel($id);
