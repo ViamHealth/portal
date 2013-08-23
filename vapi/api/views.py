@@ -520,6 +520,13 @@ class FoodItemViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(m)
         return Response(serializer.data)
 
+    @link()
+    def search(self, request, search_string=None):
+        if search_string is not None:
+            queryset = self.model.objects.filter(name__icontains=search_string)
+            serializer = self.get_serializer(queryset, many=True)
+            resp = {'count':len(serializer.data) , 'results':serializer.data, 'previous':None, 'next':None}
+            return Response(resp, status=status.HTTP_200_OK)
 
 class DietTrackerViewSet(ViamModelViewSet):
     model = DietTracker
