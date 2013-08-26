@@ -73,7 +73,7 @@ class SignupView(viewsets.ViewSet):
             serializer.save()
             user = User.objects.get(pk=serializer.object.id)
             pserializer = UserSerializer(user, context={'request': request})
-            UserBmiProfile.objects.get_or_create(user=user,updated_by=user)
+            UserBmiProfile.objects.get_or_create(user=user,defaults={'updated_by': user})
             return Response(pserializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -144,7 +144,7 @@ class UserView(viewsets.ViewSet):
             user=User.objects.get(pk=serializer.data.get('id'))
             uprofile = UserProfile(user=user)
             uprofile.save()
-            UserBmiProfile.objects.get_or_create(user=user,updated_by=user)
+            UserBmiProfile.objects.get_or_create(user=user,defaults={'updated_by': user})
             pserializer = UserSerializer(user, data=serializer.object, context={'request': request})
             return Response(pserializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -196,15 +196,14 @@ class UserView(viewsets.ViewSet):
     @link()
     def retrieve_bmi_profile(self, request, pk):
         user = self.get_object(pk)
-        bmi_profile = UserBmiProfile.objects.get_or_create(user=user)[0]
-        pprint.pprint(bmi_profile)
+        bmi_profile = UserBmiProfile.objects.get_or_create(user=user,defaults={'updated_by': user})[0]
         serializer = UserBmiProfileSerializer(bmi_profile, context={'request': request})
         return Response(serializer.data)
 
     @action(methods=['PUT'])
     def update_bmi_profile(self, request, pk=None):
         user = self.get_object(pk)
-        bmi_profile = UserBmiProfile.objects.get_or_create(user=user)[0]
+        bmi_profile = UserBmiProfile.objects.get_or_create(user=user,defaults={'updated_by': user})[0]
         serializer = UserBmiProfileSerializer(bmi_profile, data=request.DATA, context={'request': request})
         if serializer.is_valid():
             serializer.save()
