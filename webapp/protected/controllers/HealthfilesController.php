@@ -60,6 +60,7 @@ class HealthfilesController extends Controller
         'params'=>array(':id'=>$id)
       )
     );
+    $tag_arr = array();
     foreach ($tagdata as $tagitem) {
       $tag_arr[] = $tagitem->tag;
     }

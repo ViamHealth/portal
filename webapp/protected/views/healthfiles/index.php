@@ -31,7 +31,7 @@ $this->breadcrumbs=array(
  'Healthfile',
 ); ?>
 
-<input id="fileupload" type="file" name="file" data-url="<?php echo Yii::app()->params['apiBaseUrl'] ?>"healthfiles/" >
+<input id="fileupload" type="file" name="file" data-url="<?php echo Yii::app()->params['apiBaseUrl'] ?>healthfiles/" >
 <div id="fileupload-status" style="display:none;">Uploading..</div>
         
 

@@ -166,7 +166,7 @@ function load_diary(fdobj){
 				var cals = item.calories * ( tab_item.food_quantity_multiplier / item.quantity );
 				total_cals += cals;
 
-				var _tab_obj = $.parseHTML('<tr><td class="food_item_name"></td><td class="food_item_cals"></td><td class="del_food_item">X</td></tr>');	
+				var _tab_obj = $.parseHTML('<tr><td class="food_item_name"></td><td class="food_item_cals"></td><td class="del_food_item" diary-id="">X</td></tr>');	
 				$(_tab_obj).find(".food_item_name").html(item.name);
 				$(_tab_obj).find(".food_item_cals").html(cals);
 				//$(_tab_obj).find(".del_food_item").html(cals);

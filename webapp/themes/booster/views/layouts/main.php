@@ -17,9 +17,19 @@
 	<![endif]-->
 
 	<title><?php echo CHtml::encode($this->pageTitle); ?></title>
+	<script type="text/javascript">
+	var VH = {};
+	VH.vars = {};
+	VH.params = {};
+	VH.params.auth_token = "<?php if(isset(Yii::app()->user->token)) echo Yii::app()->user->token; ?>"
+	VH.params.apiUrl = "<?php echo Yii::app()->params['apiBaseUrl'] ?>";
+	VH.vars.profile_id = '<?php if(isset($profile_id)) echo $profile_id; ?>';
+
+	</script>
 </head>
 
 <body>
+<?php  Yii::app()->clientScript->registerScriptFile(Yii::app()->baseUrl.'/js/api.js'); ?>
 <?php
 $family_array = array();
 $current_profile_name = '';
@@ -62,6 +72,9 @@ if(!Yii::app()->user->isGuest)
 				),
 				array('label' => 'Reminders', 'url' => array('/reminders/index'), 'visible' => !Yii::app()->user->isGuest),
 				array('label' => 'Files', 'url' => array('/healthfiles/index'), 'visible' => !Yii::app()->user->isGuest),
+                array('label' => 'Food Diary', 'url' => array('/fooddiary/index'), 'visible' => !Yii::app()->user->isGuest),
+                array('label' => 'Profile', 'url' => array('/user/index'), 'visible' => !Yii::app()->user->isGuest),
+
 				//array('label' => 'Contact', 'url' => array('/site/contact')),
 				array('label' => 'Login', 'url' => array('/site/login'), 'visible' => Yii::app()->user->isGuest),
 //				array('label' => 'Logout (' . Yii::app()->user->name . ')', 'url' => array('/site/logout'), 'visible' => !Yii::app()->user->isGuest)
