@@ -15,8 +15,14 @@
 	<link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/ie.css"
 	      media="screen, projection"/>
 	<![endif]-->
+	
 
 	<title><?php echo CHtml::encode($this->pageTitle); ?></title>
+	<style>
+	.navbar .navbar-inner  {
+		background: url(/images/bg-main_menu.jpg) repeat-x 0 0;
+	}
+	</style>
 	<script type="text/javascript">
 	var VH = {};
 	VH.vars = {};
@@ -32,37 +38,44 @@
 <?php  Yii::app()->clientScript->registerScriptFile(Yii::app()->baseUrl.'/js/api.js'); ?>
 <?php
 $family_array = array();
+$sidebar_family_array = array();
 $current_profile_name = '';
 if(!Yii::app()->user->isGuest)
 {
 	$family = $this->getFamilyUsers();
 	$current_profile_name = Yii::app()->user->username;
 	foreach ($family as $key => $value) {
-		if(isset($value->id) && $value->id != $this->getCurrentUserId()){
-			$family_array[] = array('label' => $value->username, 'url' => array('/u/'.$value->id.'/site/index'), 'visible' => !Yii::app()->user->isGuest,);
+		if(isset($value->username)){
+			if(isset($value->id) && $value->id != $this->getCurrentUserId()){
+				//$family_array[] = array('label' => $value->username, 'url' => array('/u/'.$value->id.'/site/index'), 'visible' => !Yii::app()->user->isGuest,);
+			}
+			else {
+				$current_profile_name = $value->username;
+			}
+			if($value->first_name && $value->last_name)
+				$visible_identity = $value->first_name." ".$value->last_name;
+			else
+				$visible_identity = $value->first_name?$value->first_name:$value->username;	
+			$sidebar_family_array[] = "<li><a href='".$this->createUrl('site/index',array(),'&',$value->id)."'><img  height='25' width='25' src='".$value->profile->profile_picture_url."' /> &nbsp; $visible_identity</a></li>";
 		}
-		else if(isset($value->username)){
-			$current_profile_name = $value->username;
-		}
-			
+		
 	}
 	$family_array[] = array('label' => 'Add User', 'url' => array('/user/add'), 'visible' => !Yii::app()->user->isGuest,);
 	$family_array[] = array('label' => 'Logout', 'url' => array('/site/logout'), 'visible' => !Yii::app()->user->isGuest,);
+
 }
 ?>
 <div class="container" id="page">
 	<?php $this->widget('bootstrap.widgets.TbNavbar', array(
 	'type' => 'inverse', // null or 'inverse'
-	'brand' => 'Viam Health',
+	'brand' => ' &nbsp; ',
+	'brandOptions' => array('style'=>'background:url(/images/logo.png) no-repeat 0 8px;width:148px;'),
 	'brandUrl' => $this->createUrl('site/index'),
 	'collapse' => true, // requires bootstrap-responsive.css
 	'items' => array(
 		array(
 			'class' => 'bootstrap.widgets.TbMenu',
 			'items' => array(
-				array('label' => 'Home', 'url' => array('/site/index')),
-				//array('label' => 'About', 'url' => array('/site/page', 'view' => 'about')),
-	//			array('label' => 'Goals', 'url' => array('/goals/index'), 'visible' => !Yii::app()->user->isGuest),
 				array('label' => 'Goals', 'url' => '#', 'visible' => !Yii::app()->user->isGuest, 
 					'items' => array(
 						array('label' => 'Weight', 'url' => array('/goalsweight/index'), 'visible' => !Yii::app()->user->isGuest),
@@ -110,14 +123,34 @@ if(!Yii::app()->user->isGuest)
 	),
 )); ?>
 	<!-- mainmenu -->
-	<div class="container" style="margin-top:0px">
-		<?php if (isset($this->breadcrumbs)): ?>
-			<?php $this->widget('bootstrap.widgets.TbBreadcrumbs', array(
-			'links' => $this->breadcrumbs,
-		)); ?><!-- breadcrumbs -->
-		<?php endif?>
-
-		<?php echo $content; ?>
+	<div class="container-fluid" <?php if(Yii::app()->user->isGuest) { ?> style="margin-top:50px" <?php } ?>>
+		
+		<div class="row-fluid">
+			<?php if(count($sidebar_family_array)): ?>
+				<?php if (isset($this->breadcrumbs)): ?>
+					<?php $this->widget('bootstrap.widgets.TbBreadcrumbs', array(
+						'links' => $this->breadcrumbs,
+					)); ?><!-- breadcrumbs -->
+				<?php endif?>
+			<div class="span3">
+				<div class="well sidebar-nav">
+					<ul class="nav nav-list">
+						<li class="nav-header">Family Profiles</li>
+						<?php foreach ($sidebar_family_array as $key => $value) echo $value; ?>
+					</ul>
+				</div>
+			</div>
+			<div class="span9">
+				<?php echo $content; ?>
+			</div>
+			<?php else: ?>
+				<div class="span12">
+				<?php echo $content; ?>
+				</div>
+			</div>
+			</div>
+			<?php endif ?>
+		</div>
 		<hr/>
 		<div id="footer">
 			Copyright &copy; <?php echo date('Y'); ?> by Viamhealth.<br/>
@@ -127,5 +160,7 @@ if(!Yii::app()->user->isGuest)
 	</div>
 </div>
 <!-- page -->
+<link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/viam.css"
+	      media="print"/>
 </body>
 </html>

@@ -6,7 +6,7 @@ $this->breadcrumbs=array(
 ?>
 <div>
 <div class="row-fluid">
-  <div class="span4 offset4">
+  <div class="span4">
   	<table class="table table-striped table-hover " id="breakfast-food-diary" type="BREAKFAST">
   		<thead>
   			<tr class="info">

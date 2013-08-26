@@ -82,7 +82,7 @@ $(document).ready(function(){
 		  		_DB.User.update_profile(id,user.profile,function(json){
 		  			if(!error){
 		  				alert('user added');
-		  				//<?php $__id = ?>id
+		  				
 		  				//window.location.replace("<?php echo $this->createUrl('/user/index/',array(),null,"+id+"); ?>");
 		  			}
 		  		});	
