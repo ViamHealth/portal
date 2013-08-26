@@ -19,7 +19,14 @@ api_ajax = function(url,options,callback){
 			console.log('success called of url '+url);
 			console.log(json)
 			callback(json);
-		}	
+		},
+		error: function(jqXHR,textStatus,errorThrown){
+			console.log('error called of url '+url);
+			console.log(textStatus);
+			console.log(errorThrown);
+			console.log(jqXHR);
+			callback(jqXHR.responseText,textStatus,errorThrown);
+		}
 	});
 } 
 api_get = function(url,callback){
@@ -31,6 +38,13 @@ api_get = function(url,callback){
 api_put = function(url,data,callback){
 	var options = {};
 	options.type = 'PUT';
+	options.data = data;
+	api_ajax(url,options,callback)
+}
+
+api_post = function(url,data,callback){
+	var options = {};
+	options.type = 'POST';
 	options.data = data;
 	api_ajax(url,options,callback)
 }
@@ -64,7 +78,7 @@ _DB.User = {
 	},
 	update_profile : function(id,profile,callback){
 		var url = api_url(this.resource,id,'profile');
-		profile.gender = profile.gender.toUpperCase();
+		profile.gender = profile.gender?profile.gender.toUpperCase():profile.gender;
 		api_put(url,profile,callback);
 	}
 

@@ -110,9 +110,17 @@ class Controller extends CController
         return $family;
     }
 
-    public function createUrl($route,$params=array(),$ampersand='&')
+    public function createUrl($route,$params=array(),$ampersand='&',$user_id=null)
     {
-        if($this->getCurrentUserId() != Yii::app()->user->id)
+        if($user_id)
+        {
+            if(strpos($route, '/u/') !== 0)
+                if(strpos($route,'/') === 0)
+                    $route = '/u/'.$user_id.$route;
+                else
+                    $route = '/u/'.$user_id.'/'.$route;
+        }
+        else if($this->getCurrentUserId() != Yii::app()->user->id)
         {
             if(strpos($route, '/u/') !== 0)
                 if(strpos($route,'/') === 0)

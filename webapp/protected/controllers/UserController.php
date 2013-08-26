@@ -27,9 +27,9 @@ class UserController extends Controller
 		$this->render('index',array('profile_id'=>$this->getCurrentUserId()));
 	}
 
-  public function actionUpdate()
+  public function actionAdd()
   {
-    
+    $this->render('add',array('profile_id'=>$this->getCurrentUserId()));  
   }
 	
 
