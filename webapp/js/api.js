@@ -80,6 +80,26 @@ _DB.User = {
 		var url = api_url(this.resource,id,'profile');
 		profile.gender = profile.gender?profile.gender.toUpperCase():profile.gender;
 		api_put(url,profile,callback);
-	}
+	},
+	update_profile_picture : function(callback){
+    	$('#fileupload').fileupload({
+	        dataType: 'json',
+	        type: 'put',
+	        beforeSend: function(xhr) {
+	                 xhr.setRequestHeader("Authorization", "Token "+VH.params.auth_token)
+	            },
+	        success: function (result, textStatus) {
+	          callback(result, textStatus);
+	        }
+    	});
+	},
+	retrieve_bmi_profile : function(id,callback){
+		var url = api_url(this.resource,id,'bmi-profile')
+		api_get(url,callback);	
+	},
+	update_bmi_profile : function(id,profile,callback){
+		var url = api_url(this.resource,id,'bmi-profile');
+		api_put(url,profile,callback);
+	},
 
 }

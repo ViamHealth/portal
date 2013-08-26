@@ -47,7 +47,7 @@ if(!Yii::app()->user->isGuest)
 	foreach ($family as $key => $value) {
 		if(isset($value->username)){
 			if(isset($value->id) && $value->id != $this->getCurrentUserId()){
-				//$family_array[] = array('label' => $value->username, 'url' => array('/u/'.$value->id.'/site/index'), 'visible' => !Yii::app()->user->isGuest,);
+				$family_array[] = array('label' => $value->username, 'url' => array('/u/'.$value->id.'/site/index'), 'visible' => !Yii::app()->user->isGuest,);
 			}
 			else {
 				$current_profile_name = $value->username;
@@ -124,16 +124,18 @@ if(!Yii::app()->user->isGuest)
 )); ?>
 	<!-- mainmenu -->
 	<div class="container-fluid" <?php if(Yii::app()->user->isGuest) { ?> style="margin-top:50px" <?php } ?>>
+		<?php if (isset($this->breadcrumbs)): ?>
+			<?php $this->widget('bootstrap.widgets.TbBreadcrumbs', array(
+				'links' => $this->breadcrumbs,
+			)); ?><!-- breadcrumbs -->
+		<?php endif?>
+
 		
 		<div class="row-fluid">
-			<?php if(count($sidebar_family_array)): ?>
-				<?php if (isset($this->breadcrumbs)): ?>
-					<?php $this->widget('bootstrap.widgets.TbBreadcrumbs', array(
-						'links' => $this->breadcrumbs,
-					)); ?><!-- breadcrumbs -->
-				<?php endif?>
+		<!-- TODO Move content block -->
+		<?php if(count($sidebar_family_array)): ?>
 			<div class="span3">
-				<div class="well sidebar-nav">
+				<div class="well well-small sidebar-nav">
 					<ul class="nav nav-list">
 						<li class="nav-header">Family Profiles</li>
 						<?php foreach ($sidebar_family_array as $key => $value) echo $value; ?>
@@ -143,14 +145,14 @@ if(!Yii::app()->user->isGuest)
 			<div class="span9">
 				<?php echo $content; ?>
 			</div>
-			<?php else: ?>
-				<div class="span12">
-				<?php echo $content; ?>
-				</div>
+		<?php else: ?>
+			<div class="span12">
+			<?php echo $content; ?>
 			</div>
-			</div>
-			<?php endif ?>
+		<?php endif ?>
 		</div>
+		<!-- -->
+
 		<hr/>
 		<div id="footer">
 			Copyright &copy; <?php echo date('Y'); ?> by Viamhealth.<br/>
