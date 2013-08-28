@@ -54,6 +54,27 @@ jQuery.get('<?php echo $this->createUrl("/goalsweight/getweightgoal"); ?>', func
 		var target_weight = data[0]['weight'];
 		target_weight = 100;
 		var set = [];
+		var xset = [];
+		var iset = [];
+		var gset = [];
+		
+
+		var today = new Date();
+		var dd = today.getDate();
+		var mm = today.getMonth()+1; //January is 0!
+
+		var yyyy = today.getFullYear();
+		if(dd<10){dd='0'+dd};
+		if(mm<10){mm='0'+mm};
+
+		min_reading_date = yyyy+'-'+mm+'-'+dd;
+		max_reading_date = data[0].target_date;
+
+		if(o[1] != undefined ){
+			min_reading_date = 	o[1].reading_date;
+			max_reading_date = data[0].target_date;
+		}
+
 		for(i=0;i<count;i++)
 		{
 		  	set.push({
@@ -61,16 +82,66 @@ jQuery.get('<?php echo $this->createUrl("/goalsweight/getweightgoal"); ?>', func
 			  	y : o[i].weight
 			});
 		}
+
+		var date_ranges = [];
+		var _old_date = min_reading_date;
+		date_ranges[0] = _old_date;
+		var _tmp_date = new Date();
+		var _tmp_parts = _old_date.split('-');
+		_tmp_date.setFullYear(_tmp_parts[0], _tmp_parts[1]-1,_tmp_parts[2]);
+		i = 1;
+		while(1){			
+			_tmp_date.setTime(_tmp_date.getTime() + 86400000);
+			
+			var dd = _tmp_date.getDate();
+			var mm = _tmp_date.getMonth()+1; //January is 0!
+			if(dd<10){dd='0'+dd};
+			if(mm<10){mm='0'+mm};
+			_old_date = yyyy+'-'+mm+'-'+dd;
+			date_ranges[i] = _old_date;
+			i++;
+			
+			if(_old_date == max_reading_date){
+				date_ranges[i] = max_reading_date;
+				break;
+			}
+			if(i>300)
+				break;
+		}
+		
+		gset.push({
+			x : max_reading_date,
+			y : data[0].weight
+		})
+		
+
+		for(i=0;i<date_ranges.length;i++)
+		{
+			xset.push({
+			  	y : data[0].healthy_range.weight.min,
+			  	x : date_ranges[i],
+			});
+			iset.push({
+			  	y : data[0].healthy_range.weight.max,
+			  	x : date_ranges[i],
+			});
+		}
 		var data = {
 			xScale : "ordinal",
 			yScale : "linear",
-			//yMin: 30,
+			yMin: 30,
 			//yMax: target_weight,
 			type : "line",
-			main :[{
+			main :[
+			{
 				className: ".goal-weight",
 				data: set
-			}],
+			},
+			{ className: ".ldl", data: xset },
+			{ className: ".ldld", data: iset },
+			{ className: ".abc", data: gset },
+			],
+
 		};
 		var opts = {
 		  //"dataFormatX": function (x) { return d3.time.format('%Y-%m-%d').parse(x); },
@@ -87,7 +158,7 @@ jQuery.get('<?php echo $this->createUrl("/goalsweight/getweightgoal"); ?>', func
 		    $(tt).hide();
 		  }
 		};
-		var myChart = new xChart('line-dotted', data, '#goalWeightChart', opts);
+		var myChart = new xChart('bar', data, '#goalWeightChart', opts);
 		return;		
 	}
 });

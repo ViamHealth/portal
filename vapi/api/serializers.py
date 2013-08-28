@@ -141,7 +141,6 @@ class HealthfileUploadSerializer(serializers.HyperlinkedModelSerializer):
         fields = ('id','url','file','description')
 
 
-
 class UserWeightReadingSerializer(serializers.HyperlinkedModelSerializer):
     user_weight_goal = serializers.Field(source='user_weight_goal.id')
     class Meta:
@@ -151,9 +150,23 @@ class UserWeightReadingSerializer(serializers.HyperlinkedModelSerializer):
 class UserWeightGoalSerializer(serializers.HyperlinkedModelSerializer):
     readings = UserWeightReadingSerializer(required=False)
     user = serializers.Field(source='user.id')
+    healthy_range = serializers.SerializerMethodField('get_healthy_range')
     class Meta:
         model = UserWeightGoal
-        fields = ('id', 'url','user','readings','weight','weight_measure' ,'target_date','interval_num','interval_unit',)
+        fields = ('id', 'url','user','readings','weight','weight_measure','healthy_range' ,'target_date','interval_num','interval_unit',)
+
+    def get_healthy_range(self, obj=None):
+        u = UserBmiProfile.objects.get(user=obj.user)
+        max_bmi = 24.9
+        min_bmi = 18.6
+        min_weight = min_bmi * ( float(u.height) / 100 ) * ( float(u.height) / 100 )
+        max_weight = max_bmi * ( float(u.height) / 100 ) * ( float(u.height) / 100 )
+        a = {}
+        a['weight'] = {}
+        a['weight']['max'] = max_weight
+        a['weight']['min'] = min_weight
+        return a
+
 
 class UserBloodPressureReadingSerializer(serializers.HyperlinkedModelSerializer):
     user_blood_pressure_goal = serializers.Field(source='user_blood_pressure_goal.id')

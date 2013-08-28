@@ -43,6 +43,7 @@ $current_profile_name = '';
 if(!Yii::app()->user->isGuest)
 {
 	$family = $this->getFamilyUsers();
+	if(!$family) $family = array();
 	$current_profile_name = Yii::app()->user->username;
 	foreach ($family as $key => $value) {
 		if(isset($value->username)){

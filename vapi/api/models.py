@@ -206,6 +206,8 @@ class UserWeightReading(models.Model):
         db_table = 'tbl_user_weight_readings'
         verbose_name_plural = 'Weight Readings'
         verbose_name = 'Weight Reading'
+        ordering = ['reading_date']
+
     def __unicode__(self):
         return u'reading %s of goal %s' % (self.id, self.user_weight_goal)
 

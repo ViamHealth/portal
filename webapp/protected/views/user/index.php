@@ -167,7 +167,7 @@ $(document).ready(function(){
 	});
 	$("#save-profile").click(function(event){
 		event.preventDefault();
-		var $form = $("#user-bmi-form");
+		var $form = $("#user-form");
 		$form.validate();
 		if($form.valid()){
 			var user = {};
