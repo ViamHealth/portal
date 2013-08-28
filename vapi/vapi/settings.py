@@ -1,9 +1,5 @@
 # Django settings for vapi project.
 
-#import warnings
-#warnings.filterwarnings(
-#        'error', r"DateTimeField received a naive datetime",
-#        RuntimeWarning, r'django\.db\.models\.fields')
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
@@ -53,7 +49,7 @@ USE_I18N = True
 USE_L10N = True
 
 # If you set this to False, Django will not use timezone-aware datetimes.
-USE_TZ = True
+USE_TZ = False
 
 # Absolute filesystem path to the directory that will hold user-uploaded files.
 # Example: "/var/www/example.com/media/"
@@ -188,9 +184,9 @@ REST_FRAMEWORK = {
 DEFAULT_FILE_STORAGE = 'api.s3utils.MediaS3BotoStorage' 
 STATICFILES_STORAGE = 'api.s3utils.StaticS3BotoStorage'
 
-AWS_ACCESS_KEY_ID = ''
-AWS_SECRET_ACCESS_KEY = ''
-AWS_STORAGE_BUCKET_NAME = ''
+AWS_ACCESS_KEY_ID = 'AKIAI2VBRE4FPIPF6AYA'
+AWS_SECRET_ACCESS_KEY = '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'
+AWS_STORAGE_BUCKET_NAME = 'viamhealth-docsbucket'
 
 S3_URL = 'http://%s.s3.amazonaws.com' % AWS_STORAGE_BUCKET_NAME
 STATIC_DIRECTORY = '/static/'

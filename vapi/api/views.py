@@ -28,6 +28,10 @@ import mimetypes
 #from django.core import exceptions
 from django.contrib.auth.hashers import *
 
+
+    
+    
+
 #Temporary create code for all users once.
 for user in User.objects.all():
     enddate = datetime.today() - timedelta(days=7)

@@ -1,6 +1,6 @@
 from django.conf.urls import patterns, include, url
 from rest_framework import routers
-from api import views
+from api import views, ote
 
 router = routers.DefaultRouter(trailing_slash=True)
 router.register(r'healthfiles', views.HealthfileViewSet)
@@ -56,6 +56,7 @@ urlpatterns = patterns('',
     url(r'^food-items/search/(?P<search_string>[0-9A-Za-z]+)/$', views.FoodItemViewSet.as_view({'get':'search'}),name='fooditem-list'),
     #Uncomment the admin/doc line below to enable admin documentation:
     #url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
+    url(r'^upload/', ote.upload_food_items),
 
     #Uncomment the next line to enable the admin:
     url(r'^admin/', include(admin.site.urls)),

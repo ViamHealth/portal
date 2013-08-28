@@ -243,6 +243,7 @@ class UserBloodPressureReading(models.Model):
         db_table = 'tbl_user_blood_pressure_readings'
         verbose_name_plural = 'BP Readings'
         verbose_name = 'BP Reading'
+        ordering = ['reading_date']
     def __unicode__(self):
         return u'reading %s of goal %s' % (self.id, self.user_blood_pressure_goal)
 
@@ -280,6 +281,7 @@ class UserCholesterolReading(models.Model):
         db_table = 'tbl_user_cholesterol_readings'
         verbose_name_plural = 'Cholesterol Readings'
         verbose_name = 'Cholesterol Reading'
+        ordering = ['reading_date']
     def __unicode__(self):
         return u'reading %s of goal %s' % (self.id, self.user_cholesterol_goal)
 

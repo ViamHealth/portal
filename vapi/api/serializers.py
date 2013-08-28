@@ -51,12 +51,12 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
     profile = UserProfileSerializer(required=False)
     class Meta:
         model = User
-        fields = ('id', 'url', 'username', 'email', 'first_name', 'last_name', 'profile')
+        fields = ('id',  'username', 'email', 'first_name', 'last_name', 'profile')
 
 class UserEditSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = User
-        fields = ('id', 'url', 'first_name', 'last_name',)
+        fields = ('id',  'first_name', 'last_name',)
 
 class UserCreateSerializer(serializers.HyperlinkedModelSerializer):
     
@@ -69,7 +69,7 @@ class UserCreateSerializer(serializers.HyperlinkedModelSerializer):
             raise serializers.ValidationError("Enter a valid e-mail address.")
     class Meta:
         model = User
-        fields = ('id', 'url', 'first_name', 'last_name','username', )
+        fields = ('id',  'first_name', 'last_name','username', )
 
 
 class UserSignupSerializer(serializers.HyperlinkedModelSerializer):
@@ -89,19 +89,19 @@ class ReminderSerializer(serializers.HyperlinkedModelSerializer):
     user = serializers.Field(source='user.id')
     class Meta:
         model = Reminder
-        fields = ('id','url', 'user','details','start_timestamp' ,'repeat_mode','repeat_day','repeat_hour','repeat_min','repeat_weekday','repeat_day_interval')
+        fields = ('id', 'user','details','start_timestamp' ,'repeat_mode','repeat_day','repeat_hour','repeat_min','repeat_weekday','repeat_day_interval')
 
 class UserBmiProfileSerializer(serializers.HyperlinkedModelSerializer):
     user = serializers.Field(source='user.id')
     class Meta:
         model = UserBmiProfile
-        fields = ('id','url', 'user', 'height' ,'height_measure', 'weight' , 'weight_measure')
+        fields = ('id', 'user', 'height' ,'height_measure', 'weight' , 'weight_measure')
 
 
 #class HealthfileListSerializer(serializers.HyperlinkedModelSerializer):
 #    class Meta:
 #        model = Healthfile
-#        fields = ('id', 'url','user','tags','name' ,'description','mime_type','file','status','created_at','updated_at')
+#        fields = ('id', 'user','tags','name' ,'description','mime_type','file','status','created_at','updated_at')
 """
 class HealthfileTagSerializer(serializers.HyperlinkedModelSerializer):
     healthfile = serializers.Field(source='healthfile.id')
@@ -125,27 +125,27 @@ class HealthfileSerializer(serializers.HyperlinkedModelSerializer):
     tags = HealthfileTagListingField(many=True)
     class Meta:
         model = Healthfile
-        fields = ('id', 'url','user','tags','name' ,'description','mime_type','download_url')
+        fields = ('id', 'user','tags','name' ,'description','mime_type','download_url')
 
 class HealthfileEditSerializer(serializers.HyperlinkedModelSerializer):
     user = serializers.Field(source='user.id')
     tags = HealthfileTagListingField(many=True,read_only=True)
     class Meta:
         model = Healthfile
-        fields = ('id','url','description','tags')
+        fields = ('id','description','tags')
 
 class HealthfileUploadSerializer(serializers.HyperlinkedModelSerializer):
     user = serializers.Field(source='user.id')
     class Meta:
         model = Healthfile
-        fields = ('id','url','file','description')
+        fields = ('id','file','description')
 
 
 class UserWeightReadingSerializer(serializers.HyperlinkedModelSerializer):
     user_weight_goal = serializers.Field(source='user_weight_goal.id')
     class Meta:
         model = UserWeightReading
-        fields = ('id','url','user_weight_goal','weight','weight_measure' ,'reading_date')
+        fields = ('id','user_weight_goal','weight','weight_measure' ,'reading_date')
 
 class UserWeightGoalSerializer(serializers.HyperlinkedModelSerializer):
     readings = UserWeightReadingSerializer(required=False)
@@ -153,18 +153,24 @@ class UserWeightGoalSerializer(serializers.HyperlinkedModelSerializer):
     healthy_range = serializers.SerializerMethodField('get_healthy_range')
     class Meta:
         model = UserWeightGoal
-        fields = ('id', 'url','user','readings','weight','weight_measure','healthy_range' ,'target_date','interval_num','interval_unit',)
+        fields = ('id', 'user','readings','weight','weight_measure','healthy_range' ,'target_date','interval_num','interval_unit',)
 
     def get_healthy_range(self, obj=None):
         u = UserBmiProfile.objects.get(user=obj.user)
+        if u.height == '':
+                height = 155
+        else:
+                height = u.height
         max_bmi = 24.9
         min_bmi = 18.6
-        min_weight = min_bmi * ( float(u.height) / 100 ) * ( float(u.height) / 100 )
-        max_weight = max_bmi * ( float(u.height) / 100 ) * ( float(u.height) / 100 )
+        min_weight = min_bmi * ( float(height) / 100 ) * ( float(height) / 100 )
+        max_weight = max_bmi * ( float(height) / 100 ) * ( float(height) / 100 )
         a = {}
         a['weight'] = {}
         a['weight']['max'] = max_weight
+        a['weight']['max_measure'] = 'METRIC'
         a['weight']['min'] = min_weight
+        a['weight']['min_measure'] = 'METRIC'
         return a
 
 
@@ -172,40 +178,41 @@ class UserBloodPressureReadingSerializer(serializers.HyperlinkedModelSerializer)
     user_blood_pressure_goal = serializers.Field(source='user_blood_pressure_goal.id')
     class Meta:
         model = UserBloodPressureReading
-        fields = ('id','url','user_blood_pressure_goal','systolic_pressure','diastolic_pressure', 'pulse_rate' ,'reading_date')
+        fields = ('id','user_blood_pressure_goal','systolic_pressure','diastolic_pressure', 'pulse_rate' ,'reading_date')
 
 class UserBloodPressureGoalSerializer(serializers.HyperlinkedModelSerializer):
     readings = UserBloodPressureReadingSerializer(required=False)
     user = serializers.Field(source='user.id')
+    healthy_range = serializers.SerializerMethodField('get_healthy_range')
     class Meta:
         model = UserBloodPressureGoal
-        fields = ('id', 'url','user','readings','systolic_pressure','diastolic_pressure', 'pulse_rate' ,'target_date','interval_num','interval_unit',)
+        fields = ('id', 'user','readings','systolic_pressure','diastolic_pressure', 'pulse_rate' ,'healthy_range','target_date','interval_num','interval_unit',)
 
 class UserCholesterolReadingSerializer(serializers.HyperlinkedModelSerializer):
     user_cholesterol_goal = serializers.Field(source='user_cholesterol_goal.id')
     class Meta:
         model = UserCholesterolReading
-        fields = ('id','url','user_cholesterol_goal','hdl','ldl', 'triglycerides', 'total_cholesterol' ,'reading_date')
+        fields = ('id','user_cholesterol_goal','hdl','ldl', 'triglycerides', 'total_cholesterol' ,'reading_date')
 
 class UserCholesterolGoalSerializer(serializers.HyperlinkedModelSerializer):
     readings = UserCholesterolReadingSerializer(required=False)
     user = serializers.Field(source='user.id')
     class Meta:
         model = UserCholesterolGoal
-        fields = ('id', 'url','user','readings','hdl','ldl', 'triglycerides', 'total_cholesterol' ,'target_date','interval_num','interval_unit',)
+        fields = ('id', 'user','readings','hdl','ldl', 'triglycerides', 'total_cholesterol' ,'target_date','interval_num','interval_unit',)
 
 class FoodItemSerializer(serializers.HyperlinkedModelSerializer):
     display_image_url = serializers.Field(source='display_image_url')
     class Meta:
         model = FoodItem
-        fields = ( 'id', 'url','name','display_image_url' ,'quantity', 'quantity_unit', 'calories', 'total_fat', 'saturated_fat', 'polyunsaturated_fat', 'monounsaturated_fat', 'trans_fat', 'cholesterol', 'sodium', 'potassium', 'total_carbohydrates', 'dietary_fiber', 'sugars', 'protein', 'vitamin_a', 'vitamin_c', 'calcium', 'iron', 'calories_unit', 'total_fat_unit', 'saturated_fat_unit', 'polyunsaturated_fat_unit', 'monounsaturated_fat_unit', 'trans_fat_unit', 'cholesterol_unit', 'sodium_unit', 'potassium_unit', 'total_carbohydrates_unit', 'dietary_fiber_unit', 'sugars_unit', 'protein_unit', 'vitamin_a_unit', 'vitamin_c_unit', 'calcium_unit', 'iron_unit',)
+        fields = ( 'id', 'name','display_image_url' ,'quantity', 'quantity_unit', 'calories', 'total_fat', 'saturated_fat', 'polyunsaturated_fat', 'monounsaturated_fat', 'trans_fat', 'cholesterol', 'sodium', 'potassium', 'total_carbohydrates', 'dietary_fiber', 'sugars', 'protein', 'vitamin_a', 'vitamin_c', 'calcium', 'iron', 'calories_unit', 'total_fat_unit', 'saturated_fat_unit', 'polyunsaturated_fat_unit', 'monounsaturated_fat_unit', 'trans_fat_unit', 'cholesterol_unit', 'sodium_unit', 'potassium_unit', 'total_carbohydrates_unit', 'dietary_fiber_unit', 'sugars_unit', 'protein_unit', 'vitamin_a_unit', 'vitamin_c_unit', 'calcium_unit', 'iron_unit',)
 
 class DietTrackerSerializer(serializers.HyperlinkedModelSerializer):
     user = serializers.Field(source='user.id')
     food_item = serializers.PrimaryKeyRelatedField(many=False)
     class Meta:
         model = DietTracker
-        fields = ('id','url','food_item','user','food_quantity_multiplier','meal_type')
+        fields = ('id','food_item','user','food_quantity_multiplier','meal_type')
         
 """
 
