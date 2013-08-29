@@ -348,8 +348,9 @@ class UserWeightGoalViewSet(ViamModelViewSet):
 
     @action(methods=['POST'])
     def set_reading(self, request, pk):
+        wgoal = UserWeightGoal.objects.get(id=pk)
         try:
-            reading = UserWeightReading.objects.get(reading_date=request.DATA['reading_date'])
+            reading = UserWeightReading.objects.get(reading_date=request.DATA['reading_date'],user_weight_goal=wgoal)
             reading.weight = int(request.DATA['weight'])
             reading.weight_measure = request.DATA['weight_measure']
             reading.updated_by = request.user
@@ -357,7 +358,6 @@ class UserWeightGoalViewSet(ViamModelViewSet):
             return Response(serializer.data)    
         except UserWeightReading.DoesNotExist:
             try:
-                wgoal = UserWeightGoal.objects.get(id=pk)
                 reading = UserWeightReading(user_weight_goal=wgoal,weight=int(request.DATA['weight']),weight_measure=request.DATA['weight_measure'],reading_date=request.DATA['reading_date'],updated_by=request.user)
                 reading.save()
                 serializer = UserWeightReadingSerializer(reading)
@@ -382,34 +382,7 @@ class UserWeightGoalViewSet(ViamModelViewSet):
         except:
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
-class UserWeightReadingView(viewsets.ModelViewSet):
-    """
-    Manage all healthfiles for a user ( authenticated or family member)
-    * Requires token authentication.
-    * Get readings for a weight goal - http://127.0.0.1:8080/healthfiletags/?user_weight_goal=1
-    """
-    filter_fields = ('user_weight_goal',)
-    model = UserWeightReading
-    serializer_class = UserWeightReadingSerializer
 
-    #def get_queryset(self):
-    #    if self.request.GET.get('user_weight_goal',None) is None:
-    #        raise exceptions.MethodNotAllowed('get', detail=None)
-    #    else:
-    #        queryset = super(UserWeightReadingView, self).get_queryset()
-    """
-    def list_new(self, request, format=None):
-        if request.GET.get('user_weight_goal',None) is None:
-            raise exceptions.MethodNotAllowed('get', detail=None)
-        else:
-            return super(UserWeightReadingView, self).list(request, format)
-            #pprint.pprint(request.GET['user_weight_goal'])
-            #queryset = super(UserWeightReadingView, self).get_queryset()
-            #queryset = super(UserWeightReadingView, self).filter_queryset(queryset)
-            #pprint.pprint(queryset)
-            #serializer = UserWeightReadingSerializer(queryset, many=True, context={'request': request})
-            #return Response(serializer.data)
-    """
 class UserBloodPressureGoalViewSet(ViamModelViewSet):
     """
     Manage all healthfiles for a user ( authenticated or family member)
@@ -429,8 +402,9 @@ class UserBloodPressureGoalViewSet(ViamModelViewSet):
 
     @action(methods=['POST'])
     def set_reading(self, request, pk):
+        wgoal = UserBloodPressureGoal.objects.get(id=pk)
         try:
-            reading = UserBloodPressureReading.objects.get(reading_date=request.DATA['reading_date'])
+            reading = UserBloodPressureReading.objects.get(reading_date=request.DATA['reading_date'],user_blood_pressure_goal=wgoal)
             reading.systolic_pressure = int(request.DATA['systolic_pressure'])
             reading.diastolic_pressure = request.DATA['diastolic_pressure']
             reading.pulse_rate = request.DATA['pulse_rate']
@@ -439,7 +413,6 @@ class UserBloodPressureGoalViewSet(ViamModelViewSet):
             return Response(serializer.data)    
         except UserBloodPressureReading.DoesNotExist:
             try:
-                wgoal = UserBloodPressureGoal.objects.get(id=pk)
                 reading = UserBloodPressureReading(user_blood_pressure_goal=wgoal,systolic_pressure=int(request.DATA['systolic_pressure']),diastolic_pressure=request.DATA['diastolic_pressure'],pulse_rate=request.DATA['pulse_rate'],reading_date=request.DATA['reading_date'],updated_by=request.user)
                 reading.save()
                 serializer = UserBloodPressureReadingSerializer(reading)
@@ -461,17 +434,12 @@ class UserBloodPressureGoalViewSet(ViamModelViewSet):
         except UserBloodPressureReading.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
         
-
+"""
 class UserBloodPressureReadingView(viewsets.ModelViewSet):
-    """
-    Manage all healthfiles for a user ( authenticated or family member)
-    * Requires token authentication.
-    * Get readings for a weight goal - http://127.0.0.1:8080/healthfiletags/?user_weight_goal=1
-    """
     filter_fields = ('user_blood_pressure_goal',)
     model = UserBloodPressureReading
     serializer_class = UserBloodPressureReadingSerializer
-
+"""
 
 class UserCholesterolGoalViewSet(ViamModelViewSet):
     """
@@ -492,8 +460,9 @@ class UserCholesterolGoalViewSet(ViamModelViewSet):
 
     @action(methods=['POST'])
     def set_reading(self, request, pk):
+        wgoal = UserCholesterolGoal.objects.get(id=pk)
         try:
-            reading = UserCholesterolReading.objects.get(reading_date=request.DATA['reading_date'])
+            reading = UserCholesterolReading.objects.get(reading_date=request.DATA['reading_date'],user_cholesterol_goal=wgoal)
             reading.ldl = int(request.DATA['ldl'])
             reading.hdl = request.DATA['hdl']
             reading.triglycerides = request.DATA['triglycerides']
@@ -503,27 +472,39 @@ class UserCholesterolGoalViewSet(ViamModelViewSet):
             return Response(serializer.data)    
         except UserCholesterolReading.DoesNotExist:
             try:
-                wgoal = UserCholesterolGoal.objects.get(id=pk)
-                reading = UserCholesterolReading(user_cholesterol_goal=wgoal,ldl=int(request.DATA['ldl']),hdl=request.DATA['hdl'],triglycerides=request.DATA['triglycerides'],total_cholesterol=request.DATA['total_cholesterol'],reading_date=request.DATA['reading_date'],updated_by=request.user)
+                #reading = UserCholesterolReading(user_cholesterol_goal=wgoal,ldl=int(request.DATA['ldl']),hdl=int(request.DATA['hdl']),triglycerides=int(request.DATA['triglycerides']),total_cholesterol=int(request.DATA['total_cholesterol']),reading_date=request.DATA['reading_date'],updated_by=request.user)
+                ldl=request.DATA['ldl'];
+                hdl=request.DATA['hdl'];
+                triglycerides=request.DATA['triglycerides'];
+                total_cholesterol=request.DATA['total_cholesterol'];
+                reading_date=request.DATA['reading_date']
+
+                reading = UserCholesterolReading(user_cholesterol_goal=wgoal,ldl=ldl,hdl=hdl,triglycerides=triglycerides,total_cholesterol=total_cholesterol,reading_date=reading_date,updated_by=request.user)
                 reading.save()
                 serializer = UserCholesterolReadingSerializer(reading)
                 return Response(serializer.data)    
             except:
                 return Response(status=status.HTTP_400_BAD_REQUEST)
-            
         except:
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
+    @action(methods=['DELETE'])
+    def destroy_reading(self, request, pk):
+        if request.GET.get('reading_date',None) is None:
+                raise exceptions.ParseError(detail='reading_date GET param is required')
+        m = self.get_object(pk)
+        try:
+            reading = UserCholesterolReading.objects.get(reading_date=request.GET.get('reading_date'),user_cholesterol_goal=m)
+            reading.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        except UserCholesterolReading.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+"""
 class UserCholesterolReadingView(viewsets.ModelViewSet):
-    """
-    Manage all healthfiles for a user ( authenticated or family member)
-    * Requires token authentication.
-    * Get readings for a weight goal - http://127.0.0.1:8080/healthfiletags/?user_weight_goal=1
-    """
     filter_fields = ('user_cholesterol_goal',)
     model = UserCholesterolReading
     serializer_class = UserCholesterolReadingSerializer
-
+"""
 
 class FoodItemViewSet(viewsets.ModelViewSet):
     model = FoodItem

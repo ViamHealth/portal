@@ -212,9 +212,29 @@ class UserCholesterolReadingSerializer(serializers.HyperlinkedModelSerializer):
 class UserCholesterolGoalSerializer(serializers.HyperlinkedModelSerializer):
     readings = UserCholesterolReadingSerializer(required=False)
     user = serializers.Field(source='user.id')
+    healthy_range = serializers.SerializerMethodField('get_healthy_range')
     class Meta:
         model = UserCholesterolGoal
-        fields = ('id', 'user','readings','hdl','ldl', 'triglycerides', 'total_cholesterol' ,'target_date','interval_num','interval_unit',)
+        fields = ('id', 'user','readings','hdl','ldl', 'triglycerides', 'total_cholesterol' ,'healthy_range','target_date','interval_num','interval_unit',)
+
+    def get_healthy_range(self, obj=None):
+        max_total_cholesterol  = 200;
+        min_total_cholesterol  = 0;
+        max_hdl  = 50;
+        min_hdl  = 0;
+        max_ldl  = 100;
+        min_ldl  = 0;
+        a = {}
+        a['total_cholesterol'] ={}
+        a['total_cholesterol']['max'] = max_total_cholesterol;
+        a['total_cholesterol']['min'] = min_total_cholesterol;
+        a['hdl'] ={}
+        a['hdl']['max'] = max_hdl;
+        a['hdl']['min'] = min_hdl;
+        a['ldl'] ={}
+        a['ldl']['max'] = max_ldl;
+        a['ldl']['min'] = min_ldl;
+        return a;
 
 class FoodItemSerializer(serializers.HyperlinkedModelSerializer):
     display_image_url = serializers.Field(source='display_image_url')

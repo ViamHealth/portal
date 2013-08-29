@@ -4,13 +4,10 @@ from api import views
 
 router = routers.DefaultRouter(trailing_slash=True)
 router.register(r'healthfiles', views.HealthfileViewSet)
-router.register(r'weight-readings', views.UserWeightReadingView)
 #router.register(r'healthfiletags', views.HealthfileTagViewSet)
 router.register(r'weight-goals', views.UserWeightGoalViewSet)
 router.register(r'blood-pressure-goals', views.UserBloodPressureGoalViewSet)
-router.register(r'blood-pressure-readings', views.UserBloodPressureReadingView)
 router.register(r'cholesterol-goals', views.UserCholesterolGoalViewSet)
-router.register(r'cholesterol-readings', views.UserCholesterolReadingView)
 router.register(r'diet-tracker', views.DietTrackerViewSet)
 
 #router.register(r'goals', views.GoalViewSet)
@@ -48,6 +45,7 @@ urlpatterns = patterns('',
     url(r'^blood-pressure-goals/(?P<pk>[0-9]+)/destroy-reading/$', views.UserBloodPressureGoalViewSet.as_view({'delete':'destroy_reading'}),name='goal-blood-pressure-reading-detail'),
 
     url(r'^cholesterol-goals/(?P<pk>[0-9]+)/set-reading/$', views.UserCholesterolGoalViewSet.as_view({'post':'set_reading'}),name='goal-cholesterol-reading-detail'),
+    url(r'^cholesterol-goals/(?P<pk>[0-9]+)/destroy-reading/$', views.UserCholesterolGoalViewSet.as_view({'delete':'destroy_reading'}),name='goal-cholesterol-reading-detail'),
     
     
     url(r'^users/(?P<pk>[0-9]+)/$', views.UserView.as_view({'get': 'retrieve', 'put': 'update','delete':'destroy'}),name='user-detail'),
