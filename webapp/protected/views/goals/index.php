@@ -131,8 +131,8 @@ $this->breadcrumbs=array(
 
 <!-- Modals end-->
 <script type="text/javascript">
-VH.vars.profile_id = '<?php echo $profile_id; ?>';
-
+VH.vars.profile_id = find_family_user_id()?find_family_user_id():'<?php echo $profile_id; ?>';
+//console.log(VH.vars.profile_id);
 var stacks = {};
 
 stacks['weight'] ={};

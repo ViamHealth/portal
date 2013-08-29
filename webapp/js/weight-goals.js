@@ -18,7 +18,7 @@ function populate_weight_graph(){
 function attach_weight_events(){
 	var _stack = stacks['weight'];
 
-	event_delete_goal_button('weight',populate_weight_graph());
+	event_delete_goal_button('weight',populate_weight_graph);
 	event_click_to_add_reading('weight');
 
 	$("#save-weight-goal").click(function(event){

@@ -5,7 +5,7 @@ function populate_cholesterol_graph(){
 function attach_cholesterol_events(){
 	var _stack = stacks['cholesterol'];
 
-	event_delete_goal_button('cholesterol',populate_cholesterol_graph());
+	event_delete_goal_button('cholesterol',populate_cholesterol_graph);
 	event_click_to_add_reading('cholesterol');
 
 	$(_stack['new_goal_form_save_button']).click(function(event){

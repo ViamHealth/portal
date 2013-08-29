@@ -6,7 +6,7 @@ function populate_blood_pressure_graph(){
 function attach_blood_pressure_events(){
 	var _stack = stacks['blood_pressure'];
 
-	event_delete_goal_button('blood_pressure',populate_blood_pressure_graph());
+	event_delete_goal_button('blood_pressure',populate_blood_pressure_graph);
 	event_click_to_add_reading('blood_pressure');
 
 	$(_stack['new_goal_form_save_button']).click(function(event){
