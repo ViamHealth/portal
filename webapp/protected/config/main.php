@@ -102,7 +102,7 @@ return array(
 	'params'=>array(
 		// this is used in contact page
 		'adminEmail'=>'webmaster@example.com',
-		//'apiBaseUrl'=>'http://127.0.0.1:8080/',
-		'apiBaseUrl'=>'http://api.viamhealth.com/',
+		'apiBaseUrl'=>'http://127.0.0.1:8080/',
+		//'apiBaseUrl'=>'http://api.viamhealth.com/',
 	),
 );

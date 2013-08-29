@@ -1,5 +1,13 @@
 $(document).ready(function(){
 
+$("#weight_goal_delete").click(function(event){
+		var id = $("#weight_goal_delete").attr("goal_id");
+		event.preventDefault();
+		_DB.WeightGoal.destroy(id,function(){
+			populate_weight_graph();
+		});
+	});
+
 $("#save-weight-goal").click(function(event){
 	event.preventDefault();
 	var $form = $("#weight-goal-add");
@@ -39,26 +47,22 @@ $("#save-weight-reading").click(function(){
 
 });
 
-function delete_reading(goal_type, goal_id, reading_id, point){
-	_DB.WeightGoal.destroy_reading(goal_id, reading_id, function(json,success){
-		if(success){
-			console.log('deleted');
-			point.remove();
-		} else {
-			console.log('could not delete')
-		}
-	});
-}
-
 function populate_weight_graph(){
-	$("#weight-goal-add").hide();
+	var _stack = stacks['weight'];
+
+	$(_stack['chart_container']).hide();
+	$(_stack['new_goal_form']).hide();
+
 	_DB.WeightGoal.list(function(json,success){
 		if(success){
 			if(json.count){
 				var goal = json.results[0];
 
-				$("#weight_goal_reading_open").show();
-				$("#weight_goal_reading_open").attr("goal_id",goal.id);
+				$(_stack['chart_container']).show();
+				$(_stack['click_to_add_reading']).show();
+				$(_stack['click_to_add_reading']).attr("goal_id",goal.id);
+				$(_stack['delete_goal_button']).attr("goal_id",goal.id);
+				$(_stack['delete_goal_button']).show();
 
 				var weight_readings_end = [[ apiDateToGraphDate(goal.target_date), goal.weight ],];
 				var weight_range_max = goal.healthy_range.weight.max;
@@ -115,7 +119,7 @@ function populate_weight_graph(){
 		                    point: {
 		                        events: {
 		                            'click': function() {
-		                            	delete_reading('WEIGHT',goal.id, (graphDateToApiDate(this.x)));
+		                            	delete_reading('WEIGHT',goal.id, (graphDateToApiDate(this.x)), this);
 		                            	//this.remove();
 		                                //if (this.series.data.length > 1) this.remove();
 		                            }
@@ -140,7 +144,7 @@ function populate_weight_graph(){
 						alert('create bmi profile first');
 					} else {
 						// create goal		
-						$("#weight-goal-add").show();
+						$(_stack['new_goal_form']).show();
 					}
 				});
 				

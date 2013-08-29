@@ -1,6 +1,6 @@
 from django.conf.urls import patterns, include, url
 from rest_framework import routers
-from api import views, ote
+from api import views
 
 router = routers.DefaultRouter(trailing_slash=True)
 router.register(r'healthfiles', views.HealthfileViewSet)
@@ -45,6 +45,8 @@ urlpatterns = patterns('',
     url(r'^weight-goals/(?P<pk>[0-9]+)/destroy-reading/$', views.UserWeightGoalViewSet.as_view({'delete':'destroy_reading'}),name='goal-weight-reading-detail'),
 
     url(r'^blood-pressure-goals/(?P<pk>[0-9]+)/set-reading/$', views.UserBloodPressureGoalViewSet.as_view({'post':'set_reading'}),name='goal-blood-pressure-reading-detail'),
+    url(r'^blood-pressure-goals/(?P<pk>[0-9]+)/destroy-reading/$', views.UserBloodPressureGoalViewSet.as_view({'delete':'destroy_reading'}),name='goal-blood-pressure-reading-detail'),
+
     url(r'^cholesterol-goals/(?P<pk>[0-9]+)/set-reading/$', views.UserCholesterolGoalViewSet.as_view({'post':'set_reading'}),name='goal-cholesterol-reading-detail'),
     
     
@@ -57,7 +59,7 @@ urlpatterns = patterns('',
     url(r'^food-items/search/(?P<search_string>[0-9A-Za-z]+)/$', views.FoodItemViewSet.as_view({'get':'search'}),name='fooditem-list'),
     #Uncomment the admin/doc line below to enable admin documentation:
     #url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
-    url(r'^upload/', ote.upload_food_items),
+    #url(r'^upload/', ote.upload_food_items),
 
     #Uncomment the next line to enable the admin:
     url(r'^admin/', include(admin.site.urls)),

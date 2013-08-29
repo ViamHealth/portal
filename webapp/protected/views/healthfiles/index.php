@@ -33,34 +33,8 @@ $this->breadcrumbs=array(
 
 <input id="fileupload" type="file" name="file" data-url="<?php echo Yii::app()->params['apiBaseUrl'] ?>healthfiles/" >
 <div id="fileupload-status" style="display:none;">Uploading..</div>
-        
 
 
-
-<?php /*$this->widget('bootstrap.widgets.TbListView',array(
- 'dataProvider'=>$model->search(array('user_id'=>$profile_id, 'status'=>'ACTIVE')),
- 'itemView'=>'_view',
-));*/ ?>
-<?php
-/*
-$form = $this->beginWidget(
-    'CActiveForm',
-    array(
-        'id' => 'Healthfile',
-        'enableAjaxValidation' => false,
-        'htmlOptions' => array('enctype' => 'multipart/form-data'),
-        'action' => $this->createUrl('healthfiles/add'),
-        'method' => 'POST',
-    )
-);
-
-//echo $form->labelEx($model, 'file');
-echo $form->fileField($model, 'file');
-echo $form->error($model, 'file');
- echo CHtml::submitButton('Upload');
-$this->endWidget();
-*/
-?>
 <?php
 $gridColumns = array ( 'name','description','updated_at');
 $i = 0 ;
@@ -111,7 +85,7 @@ $this->widget('bootstrap.widgets.TbExtendedGridView', array(
             'url' => '$data->get_download_url()'
         ),
       ),
-      'htmlOptions'=>array('style'=>'width: 80px'),
+      //'htmlOptions'=>array('style'=>'width: 80px'),
     ),
   ),
 ));

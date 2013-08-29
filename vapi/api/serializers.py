@@ -188,6 +188,21 @@ class UserBloodPressureGoalSerializer(serializers.HyperlinkedModelSerializer):
         model = UserBloodPressureGoal
         fields = ('id', 'user','readings','systolic_pressure','diastolic_pressure', 'pulse_rate' ,'healthy_range','target_date','interval_num','interval_unit',)
 
+    def get_healthy_range(self, obj=None):
+        max_systolic_pressure  = 120;
+        min_systolic_pressure  = 90;
+        max_diastolic_pressure  = 80;
+        min_diastolic_pressure  = 60;
+        a = {}
+        a['systolic_pressure'] ={}
+        a['systolic_pressure']['max'] = max_systolic_pressure;
+        a['systolic_pressure']['min'] = min_systolic_pressure;
+        a['diastolic_pressure'] ={}
+        a['diastolic_pressure']['max'] = max_diastolic_pressure;
+        a['diastolic_pressure']['min'] = min_diastolic_pressure;
+        return a;
+
+
 class UserCholesterolReadingSerializer(serializers.HyperlinkedModelSerializer):
     user_cholesterol_goal = serializers.Field(source='user_cholesterol_goal.id')
     class Meta:

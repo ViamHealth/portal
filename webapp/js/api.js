@@ -74,25 +74,27 @@ api_url = function(resource,pk,sub_resource, sub_resource_id){
 _DB.BloodPressureGoal = {
 	resource : 'blood-pressure-goals',
 	retrieve : function(id,callback){
-		var url = api_url(this.resource,id)
+		var url = api_url(this.resource,id);
 		api_get(url,callback);
 	},
 	list : function(callback){
-		var url = api_url(this.resource)
+		var url = api_url(this.resource);
 		api_get(url,callback);
 	},
-	update : function(id,user,callback){
-		var url = api_url(this.resource,id)
-		api_put(url,user,callback);
+	update : function(id,goal,callback){
+		var url = api_url(this.resource,id);
+		api_put(url,goal,callback);
 	},
-	create : function(user,callback){
-		var url = api_url(this.resource)
-		api_post(url,user,callback);
+	create : function(goal,callback){
+		var url = api_url(this.resource);
+		api_post(url,goal,callback);
+	},
+	destroy: function(id,callback){
+		var url = api_url(this.resource,id);
+		api_delete(url,callback);
 	},
 	set_reading : function(id,reading,callback){
 		var url = api_url(this.resource,id,'set-reading');
-		reading.weight_measure = 'METRIC';
-		//profile.gender = profile.gender?profile.gender.toUpperCase():profile.gender;
 		api_post(url,reading,callback);
 	},
 	destroy_reading: function(id, reading_date, callback){
@@ -119,6 +121,10 @@ _DB.WeightGoal = {
 	create : function(user,callback){
 		var url = api_url(this.resource)
 		api_post(url,user,callback);
+	},
+	destroy: function(id,callback){
+		var url = api_url(this.resource,id);
+		api_delete(url,callback);
 	},
 	set_reading : function(id,reading,callback){
 		var url = api_url(this.resource,id,'set-reading');

@@ -360,7 +360,7 @@ class UserWeightGoalViewSet(ViamModelViewSet):
                 wgoal = UserWeightGoal.objects.get(id=pk)
                 reading = UserWeightReading(user_weight_goal=wgoal,weight=int(request.DATA['weight']),weight_measure=request.DATA['weight_measure'],reading_date=request.DATA['reading_date'],updated_by=request.user)
                 reading.save()
-                serializer = UserWeightReadingSerializer(reading,context={'request': request})
+                serializer = UserWeightReadingSerializer(reading)
                 return Response(serializer.data)    
             except:
                 return Response(status=status.HTTP_400_BAD_REQUEST)
@@ -446,9 +446,21 @@ class UserBloodPressureGoalViewSet(ViamModelViewSet):
                 return Response(serializer.data)    
             except:
                 return Response(status=status.HTTP_400_BAD_REQUEST)
-            
         except:
             return Response(status=status.HTTP_400_BAD_REQUEST)
+
+    @action(methods=['DELETE'])
+    def destroy_reading(self, request, pk):
+        if request.GET.get('reading_date',None) is None:
+                raise exceptions.ParseError(detail='reading_date GET param is required')
+        m = self.get_object(pk)
+        try:
+            reading = UserBloodPressureReading.objects.get(reading_date=request.GET.get('reading_date'),user_blood_pressure_goal=m)
+            reading.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        except UserBloodPressureReading.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        
 
 class UserBloodPressureReadingView(viewsets.ModelViewSet):
     """

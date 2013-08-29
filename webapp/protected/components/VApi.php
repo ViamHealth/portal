@@ -9,6 +9,10 @@ class VApi
 
 	public static function apiCall($method, $url, $params =array())
 	{
+        /*if(!isset(Yii::app()->user->token) || !Yii::app()->user->token)
+        {
+
+        }*/
         self::$apiBaseUrl = Yii::app()->params['apiBaseUrl'];
 		$rest = new RESTClient();
         $fuid =  Yii::app()->request->getParam('fuid',null);
