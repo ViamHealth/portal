@@ -137,6 +137,7 @@ var stacks = {};
 
 stacks['weight'] ={};
 stacks['weight']['model'] = _DB.WeightGoal;
+stacks['weight']['graph_title'] = 'Weight Goal';
 stacks['weight']['add_reading_model'] = $("#weight-goal-reading-model");
 stacks['weight']['add_reading_form'] = $("#weight-goal-reading-add");
 stacks['weight']['add_reading_form_save'] = $("#save-weight-reading");
@@ -163,6 +164,7 @@ stacks['weight']['plots'] = [
 
 stacks['blood_pressure'] ={};
 stacks['blood_pressure']['model'] = _DB.BloodPressureGoal;
+stacks['blood_pressure']['graph_title'] = 'Blood pressure Goal';
 stacks['blood_pressure']['add_reading_model'] = $("#blood-pressure-goal-reading-model");
 stacks['blood_pressure']['add_reading_form'] = $("#blood-pressure-goal-reading-add");
 stacks['blood_pressure']['add_reading_form_save'] = $("#save-blood-pressure-reading");
@@ -201,6 +203,7 @@ stacks['blood_pressure']['plots'] = [
 
 stacks['cholesterol'] ={};
 stacks['cholesterol']['model'] = _DB.CholesterolGoal;
+stacks['cholesterol']['graph_title'] = 'Cholesterol Goal';
 stacks['cholesterol']['add_reading_model'] = $("#cholesterol-goal-reading-model");
 stacks['cholesterol']['add_reading_form'] = $("#cholesterol-goal-reading-add");
 stacks['cholesterol']['add_reading_form_save'] = $("#save-cholesterol-reading");
@@ -386,7 +389,7 @@ function populate_graph(goal_type,options){
 				$(_stack['chart_container']).highcharts({
 					exporting: {enabled: false},
 		            chart: {type: 'spline'},
-		            title: {text: 'Blood Pressure Goal'},
+		            title: {text: _stack['graph_title']},
 		            subtitle: {text: ''},
 		            xAxis: {
 		                type: 'datetime',
