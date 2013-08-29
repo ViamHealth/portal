@@ -71,6 +71,37 @@ api_url = function(resource,pk,sub_resource, sub_resource_id){
 	return url;
 }
 
+_DB.BloodPressureGoal = {
+	resource : 'blood-pressure-goals',
+	retrieve : function(id,callback){
+		var url = api_url(this.resource,id)
+		api_get(url,callback);
+	},
+	list : function(callback){
+		var url = api_url(this.resource)
+		api_get(url,callback);
+	},
+	update : function(id,user,callback){
+		var url = api_url(this.resource,id)
+		api_put(url,user,callback);
+	},
+	create : function(user,callback){
+		var url = api_url(this.resource)
+		api_post(url,user,callback);
+	},
+	set_reading : function(id,reading,callback){
+		var url = api_url(this.resource,id,'set-reading');
+		reading.weight_measure = 'METRIC';
+		//profile.gender = profile.gender?profile.gender.toUpperCase():profile.gender;
+		api_post(url,reading,callback);
+	},
+	destroy_reading: function(id, reading_date, callback){
+		var url = api_url(this.resource,id,'destroy-reading');
+		url = url + "?reading_date="+reading_date
+		api_delete(url,callback);
+	}
+}
+
 _DB.WeightGoal = {
 	resource : 'weight-goals',
 	retrieve : function(id,callback){
@@ -93,7 +124,7 @@ _DB.WeightGoal = {
 		var url = api_url(this.resource,id,'set-reading');
 		reading.weight_measure = 'METRIC';
 		//profile.gender = profile.gender?profile.gender.toUpperCase():profile.gender;
-		api_put(url,reading,callback);
+		api_post(url,reading,callback);
 	},
 	destroy_reading: function(id, reading_date, callback){
 		var url = api_url(this.resource,id,'destroy-reading');

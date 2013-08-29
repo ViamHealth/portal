@@ -360,8 +360,8 @@ class UserWeightGoalViewSet(ViamModelViewSet):
                 wgoal = UserWeightGoal.objects.get(id=pk)
                 reading = UserWeightReading(user_weight_goal=wgoal,weight=int(request.DATA['weight']),weight_measure=request.DATA['weight_measure'],reading_date=request.DATA['reading_date'],updated_by=request.user)
                 reading.save()
-                serializer = UserWeightReadingSerializer(reading)
-                return Response(serializer.data,context={'request': request})    
+                serializer = UserWeightReadingSerializer(reading,context={'request': request})
+                return Response(serializer.data)    
             except:
                 return Response(status=status.HTTP_400_BAD_REQUEST)
             
