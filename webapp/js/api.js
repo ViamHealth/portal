@@ -15,17 +15,17 @@ api_ajax = function(url,options,callback){
 		beforeSend: function(xhr) {
 		   xhr.setRequestHeader("Authorization", "Token "+VH.params.auth_token);
 		},
-		success: function(json){
+		success: function(json, textStatus){
+			// PlainObject data, String textStatus, jqXHR jqXHR
 			console.log('success called of url '+url);
-			console.log(json)
-			callback(json);
+			console.log(json);
+			callback(json,true);
 		},
-		error: function(jqXHR,textStatus,errorThrown){
+		error: function(jqXHR, textStatus, errorThrown){
 			console.log('error called of url '+url);
 			console.log(textStatus);
-			console.log(errorThrown);
 			console.log(jqXHR);
-			callback(jqXHR.responseText,textStatus,errorThrown);
+			callback(jqXHR,false);
 		}
 	});
 } 
@@ -49,17 +49,57 @@ api_post = function(url,data,callback){
 	api_ajax(url,options,callback)
 }
 
-api_url = function(resource,pk,sub_resource){
+api_delete = function(url, callback){
+	var options = {};
+	options.type = 'DELETE';
+	api_ajax(url,options,callback)	
+}
+
+api_url = function(resource,pk,sub_resource, sub_resource_id){
 	if(!resource)
 		throw new Error('resource not defined');
 	var url = VH.params.apiUrl+resource;
 	if(pk)
 		url = url+'/'+pk;
-	if(sub_resource)
+	if(sub_resource) {
 		url = url+'/'+sub_resource;
+		if(sub_resource_id) 
+			url = url+'/'+sub_resource_id;
+	}
 
 	if(api_backslash) url = url+'/';
 	return url;
+}
+
+_DB.WeightGoal = {
+	resource : 'weight-goals',
+	retrieve : function(id,callback){
+		var url = api_url(this.resource,id)
+		api_get(url,callback);
+	},
+	list : function(callback){
+		var url = api_url(this.resource)
+		api_get(url,callback);
+	},
+	update : function(id,user,callback){
+		var url = api_url(this.resource,id)
+		api_put(url,user,callback);
+	},
+	create : function(user,callback){
+		var url = api_url(this.resource)
+		api_post(url,user,callback);
+	},
+	set_reading : function(id,reading,callback){
+		var url = api_url(this.resource,id,'set-reading');
+		reading.weight_measure = 'METRIC';
+		//profile.gender = profile.gender?profile.gender.toUpperCase():profile.gender;
+		api_put(url,reading,callback);
+	},
+	destroy_reading: function(id, reading_date, callback){
+		var url = api_url(this.resource,id,'destroy-reading');
+		url = url + "?reading_date="+reading_date
+		api_delete(url,callback);
+	}
 }
 
 _DB.User = {

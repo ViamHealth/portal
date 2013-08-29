@@ -11,22 +11,22 @@ $this->breadcrumbs=array(
 );
 ?>
 
-<div class="row guttered">
-  <div class="">
+<div class="guttered">
+  <div class="row-fluid">
   	<?php $form = $this->beginWidget('bootstrap.widgets.TbActiveForm', array(
 	      'action'=>Yii::app()->createUrl('goalsweight/setreading'),
 	      'id'=>'inlineForm',
 	      'type'=>'inline',
-	      'htmlOptions'=>array('class'=>'span4'),
+	      'htmlOptions'=>array('class'=>'span12'),
 	)); ?>
 	<div>
 		  <?php echo $form->hiddenField($model, 'user_weight_goal_id', array("value"=>$user_weight_goal_id)); ?>
-	      <?php echo $form->textFieldRow($model, 'weight', array('class'=>'span1')); ?>
+	      <?php echo $form->textFieldRow($model, 'weight', array('class'=>'span2')); ?>
 	      <?php echo $form->datepickerRow($model, 'reading_date',
 	      array(
 	      'prepend'=>'<i class="icon-calendar"></i>',
 	      'options'=>array('format'=>'yyyy-mm-dd'),
-	      'class'=>'span2'
+	      'class'=>'span8'
 	      )); 
 	      ?>
 	      <?php $this->widget('bootstrap.widgets.TbButton', array('buttonType'=>'submit', 'label'=>'Add')); ?>

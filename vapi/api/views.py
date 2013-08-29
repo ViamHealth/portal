@@ -368,6 +368,20 @@ class UserWeightGoalViewSet(ViamModelViewSet):
         except:
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
+    @action(methods=['DELETE'])
+    def destroy_reading(self, request, pk):
+        if request.GET.get('reading_date',None) is None:
+                raise exceptions.ParseError(detail='reading_date GET param is required')
+        m = self.get_object(pk)
+        try:
+            reading = UserWeightReading.objects.get(reading_date=request.GET.get('reading_date'),user_weight_goal=m)
+            reading.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        except UserWeightReading.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        except:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
 class UserWeightReadingView(viewsets.ModelViewSet):
     """
     Manage all healthfiles for a user ( authenticated or family member)

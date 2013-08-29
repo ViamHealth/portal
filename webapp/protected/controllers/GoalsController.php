@@ -22,16 +22,16 @@ class GoalsController extends Controller
 
   public function actionIndex()
 	{
-    $res = $this->apiCall('get','goals/weight/');
+    /*$res = $this->apiCall('get','goals/weight/');
     $weight = $res->results;
     $model_weight_url = '';
     if($res->count > 0 )
     {
       $model_weight_url = $res->results[0]->url;
-    } 
+    }*/ 
     $this->render('index',
       array(
-        'model_weight_url'=>$model_weight_url, 
+        //'model_weight_url'=>$model_weight_url, 
         'profile_id'=>Yii::app()->user->id
         )
       );

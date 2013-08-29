@@ -76,7 +76,10 @@ class GoalsweightController extends Controller
     //TODO: Optimize the no. of calls
     
     $res = $this->apiCall('get','weight-goals/');
-    $goal = $res->results;
+    if(isset($res->results))
+      $goal = $res->results;
+    else
+      throw new CHttpException(500, 'Heavy weight error. Login Again');
     
 
     if($res->count > 0 ){
