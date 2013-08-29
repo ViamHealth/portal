@@ -1,4 +1,5 @@
 function populate_weight_graph(){
+	var _stack = stacks['weight'];
 	options = {
 		'no_goal_action' : function(){
 			_DB.User.retrieve_bmi_profile(VH.vars.profile_id,function(json,success){

@@ -1,6 +1,21 @@
 var _DB = {};
 var api_backslash = true;
 
+function find_family_user_id(){
+	var str = document.URL;
+	var re = /\/u\/\d+/i;
+	var found = str.match(re);
+	if(found){
+		var re = /\d+/i;
+		var f1 = found[0].match(re);
+		if(f1){
+			return f1[0];
+		}
+	} else{
+		return false;
+	}
+	
+}
 
 //VH.params.apiUrl = "<?php echo Yii::app()->params['apiBaseUrl'] ?>";
 //VH.vars.profile_id = '<?php echo $profile_id; ?>';
@@ -18,7 +33,7 @@ api_ajax = function(url,options,callback){
 		success: function(json, textStatus){
 			// PlainObject data, String textStatus, jqXHR jqXHR
 			console.log('success called of url '+url);
-			console.log(json);
+			//console.log(json);
 			callback(json,true);
 		},
 		error: function(jqXHR, textStatus, errorThrown){
@@ -68,6 +83,8 @@ api_url = function(resource,pk,sub_resource, sub_resource_id){
 	}
 
 	if(api_backslash) url = url+'/';
+	if(find_family_user_id())
+		url=url+'?user='+find_family_user_id()
 	return url;
 }
 
