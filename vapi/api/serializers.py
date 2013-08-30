@@ -151,7 +151,7 @@ class UserWeightReadingSerializer(serializers.HyperlinkedModelSerializer):
     user_weight_goal = serializers.Field(source='user_weight_goal.id')
     class Meta:
         model = UserWeightReading
-        fields = ('id','user_weight_goal','weight','weight_measure' ,'reading_date')
+        fields = ('id','user_weight_goal','weight','weight_measure' ,'reading_date','comment')
 
 class UserWeightGoalSerializer(serializers.HyperlinkedModelSerializer):
     readings = UserWeightReadingSerializer(required=False)
@@ -187,7 +187,7 @@ class UserBloodPressureReadingSerializer(serializers.HyperlinkedModelSerializer)
     user_blood_pressure_goal = serializers.Field(source='user_blood_pressure_goal.id')
     class Meta:
         model = UserBloodPressureReading
-        fields = ('id','user_blood_pressure_goal','systolic_pressure','diastolic_pressure', 'pulse_rate' ,'reading_date')
+        fields = ('id','user_blood_pressure_goal','systolic_pressure','diastolic_pressure', 'pulse_rate' ,'reading_date','comment')
 
 class UserBloodPressureGoalSerializer(serializers.HyperlinkedModelSerializer):
     readings = UserBloodPressureReadingSerializer(required=False)
@@ -219,7 +219,7 @@ class UserCholesterolReadingSerializer(serializers.HyperlinkedModelSerializer):
     user_cholesterol_goal = serializers.Field(source='user_cholesterol_goal.id')
     class Meta:
         model = UserCholesterolReading
-        fields = ('id','user_cholesterol_goal','hdl','ldl', 'triglycerides', 'total_cholesterol' ,'reading_date')
+        fields = ('id','user_cholesterol_goal','hdl','ldl', 'triglycerides', 'total_cholesterol' ,'reading_date','comment')
 
 class UserCholesterolGoalSerializer(serializers.HyperlinkedModelSerializer):
     readings = UserCholesterolReadingSerializer(required=False)
@@ -255,7 +255,7 @@ class UserGlucoseReadingSerializer(serializers.HyperlinkedModelSerializer):
     user_glucose_goal = serializers.Field(source='user_glucose_goal.id')
     class Meta:
         model = UserGlucoseReading
-        fields = ('id','user_glucose_goal','fasting','random' ,'reading_date')
+        fields = ('id','user_glucose_goal','fasting','random' ,'reading_date','comment')
 
 class UserGlucoseGoalSerializer(serializers.HyperlinkedModelSerializer):
     readings = UserGlucoseReadingSerializer(required=False)

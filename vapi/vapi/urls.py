@@ -1,6 +1,7 @@
 from django.conf.urls import patterns, include, url
 from rest_framework import routers
 from api import views
+#from api import ote
 
 router = routers.DefaultRouter(trailing_slash=True)
 router.register(r'healthfiles', views.HealthfileViewSet)
@@ -57,6 +58,8 @@ urlpatterns = patterns('',
     url(r'^users/(?P<pk>[0-9]+)/profile-picture/$', views.UserView.as_view({'put':'update_profile_pic'}),name='profile-detail'),
     url(r'^users/(?P<pk>[0-9]+)/bmi-profile/$', views.UserView.as_view({'get':'retrieve_bmi_profile','put':'update_bmi_profile'}),name='userbmiprofile-detail'),
     url(r'^users/(?P<pk>[0-9]+)/change-password/$', views.UserView.as_view({'post':'change_password'}),name='password-detail'),
+
+    url(r'^food-items/$', views.FoodItemViewSet.as_view({'get':'list'}),name='fooditem-detail'),
     url(r'^food-items/(?P<pk>[0-9]+)/$', views.FoodItemViewSet.as_view({'get':'retrieve'}),name='fooditem-detail'),
     url(r'^food-items/search/(?P<search_string>[0-9A-Za-z]+)/$', views.FoodItemViewSet.as_view({'get':'search'}),name='fooditem-list'),
     #Uncomment the admin/doc line below to enable admin documentation:

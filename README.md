@@ -69,34 +69,17 @@ virtualenv VIRTUALENV.DIR.NAME
 
 source ~/VIRTUALENV.DIR.NAME/bin/activate
 
-pip install yolk
+cd GIT.ROOT/vapi
 
-pip install Django
+pip install -r requirements.txt
 
-pip install MySQL-python 
-
-pip install djangorestframework 
-
-pip install django-filter 
-
-If MySQL-python installation fails , you will need mysql dev and mysql-python packages (installed via apt/yum etc )
-
+If  MySQL-python installation fails , you will need mysql dev and mysql-python packages (installed via apt/yum etc )
 
 eg. on ubuntu , packages libmysqlclient-dev and python-mysqldb are required. Find appropiate packages for your distro.
-
-pip install django-storages boto 
-
-pip install pillow
-
 
 *eg.: Centos :- *
 
 yum install mysql-devel python-devel
-
-pip install yolk Django MySQL-python djangorestframework django-filter django-storages boto pillow
-
-
-cd GIT.ROOT/vapi
 
 python manage.py syncdb
 
