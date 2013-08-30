@@ -27,7 +27,8 @@ from rest_framework.parsers import MultiPartParser
 import mimetypes
 #from django.core import exceptions
 from django.contrib.auth.hashers import *
-
+from rest_framework.pagination import PaginationSerializer
+from django.core.paginator import Paginator
 
     
     
@@ -592,8 +593,14 @@ class FoodItemViewSet(viewsets.ModelViewSet):
         if search_string is not None:
             queryset = self.model.objects.filter(name__icontains=search_string)
             serializer = self.get_serializer(queryset, many=True)
-            resp = {'count':len(serializer.data) , 'results':serializer.data, 'previous':None, 'next':None}
-            return Response(resp, status=status.HTTP_200_OK)
+            paginator = Paginator(serializer.data, 10)
+            page = request.QUERY_PARAMS.get('page')
+            try:
+                fooditems = paginator.page(page)
+            except PageNotAnInteger:
+                fooditems = paginator.page(1)
+            serializer = PaginationSerializer(instance=fooditems,context={'request': request})
+            return Response(serializer.data)
 
 class DietTrackerViewSet(ViamModelViewSet):
     model = DietTracker
