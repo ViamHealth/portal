@@ -178,15 +178,16 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.SessionAuthentication',
         ),
     'PAGINATE_BY': 5,
-    'DEFAULT_FILTER_BACKENDS': ('rest_framework.filters.DjangoFilterBackend',)
+    'DEFAULT_FILTER_BACKENDS': ('rest_framework.filters.DjangoFilterBackend',),
+    'PAGINATE_BY_PARAM': 'page_size' 
 }
 
 DEFAULT_FILE_STORAGE = 'api.s3utils.MediaS3BotoStorage' 
 STATICFILES_STORAGE = 'api.s3utils.StaticS3BotoStorage'
 
-AWS_ACCESS_KEY_ID = 'AKIAI2VBRE4FPIPF6AYA'
-AWS_SECRET_ACCESS_KEY = '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'
-AWS_STORAGE_BUCKET_NAME = 'viamhealth-docsbucket'
+AWS_ACCESS_KEY_ID = ''
+AWS_SECRET_ACCESS_KEY = ''
+AWS_STORAGE_BUCKET_NAME = ''
 
 S3_URL = 'http://%s.s3.amazonaws.com' % AWS_STORAGE_BUCKET_NAME
 STATIC_DIRECTORY = '/static/'
