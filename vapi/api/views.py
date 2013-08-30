@@ -593,7 +593,8 @@ class FoodItemViewSet(viewsets.ModelViewSet):
         if search_string is not None:
             queryset = self.model.objects.filter(name__icontains=search_string)
             serializer = self.get_serializer(queryset, many=True)
-            paginator = Paginator(serializer.data, 10)
+            page_size = request.QUERY_PARAMS.get('page_size',10)
+            paginator = Paginator(serializer.data, page_size)
             page = request.QUERY_PARAMS.get('page')
             try:
                 fooditems = paginator.page(page)
