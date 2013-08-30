@@ -13,7 +13,8 @@ from django.contrib.auth.models import User, Group
 from rest_framework.authtoken.models import Token
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-import hashlib, os, mimetypes, pprint
+import hashlib, os, mimetypes, pprint, datetime
+from dateutil.relativedelta import relativedelta 
 
 s3_image_root = 'http://viamhealth-docsbucket.s3.amazonaws.com/';
 
@@ -180,7 +181,7 @@ class UserWeightGoal(models.Model):
     user = models.ForeignKey('auth.User', related_name="+")
     weight = models.IntegerField()
     weight_measure = models.CharField(max_length=12L, choices=MEASURE_CHOICES, default='METRIC')
-    target_date = models.DateField(blank=True)
+    target_date = models.DateField(blank=True,null=True)
     interval_num = models.IntegerField(blank=True,default=0)
     interval_unit = models.CharField(max_length=6L, choices=INTERVAL_UNIT_CHOICES,blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -193,6 +194,20 @@ class UserWeightGoal(models.Model):
         verbose_name = 'Weight Goal'
     def __unicode__(self):
         return u'%s' % (self.id)
+
+    def save(self, *args, **kwargs):
+        if self.target_date is None:
+            if self.interval_num > 0 and self.interval_unit.len:
+                d1 = datetime.datetime.now()
+                if self.interval_unit == 'DAY':
+                    self.target_date = d1 + relativedelta(days=self.interval_num)
+                elif self.interval_unit == 'WEEK':
+                    self.target_date = d1 + relativedelta(weeks=self.interval_num)
+                elif self.interval_unit == 'MONTH':
+                    self.target_date = d1 + relativedelta(months=self.interval_num)
+                elif self.interval_unit == 'YEAR':
+                    self.target_date = d1 + relativedelta(years=self.interval_num)
+        super(UserWeightGoal, self).save(*args, **kwargs)
 
 class UserWeightReading(models.Model):
     user_weight_goal = models.ForeignKey('UserWeightGoal', related_name="readings")
@@ -213,7 +228,7 @@ class UserWeightReading(models.Model):
 
 class UserBloodPressureGoal(models.Model):
     user = models.ForeignKey('auth.User', related_name="+")
-    target_date = models.DateField(blank=True)
+    target_date = models.DateField(blank=True,null=True)
     systolic_pressure = models.IntegerField()
     diastolic_pressure = models.IntegerField()
     pulse_rate = models.IntegerField()
@@ -229,6 +244,20 @@ class UserBloodPressureGoal(models.Model):
         verbose_name = 'BP Goal'
     def __unicode__(self):
         return u'%s' % (self.id)
+
+    def save(self, *args, **kwargs):
+        if self.target_date is None:
+            if self.interval_num > 0 and self.interval_unit.len:
+                d1 = datetime.datetime.now()
+                if self.interval_unit == 'DAY':
+                    self.target_date = d1 + relativedelta(days=self.interval_num)
+                elif self.interval_unit == 'WEEK':
+                    self.target_date = d1 + relativedelta(weeks=self.interval_num)
+                elif self.interval_unit == 'MONTH':
+                    self.target_date = d1 + relativedelta(months=self.interval_num)
+                elif self.interval_unit == 'YEAR':
+                    self.target_date = d1 + relativedelta(years=self.interval_num)
+        super(UserBloodPressureGoal, self).save(*args, **kwargs)
 
 class UserBloodPressureReading(models.Model):
     user_blood_pressure_goal = models.ForeignKey('UserBloodPressureGoal', related_name="readings")
@@ -249,7 +278,7 @@ class UserBloodPressureReading(models.Model):
 
 class UserCholesterolGoal(models.Model):
     user = models.ForeignKey('auth.User', related_name="+")
-    target_date = models.DateField(blank=True)
+    target_date = models.DateField(blank=True,null=True)
     hdl = models.IntegerField()
     ldl = models.IntegerField()
     triglycerides = models.IntegerField()
@@ -266,6 +295,19 @@ class UserCholesterolGoal(models.Model):
         verbose_name = 'Cholesterol Goal'
     def __unicode__(self):
         return u'%s' % (self.id)
+    def save(self, *args, **kwargs):
+        if self.target_date is None:
+            if self.interval_num > 0 and self.interval_unit.len:
+                d1 = datetime.datetime.now()
+                if self.interval_unit == 'DAY':
+                    self.target_date = d1 + relativedelta(days=self.interval_num)
+                elif self.interval_unit == 'WEEK':
+                    self.target_date = d1 + relativedelta(weeks=self.interval_num)
+                elif self.interval_unit == 'MONTH':
+                    self.target_date = d1 + relativedelta(months=self.interval_num)
+                elif self.interval_unit == 'YEAR':
+                    self.target_date = d1 + relativedelta(years=self.interval_num)
+        super(UserCholesterolGoal, self).save(*args, **kwargs)
 
 class UserCholesterolReading(models.Model):
     user_cholesterol_goal = models.ForeignKey('UserCholesterolGoal', related_name="readings")
@@ -287,7 +329,7 @@ class UserCholesterolReading(models.Model):
 
 class UserGlucoseGoal(models.Model):
     user = models.ForeignKey('auth.User', related_name="+")
-    target_date = models.DateField(blank=True)
+    target_date = models.DateField(blank=True,null=True)
     random = models.IntegerField()
     fasting = models.IntegerField()
     interval_num = models.IntegerField(blank=True,default=0)
@@ -302,6 +344,19 @@ class UserGlucoseGoal(models.Model):
         verbose_name = 'Glucose Goal'
     def __unicode__(self):
         return u'%s' % (self.id)
+    def save(self, *args, **kwargs):
+        if self.target_date is None:
+            if self.interval_num > 0 and self.interval_unit.len:
+                d1 = datetime.datetime.now()
+                if self.interval_unit == 'DAY':
+                    self.target_date = d1 + relativedelta(days=self.interval_num)
+                elif self.interval_unit == 'WEEK':
+                    self.target_date = d1 + relativedelta(weeks=self.interval_num)
+                elif self.interval_unit == 'MONTH':
+                    self.target_date = d1 + relativedelta(months=self.interval_num)
+                elif self.interval_unit == 'YEAR':
+                    self.target_date = d1 + relativedelta(years=self.interval_num)
+        super(UserGlucoseGoal, self).save(*args, **kwargs)
 
 class UserGlucoseReading(models.Model):
     user_glucose_goal = models.ForeignKey('UserGlucoseGoal', related_name="readings")

@@ -3,7 +3,13 @@ from api.models import *
 from rest_framework import serializers
 from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
+import pprint
 
+
+def goals_date_validate(self, attrs):
+    if (not attrs['target_date'] or not attrs['target_date'].len) and ( not attrs['interval_unit'] or not attrs['interval_unit'].len or not attrs['interval_num'] or not attrs['interval_num'].len or attrs['interval_num'] == 0) :
+        raise serializers.ValidationError("Provide either target_date or both  interval_num & interval_unit ")
+    return attrs
 """
 from django.contrib.auth import authenticate
 
@@ -155,6 +161,9 @@ class UserWeightGoalSerializer(serializers.HyperlinkedModelSerializer):
         model = UserWeightGoal
         fields = ('id', 'user','readings','weight','weight_measure','healthy_range' ,'target_date','interval_num','interval_unit',)
 
+    def validate(self, attrs):
+        return goals_date_validate(self,attrs);
+
     def get_healthy_range(self, obj=None):
         u = UserBmiProfile.objects.get(user=obj.user)
         if u.height == '':
@@ -188,6 +197,9 @@ class UserBloodPressureGoalSerializer(serializers.HyperlinkedModelSerializer):
         model = UserBloodPressureGoal
         fields = ('id', 'user','readings','systolic_pressure','diastolic_pressure', 'pulse_rate' ,'healthy_range','target_date','interval_num','interval_unit',)
 
+    def validate(self, attrs):
+        return goals_date_validate(self,attrs);
+
     def get_healthy_range(self, obj=None):
         max_systolic_pressure  = 120;
         min_systolic_pressure  = 90;
@@ -216,6 +228,9 @@ class UserCholesterolGoalSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = UserCholesterolGoal
         fields = ('id', 'user','readings','hdl','ldl', 'triglycerides', 'total_cholesterol' ,'healthy_range','target_date','interval_num','interval_unit',)
+
+    def validate(self, attrs):
+        return goals_date_validate(self,attrs);
 
     def get_healthy_range(self, obj=None):
         max_total_cholesterol  = 200;
@@ -249,6 +264,9 @@ class UserGlucoseGoalSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = UserGlucoseGoal
         fields = ('id', 'user','readings','random','fasting','healthy_range','target_date','interval_num','interval_unit',)
+
+    def validate(self, attrs):
+        return goals_date_validate(self,attrs);
 
     def get_healthy_range(self, obj=None):
         max_random  = 140;
