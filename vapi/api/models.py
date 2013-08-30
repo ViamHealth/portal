@@ -285,6 +285,40 @@ class UserCholesterolReading(models.Model):
     def __unicode__(self):
         return u'reading %s of goal %s' % (self.id, self.user_cholesterol_goal)
 
+class UserGlucoseGoal(models.Model):
+    user = models.ForeignKey('auth.User', related_name="+")
+    target_date = models.DateField(blank=True)
+    random = models.IntegerField()
+    fasting = models.IntegerField()
+    interval_num = models.IntegerField(blank=True,default=0)
+    interval_unit = models.CharField(max_length=6L, choices=INTERVAL_UNIT_CHOICES,blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    updated_by = models.ForeignKey('auth.User', related_name="+", db_column='updated_by')
+    status = models.CharField(max_length=18L, choices=GLOBAL_STATUS_CHOICES, default='ACTIVE', db_index=True)
+    class Meta:
+        db_table = 'tbl_user_glucose_goals'
+        verbose_name_plural = 'Glucose Goals'
+        verbose_name = 'Glucose Goal'
+    def __unicode__(self):
+        return u'%s' % (self.id)
+
+class UserGlucoseReading(models.Model):
+    user_glucose_goal = models.ForeignKey('UserGlucoseGoal', related_name="readings")
+    random = models.IntegerField(default=0)
+    fasting = models.IntegerField(default=0)
+    reading_date = models.DateField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    updated_by = models.ForeignKey('auth.User', related_name="+", db_column='updated_by')
+    class Meta:
+        db_table = 'tbl_user_glucose_readings'
+        verbose_name_plural = 'Glucose Readings'
+        verbose_name = 'Glucose Reading'
+        ordering = ['reading_date']
+    def __unicode__(self):
+        return u'reading %s of goal %s' % (self.id, self.user_glucose_goal)
+
 class DietTracker(models.Model):
     MEAL_TYPE_CHOICES = (
         ('BREAKFAST','BREAKFAST'),

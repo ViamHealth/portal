@@ -6,6 +6,7 @@ Yii::app()->clientScript->registerScriptFile(Yii::app()->baseUrl.'/js/jquery.ui.
 	Yii::app()->clientScript->registerScriptFile(Yii::app()->baseUrl.'/js/weight-goals.js');
 	Yii::app()->clientScript->registerScriptFile(Yii::app()->baseUrl.'/js/blood-pressure-goals.js');
 	Yii::app()->clientScript->registerScriptFile(Yii::app()->baseUrl.'/js/cholesterol-goals.js');
+	Yii::app()->clientScript->registerScriptFile(Yii::app()->baseUrl.'/js/glucose-goals.js');
 ?>
 
 <?php
@@ -76,6 +77,28 @@ $this->breadcrumbs=array(
 </div>
 
 
+<div class="row-fuild" >
+	<!-- glucose -->
+	<div  class="span12" style="margin-top:40px;">
+		<a href="#" id="glucose_goal_reading_open" goal_id="" style="display:none;" class="pull-right">Add Reading</a>
+		<a href="#" id="glucose_goal_delete" goal_id="" style="display:none;" class="pull-right">Delete Goal !</a>
+		<div id="glucose-chart" style="height: 400px; margin: 0 auto">
+		</div>
+		<form id="glucose-goal-add" class="form-inline" style="display:none;">
+			Create a glucose goal
+			<br/>
+      		<input id="glucose_goal_random" type="text" name="glucose_goal_random" class="input input-small" required placeholder="Target random"/>
+      		<input id="glucose_goal_fasting" type="text" name="glucose_goal_fasting" class="input input-small" required placeholder="Target fasting"/>
+      		<br/>
+      		<input id="glucose_goal_target_date" type="date" name="glucose_goal_target_date" class="input input-medium" required/>
+      		
+      		<button class="btn btn-primary" id="save-glucose-goal">Save</button>
+		</form>
+	</div>
+
+</div>
+
+
 
 
 <!-- Modals -->
@@ -125,6 +148,22 @@ $this->breadcrumbs=array(
       		<br/>
       		<input id="cholesterol_goal_reading_reading_date" type="date" name="cholesterol_goal_reading_reading_date" class="input input-medium" required/>
       		<button class="btn btn-primary" id="save-cholesterol-reading">Save</button>
+		</form>
+  </div>
+</div>
+
+<div id="glucose-goal-reading-model" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="Add reading for goal" aria-hidden="true">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    Add a new glucose reading
+  </div>
+  <div class="modal-body" itemid="">
+    <form id="glucose-goal-reading-add" class="form-inline" goal_id="">
+      		<input id="glucose_goal_reading_random" type="text" name="glucose_goal_reading_random" class="input input-small"  placeholder="random"/>
+      		<input id="glucose_goal_reading_fasting" type="text" name="glucose_goal_reading_fasting" class="input input-small"  placeholder="fasting"/>
+      		<br/>
+      		<input id="glucose_goal_reading_reading_date" type="date" name="glucose_goal_reading_reading_date" class="input input-medium" required/>
+      		<button class="btn btn-primary" id="save-glucose-reading">Save</button>
 		</form>
   </div>
 </div>
@@ -197,6 +236,7 @@ stacks['blood_pressure']['plots'] = [
 	},
 	{	'field': 'diastolic_pressure',
 		'label':'Healthy diastolic pressure',
+		'color':'rgba(243, 14, 14, 0.1)',
 	},
 ];
 
@@ -254,9 +294,51 @@ stacks['cholesterol']['plots'] = [
 	},
 	{	'field': 'ldl',
 		'label':'Healthy LDL',
+		'color':'rgba(243, 14, 14, 0.1)',
 	},
 	{	'field': 'total_cholesterol',
 		'label':'Healthy total cholesterol',
+	},
+];
+
+stacks['glucose'] ={};
+stacks['glucose']['model'] = _DB.GlucoseGoal;
+stacks['glucose']['graph_title'] = 'glucose Goal';
+stacks['glucose']['add_reading_model'] = $("#glucose-goal-reading-model");
+stacks['glucose']['add_reading_form'] = $("#glucose-goal-reading-add");
+stacks['glucose']['add_reading_form_save'] = $("#save-glucose-reading");
+stacks['glucose']['click_to_add_reading'] = $("#glucose_goal_reading_open");
+stacks['glucose']['chart_container'] = $("#glucose-chart");
+stacks['glucose']['new_goal_form'] = $("#glucose-goal-add");
+stacks['glucose']['new_goal_form_save_button'] = $("#save-glucose-goal");
+stacks['glucose']['delete_goal_button'] = $("#glucose_goal_delete");
+stacks['glucose']['yaxis'] = [
+	{   'field':'random',
+		'label':'Random Glucose', 
+		'readings': true,
+	},
+	{   'field':'fasting',
+		'label':'Fasting Glucose', 
+		'readings': true,
+	},
+	{   'field':'random',
+		'label':'target Random Glucose', 
+		'readings': false,
+	},
+	{   'field':'fasting',
+		'label':'target fasting Glucose', 
+		'readings': false,
+	},
+	];
+
+stacks['glucose']['plots'] = [
+	{	'field': 'random',
+		'label':'Healthy random glucose',
+		'color':'rgba(68, 170, 213, 0.1)',
+	},
+	{	'field': 'fasting',
+		'label':'Healthy fasting',
+		'color':'rgba(243, 14, 14, 0.1)',
 	},
 ];
 
@@ -323,9 +405,11 @@ $(document).ready(function(){
 	attach_blood_pressure_events();
 	attach_weight_events();
 	attach_cholesterol_events();
+	attach_glucose_events();
 	populate_weight_graph();
 	populate_blood_pressure_graph();
 	populate_cholesterol_graph();
+	populate_glucose_graph();
 });
 
 
@@ -360,7 +444,8 @@ function populate_graph(goal_type,options){
 					ag['data'] = [];
 					if(_stack['yaxis'][i]['readings']){
 						for(var j =0;j<goal.readings.length;j++) {
-						  	ag['data'].push([ apiDateToGraphDate(goal.readings[j].reading_date), goal.readings[j][arf] ]);
+							if(goal.readings[j][arf])
+						  		ag['data'].push([ apiDateToGraphDate(goal.readings[j].reading_date), goal.readings[j][arf] ]);
 						}
 					}
 					else {
@@ -378,7 +463,10 @@ function populate_graph(goal_type,options){
 					var ap = {};
 					ap['from'] = goal.healthy_range[arf].max;
 					ap['to'] = goal.healthy_range[arf].min;
-					ap['color'] = 'rgba(68, 170, 213, 0.1)';
+					if(_stack['plots'][i]['color'])
+						ap['color'] = 	_stack['plots'][i]['color'];
+					else
+						ap['color'] = 'rgba(68, 170, 213, 0.1)';
 					ap['label'] = {
 						'text' : _stack['plots'][i]['label'],
 						'style': {'color': '#606060'}

@@ -236,6 +236,35 @@ class UserCholesterolGoalSerializer(serializers.HyperlinkedModelSerializer):
         a['ldl']['min'] = min_ldl;
         return a;
 
+class UserGlucoseReadingSerializer(serializers.HyperlinkedModelSerializer):
+    user_glucose_goal = serializers.Field(source='user_glucose_goal.id')
+    class Meta:
+        model = UserGlucoseReading
+        fields = ('id','user_glucose_goal','fasting','random' ,'reading_date')
+
+class UserGlucoseGoalSerializer(serializers.HyperlinkedModelSerializer):
+    readings = UserGlucoseReadingSerializer(required=False)
+    user = serializers.Field(source='user.id')
+    healthy_range = serializers.SerializerMethodField('get_healthy_range')
+    class Meta:
+        model = UserGlucoseGoal
+        fields = ('id', 'user','readings','random','fasting','healthy_range','target_date','interval_num','interval_unit',)
+
+    def get_healthy_range(self, obj=None):
+        max_random  = 140;
+        min_random  = 100;
+        max_fasting  = 100;
+        min_fasting  = 70;
+        
+        a = {}
+        a['random'] ={}
+        a['random']['max'] = max_random;
+        a['random']['min'] = min_random;
+        a['fasting'] ={}
+        a['fasting']['max'] = max_fasting;
+        a['fasting']['min'] = min_fasting;
+        return a;
+
 class FoodItemSerializer(serializers.HyperlinkedModelSerializer):
     display_image_url = serializers.Field(source='display_image_url')
     class Meta:

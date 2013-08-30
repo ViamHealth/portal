@@ -121,6 +121,39 @@ _DB.CholesterolGoal = {
 	}
 }
 
+_DB.GlucoseGoal = {
+	resource : 'glucose-goals',
+	retrieve : function(id,callback){
+		var url = api_url(this.resource,id);
+		api_get(url,callback);
+	},
+	list : function(callback){
+		var url = api_url(this.resource);
+		api_get(url,callback);
+	},
+	update : function(id,goal,callback){
+		var url = api_url(this.resource,id);
+		api_put(url,goal,callback);
+	},
+	create : function(goal,callback){
+		var url = api_url(this.resource);
+		api_post(url,goal,callback);
+	},
+	destroy: function(id,callback){
+		var url = api_url(this.resource,id);
+		api_delete(url,callback);
+	},
+	set_reading : function(id,reading,callback){
+		var url = api_url(this.resource,id,'set-reading');
+		api_post(url,reading,callback);
+	},
+	destroy_reading: function(id, reading_date, callback){
+		var url = api_url(this.resource,id,'destroy-reading');
+		url = url + "?reading_date="+reading_date
+		api_delete(url,callback);
+	}
+}
+
 _DB.BloodPressureGoal = {
 	resource : 'blood-pressure-goals',
 	retrieve : function(id,callback){

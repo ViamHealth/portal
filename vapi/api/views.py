@@ -499,12 +499,69 @@ class UserCholesterolGoalViewSet(ViamModelViewSet):
             return Response(status=status.HTTP_204_NO_CONTENT)
         except UserCholesterolReading.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
-"""
-class UserCholesterolReadingView(viewsets.ModelViewSet):
-    filter_fields = ('user_cholesterol_goal',)
-    model = UserCholesterolReading
-    serializer_class = UserCholesterolReadingSerializer
-"""
+
+
+
+class UserGlucoseGoalViewSet(ViamModelViewSet):
+    """
+    Manage all healthfiles for a user ( authenticated or family member)
+    * Requires token authentication.
+    * CRUD of fields created_at & updated_at are handled by API only.
+    * User field is not to be passed to the API via POST params. It will be ignored if passed.
+    * For family user, pass user in URL . ie append ?user=$user_id
+    * For current logged in user, API automatically picks up  the user
+    * Allowed methods - GET , POST , PUT , DELETE
+    * custom actions :- 
+    * POST set_reading - set a new reading / update old reading. Updation is based on reading_date params
+    """
+
+    #filter_fields = ('user')
+    model = UserGlucoseGoal
+    serializer_class = UserGlucoseGoalSerializer
+
+    @action(methods=['POST'])
+    def set_reading(self, request, pk):
+        wgoal = UserGlucoseGoal.objects.get(id=pk)
+        try:
+            reading = UserGlucoseReading.objects.get(reading_date=request.DATA['reading_date'],user_glucose_goal=wgoal)
+            reading.random = int(request.DATA['random'])
+            reading.fasting = request.DATA['fasting']
+            reading.updated_by = request.user
+            serializer = UserGlucoseReadingSerializer(reading)
+            return Response(serializer.data)    
+        except UserGlucoseReading.DoesNotExist:
+            
+            if request.DATA['random'] is None or request.DATA['random'] == '':
+                random = 0
+            else:
+                random = request.DATA['random'];
+
+            if request.DATA['fasting'] is None or request.DATA['fasting'] == '':
+                fasting = 0
+            else:
+                fasting=request.DATA['fasting'];
+
+            reading_date=request.DATA['reading_date']
+            pprint.pprint(random)
+            pprint.pprint(fasting)
+            reading = UserGlucoseReading(user_glucose_goal=wgoal,fasting=fasting,random=random,reading_date=reading_date,updated_by=request.user)
+            reading.save()
+            serializer = UserGlucoseReadingSerializer(reading)
+            return Response(serializer.data)    
+        except:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+    @action(methods=['DELETE'])
+    def destroy_reading(self, request, pk):
+        if request.GET.get('reading_date',None) is None:
+                raise exceptions.ParseError(detail='reading_date GET param is required')
+        m = self.get_object(pk)
+        try:
+            reading = UserGlucoseReading.objects.get(reading_date=request.GET.get('reading_date'),user_glucose_goal=m)
+            reading.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        except UserGlucoseReading.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
 
 class FoodItemViewSet(viewsets.ModelViewSet):
     model = FoodItem
