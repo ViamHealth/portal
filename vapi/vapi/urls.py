@@ -11,6 +11,7 @@ router.register(r'blood-pressure-goals', views.UserBloodPressureGoalViewSet)
 router.register(r'cholesterol-goals', views.UserCholesterolGoalViewSet)
 router.register(r'glucose-goals', views.UserGlucoseGoalViewSet)
 router.register(r'diet-tracker', views.DietTrackerViewSet)
+#router.register(r'food-items', views.FoodItemViewSet)
 
 #router.register(r'goals', views.GoalViewSet)
 
@@ -61,7 +62,7 @@ urlpatterns = patterns('',
 
     url(r'^food-items/$', views.FoodItemViewSet.as_view({'get':'list'}),name='fooditem-detail'),
     url(r'^food-items/(?P<pk>[0-9]+)/$', views.FoodItemViewSet.as_view({'get':'retrieve'}),name='fooditem-detail'),
-    url(r'^food-items/search/(?P<search_string>[0-9A-Za-z]+)/$', views.FoodItemViewSet.as_view({'get':'search'}),name='fooditem-list'),
+    #url(r'^food-items/search/(?P<search_string>[0-9A-Za-z]+)/$', views.FoodItemViewSet.as_view({'get':'search'}),name='fooditem-list'),
     #Uncomment the admin/doc line below to enable admin documentation:
     #url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
     #url(r'^upload/', ote.upload_food_items),
