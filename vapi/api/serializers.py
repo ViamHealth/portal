@@ -7,7 +7,7 @@ import pprint
 
 
 def goals_date_validate(self, attrs):
-    if (not attrs['target_date'] or not attrs['target_date'].len) and ( not attrs['interval_unit'] or not attrs['interval_unit'].len or not attrs['interval_num'] or not attrs['interval_num'].len or attrs['interval_num'] == 0) :
+    if (not attrs['target_date'] ) and ( not attrs['interval_unit'] or not attrs['interval_unit'].len or not attrs['interval_num'] or not attrs['interval_num'].len or attrs['interval_num'] == 0) :
         raise serializers.ValidationError("Provide either target_date or both  interval_num & interval_unit ")
     return attrs
 """
