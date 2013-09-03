@@ -29,9 +29,12 @@ import mimetypes
 from django.contrib.auth.hashers import *
 from rest_framework.pagination import PaginationSerializer
 from django.core.paginator import Paginator, PageNotAnInteger
+import boto
+from boto.s3.key import Key
+from django.conf import settings
+    
+from django.http import HttpResponse
 
-    
-    
 
 #Temporary create code for all users once.
 for user in User.objects.all():
@@ -41,6 +44,42 @@ for user in User.objects.all():
     Token.objects.filter(created__lt=enddate).delete()
     #TODO: custom algo for creating token string
     Token.objects.get_or_create(user=user)
+
+
+def handles3downloads(request, healthfile_id):
+    LOCAL_PATH = '/tmp/s3/'
+
+    try:
+        m = Healthfile.objects.get(id=healthfile_id)
+
+        has_permission = False
+        user_id = int(request.user.id)
+
+        if request.user == m.user:
+            has_permission = True
+        else:
+            qqueryset = UserGroupSet.objects.filter(user_id__in=[user_id,m.user_id],group_id__in=[user_id,m.user_id],status='ACTIVE')
+            for p in qqueryset:
+                if(p.user_id != p.group_id):
+                    has_permission = True
+            
+        if has_permission:
+                conn = boto.connect_s3(settings.AWS_ACCESS_KEY_ID, settings.AWS_SECRET_ACCESS_KEY)
+                
+                key = conn.get_bucket(settings.AWS_STORAGE_BUCKET_NAME).get_key('media/'+str(m.file))
+                # delete file first and after wards
+                if os.path.exists(LOCAL_PATH+str(m.id)+'-'+m.name):
+                    os.remove(LOCAL_PATH+str(m.id)+'-'+m.name)
+                key.get_contents_to_filename(LOCAL_PATH+str(m.id)+'-'+m.name)
+                
+                response = HttpResponse(file(LOCAL_PATH+str(m.id)+'-'+m.name), content_type = m.mime_type)
+                response['Content-Length'] = os.path.getsize(LOCAL_PATH+str(m.id)+'-'+m.name)
+                return response
+
+        else:
+            raise Http404
+    except Healthfile.DoesNotExist:
+        raise Http404
 
 
 

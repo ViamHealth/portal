@@ -14,7 +14,7 @@ from rest_framework.authtoken.models import Token
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 import hashlib, os, mimetypes, pprint, datetime
-from dateutil.relativedelta import relativedelta 
+from dateutil.relativedelta import relativedelta
 
 s3_image_root = 'http://viamhealth-docsbucket.s3.amazonaws.com/';
 
@@ -135,10 +135,18 @@ class Healthfile(models.Model):
         return u'%s' % self.id
 
     def download_url(self):
+        return 'http://api.viamhealth.com/healthfiles/download/'+str(self.id);
+        """
+        from django.http import HttpRequest
+        from django.core.urlresolvers import reverse 
+
+        return HttpRequest.build_absolute_uri(reverse('download-healthfiles'),args=(self.id));
+        
         if self.file:
-            return s3_image_root + str(self.file)
+            return s3_image_root + 'media/' + str(self.file)
         else:
             return ''
+        """
 
     def save(self, *args, **kwargs):
         if self.uploading_file:
