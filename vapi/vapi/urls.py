@@ -5,7 +5,8 @@ from api import views
 
 router = routers.DefaultRouter(trailing_slash=True)
 router.register(r'healthfiles', views.HealthfileViewSet)
-#router.register(r'healthfiletags', views.HealthfileTagViewSet)
+router.register(r'medications', views.MedicationViewSet)
+router.register(r'medicaltests', views.MedicaltestViewSet)
 router.register(r'weight-goals', views.UserWeightGoalViewSet)
 router.register(r'blood-pressure-goals', views.UserBloodPressureGoalViewSet)
 router.register(r'cholesterol-goals', views.UserCholesterolGoalViewSet)

@@ -61,7 +61,7 @@ def api_root(request, format=None):
         'blood-pressure-readings': reverse('userbloodpressurereading-list', request=request, format=format),
         'cholesterol-goals': reverse('usercholesterolgoal-list', request=request, format=format),
         'cholesterol-readings': reverse('usercholesterolreading-list', request=request, format=format),
-        #'food-detail': reverse('food-details-detail',request=request, format=format),
+
         
     })
 
@@ -324,13 +324,16 @@ class HealthfileViewSet(ViamModelViewSet):
             
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-"""
-class HealthfileTagViewSet(viewsets.ModelViewSet):
-    filter_fields = ('healthfile',)
-    model = HealthfileTag
-    serializer_class = HealthfileTagSerializer
+
+class MedicationViewSet(ViamModelViewSet):
+    model = Medication
+    serializer_class = MedicationSerializer
     
-"""
+
+class MedicaltestViewSet(ViamModelViewSet):
+    model = Medicaltest
+    serializer_class = MedicaltestSerializer
+
 class UserWeightGoalViewSet(ViamModelViewSet):
     """
     Manage all healthfiles for a user ( authenticated or family member)

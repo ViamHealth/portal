@@ -5,6 +5,37 @@ from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
 import pprint
 
+def StringIsNotNull(strc, value_considered_null=None):
+    if value_considered_null is None :
+        return strc is not None and len(strc) > 0
+    else:    
+        return strc is not None and len(strc) > 0 and strc != value_considered_null
+
+def FloatIsNull(strc, value_considered_null=None):
+    if value_considered_null is None :
+        return strc is None or strc == 0.0
+    else:    
+        return strc is None or strc == 0.0 or strc == value_considered_null
+
+def StringIsNull(strc, value_considered_null=None):
+    if value_considered_null is None :
+        return strc is None or len(strc) == 0
+    else:    
+        return strc is None or len(strc) == 0 or strc == value_considered_null
+
+
+def StringKeyIsNull(arr, key, value_considered_null=None):
+    if value_considered_null is None :
+        return arr[key] is None or len(arr[key]) == 0
+    else:    
+        return arr[key] is None or len(arr[key]) == 0 or arr[key] == value_considered_null
+
+def StringKeyIsNotNull(arr, key, value_considered_null=None):
+    if value_considered_null is None :
+        return arr[key] is not None and len(arr[key]) == 0
+    else:    
+        return arr[key] is not None and len(arr[key]) == 0 and arr[key] == value_considered_null
+
 
 def goals_date_validate(self, attrs):
     if (not attrs['target_date'] ) and ( not attrs['interval_unit'] or not attrs['interval_unit'].len or not attrs['interval_num'] or not attrs['interval_num'].len or attrs['interval_num'] == 0) :
@@ -81,7 +112,7 @@ class UserCreateSerializer(serializers.HyperlinkedModelSerializer):
 class UserSignupSerializer(serializers.HyperlinkedModelSerializer):
     
     def validate_username(self, attrs, source):
-        value = attrs[source]
+        value = attrs[source]   
         try:
             validate_email( value )
             return attrs
@@ -95,7 +126,37 @@ class ReminderSerializer(serializers.HyperlinkedModelSerializer):
     user = serializers.Field(source='user.id')
     class Meta:
         model = Reminder
-        fields = ('id', 'user','details','start_timestamp' ,'repeat_mode','repeat_day','repeat_hour','repeat_min','repeat_weekday','repeat_day_interval')
+        fields = ('id', 'user','start_timestamp' ,'repeat_mode','repeat_day','repeat_hour','repeat_min','repeat_weekday','repeat_day_interval')
+
+class MedicationSerializer(serializers.HyperlinkedModelSerializer):
+    user = serializers.Field(source='user.id')
+    class Meta:
+        model = Medication
+        fields = ('id', 'name','details','morning_count','afternoon_count','evening_count','night_count','user','start_timestamp' ,'repeat_mode','repeat_day','repeat_hour','repeat_min','repeat_weekday','repeat_day_interval')
+
+    def validate(self, attrs):
+        if FloatIsNull(attrs['morning_count'],"0.0") and FloatIsNull(attrs['afternoon_count'],"0.0") and FloatIsNull(attrs['evening_count'],"0.0") and FloatIsNull(attrs['night_count'],"0.0") :
+            raise serializers.ValidationError("Provide atleast one of these 4 - morning_count, afternoon_count, evening_count, night_count")
+        #elif StringIsNull(attrs['repeat_mode'],'NONE'):
+        #    if StringIsNotNull(attrs['repeat_day']) or StringIsNotNull(attrs['repeat_hour']) or StringIsNotNull(attrs['repeat_min'])  or StringIsNotNull(attrs['repeat_weekday']) or  StringIsNotNull(attrs['repeat_day_interval']):
+        #        raise serializers.ValidationError("Repeat mode is set as None. Can not accept any values for these params - repeat_day, repeat_hour , repeat_min, repeat_weekday, repeat_day_interval ")
+        return attrs
+
+class MedicaltestSerializer(serializers.HyperlinkedModelSerializer):
+    user = serializers.Field(source='user.id')
+    class Meta:
+        model = Medicaltest
+        fields = ('id', 'name','details', 'user','start_timestamp' ,'repeat_mode','repeat_day','repeat_hour','repeat_min','repeat_weekday','repeat_day_interval')
+
+    def validate(self, attrs):
+        #if StringIsNull(attrs['repeat_mode'],'NONE'):
+        #    if StringIsNotNull(attrs['repeat_day']) or StringIsNotNull(attrs['repeat_hour']) or StringIsNotNull(attrs['repeat_min'])  or StringIsNotNull(attrs['repeat_weekday']) or  StringIsNotNull(attrs['repeat_day_interval']):
+        #        raise serializers.ValidationError("Repeat mode is set as None. Can not accept any values for these params - repeat_day, repeat_hour , repeat_min, repeat_weekday, repeat_day_interval ")
+        #else:
+        #    if StringIsNull(attrs['repeat_day']) and StringIsNull(attrs['repeat_hour']) and StringIsNull(attrs['repeat_min'])  and StringIsNull(attrs['repeat_weekday']) and  StringIsNull(attrs['repeat_day_interval']):
+        #        raise serializers.ValidationError("Repeat mode is set. Can not accept empty values for these params - repeat_day, repeat_hour , repeat_min, repeat_weekday, repeat_day_interval ")
+
+        return attrs
 
 class UserBmiProfileSerializer(serializers.HyperlinkedModelSerializer):
     user = serializers.Field(source='user.id')
