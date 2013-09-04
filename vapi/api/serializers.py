@@ -38,8 +38,8 @@ def StringKeyIsNotNull(arr, key, value_considered_null=None):
 
 
 def goals_date_validate(self, attrs):
-    if (not attrs['target_date'] ) and ( not attrs['interval_unit'] or not attrs['interval_unit'].len or not attrs['interval_num'] or not attrs['interval_num'].len or attrs['interval_num'] == 0) :
-        raise serializers.ValidationError("Provide either target_date or both  interval_num & interval_unit ")
+    #if (not attrs['target_date'] ) and ( not attrs['interval_unit'] or not attrs['interval_unit'].len or not attrs['interval_num'] or not attrs['interval_num'].len or attrs['interval_num'] == 0) :
+    #    raise serializers.ValidationError("Provide either target_date or both  interval_num & interval_unit ")
     return attrs
 """
 from django.contrib.auth import authenticate
@@ -215,15 +215,15 @@ class UserWeightReadingSerializer(serializers.HyperlinkedModelSerializer):
         fields = ('id','user_weight_goal','weight','weight_measure' ,'reading_date','comment')
 
 class UserWeightGoalSerializer(serializers.HyperlinkedModelSerializer):
-    readings = UserWeightReadingSerializer(required=False)
+    readings = UserWeightReadingSerializer(required=False,read_only=True)
     user = serializers.Field(source='user.id')
     healthy_range = serializers.SerializerMethodField('get_healthy_range')
     class Meta:
         model = UserWeightGoal
         fields = ('id', 'user','readings','weight','weight_measure','healthy_range' ,'target_date','interval_num','interval_unit',)
 
-    def validate(self, attrs):
-        return goals_date_validate(self,attrs);
+    #def validate(self, attrs):
+    #    return goals_date_validate(self,attrs);
 
     def get_healthy_range(self, obj=None):
         u = UserBmiProfile.objects.get(user=obj.user)
@@ -251,7 +251,7 @@ class UserBloodPressureReadingSerializer(serializers.HyperlinkedModelSerializer)
         fields = ('id','user_blood_pressure_goal','systolic_pressure','diastolic_pressure', 'pulse_rate' ,'reading_date','comment')
 
 class UserBloodPressureGoalSerializer(serializers.HyperlinkedModelSerializer):
-    readings = UserBloodPressureReadingSerializer(required=False)
+    readings = UserBloodPressureReadingSerializer(required=False,read_only=True)
     user = serializers.Field(source='user.id')
     healthy_range = serializers.SerializerMethodField('get_healthy_range')
     class Meta:
@@ -283,7 +283,7 @@ class UserCholesterolReadingSerializer(serializers.HyperlinkedModelSerializer):
         fields = ('id','user_cholesterol_goal','hdl','ldl', 'triglycerides', 'total_cholesterol' ,'reading_date','comment')
 
 class UserCholesterolGoalSerializer(serializers.HyperlinkedModelSerializer):
-    readings = UserCholesterolReadingSerializer(required=False)
+    readings = UserCholesterolReadingSerializer(required=False,read_only=True)
     user = serializers.Field(source='user.id')
     healthy_range = serializers.SerializerMethodField('get_healthy_range')
     class Meta:
@@ -319,7 +319,7 @@ class UserGlucoseReadingSerializer(serializers.HyperlinkedModelSerializer):
         fields = ('id','user_glucose_goal','fasting','random' ,'reading_date','comment')
 
 class UserGlucoseGoalSerializer(serializers.HyperlinkedModelSerializer):
-    readings = UserGlucoseReadingSerializer(required=False)
+    readings = UserGlucoseReadingSerializer(required=False,read_only=True)
     user = serializers.Field(source='user.id')
     healthy_range = serializers.SerializerMethodField('get_healthy_range')
     class Meta:

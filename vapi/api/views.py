@@ -64,18 +64,20 @@ def handles3downloads(request, healthfile_id):
                     has_permission = True
             
         if has_permission:
-                conn = boto.connect_s3(settings.AWS_ACCESS_KEY_ID, settings.AWS_SECRET_ACCESS_KEY)
+		try:
+	            conn = boto.connect_s3(settings.AWS_ACCESS_KEY_ID, settings.AWS_SECRET_ACCESS_KEY)
                 
-                key = conn.get_bucket(settings.AWS_STORAGE_BUCKET_NAME).get_key('media/'+str(m.file))
-                # delete file first and after wards
-                if os.path.exists(LOCAL_PATH+str(m.id)+'-'+m.name):
-                    os.remove(LOCAL_PATH+str(m.id)+'-'+m.name)
-                key.get_contents_to_filename(LOCAL_PATH+str(m.id)+'-'+m.name)
+                    key = conn.get_bucket(settings.AWS_STORAGE_BUCKET_NAME).get_key('media/'+str(m.file))
+                    # delete file first and after wards
+                    if os.path.exists(LOCAL_PATH+str(m.id)+'-'+m.name):
+                        os.remove(LOCAL_PATH+str(m.id)+'-'+m.name)
+                    key.get_contents_to_filename(LOCAL_PATH+str(m.id)+'-'+m.name)
                 
-                response = HttpResponse(file(LOCAL_PATH+str(m.id)+'-'+m.name), content_type = m.mime_type)
-                response['Content-Length'] = os.path.getsize(LOCAL_PATH+str(m.id)+'-'+m.name)
-                return response
-
+                    response = HttpResponse(file(LOCAL_PATH+str(m.id)+'-'+m.name), content_type = m.mime_type)
+                    response['Content-Length'] = os.path.getsize(LOCAL_PATH+str(m.id)+'-'+m.name)
+                    return response
+                except:
+                    raise Http404
         else:
             raise Http404
     except Healthfile.DoesNotExist:

@@ -246,10 +246,10 @@ class UserWeightGoal(models.Model):
         verbose_name = 'Weight Goal'
     def __unicode__(self):
         return u'%s' % (self.id)
-
+    
     def save(self, *args, **kwargs):
         if self.target_date is None:
-            if self.interval_num > 0 and self.interval_unit.len:
+            if self.interval_num > 0 and self.interval_unit is not None:
                 d1 = datetime.datetime.now()
                 if self.interval_unit == 'DAY':
                     self.target_date = d1 + relativedelta(days=self.interval_num)
@@ -260,7 +260,7 @@ class UserWeightGoal(models.Model):
                 elif self.interval_unit == 'YEAR':
                     self.target_date = d1 + relativedelta(years=self.interval_num)
         super(UserWeightGoal, self).save(*args, **kwargs)
-
+    
 class UserWeightReading(models.Model):
     user_weight_goal = models.ForeignKey('UserWeightGoal', related_name="readings")
     weight = models.IntegerField()
@@ -300,7 +300,7 @@ class UserBloodPressureGoal(models.Model):
 
     def save(self, *args, **kwargs):
         if self.target_date is None:
-            if self.interval_num > 0 and self.interval_unit.len:
+            if self.interval_num > 0 and self.interval_unit is not None:
                 d1 = datetime.datetime.now()
                 if self.interval_unit == 'DAY':
                     self.target_date = d1 + relativedelta(days=self.interval_num)
@@ -351,7 +351,7 @@ class UserCholesterolGoal(models.Model):
         return u'%s' % (self.id)
     def save(self, *args, **kwargs):
         if self.target_date is None:
-            if self.interval_num > 0 and self.interval_unit.len:
+            if self.interval_num > 0 and self.interval_unit is not None:
                 d1 = datetime.datetime.now()
                 if self.interval_unit == 'DAY':
                     self.target_date = d1 + relativedelta(days=self.interval_num)
@@ -401,7 +401,7 @@ class UserGlucoseGoal(models.Model):
         return u'%s' % (self.id)
     def save(self, *args, **kwargs):
         if self.target_date is None:
-            if self.interval_num > 0 and self.interval_unit.len:
+            if self.interval_num > 0 and self.interval_unit is not None:
                 d1 = datetime.datetime.now()
                 if self.interval_unit == 'DAY':
                     self.target_date = d1 + relativedelta(days=self.interval_num)
