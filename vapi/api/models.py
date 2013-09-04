@@ -259,6 +259,8 @@ class UserWeightGoal(models.Model):
                     self.target_date = d1 + relativedelta(months=self.interval_num)
                 elif self.interval_unit == 'YEAR':
                     self.target_date = d1 + relativedelta(years=self.interval_num)
+                if self.target_date is not None:
+                    self.target_date = self.target_date.date()
         super(UserWeightGoal, self).save(*args, **kwargs)
     
 class UserWeightReading(models.Model):
@@ -310,6 +312,8 @@ class UserBloodPressureGoal(models.Model):
                     self.target_date = d1 + relativedelta(months=self.interval_num)
                 elif self.interval_unit == 'YEAR':
                     self.target_date = d1 + relativedelta(years=self.interval_num)
+                if self.target_date is not None:
+                    self.target_date = self.target_date.date()
         super(UserBloodPressureGoal, self).save(*args, **kwargs)
 
 class UserBloodPressureReading(models.Model):
@@ -361,6 +365,8 @@ class UserCholesterolGoal(models.Model):
                     self.target_date = d1 + relativedelta(months=self.interval_num)
                 elif self.interval_unit == 'YEAR':
                     self.target_date = d1 + relativedelta(years=self.interval_num)
+                if self.target_date is not None:
+                    self.target_date = self.target_date.date()
         super(UserCholesterolGoal, self).save(*args, **kwargs)
 
 class UserCholesterolReading(models.Model):
@@ -411,6 +417,8 @@ class UserGlucoseGoal(models.Model):
                     self.target_date = d1 + relativedelta(months=self.interval_num)
                 elif self.interval_unit == 'YEAR':
                     self.target_date = d1 + relativedelta(years=self.interval_num)
+                if self.target_date is not None:
+                    self.target_date = self.target_date.date()
         super(UserGlucoseGoal, self).save(*args, **kwargs)
 
 class UserGlucoseReading(models.Model):

@@ -85,7 +85,7 @@ if(!Yii::app()->user->isGuest)
 						array('label' => 'Cholesterol', 'url' => array('/goalscholesterol/index'), 'visible' => !Yii::app()->user->isGuest),
 					)
 				),
-				array('label' => 'Reminders', 'url' => array('/reminders/index'), 'visible' => !Yii::app()->user->isGuest),
+				array('label' => 'Health Watch', 'url' => array('/healthwatch/index'), 'visible' => !Yii::app()->user->isGuest),
 				array('label' => 'Files', 'url' => array('/healthfiles/index'), 'visible' => !Yii::app()->user->isGuest),
                 array('label' => 'Food Diary', 'url' => array('/fooddiary/index'), 'visible' => !Yii::app()->user->isGuest),
                 array('label' => 'Profile', 'url' => array('/user/index'), 'visible' => !Yii::app()->user->isGuest),

@@ -342,10 +342,7 @@ stacks['glucose']['plots'] = [
 	},
 ];
 
-function isFunction(functionToCheck) {
- var getType = {};
- return functionToCheck && getType.toString.call(functionToCheck) === '[object Function]';
-}
+
 
 function apiDateToGraphDate(apidate){
 	if(!apidate){

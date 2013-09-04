@@ -1,6 +1,11 @@
 var _DB = {};
 var api_backslash = true;
 
+function isFunction(functionToCheck) {
+ var getType = {};
+ return functionToCheck && getType.toString.call(functionToCheck) === '[object Function]';
+}
+
 function find_family_user_id(){
 	var str = document.URL;
 	var re = /\/u\/\d+/i;
@@ -70,6 +75,48 @@ api_delete = function(url, callback){
 	api_ajax(url,options,callback)	
 }
 
+get_url_amp_ques = function(current_url){
+	if(current_url)
+		if(current_url.slice(-1) == '/')
+			return '?';
+		else
+			return '&';
+	else
+		throw new Error('Url empty');
+}
+
+api_url_x = function(resource,options){
+	if(!resource)
+		throw new Error('resource not defined');
+	//pk,sub_resource, sub_resource_id
+
+	var options = options || {};
+	var pk = options['pk'] || null;
+	var sub_resource = options['sub_resource'] || null;
+	var sub_resource_id = options['sub_resource_id'] || null;
+	var current_page = options['current_page'] || null;
+	var page_size = options['page_size'] || null;
+
+	var url = VH.params.apiUrl+resource;
+	if(pk)
+		url = url+'/'+pk;
+	if(sub_resource) {
+		url = url+'/'+sub_resource;
+		if(sub_resource_id) 
+			url = url+'/'+sub_resource_id;
+	}
+
+	if(api_backslash) url = url+'/';
+	if(find_family_user_id())
+		url=url+get_url_amp_ques(url)+'user='+find_family_user_id();
+	if(current_page && current_page !=1 )
+		url = url+get_url_amp_ques(url)+'page='+current_page;
+	if(page_size)
+		url = url+get_url_amp_ques(url)+'page_size='+page_size;
+	
+	return url;
+}
+
 api_url = function(resource,pk,sub_resource, sub_resource_id){
 	if(!resource)
 		throw new Error('resource not defined');
@@ -86,6 +133,39 @@ api_url = function(resource,pk,sub_resource, sub_resource_id){
 	if(find_family_user_id())
 		url=url+'?user='+find_family_user_id()
 	return url;
+}
+
+_DB.Medicaltest = {
+	resource : 'medicaltests',
+	retrieve : function(id,callback){
+		var url = api_url(this.resource,id);
+		api_get(url,callback);
+	},
+	list : function(options,callback){
+		var url = api_url_x(this.resource,options);
+		api_get(url,callback);
+	},
+	update : function(id,goal,callback){
+		var url = api_url(this.resource,id);
+		api_put(url,goal,callback);
+	},
+	create : function(goal,callback){
+		var url = api_url(this.resource);
+		api_post(url,goal,callback);
+	},
+	destroy: function(id,callback){
+		var url = api_url(this.resource,id);
+		api_delete(url,callback);
+	},
+	set_reading : function(id,reading,callback){
+		var url = api_url(this.resource,id,'set-reading');
+		api_post(url,reading,callback);
+	},
+	destroy_reading: function(id, reading_date, callback){
+		var url = api_url(this.resource,id,'destroy-reading');
+		url = url + "?reading_date="+reading_date
+		api_delete(url,callback);
+	}
 }
 
 _DB.CholesterolGoal = {
