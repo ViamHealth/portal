@@ -301,6 +301,8 @@ class HealthfileViewSet(ViamModelViewSet):
 
     #filter_fields = ('user')
     model = Healthfile
+    filter_backends = (filters.SearchFilter,)
+    search_fields = ('name','description',)
 
     def pre_save(self, obj):
         file = self.request.FILES.get('file',None)
