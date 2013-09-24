@@ -22,6 +22,7 @@ $this->breadcrumbs=array(
 		</ul>
 		<div id="my-tab-content" class="tab-content">
 			<div class="tab-pane active" id="medicaltests">
+					<button class="btn btn-primary pull-right" id="add-medicaltest" >Add Medical Test</button>
   					<table class="table table-striped table-hover " >
 			  		<thead>
 			  			<tr class="info">
@@ -51,6 +52,7 @@ $this->breadcrumbs=array(
   		</div>
 	</div>
 </div>
+<?php $this->renderPartial('_medication_form',array()); ?>
 
 <script type="text/javascript">
 VH.vars.profile_id = find_family_user_id()?find_family_user_id():'<?php echo $profile_id; ?>';
@@ -58,6 +60,65 @@ VH.vars.profile_id = find_family_user_id()?find_family_user_id():'<?php echo $pr
 
 $(document).ready(function(){
 	populate_medicaltests();
+
+	$("#add-medicaltest").click(function(event){
+		$("#medicaltest-form-modal").modal();
+	});
+/*
+repeat_mode = DAILY
+h = 12 m = 14
+repeat_mode= WEEKLY on Sunday
+h = 12 m = 14 d = 1 ( SUnday)
+repeat_mode = MONTHLY
+h = 12 m = 14 d = 3rd/3
+repeat_mode= N_WEEKDAY_MONTHLY ( eg.  Every  Sunday - once in 2 weeks )
+h = 12 m = 14 d = 1 ( Sun ) , w = 2
+Every 5 Days
+h = 12 m = 14 di = 5
+*/
+	$("#medicaltest\\[repeat_mode\\]").change(function(event){
+		var rm = $("#medicaltest\\[repeat_mode\\]");
+		var d = $("#medicaltest\\[repeat_day\\]");
+		var h = $("#medicaltest\\[repeat_hour\\]");
+		var m = $("#medicaltest\\[repeat_minute\\]");
+		var w = $("#medicaltest\\[repeat_weekday\\]");
+		var di = $("#medicaltest\\[repeat_day_interval\\]");
+		var repeat = $(rm).val();
+		if(repeat == 'NONE'){
+			$(h).attr("disabled",true).parents(".control-group").hide();
+		} else if (repeat == 'DAILY'){
+			$(d).attr("disabled",true).parents(".control-group").hide();
+			$(h).removeAttr("disabled").parents(".control-group").show();
+			$(m).removeAttr("disabled").parents(".control-group").show();
+			$(w).attr("disabled",true).parents(".control-group").hide();
+			$(di).attr("disabled",true).parents(".control-group").hide();
+		} else if (repeat == 'WEEKLY'){
+			$(d).removeAttr("disabled").parents(".control-group").show();
+			$(h).removeAttr("disabled").parents(".control-group").show();
+			$(m).removeAttr("disabled").parents(".control-group").show();
+			$(w).attr("disabled",true).parents(".control-group").hide();
+			$(di).attr("disabled",true).parents(".control-group").hide();
+		} else if (repeat == 'MONTHLY'){
+			$(d).removeAttr("disabled").parents(".control-group").show();
+			$(h).removeAttr("disabled").parents(".control-group").show();
+			$(m).removeAttr("disabled").parents(".control-group").show();
+			$(w).attr("disabled",true).parents(".control-group").hide();
+			$(di).attr("disabled",true).parents(".control-group").hide();
+		} else if (repeat == 'N_WEEKDAY_MONTHLY'){
+			$(d).removeAttr("disabled").parents(".control-group").show();
+			$(h).removeAttr("disabled").parents(".control-group").show();
+			$(m).removeAttr("disabled").parents(".control-group").show();
+			$(w).attr("disabled",true).parents(".control-group").hide();
+			$(di).attr("disabled",true).parents(".control-group").hide();
+		} else if (repeat == 'N_DAYS_INTERVAL'){
+			$(h).removeAttr("disabled").parents(".control-group").show();
+		}
+		
+		
+		
+	});
+
+	
 
 	$('a[data-toggle="tab"]').on('shown', function (e) {
 	  if($(e.target).attr("tab-type") == 'medicaltests'){
