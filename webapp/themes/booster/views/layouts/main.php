@@ -128,23 +128,20 @@ if(!Yii::app()->user->isGuest)
 		
 		<div class="row-fluid">
 		<!-- TODO Move content block -->
-		<?php if(count($sidebar_family_array)): ?>
+		
 			<div class="span3">
 				<div class="well well-small sidebar-nav">
 					<ul class="nav nav-list">
 						<li class="nav-header">Family Profiles</li>
+						<?php if(count($sidebar_family_array)): ?>
 						<?php foreach ($sidebar_family_array as $key => $value) echo $value; ?>
+						<?php endif ?>
 					</ul>
 				</div>
 			</div>
 			<div class="span9">
 				<?php echo $content; ?>
 			</div>
-		<?php else: ?>
-			<div class="span12">
-			<?php echo $content; ?>
-			</div>
-		<?php endif ?>
 		</div>
 		<!-- -->
 
