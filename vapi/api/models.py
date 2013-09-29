@@ -11,10 +11,14 @@ from __future__ import unicode_literals
 from django.db import models
 from django.contrib.auth.models import User, Group
 from rest_framework.authtoken.models import Token
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
 import hashlib, os, mimetypes, pprint, datetime
 from dateutil.relativedelta import relativedelta
+from dateutil.rrule import *
+from django.utils.dateformat import format
+from history.models import HistoricalRecords
+from dateutil.parser import *
 
 s3_image_root = 'http://viamhealth-docsbucket.s3.amazonaws.com/';
 
@@ -163,28 +167,103 @@ REMINDER_REPEAT_MODE_CHOICES = (
     ('MONTHLY','MONTHLY'),
     ('WEEKLY','WEEKLY'),
     ('DAILY','DAILY'),
-    ('N_DAYS_INTERVAL','N_DAYS_INTERVAL'),
-    ('X_WEEKDAY_MONTHLY','X_WEEKDAY_MONTHLY'),
 )
 
 class Reminder(models.Model):
+    REMINDER_TYPES = (
+        ('OTHER','OTHER'),
+        ('MEDICATION','MEDICATION'),
+        ('MEDICALTEST','MEDICALTEST')
+    )
+    WEEKDAY_CHOICES = (
+        ('1','SUNDAY'),
+        ('2','MONDAY'),
+        ('3','TUESDAY'),
+        ('4','WEDNESDAY'),
+        ('5','THURSDAY'),
+        ('6','FRIDAY'),
+        ('7','SATURDAY'),
+    )
     user = models.ForeignKey('auth.User', related_name="+")
-    details = models.TextField()
-    start_timestamp = models.IntegerField()
+    type = models.CharField(max_length=64L,choices=REMINDER_TYPES, default='OTHER')
+    name = models.TextField(blank=False)
+    details = models.TextField(blank=True)
+
+    morning_count = models.FloatField(blank=True,null=True)
+    afternoon_count = models.FloatField(blank=True,null=True)
+    evening_count = models.FloatField(blank=True,null=True)
+    night_count = models.FloatField(blank=True,null=True)
+
+    start_date = models.DateField(null=True,blank=True)
     repeat_mode = models.CharField(max_length=32L,blank=True,choices=REMINDER_REPEAT_MODE_CHOICES, default='NONE')
     repeat_day = models.CharField(max_length=2L,blank=True)
     repeat_hour = models.CharField(max_length=2L,blank=True)
     repeat_min = models.CharField(max_length=2L,blank=True)
-    repeat_weekday = models.CharField(max_length=9L,blank=True)
-    repeat_day_interval = models.CharField(max_length=3L,blank=True)
-    status = models.CharField(max_length=18L, choices=GLOBAL_STATUS_CHOICES, default='ACTIVE', db_index=True)
+    repeat_weekday = models.CharField(max_length=9L,choices=WEEKDAY_CHOICES,blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     updated_by = models.ForeignKey('auth.User', related_name="+", db_column='updated_by')    
     
+    history = HistoricalRecords()
+
+    
+    def save(self, *args, **kwargs):
+        if not self.id:
+            if self.start_date is None:
+                self.start_date = datetime.date.today()
+
+        super(Reminder,self).save()
+    
     class Meta:
         db_table = 'tbl_reminders'
+    
+class ReminderReadings(models.Model):
+    user = models.ForeignKey('auth.User', related_name="+")
+    reminder = models.ForeignKey('Reminder', related_name="readings")
+    morning_check = models.BooleanField(blank=True,default=False)
+    afternoon_check = models.BooleanField(blank=True,default=False)
+    evening_check = models.BooleanField(blank=True,default=False)
+    night_check = models.BooleanField(blank=True,default=False)
+    complete_check = models.BooleanField(blank=True,default=False)
+    updated_by = models.ForeignKey('auth.User', related_name="+", db_column='updated_by') 
 
+    reading_date = models.DateField()
+
+    #history = HistoricalRecords()
+    # not working due to clashes with related_names
+
+    class Meta:
+        db_table = 'tbl_reminderreadings'
+
+#def delete_reminder_readings(sender, instance, **kwargs):
+#    if instance.id:
+#        r = Reminder.objects.get(pk=instance.id)
+#        if instance.start_date != r.start_date:
+#            ReminderReadings.objects.filter(reminder=instance).delete()
+
+def create_reminder_readings(sender, instance, created, **kwargs):
+    if created is True:
+        if instance.repeat_mode != 'NONE' :
+            if instance.repeat_mode == 'DAILY':
+                repeat = DAILY
+            elif instance.repeat_mode == 'WEEKLY':
+                repeat = WEEKLY
+            elif instance.repeat_mode == 'MONTHLY':
+                repeat = MONTHLY
+
+            list_of_dates = list(rrule(repeat, count=20,dtstart=instance.start_date))
+            for d in list_of_dates:
+                reading_date = d
+                reading = ReminderReadings(user=instance.user,reminder=instance,updated_by=instance.user,reading_date=reading_date)
+                reading.save()
+        else:
+            reading = ReminderReadings(user=instance.user,reminder=instance,updated_by=instance.user,reading_date=instance.start_date)
+            reading.save()
+
+
+# register the signal
+post_save.connect(create_reminder_readings, sender=Reminder)
+#pre_save.connect(delete_reminder_readings, sender=Reminder)
 
 class Medication(models.Model):
     name = models.TextField(blank=False)

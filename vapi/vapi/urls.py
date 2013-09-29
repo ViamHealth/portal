@@ -38,6 +38,9 @@ urlpatterns = patterns('',
     url(r'^reminders/$', views.ReminderViewSet.as_view({'get':'list','post':'create'}),name='reminder-list'),
     url(r'^reminders/(?P<pk>[0-9]+)/$', views.ReminderViewSet.as_view({'get':'retrieve','put':'update','delete':'destroy'}),name='reminder-detail'),
 
+    url(r'^reminderreadings/$', views.ReminderReadingsViewSet.as_view({'get':'list'}),name='reminderreadings-list'),
+    url(r'^reminderreadings/(?P<pk>[0-9]+)/$', views.ReminderReadingsViewSet.as_view({'get':'retrieve','put':'update'}),name='reminderreadings-detail'),
+
     #url(r'^bmi-profile/$', views.UserBmiProfileViewSet.as_view({'get':'list','post':'create'}),name='userbmiprofile-list'),
     #url(r'^bmi-profile/(?P<pk>[0-9]+)/$', views.UserBmiProfileViewSet.as_view({'get':'retrieve','put':'update','delete':'destroy'}),name='userbmiprofile-detail'),
 

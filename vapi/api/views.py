@@ -271,22 +271,38 @@ class UserView(viewsets.ViewSet):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class ReminderViewSet(ViamModelViewSet):
-    """
-    Manage all healthfiles for a user ( authenticated or family member)
-    * Requires token authentication.
-    * CRUD of fields created_at & updated_at are handled by API only.
-    * User field is not to be passed to the API via POST params. It will be ignored if passed.
-    * For family user, pass user in URL . ie append ?user=$user_id
-    * For current logged in user, API automatically picks up  the user
-    * Allowed methods - GET , POST , PUT , DELETE
-
-    """
-
-    #filter_fields = ('user')
+class ReminderViewSet(ViamModelViewSetNoStatus):
+    #filter_fields = ('type')
+    filter_fields = ('type',)
+    #filter_backends = (filters.SearchFilter,)
+    #search_fields = ('name',)
     model = Reminder
     serializer_class = ReminderSerializer
 
+class ReminderReadingsViewSet(ViamModelViewSetNoStatus):
+    filter_fields = ('reading_date',)
+    model = ReminderReadings
+    serializer_class = ReminderReadingsSerializer
+
+    def get_queryset(self):
+        from django.db.models import F
+
+        queryset = self.model.objects.all()
+        if self.request.method not in permissions.SAFE_METHODS:
+            return queryset
+
+        type = self.request.QUERY_PARAMS.get('type', 'ALL')
+        
+        reading_date = self.request.QUERY_PARAMS.get('reading_date',None)
+
+        if type == 'MEDICATION' or type == 'MEDICALTEST' or type == 'OTHER' :
+            queryset = self.model.objects.filter(reminder__type=type, reminder_id = F('reminder__id'))
+
+        user = self.get_user_object()
+        queryset = queryset.filter(user=user)
+        if reading_date is not None:
+            queryset = queryset.filter(reading_date=reading_date)
+        return queryset
 
 class HealthfileViewSet(ViamModelViewSet):
 

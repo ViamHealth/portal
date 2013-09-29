@@ -5,6 +5,7 @@ argparse==1.2.1
 boto==2.9.9
 data-importer==1.1.5
 django-filter==0.6
+django-historicalrecords==1.0
 django-social-auth==0.7.24
 django-storages==1.1.8
 djangorestframework==2.3.6
