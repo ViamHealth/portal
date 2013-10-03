@@ -42,17 +42,44 @@ class UserProfile(models.Model):
         ('MALE','MALE'),
         ('FEMALE','FEMALE')
     )
+    BLOOD_GROUP_CHOICES = (
+        ('1','A+'),
+        ('2','A-'),
+        ('3','B+'),
+        ('4','B-'),
+        ('5','AB+'),
+        ('6','AB-'),
+        ('7','O+'),
+        ('8','O-'),
+    )
     def get_profile_image_path(self, filename): 
         return 'users/profile_picture_'+hashlib.sha224(str(self.user.id)).hexdigest()+os.path.splitext(filename)[1]
 
     user = models.ForeignKey('auth.User', unique=True)
-    location = models.CharField(max_length=140,blank=True)  
+    blood_group = models.CharField(max_length=64,choices=BLOOD_GROUP_CHOICES,blank=True,null=True)
     gender = models.CharField(max_length=140, choices=GENDER_CHOICES, blank=True)  
     profile_picture = models.ImageField(upload_to=get_profile_image_path, blank=True)
     date_of_birth = models.DateField(blank=True,null=True)
+    phone_number = models.CharField(max_length=16, blank=True)
+    fb_profile_id = models.CharField(max_length=62, blank=True, null=True)
+    fb_username = models.TextField(blank=True, null=True)
+    organization = models.TextField(blank=True, null=True)
+
+    street = models.TextField(blank=True, null=True)
+    city = models.TextField(blank=True, null=True)
+    state = models.TextField(blank=True, null=True)
+    country = models.TextField(blank=True, null=True)
+    zip_code = models.TextField(blank=True, null=True)
+    lattitude = models.FloatField(blank=True, null=True)
+    longitude = models.FloatField(blank=True, null=True)
+    address = models.TextField(blank=True, null=True)
+
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     #updated_by = models.ForeignKey('auth.User', related_name="+", db_column='updated_by')
+
+    history = HistoricalRecords()
+
     class Meta:
         db_table = 'tbl_user_profiles'
 
@@ -65,17 +92,48 @@ class UserProfile(models.Model):
 
     def __unicode__(self):
         return u'Profile %s of user: %s' % (self.id, self.user.username)
+"""
+class UserHealthStats(models.Model):  
+    LIFESTYLE_CHOICES = (
+        ('1', 'SEDENTARY'),
+        ('2', 'LIGHTLY ACTIVE'),
+        ('3', 'MODERATELY ACTIVE'),
+        ('4', 'LIGHTLY ACTIVE'),
+        ('5', 'MODERATELY ACTIVE'),
+        ('6', 'VERY ACTIVE'),
+        ('7', 'EXTREMELY ACTIVE'),
+    )
+    user = models.ForeignKey('auth.User', unique=True)
+    height = models.CharField(max_length=40,blank=True)  
+    weight = models.CharField(max_length=40,blank=True)
+    lifestyle = models.IntegerField(choices=LIFESTYLE_CHOICES, blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    updated_by = models.ForeignKey('auth.User', related_name="+", db_column='updated_by')
+
+    history = HistoricalRecords()
+
+    class Meta:
+        db_table = 'tbl_user_bmi_profile'
+        verbose_name_plural = 'BMI Profiles'
+        verbose_name = 'BMI Profile'
+    def __unicode__(self):
+        return u'BMI Profile %s of user: %s' % (self.id, self.user.username)
+"""
 
 class UserBmiProfile(models.Model):  
     user = models.ForeignKey('auth.User', unique=True)
-    height = models.CharField(max_length=40,blank=True)  
-    height_measure = models.CharField(max_length=40, choices=MEASURE_CHOICES, blank=True)
-    weight = models.CharField(max_length=40,blank=True)  
-    weight_measure = models.CharField(max_length=40, choices=MEASURE_CHOICES, blank=True)  
+    height = models.CharField(max_length=40,blank=True,null=True)  
+    height_measure = models.CharField(max_length=40, choices=MEASURE_CHOICES, blank=True, default='METRIC',null=True)
+    weight = models.CharField(max_length=40,blank=True,null=True)  
+    weight_measure = models.CharField(max_length=40, choices=MEASURE_CHOICES, blank=True, default='METRIC',null=True)  
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     updated_by = models.ForeignKey('auth.User', related_name="+", db_column='updated_by')
     #status = models.CharField(max_length=18L, choices=GLOBAL_STATUS_CHOICES, default='ACTIVE', db_index=True)
+
+    history = HistoricalRecords()
+
     class Meta:
         db_table = 'tbl_user_bmi_profile'
         verbose_name_plural = 'BMI Profiles'
@@ -195,6 +253,7 @@ class Reminder(models.Model):
     night_count = models.FloatField(blank=True,null=True)
 
     start_date = models.DateField(null=True,blank=True)
+    end_date = models.DateField(null=True,blank=True)
     repeat_mode = models.CharField(max_length=32L,blank=True,choices=REMINDER_REPEAT_MODE_CHOICES, default='NONE')
     repeat_day = models.CharField(max_length=2L,blank=True)
     repeat_hour = models.CharField(max_length=2L,blank=True)
@@ -250,8 +309,10 @@ def create_reminder_readings(sender, instance, created, **kwargs):
                 repeat = WEEKLY
             elif instance.repeat_mode == 'MONTHLY':
                 repeat = MONTHLY
-
-            list_of_dates = list(rrule(repeat, count=20,dtstart=instance.start_date))
+            if instance.end_date is None:
+                list_of_dates = list(rrule(repeat, count=20,dtstart=instance.start_date))
+            else:
+                list_of_dates = list(rrule(repeat, dtstart=instance.start_date, until=instance.end_date))
             for d in list_of_dates:
                 reading_date = d
                 reading = ReminderReadings(user=instance.user,reminder=instance,updated_by=instance.user,reading_date=reading_date)

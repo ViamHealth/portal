@@ -71,7 +71,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
     profile_picture_url = serializers.Field(source='profile_picture_url')
     class Meta:
         model = UserProfile
-        fields = ( 'location', 'gender', 'date_of_birth', 'profile_picture_url')
+        fields = ( 'location', 'gender', 'date_of_birth', 'profile_picture_url','blood_group','fb_profile_id','fb_username','organization', 'street','city','state','country','zip_code','lattitude','longitude','address',)
 
 class UserPasswordSerializer(serializers.ModelSerializer):
     class Meta:
@@ -127,7 +127,7 @@ class ReminderSerializer(serializers.HyperlinkedModelSerializer):
     #start_timestamp = serializers.IntegerField(source='start_timestamp',read_only=True)
     class Meta:
         model = Reminder
-        fields = ('id','user','type','name','details','morning_count','afternoon_count','evening_count','night_count','start_date','repeat_mode','repeat_day','repeat_hour','repeat_min','repeat_weekday')
+        fields = ('id','user','type','name','details','morning_count','afternoon_count','evening_count','night_count','start_date','end_date','repeat_mode','repeat_day','repeat_hour','repeat_min','repeat_weekday')
     def validate(self, attrs):
         """
         if StringKeyIsNotNull(self.data,'id') and self.data['id'] != '':
@@ -201,7 +201,7 @@ class UserBmiProfileSerializer(serializers.HyperlinkedModelSerializer):
     user = serializers.Field(source='user.id')
     class Meta:
         model = UserBmiProfile
-        fields = ('id', 'user', 'height' ,'height_measure', 'weight' , 'weight_measure')
+        fields = ('id', 'user', 'height' , 'weight' ,)
 
 
 #class HealthfileListSerializer(serializers.HyperlinkedModelSerializer):
