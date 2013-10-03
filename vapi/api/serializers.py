@@ -71,7 +71,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
     profile_picture_url = serializers.Field(source='profile_picture_url')
     class Meta:
         model = UserProfile
-        fields = ( 'gender', 'date_of_birth', 'profile_picture_url','blood_group','fb_profile_id','fb_username','organization', 'street','city','state','country','zip_code','lattitude','longitude','address',)
+        fields = ( 'gender', 'date_of_birth', 'profile_picture_url','phone_number','blood_group','fb_profile_id','fb_username','organization', 'street','city','state','country','zip_code','lattitude','longitude','address',)
 
 class UserPasswordSerializer(serializers.ModelSerializer):
     class Meta:
