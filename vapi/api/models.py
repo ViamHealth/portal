@@ -220,18 +220,20 @@ class Healthfile(models.Model):
             self.mime_type = mime_type
         super(Healthfile, self).save(*args, **kwargs)
 
-REMINDER_REPEAT_MODE_CHOICES = (
-    ('NONE','NONE'),
-    ('MONTHLY','MONTHLY'),
-    ('WEEKLY','WEEKLY'),
-    ('DAILY','DAILY'),
-)
+
 
 class Reminder(models.Model):
+    REMINDER_REPEAT_MODE_CHOICES = (
+        ('0','NONE'),
+        ('1','MONTHLY'),
+        ('2','WEEKLY'),
+        ('3','DAILY'),
+        ('4','YEARLY'),
+    )
     REMINDER_TYPES = (
-        ('OTHER','OTHER'),
-        ('MEDICATION','MEDICATION'),
-        ('MEDICALTEST','MEDICALTEST')
+        ('1','OTHER'),
+        ('2','MEDICATION'),
+        ('3','MEDICALTEST')
     )
     WEEKDAY_CHOICES = (
         ('1','SUNDAY'),
@@ -242,8 +244,10 @@ class Reminder(models.Model):
         ('6','FRIDAY'),
         ('7','SATURDAY'),
     )
+    
+
     user = models.ForeignKey('auth.User', related_name="+")
-    type = models.CharField(max_length=64L,choices=REMINDER_TYPES, default='OTHER')
+    type = models.CharField(max_length=64L,choices=REMINDER_TYPES, default='1',db_index=True)
     name = models.TextField(blank=False)
     details = models.TextField(blank=True)
 
@@ -254,17 +258,18 @@ class Reminder(models.Model):
 
     start_date = models.DateField(null=True,blank=True)
     end_date = models.DateField(null=True,blank=True)
-    repeat_mode = models.CharField(max_length=32L,blank=True,choices=REMINDER_REPEAT_MODE_CHOICES, default='NONE')
-    repeat_day = models.CharField(max_length=2L,blank=True)
-    repeat_hour = models.CharField(max_length=2L,blank=True)
-    repeat_min = models.CharField(max_length=2L,blank=True)
-    repeat_weekday = models.CharField(max_length=9L,choices=WEEKDAY_CHOICES,blank=True)
+    repeat_mode = models.CharField(max_length=32L,blank=True,choices=REMINDER_REPEAT_MODE_CHOICES, default='0',db_index=True)
+    repeat_day = models.CharField(max_length=2L,blank=True,null=True)
+    repeat_hour = models.CharField(max_length=2L,blank=True,null=True)
+    repeat_min = models.CharField(max_length=2L,blank=True,null=True)
+    repeat_weekday = models.CharField(max_length=9L,choices=WEEKDAY_CHOICES,blank=True,null=True)
+    repeat_every_x = models.IntegerField(blank=True,null=True)
+    repeat_i_counter = models.IntegerField(blank=True,null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     updated_by = models.ForeignKey('auth.User', related_name="+", db_column='updated_by')    
     
     history = HistoricalRecords()
-
     
     def save(self, *args, **kwargs):
         if not self.id:
@@ -302,17 +307,31 @@ class ReminderReadings(models.Model):
 
 def create_reminder_readings(sender, instance, created, **kwargs):
     if created is True:
-        if instance.repeat_mode != 'NONE' :
-            if instance.repeat_mode == 'DAILY':
+        if instance.repeat_mode != '0' :
+            if instance.repeat_mode == '1':
                 repeat = DAILY
-            elif instance.repeat_mode == 'WEEKLY':
+            elif instance.repeat_mode == '2':
                 repeat = WEEKLY
-            elif instance.repeat_mode == 'MONTHLY':
+            elif instance.repeat_mode == '3':
                 repeat = MONTHLY
-            if instance.end_date is None:
-                list_of_dates = list(rrule(repeat, count=20,dtstart=instance.start_date))
+            elif instance.repeat_mode == '4':
+                repeat = YEARLY
+
+            if instance.repeat_i_counter is None:
+                repeat_counter = 20
             else:
-                list_of_dates = list(rrule(repeat, dtstart=instance.start_date, until=instance.end_date))
+                repeat_counter = instance.repeat_i_counter
+
+            if instance.repeat_every_x is not None:
+                interval = repeat_every_x
+            else:
+                interval = 1
+
+            if instance.end_date is None:
+                list_of_dates = list(rrule(repeat, interval=interval, count=repeat_counter,dtstart=instance.start_date))
+            else:
+                list_of_dates = list(rrule(repeat, interval=interval, dtstart=instance.start_date, until=instance.end_date))
+
             for d in list_of_dates:
                 reading_date = d
                 reading = ReminderReadings(user=instance.user,reminder=instance,updated_by=instance.user,reading_date=reading_date)
@@ -326,47 +345,6 @@ def create_reminder_readings(sender, instance, created, **kwargs):
 post_save.connect(create_reminder_readings, sender=Reminder)
 #pre_save.connect(delete_reminder_readings, sender=Reminder)
 
-class Medication(models.Model):
-    name = models.TextField(blank=False)
-    details = models.TextField(blank=True)
-    morning_count = models.FloatField(default=0.0,blank=True)
-    afternoon_count = models.FloatField(default=0.0,blank=True)
-    evening_count = models.FloatField(default=0.0,blank=True)
-    night_count = models.FloatField(default=0.0,blank=True)
-
-    user = models.ForeignKey('auth.User', related_name="+")
-    start_timestamp = models.IntegerField()
-    repeat_mode = models.CharField(max_length=32L,blank=True,choices=REMINDER_REPEAT_MODE_CHOICES, default='NONE')
-    repeat_day = models.CharField(max_length=2L,blank=True)
-    repeat_hour = models.CharField(max_length=2L,blank=True)
-    repeat_min = models.CharField(max_length=2L,blank=True)
-    repeat_weekday = models.CharField(max_length=9L,blank=True)
-    repeat_day_interval = models.CharField(max_length=3L,blank=True)
-    status = models.CharField(max_length=18L, choices=GLOBAL_STATUS_CHOICES, default='ACTIVE', db_index=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-    updated_by = models.ForeignKey('auth.User', related_name="+", db_column='updated_by')
-    class Meta:
-        db_table = 'tbl_medications'
-
-class Medicaltest(models.Model):
-    name = models.TextField(blank=False)
-    details = models.TextField(blank=True)
-
-    user = models.ForeignKey('auth.User', related_name="+")
-    start_timestamp = models.IntegerField()
-    repeat_mode = models.CharField(max_length=32L,blank=True,choices=REMINDER_REPEAT_MODE_CHOICES, default='NONE')
-    repeat_day = models.CharField(max_length=2L,blank=True)
-    repeat_hour = models.CharField(max_length=2L,blank=True)
-    repeat_min = models.CharField(max_length=2L,blank=True)
-    repeat_weekday = models.CharField(max_length=9L,blank=True)
-    repeat_day_interval = models.CharField(max_length=3L,blank=True)
-    status = models.CharField(max_length=18L, choices=GLOBAL_STATUS_CHOICES, default='ACTIVE', db_index=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-    updated_by = models.ForeignKey('auth.User', related_name="+", db_column='updated_by')
-    class Meta:
-        db_table = 'tbl_medicaltests'
 
 class UserWeightGoal(models.Model):
     

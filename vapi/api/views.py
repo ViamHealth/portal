@@ -295,7 +295,7 @@ class ReminderReadingsViewSet(ViamModelViewSetNoStatus):
         
         reading_date = self.request.QUERY_PARAMS.get('reading_date',None)
 
-        if type == 'MEDICATION' or type == 'MEDICALTEST' or type == 'OTHER' :
+        if type == '1' or type == '2' or type == '3' :
             queryset = self.model.objects.filter(reminder__type=type, reminder_id = F('reminder__id'))
 
         user = self.get_user_object()
@@ -384,14 +384,7 @@ class HealthfileViewSet(ViamModelViewSet):
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-class MedicationViewSet(ViamModelViewSet):
-    model = Medication
-    serializer_class = MedicationSerializer
-    
 
-class MedicaltestViewSet(ViamModelViewSet):
-    model = Medicaltest
-    serializer_class = MedicaltestSerializer
 
 class UserWeightGoalViewSet(ViamModelViewSet):
     """
