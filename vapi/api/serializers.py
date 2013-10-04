@@ -4,6 +4,7 @@ from rest_framework import serializers
 from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
 import pprint
+from datetime import date
 
 def StringIsNotNull(strc, value_considered_null=None):
     if value_considered_null is None :
@@ -41,6 +42,18 @@ def goals_date_validate(self, attrs):
     #if (not attrs['target_date'] ) and ( not attrs['interval_unit'] or not attrs['interval_unit'].len or not attrs['interval_num'] or not attrs['interval_num'].len or attrs['interval_num'] == 0) :
     #    raise serializers.ValidationError("Provide either target_date or both  interval_num & interval_unit ")
     return attrs
+
+def calculate_age(born):
+    today = date.today()
+    try: 
+        birthday = born.replace(year=today.year)
+    except ValueError: # raised when birth date is February 29 and the current year is not a leap year
+        birthday = born.replace(year=today.year, day=born.day-1)
+    if birthday > today:
+        return today.year - born.year - 1
+    else:
+        return today.year - born.year
+
 """
 from django.contrib.auth import authenticate
 
@@ -170,10 +183,42 @@ class ReminderReadingsSerializer(serializers.HyperlinkedModelSerializer):
 
 class UserBmiProfileSerializer(serializers.HyperlinkedModelSerializer):
     user = serializers.Field(source='user.id')
+    bmr = serializers.SerializerMethodField('get_bmr')
+    bmi_classification = serializers.SerializerMethodField('get_bmi_classification')
     class Meta:
         model = UserBmiProfile
-        fields = ('id', 'user', 'height' , 'weight' ,)
+        fields = ('id', 'user', 'height' , 'weight' ,'lifestyle','bmi_classification','bmr')
+    def get_bmi_classification(self, obj=None):
+        bmi_classification = ''
+        if obj.weight is not None and obj.height is not None:
+            bmi = float(obj.weight)/( float(obj.height)/100.00 )
+            if bmi < 16.00:
+                bmi_classification = 'Underweight'
+            elif bmi >= 18.50 and bmi <= 24.99:
+                bmi_classification = 'Normal range'
+            elif bmi >= 25.00 and bmi <= 29.99:
+                bmi_classification = 'Overweight'
+            elif bmi >= 30.00:
+                bmi_classification = 'Obese'
+        return bmi_classification
 
+
+    def get_bmr(self, obj=None):
+        p = UserProfile.objects.get(user=obj.user)
+        age_years = None
+        if p.date_of_birth is not None:
+            age_years = calculate_age(p.date_of_birth)
+
+        gender = p.gender
+        bmr = ''
+        if obj.weight is not None and obj.height is not None and age_years is not None and gender is not None:
+            if gender == 'MALE':
+                bmr = 655 + 9.6*float(obj.weight) + 1.8*float(obj.height) - 4.7*int(age_years)
+            elif gender == 'MALE':
+                bmr = 66 + 13.7*float(obj.weight) + 5*float(obj.height) - 6.8*float(age_years)
+
+        return bmr
+            
 
 #class HealthfileListSerializer(serializers.HyperlinkedModelSerializer):
 #    class Meta:

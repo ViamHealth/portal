@@ -122,11 +122,22 @@ class UserHealthStats(models.Model):
 """
 
 class UserBmiProfile(models.Model):  
+    LIFESTYLE_CHOICES = (
+        ('1', 'SEDENTARY'),
+        ('2', 'LIGHTLY ACTIVE'),
+        ('3', 'MODERATELY ACTIVE'),
+        ('4', 'LIGHTLY ACTIVE'),
+        ('5', 'MODERATELY ACTIVE'),
+        ('6', 'VERY ACTIVE'),
+        ('7', 'EXTREMELY ACTIVE'),
+    )
     user = models.ForeignKey('auth.User', unique=True)
     height = models.CharField(max_length=40,blank=True,null=True)  
     height_measure = models.CharField(max_length=40, choices=MEASURE_CHOICES, blank=True, default='METRIC',null=True)
     weight = models.CharField(max_length=40,blank=True,null=True)  
     weight_measure = models.CharField(max_length=40, choices=MEASURE_CHOICES, blank=True, default='METRIC',null=True)  
+    lifestyle = models.IntegerField(choices=LIFESTYLE_CHOICES, blank=True, null=True)
+
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     updated_by = models.ForeignKey('auth.User', related_name="+", db_column='updated_by')
@@ -323,7 +334,7 @@ def create_reminder_readings(sender, instance, created, **kwargs):
                 repeat_counter = instance.repeat_i_counter
 
             if instance.repeat_every_x is not None:
-                interval = repeat_every_x
+                interval = instance.repeat_every_x
             else:
                 interval = 1
 
