@@ -89,6 +89,18 @@ class UserSignupSerializer(serializers.HyperlinkedModelSerializer):
         model = User
         fields = ('username', 'password')
 
+class UserInviteSerializer(serializers.HyperlinkedModelSerializer):
+    def validate_username(self, attrs, source):
+        value = attrs[source]   
+        try:
+            validate_email( value )
+            return attrs
+        except ValidationError:
+            raise serializers.ValidationError("Enter a valid e-mail address.")
+    class Meta:
+        model = User
+        fields = ('email',)
+
 class ReminderSerializer(serializers.HyperlinkedModelSerializer):
     user = serializers.Field(source='user.id')
     #start_timestamp = serializers.IntegerField(source='start_timestamp',read_only=True)

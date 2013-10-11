@@ -123,6 +123,31 @@ class SignupView(viewsets.ViewSet):
             return Response(pserializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+class InviteView(viewsets.ViewSet):
+    model = User
+    permission_classes = (permissions.IsAuthenticated,)
+    @action(methods=['POST',])
+    def user_invite(self, request, format=None):
+        serializer = UserInviteSerializer(data=request.DATA, context={'request': request})
+        #ADD EMAIL
+        if serializer.is_valid():
+            try:
+                user = User.objects.get(username=serializer.object.email)
+            except User.DoesNotExist:
+                password = User.objects.make_random_password()
+                user = User.objects.create_user(username=serializer.object.email, email=serializer.object.email,password=password)
+
+            umap = UserGroupSet(group=request.user, user=user,status='ACTIVE',updated_by=request.user);
+            umap.save()
+
+            UserProfile.objects.get_or_create(user=user)
+            UserBmiProfile.objects.get_or_create(user=user,defaults={'updated_by': request.user})
+
+            pserializer = UserSerializer(user, data=serializer.object, context={'request': request})
+
+            return Response(pserializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 #TODO: Move to mixins for less  code
 class UserView(viewsets.ViewSet):
     """

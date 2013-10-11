@@ -30,6 +30,8 @@ urlpatterns = patterns('',
     #url(r'^api-token-auth/', obtain_auth_token),
     url(r'^api-token-auth/', 'rest_framework.authtoken.views.obtain_auth_token'),
     url(r'^signup/$', views.SignupView.as_view({'post': 'user_signup'}), name='user-signup'),
+    url(r'^invite/$', views.InviteView.as_view({'post': 'user_invite'}), name='user-invite'),
+    
     url(r'^users/$', views.UserView.as_view({'get': 'list','post': 'create'}),name='user-list'),
     url(r'^users/me/$', views.UserView.as_view({'get': 'current_user'}), name='user-me'),
 
