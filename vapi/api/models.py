@@ -106,7 +106,20 @@ class UserBmiProfile(models.Model):
     height_measure = models.CharField(max_length=40, choices=MEASURE_CHOICES, blank=True, default='METRIC',null=True)
     weight = models.CharField(max_length=40,blank=True,null=True)  
     weight_measure = models.CharField(max_length=40, choices=MEASURE_CHOICES, blank=True, default='METRIC',null=True)  
-    lifestyle = models.IntegerField(choices=LIFESTYLE_CHOICES, blank=True, null=True)
+    lifestyle = models.CharField(max_length=32, choices=LIFESTYLE_CHOICES, blank=True, null=True)
+
+    systolic_pressure = models.IntegerField(blank=True,null=True)
+    diastolic_pressure = models.IntegerField(blank=True,null=True)
+    pulse_rate = models.IntegerField(blank=True,null=True)
+
+    random = models.IntegerField(blank=True,null=True)
+    fasting = models.IntegerField(blank=True,null=True)
+
+    hdl = models.IntegerField(blank=True,null=True)
+    ldl = models.IntegerField(blank=True,null=True)
+    triglycerides = models.IntegerField(blank=True,null=True)
+    total_cholesterol = models.IntegerField(blank=True,null=True)
+    #Your total cholesterol score is calculated by the following: HDL + LDL + 20% of your triglyceride level.
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

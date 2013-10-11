@@ -5,54 +5,8 @@ from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
 import pprint
 from datetime import date
+from api.serializers_helper import *
 
-def StringIsNotNull(strc, value_considered_null=None):
-    if value_considered_null is None :
-        return strc is not None and len(strc) > 0
-    else:    
-        return strc is not None and len(strc) > 0 and strc != value_considered_null
-
-def FloatIsNull(strc, value_considered_null=None):
-    if value_considered_null is None :
-        return strc is None or strc == 0.0
-    else:    
-        return strc is None or strc == 0.0 or strc == value_considered_null
-
-def StringIsNull(strc, value_considered_null=None):
-    if value_considered_null is None :
-        return strc is None or len(strc) == 0
-    else:    
-        return strc is None or len(strc) == 0 or strc == value_considered_null
-
-
-def StringKeyIsNull(arr, key, value_considered_null=None):
-    if value_considered_null is None :
-        return arr.get(key) is None or len(arr[key]) == 0
-    else:    
-        return arr.get(key) is None or len(arr[key]) == 0 or arr[key] == value_considered_null
-
-def StringKeyIsNotNull(arr, key, value_considered_null=None):
-    if value_considered_null is None :
-        return arr.get(key) is not None
-    else:    
-        return arr.get(key) is not None and len(arr[key]) == 0 and arr[key] == value_considered_null
-
-
-def goals_date_validate(self, attrs):
-    #if (not attrs['target_date'] ) and ( not attrs['interval_unit'] or not attrs['interval_unit'].len or not attrs['interval_num'] or not attrs['interval_num'].len or attrs['interval_num'] == 0) :
-    #    raise serializers.ValidationError("Provide either target_date or both  interval_num & interval_unit ")
-    return attrs
-
-def calculate_age(born):
-    today = date.today()
-    try: 
-        birthday = born.replace(year=today.year)
-    except ValueError: # raised when birth date is February 29 and the current year is not a leap year
-        birthday = born.replace(year=today.year, day=born.day-1)
-    if birthday > today:
-        return today.year - born.year - 1
-    else:
-        return today.year - born.year
 
 """
 from django.contrib.auth import authenticate
@@ -147,7 +101,7 @@ class ReminderSerializer(serializers.HyperlinkedModelSerializer):
             r = Reminder.objects.get(pk=int(self.data['id']))
             if r.start_date != attrs['start_date']:
                 raise serializers.ValidationError("can not edit start_date")
-        """
+        
         if attrs['type'] == '2':
             if FloatIsNull(attrs['morning_count'],"0.0") and FloatIsNull(attrs['afternoon_count'],"0.0") and FloatIsNull(attrs['evening_count'],"0.0") and FloatIsNull(attrs['night_count'],"0.0") :
                 raise serializers.ValidationError("Provide atleast one of these 4 - morning_count, afternoon_count, evening_count, night_count")
@@ -155,7 +109,7 @@ class ReminderSerializer(serializers.HyperlinkedModelSerializer):
             if attrs['morning_count'] is not None or attrs['afternoon_count'] is not None or attrs['evening_count'] is not None or attrs['night_count'] is not None:
                 raise serializers.ValidationError("Following not allowed for type 'OTHER' - morning_count, afternoon_count, evening_count, night_count")
         
-        """
+        
         if attrs['repeat_mode'] == '0':
             if StringIsNotNull(attrs['repeat_min']) or StringIsNotNull(attrs['repeat_hour']) or StringIsNotNull(attrs['repeat_day']) or StringIsNotNull(attrs['repeat_weekday']):
                 raise serializers.ValidationError("For None repeat_mode reminders make sure you do not provide repeat_weekday, repeat_min, repeat_min repeat_day")
@@ -185,21 +139,50 @@ class UserBmiProfileSerializer(serializers.HyperlinkedModelSerializer):
     user = serializers.Field(source='user.id')
     bmr = serializers.SerializerMethodField('get_bmr')
     bmi_classification = serializers.SerializerMethodField('get_bmi_classification')
+    bp_classification = serializers.SerializerMethodField('get_bp_classification')
+    sugar_classification = serializers.SerializerMethodField('get_sugar_classification')
+    cholesterol_classification = serializers.SerializerMethodField('get_cholesterol_classification')
+
     class Meta:
         model = UserBmiProfile
-        fields = ('id', 'user', 'height' , 'weight' ,'lifestyle','bmi_classification','bmr')
+        fields = (
+            'id', 
+            'user', 
+            'height' , 
+            'weight' ,
+            'lifestyle',
+            'bmi_classification',
+            'bmr',
+            'systolic_pressure',
+            'diastolic_pressure',
+            'pulse_rate',
+            'bp_classification',
+            'random',
+            'fasting',
+            'sugar_classification',
+            'hdl',
+            'ldl',
+            'triglycerides',
+            'total_cholesterol',
+            'cholesterol_classification',
+            )
+
     def get_bmi_classification(self, obj=None):
         bmi_classification = ''
         if obj.weight is not None and obj.height is not None:
             bmi = float(obj.weight)/( float(obj.height)/100.00 )
             if bmi < 16.00:
-                bmi_classification = 'Underweight'
+                #bmi_classification = 'Underweight'
+                bmi_classification = '1'
             elif bmi >= 18.50 and bmi <= 24.99:
-                bmi_classification = 'Normal range'
+                #bmi_classification = 'Normal range'
+                bmi_classification = '2'
             elif bmi >= 25.00 and bmi <= 29.99:
-                bmi_classification = 'Overweight'
+                #bmi_classification = 'Overweight'
+                bmi_classification = '3'
             elif bmi >= 30.00:
-                bmi_classification = 'Obese'
+                #bmi_classification = 'Obese'
+                bmi_classification = '4'
         return bmi_classification
 
 
@@ -219,6 +202,40 @@ class UserBmiProfileSerializer(serializers.HyperlinkedModelSerializer):
 
         return bmr
             
+    def get_bp_classification(self, obj=None):
+        bp_classification = ''
+        if obj is not None:
+            if obj.systolic_pressure is not None and obj.diastolic_pressure is not None:
+                if int(obj.systolic_pressure) < 90 or int(obj.diastolic_pressure) < 60:
+                    #bp_classification = 'Low'
+                    bp_classification = '1'
+                elif ( int(obj.systolic_pressure) >= 90 and int(obj.systolic_pressure) < 120 )  or ( int(obj.diastolic_pressure) >= 60 and int(obj.diastolic_pressure) < 80 ) :
+                    #bp_classification = 'Normal'
+                    bp_classification = '2'
+                elif int(obj.systolic_pressure) >= 120 or int(obj.diastolic_pressure) >=80 :
+                    #bp_classification = 'High'
+                    bp_classification = '3'
+        return bp_classification
+
+
+    def get_sugar_classification(self, obj=None):
+        sugar_classification = ''
+        if obj is not None:
+            if obj.fasting is not None:
+                if int(obj.fasting) < 70 :
+                    #sugar_classification = 'Low'
+                    sugar_classification = '1'
+                elif  int(obj.fasting) >= 70 and int(obj.fasting) <= 100 :
+                    #sugar_classification = 'Normal'
+                    sugar_classification = '2'
+                elif int(obj.fasting) > 100 :
+                    #sugar_classification = 'High'
+                    sugar_classification = '3'
+        return sugar_classification
+
+    def get_cholesterol_classification(self, obj=None):
+        cholesterol_classification = ''
+        return cholesterol_classification
 
 #class HealthfileListSerializer(serializers.HyperlinkedModelSerializer):
 #    class Meta:
