@@ -188,8 +188,7 @@ class UserView(viewsets.ViewSet):
             umap.save()
             #TODO:check for adding updated_by
             user=User.objects.get(pk=serializer.data.get('id'))
-            uprofile = UserProfile.objects.get_or_create(user=user,defaults={'updated_by': user})
-            uprofile.save()
+            UserProfile.objects.get_or_create(user=user)
             UserBmiProfile.objects.get_or_create(user=user,defaults={'updated_by': user})
             pserializer = UserSerializer(user, data=serializer.object, context={'request': request})
             return Response(pserializer.data, status=status.HTTP_201_CREATED)

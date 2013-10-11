@@ -75,7 +75,7 @@ pip install -r requirements.txt
 
 If  MySQL-python installation fails , you will need mysql dev and mysql-python packages (installed via apt/yum etc )
 
-eg. on ubuntu , packages libmysqlclient-dev and python-mysqldb are required. Find appropiate packages for your distro.
+eg. on ubuntu , packages libmysqlclient-dev, python-dev and python-mysqldb are required. Find appropiate packages for your distro.
 
 *eg.: Centos :- *
 

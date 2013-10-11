@@ -92,44 +92,14 @@ class UserProfile(models.Model):
 
     def __unicode__(self):
         return u'Profile %s of user: %s' % (self.id, self.user.username)
-"""
-class UserHealthStats(models.Model):  
-    LIFESTYLE_CHOICES = (
-        ('1', 'SEDENTARY'),
-        ('2', 'LIGHTLY ACTIVE'),
-        ('3', 'MODERATELY ACTIVE'),
-        ('4', 'LIGHTLY ACTIVE'),
-        ('5', 'MODERATELY ACTIVE'),
-        ('6', 'VERY ACTIVE'),
-        ('7', 'EXTREMELY ACTIVE'),
-    )
-    user = models.ForeignKey('auth.User', unique=True)
-    height = models.CharField(max_length=40,blank=True)  
-    weight = models.CharField(max_length=40,blank=True)
-    lifestyle = models.IntegerField(choices=LIFESTYLE_CHOICES, blank=True, null=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-    updated_by = models.ForeignKey('auth.User', related_name="+", db_column='updated_by')
-
-    history = HistoricalRecords()
-
-    class Meta:
-        db_table = 'tbl_user_bmi_profile'
-        verbose_name_plural = 'BMI Profiles'
-        verbose_name = 'BMI Profile'
-    def __unicode__(self):
-        return u'BMI Profile %s of user: %s' % (self.id, self.user.username)
-"""
 
 class UserBmiProfile(models.Model):  
     LIFESTYLE_CHOICES = (
         ('1', 'SEDENTARY'),
         ('2', 'LIGHTLY ACTIVE'),
         ('3', 'MODERATELY ACTIVE'),
-        ('4', 'LIGHTLY ACTIVE'),
-        ('5', 'MODERATELY ACTIVE'),
-        ('6', 'VERY ACTIVE'),
-        ('7', 'EXTREMELY ACTIVE'),
+        ('4', 'VERY ACTIVE'),
+        ('5', 'EXTREMELY ACTIVE'),
     )
     user = models.ForeignKey('auth.User', unique=True)
     height = models.CharField(max_length=40,blank=True,null=True)  
@@ -141,7 +111,7 @@ class UserBmiProfile(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     updated_by = models.ForeignKey('auth.User', related_name="+", db_column='updated_by')
-    #status = models.CharField(max_length=18L, choices=GLOBAL_STATUS_CHOICES, default='ACTIVE', db_index=True)
+
 
     history = HistoricalRecords()
 
@@ -153,18 +123,6 @@ class UserBmiProfile(models.Model):
         return u'BMI Profile %s of user: %s' % (self.id, self.user.username)
 
 
-"""
-Removed in favour of GroupSet
-class UsersMap(models.Model):
-    id = models.AutoField(primary_key=True)
-    initiatior_user = models.ForeignKey('auth.User', related_name="+")
-    connected_user = models.ForeignKey('auth.User', related_name="+")
-    connection_status = models.CharField(max_length=18L)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-    class Meta:
-        db_table = 'tbl_users_map'
-"""
 class UserGroupSet(models.Model):
     group = models.ForeignKey('auth.User', related_name="+")
     user = models.ForeignKey('auth.User', related_name="+")

@@ -81,26 +81,39 @@ class ViamModelViewSetNoStatus(viewsets.ModelViewSet):
             return queryset
         user = self.get_user_object()
         return queryset.filter(user=user)
-    """
+
     def get_object(self, pk=None):
         try:
-            pprint.pprint(pk)
-            o = self.model.objects.get(pk=pk)
 
+            o = self.model.objects.get(pk=pk)
+            #o = super(ViamModelViewSetNoStatus, self).get_object()
             self.check_object_permissions(self.request, o)
             return o
         except self.model.DoesNotExist:
 
             raise Http404
-    """
+    
     def pre_save(self, obj):
         obj.user = self.get_user_object()
         obj.updated_by = self.request.user
 
+    def retrieve(self, request, pk=None):
+        m = self.get_object(pk)
+        serializer = self.get_serializer(m)
+        return Response(serializer.data) 
 
+    def update(self, request, pk=None):
+        m = self.get_object(pk)
+        serializer = self.get_serializer(m, data=request.DATA)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
-   
+    def destroy(self, request, pk=None):
+        o = self.get_object(pk)
+        o.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
  
 class ViamModelViewSet(viewsets.ModelViewSet):
