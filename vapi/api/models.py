@@ -151,6 +151,9 @@ class UserGroupSet(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     updated_by = models.ForeignKey('auth.User', related_name="+", db_column='updated_by')
+
+    history = HistoricalRecords()
+    
     class Meta:
         db_table = 'tbl_user_group_set'
     def __unicode__(self):
