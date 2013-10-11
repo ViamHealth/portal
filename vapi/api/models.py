@@ -118,7 +118,7 @@ class UserBmiProfile(models.Model):
     hdl = models.IntegerField(blank=True,null=True)
     ldl = models.IntegerField(blank=True,null=True)
     triglycerides = models.IntegerField(blank=True,null=True)
-    total_cholesterol = models.IntegerField(blank=True,null=True)
+    #total_cholesterol = models.IntegerField(blank=True,null=True)
     #Your total cholesterol score is calculated by the following: HDL + LDL + 20% of your triglyceride level.
 
     created_at = models.DateTimeField(auto_now_add=True)
@@ -134,6 +134,14 @@ class UserBmiProfile(models.Model):
         verbose_name = 'BMI Profile'
     def __unicode__(self):
         return u'BMI Profile %s of user: %s' % (self.id, self.user.username)
+
+    def total_cholesterol(self):
+        total_cholesterol = None
+        if self.id:
+            if self.hdl is not None and self.ldl is not None and self.triglycerides is not None:
+                total_cholesterol = float(self.hdl) + float(self.ldl) + 0.2 * float(self.triglycerides)
+
+        return total_cholesterol
 
 
 class UserGroupSet(models.Model):

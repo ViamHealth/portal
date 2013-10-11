@@ -142,6 +142,7 @@ class UserBmiProfileSerializer(serializers.HyperlinkedModelSerializer):
     bp_classification = serializers.SerializerMethodField('get_bp_classification')
     sugar_classification = serializers.SerializerMethodField('get_sugar_classification')
     cholesterol_classification = serializers.SerializerMethodField('get_cholesterol_classification')
+    total_cholesterol = serializers.Field(source='total_cholesterol')
 
     class Meta:
         model = UserBmiProfile
