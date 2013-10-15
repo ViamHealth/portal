@@ -94,12 +94,14 @@ class ViamModelViewSetClean(viewsets.ModelViewSet):
             raise Http404
     
     def pre_save(self, obj):
-        pprint.pprint(obj)
+        if hasattr(obj, 'user') == False:
+            obj.user = self.get_user_object()
         if obj.user is None:
             obj.user = self.get_user_object()
         obj.updated_by = self.request.user
 
-
+    def create(self, request, format=None):
+        return super(ViamModelViewSetClean, self).create(request,format)
 
 
 

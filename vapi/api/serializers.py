@@ -315,8 +315,8 @@ class UserWeightGoalSerializer(serializers.HyperlinkedModelSerializer):
         fields = ('id', 'user','readings','weight','healthy_range' ,'target_date','interval_num','interval_unit',)
 
     def get_healthy_range(self, obj=None):
-        u = UserBmiProfile.objects.get(user=obj.user)
-        pprint.pprint(u.height)
+        u = UserBmiProfile.objects.get_or_create(user=obj.user,defaults={'updated_by': obj.user})[0]
+        
         if u.height is None:
                 return None
         else:
