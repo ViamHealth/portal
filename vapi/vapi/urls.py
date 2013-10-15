@@ -6,6 +6,8 @@ from api import views
 router = routers.DefaultRouter(trailing_slash=True)
 router.register(r'healthfiles', views.HealthfileViewSet)
 router.register(r'weight-goals', views.UserWeightGoalViewSet)
+#router.register(r'weight-readings', views.WeightReadingViewSet)
+
 router.register(r'blood-pressure-goals', views.UserBloodPressureGoalViewSet)
 router.register(r'cholesterol-goals', views.UserCholesterolGoalViewSet)
 router.register(r'glucose-goals', views.UserGlucoseGoalViewSet)
@@ -45,8 +47,8 @@ urlpatterns = patterns('',
     #url(r'^bmi-profile/(?P<pk>[0-9]+)/$', views.UserBmiProfileViewSet.as_view({'get':'retrieve','put':'update','delete':'destroy'}),name='userbmiprofile-detail'),
 
     #url(r'^goals/$', views.GoalViewSet.as_view(),name='goal-list'),
-    url(r'^weight-goals/(?P<pk>[0-9]+)/set-reading/$', views.UserWeightGoalViewSet.as_view({'post':'set_reading'}),name='goal-weight-reading-detail'),
-    url(r'^weight-goals/(?P<pk>[0-9]+)/destroy-reading/$', views.UserWeightGoalViewSet.as_view({'delete':'destroy_reading'}),name='goal-weight-reading-detail'),
+    url(r'^weight-readings/$', views.WeightReadingViewSet.as_view({'get':'list','post':'create'}),name='weight-readings'),
+    url(r'^weight-readings/(?P<pk>[0-9-]+)/$', views.WeightReadingViewSet.as_view({'get':'retrieve','delete':'destroy','put':'update'}),name='weight-reading-detail'),
 
     url(r'^blood-pressure-goals/(?P<pk>[0-9]+)/set-reading/$', views.UserBloodPressureGoalViewSet.as_view({'post':'set_reading'}),name='goal-blood-pressure-reading-detail'),
     url(r'^blood-pressure-goals/(?P<pk>[0-9]+)/destroy-reading/$', views.UserBloodPressureGoalViewSet.as_view({'delete':'destroy_reading'}),name='goal-blood-pressure-reading-detail'),

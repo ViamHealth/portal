@@ -409,42 +409,81 @@ class HealthfileViewSet(ViamModelViewSet):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+class WeightReadingViewSet(ViamModelViewSetClean):
+    model = UserWeightReading
+    
+    def get_serializer_class(self):
+        if self.request.method != 'post':
+            return UserWeightReadingSerializer
+        else:
+            return UserWeightReadingCreateSerializer
 
-class UserWeightGoalViewSet(ViamModelViewSet):
-    """
-    Manage all healthfiles for a user ( authenticated or family member)
-    * Requires token authentication.
-    * CRUD of fields created_at & updated_at are handled by API only.
-    * User field is not to be passed to the API via POST params. It will be ignored if passed.
-    * For family user, pass user in URL . ie append ?user=$user_id
-    * For current logged in user, API automatically picks up  the user
-    * Allowed methods - GET , POST , PUT , DELETE
+    def get_object(self, pk):
+        try:
+            o = UserWeightReading.objects.get(reading_date=pk,user=self.get_user_object())
+            self.check_object_permissions(self.request, o)
+            return o
+        except UserWeightReading.DoesNotExist:
+            raise Http404
 
-    """
+    def create(self, request, format=None):
+        serializer = self.get_serializer(data=request.DATA,)
+        if serializer.is_valid():
+            serializer.object.user = self.get_user_object()
+            serializer.object.updated_by = self.request.user
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+    def retrieve(self, request, pk=None):
+        m = self.get_object(pk)
+        serializer = self.get_serializer(m)
+        return Response(serializer.data)
+
+    def update(self, request, pk=None):
+        m = self.get_object(pk)
+        serializer = self.get_serializer(m, data=request.DATA)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def destroy(self, request, pk=None):
+        o = self.get_object(pk)
+        o.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+class UserWeightGoalViewSet(ViamModelViewSetClean):
     #filter_fields = ('user')
     model = UserWeightGoal
     serializer_class = UserWeightGoalSerializer
 
-    @action(methods=['POST'])
-    def set_reading(self, request, pk):
-        wgoal = UserWeightGoal.objects.get(id=pk)
+    def create(self, request, format=None):
         try:
-            reading = UserWeightReading.objects.get(reading_date=request.DATA['reading_date'],user_weight_goal=wgoal)
+            UserWeightGoal.objects.get(user=self.get_user_object())
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        except UserWeightGoal.DoesNotExist:
+            return super(UserWeightGoalViewSet, self).create(request,format)
+
+    """
+    @action(methods=['POST'])
+    def set_reading(self, request):
+        #wgoal = UserWeightGoal.objects.get(id=pk)
+        try:
+            reading = UserWeightReading.objects.get(reading_date=request.DATA['reading_date'])
             reading.weight = int(request.DATA['weight'])
-            reading.weight_measure = request.DATA['weight_measure']
             reading.updated_by = request.user
+            reading.save()
             serializer = UserWeightReadingSerializer(reading)
             return Response(serializer.data)    
         except UserWeightReading.DoesNotExist:
             try:
-                reading = UserWeightReading(user_weight_goal=wgoal,weight=int(request.DATA['weight']),weight_measure=request.DATA['weight_measure'],reading_date=request.DATA['reading_date'],updated_by=request.user)
+                reading = UserWeightReading(weight=int(request.DATA['weight']),reading_date=request.DATA['reading_date'],comment=request.DATA['comment'],updated_by=request.user)
                 reading.save()
                 serializer = UserWeightReadingSerializer(reading)
                 return Response(serializer.data)    
             except:
                 return Response(status=status.HTTP_400_BAD_REQUEST)
-            
         except:
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
@@ -461,7 +500,7 @@ class UserWeightGoalViewSet(ViamModelViewSet):
             return Response(status=status.HTTP_404_NOT_FOUND)
         except:
             return Response(status=status.HTTP_400_BAD_REQUEST)
-
+    """
 
 class UserBloodPressureGoalViewSet(ViamModelViewSet):
     """

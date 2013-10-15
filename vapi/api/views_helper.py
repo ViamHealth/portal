@@ -60,6 +60,50 @@ class FamilyPermission(permissions.BasePermission):
         return self.check_family_permission(user_id, family_user_id)
 
 
+class ViamModelViewSetClean(viewsets.ModelViewSet):
+    
+    permission_classes = (permissions.IsAuthenticated,FamilyPermission,)
+    filter_fields = ('user',)
+
+    #Custom helper functions
+
+    def get_user_object(self):
+        fuser = self.request.QUERY_PARAMS.get('user', None)
+        if fuser is not None:
+            return User.objects.get(pk=fuser)
+        else:
+            return self.request.user
+
+    #Over riding viewset functions
+    def get_queryset(self):
+        queryset = super(ViamModelViewSetClean, self).get_queryset()
+
+        if self.request.method not in permissions.SAFE_METHODS or self.action == 'retrieve':
+            return queryset
+        user = self.get_user_object()
+        q = queryset.filter(user=user)
+
+        return q
+
+    def get_object(self):
+        try:
+            o = super(ViamModelViewSetClean, self).get_object()
+            self.check_object_permissions(self.request, o)
+            return o
+        except self.model.DoesNotExist:
+            raise Http404
+    
+    def pre_save(self, obj):
+        pprint.pprint(obj)
+        if obj.user is None:
+            obj.user = self.get_user_object()
+        obj.updated_by = self.request.user
+
+
+
+
+
+
 class ViamModelViewSetNoStatus(viewsets.ModelViewSet):
     
     permission_classes = (permissions.IsAuthenticated,FamilyPermission,)
@@ -84,13 +128,11 @@ class ViamModelViewSetNoStatus(viewsets.ModelViewSet):
 
     def get_object(self, pk=None):
         try:
-
             o = self.model.objects.get(pk=pk)
             #o = super(ViamModelViewSetNoStatus, self).get_object()
             self.check_object_permissions(self.request, o)
             return o
         except self.model.DoesNotExist:
-
             raise Http404
     
     def pre_save(self, obj):

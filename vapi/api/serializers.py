@@ -293,27 +293,32 @@ class HealthfileUploadSerializer(serializers.HyperlinkedModelSerializer):
         fields = ('id','file','description')
 
 
-class UserWeightReadingSerializer(serializers.HyperlinkedModelSerializer):
-    user_weight_goal = serializers.Field(source='user_weight_goal.id')
+class UserWeightReadingCreateSerializer(serializers.HyperlinkedModelSerializer):
+    user = serializers.Field(source='user.id')
     class Meta:
         model = UserWeightReading
-        fields = ('id','user_weight_goal','weight','weight_measure' ,'reading_date','comment')
+        fields = ('id','user','weight' ,'reading_date','comment')
+
+class UserWeightReadingSerializer(serializers.HyperlinkedModelSerializer):
+
+    class Meta:
+        model = UserWeightReading
+        fields = ('weight' ,'reading_date','comment')
 
 class UserWeightGoalSerializer(serializers.HyperlinkedModelSerializer):
-    readings = UserWeightReadingSerializer(required=False,read_only=True)
+    #readings = UserWeightReadingSerializer(required=False,read_only=True)
     user = serializers.Field(source='user.id')
     healthy_range = serializers.SerializerMethodField('get_healthy_range')
+    readings = serializers.SerializerMethodField('get_weight_readings')
     class Meta:
         model = UserWeightGoal
-        fields = ('id', 'user','readings','weight','weight_measure','healthy_range' ,'target_date','interval_num','interval_unit',)
-
-    #def validate(self, attrs):
-    #    return goals_date_validate(self,attrs);
+        fields = ('id', 'user','readings','weight','healthy_range' ,'target_date','interval_num','interval_unit',)
 
     def get_healthy_range(self, obj=None):
         u = UserBmiProfile.objects.get(user=obj.user)
-        if u.height == '':
-                height = 155
+        pprint.pprint(u.height)
+        if u.height is None:
+                return None
         else:
                 height = u.height
         max_bmi = 24.9
@@ -327,6 +332,13 @@ class UserWeightGoalSerializer(serializers.HyperlinkedModelSerializer):
         a['weight']['min'] = min_weight
         a['weight']['min_measure'] = 'METRIC'
         return a
+
+    def get_weight_readings(self, obj=None):
+        user = obj.user
+        readings = UserWeightReading.objects.filter(user=user)
+        serializer = UserWeightReadingSerializer(readings, many=True)
+        #pprint.pprint(serializer)
+        return serializer.data
 
 
 class UserBloodPressureReadingSerializer(serializers.HyperlinkedModelSerializer):
@@ -442,14 +454,6 @@ class DietTrackerSerializer(serializers.HyperlinkedModelSerializer):
         model = DietTracker
         fields = ('id','food_item','user','food_quantity_multiplier','meal_type')
         
-"""
-
-class GoalSerializer(serializers.HyperlinkedModelSerializer):
-    weight = UserWeightGoalSerializer
-
-    class Meta():
-        fields = ('weight')
-"""
 
 #class AuthTokenSerializer(serializers.Serializer):
 #    username = serializers.CharField()

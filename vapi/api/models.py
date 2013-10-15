@@ -56,12 +56,12 @@ class UserProfile(models.Model):
         return 'users/profile_picture_'+hashlib.sha224(str(self.user.id)).hexdigest()+os.path.splitext(filename)[1]
 
     user = models.ForeignKey('auth.User', unique=True)
-    blood_group = models.CharField(max_length=64,choices=BLOOD_GROUP_CHOICES,blank=True,null=True)
-    gender = models.CharField(max_length=140, choices=GENDER_CHOICES, blank=True)  
+    blood_group = models.CharField(max_length=64L,choices=BLOOD_GROUP_CHOICES,blank=True,null=True)
+    gender = models.CharField(max_length=140L, choices=GENDER_CHOICES, blank=True)  
     profile_picture = models.ImageField(upload_to=get_profile_image_path, blank=True)
     date_of_birth = models.DateField(blank=True,null=True)
-    phone_number = models.CharField(max_length=16, blank=True)
-    fb_profile_id = models.CharField(max_length=62, blank=True, null=True)
+    phone_number = models.CharField(max_length=16L, blank=True)
+    fb_profile_id = models.CharField(max_length=62L, blank=True, null=True)
     fb_username = models.TextField(blank=True, null=True)
     organization = models.TextField(blank=True, null=True)
 
@@ -102,11 +102,11 @@ class UserBmiProfile(models.Model):
         ('5', 'EXTREMELY ACTIVE'),
     )
     user = models.ForeignKey('auth.User', unique=True)
-    height = models.CharField(max_length=40,blank=True,null=True)  
-    height_measure = models.CharField(max_length=40, choices=MEASURE_CHOICES, blank=True, default='METRIC',null=True)
-    weight = models.CharField(max_length=40,blank=True,null=True)  
-    weight_measure = models.CharField(max_length=40, choices=MEASURE_CHOICES, blank=True, default='METRIC',null=True)  
-    lifestyle = models.CharField(max_length=32, choices=LIFESTYLE_CHOICES, blank=True, null=True)
+    height = models.CharField(max_length=40L,blank=True,null=True)  
+    height_measure = models.CharField(max_length=40L, choices=MEASURE_CHOICES, blank=True, default='METRIC',null=True)
+    weight = models.CharField(max_length=40L,blank=True,null=True)  
+    weight_measure = models.CharField(max_length=40L, choices=MEASURE_CHOICES, blank=True, default='METRIC',null=True)  
+    lifestyle = models.CharField(max_length=32L, choices=LIFESTYLE_CHOICES, blank=True, null=True)
 
     systolic_pressure = models.IntegerField(blank=True,null=True)
     diastolic_pressure = models.IntegerField(blank=True,null=True)
@@ -343,14 +343,17 @@ class UserWeightGoal(models.Model):
     
     user = models.ForeignKey('auth.User', related_name="+")
     weight = models.IntegerField()
-    weight_measure = models.CharField(max_length=12L, choices=MEASURE_CHOICES, default='METRIC')
+    weight_measure = models.CharField(max_length=12L, choices=MEASURE_CHOICES, default='METRIC',null=True)
     target_date = models.DateField(blank=True,null=True)
     interval_num = models.IntegerField(blank=True,default=0)
-    interval_unit = models.CharField(max_length=6L, choices=INTERVAL_UNIT_CHOICES,blank=True)
+    interval_unit = models.CharField(max_length=6L, choices=INTERVAL_UNIT_CHOICES,blank=True,null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     updated_by = models.ForeignKey('auth.User', related_name="+", db_column='updated_by')
-    status = models.CharField(max_length=18L, choices=GLOBAL_STATUS_CHOICES, default='ACTIVE', db_index=True)
+    #status = models.CharField(max_length=18L, choices=GLOBAL_STATUS_CHOICES, default='ACTIVE', db_index=True)
+
+    history = HistoricalRecords()
+
     class Meta:
         db_table = 'tbl_user_weight_goals'
         verbose_name_plural = 'Weight Goals'
@@ -375,14 +378,18 @@ class UserWeightGoal(models.Model):
         super(UserWeightGoal, self).save(*args, **kwargs)
     
 class UserWeightReading(models.Model):
-    user_weight_goal = models.ForeignKey('UserWeightGoal', related_name="readings")
+    #user_weight_goal = models.ForeignKey('UserWeightGoal', related_name="readings")
+    user = models.ForeignKey('auth.User', related_name="+")
     weight = models.IntegerField()
-    weight_measure = models.CharField(max_length=12L, choices=MEASURE_CHOICES, default='METRIC')
+    weight_measure = models.CharField(max_length=12L, choices=MEASURE_CHOICES, default='METRIC',null=True)
     reading_date = models.DateField()
     comment = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     updated_by = models.ForeignKey('auth.User', related_name="+", db_column='updated_by')
+    
+    history = HistoricalRecords()
+    
     class Meta:
         db_table = 'tbl_user_weight_readings'
         verbose_name_plural = 'Weight Readings'
@@ -390,7 +397,7 @@ class UserWeightReading(models.Model):
         ordering = ['reading_date']
 
     def __unicode__(self):
-        return u'reading %s of goal %s' % (self.id, self.user_weight_goal)
+        return u'reading %s ' % (self.id)
 
 class UserBloodPressureGoal(models.Model):
     user = models.ForeignKey('auth.User', related_name="+")
