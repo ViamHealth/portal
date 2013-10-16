@@ -101,6 +101,38 @@ class UserInviteSerializer(serializers.HyperlinkedModelSerializer):
         model = User
         fields = ('email',)
 
+
+###########
+# EXCERCISE
+###########
+
+class PhysicalActivitySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PhysicalActivity
+        fields = ( 'id', 'label','value')
+
+
+class UserPhysicalActivitySerializer(serializers.HyperlinkedModelSerializer):
+    user = serializers.Field(source='user.id')
+    physical_activity = PhysicalActivitySerializer(many=False)
+    class Meta:
+        model = UserPhysicalActivity
+        fields = ('id','user','weight','time_spent','physical_activity','user_calories_spent')
+
+
+class UserPhysicalActivityCreateSerializer(serializers.HyperlinkedModelSerializer):
+    user = serializers.Field(source='user.id')
+    physical_activity = serializers.PrimaryKeyRelatedField(many=False)
+    #physical_activity = serializers.HyperlinkedRelatedField(many=False, read_only=False,view_name='physicalactivity-detail')
+    class Meta:
+        model = UserPhysicalActivity
+        fields = ('id','user','weight','time_spent','physical_activity','user_calories_spent')
+
+
+############
+## REMINDERS
+############
+
 class ReminderSerializer(serializers.HyperlinkedModelSerializer):
     user = serializers.Field(source='user.id')
     #start_timestamp = serializers.IntegerField(source='start_timestamp',read_only=True)

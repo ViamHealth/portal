@@ -17,6 +17,8 @@ admin.site.register(UserGlucoseGoal)
 admin.site.register(UserGlucoseReading)
 admin.site.register(FoodItem)
 admin.site.register(DietTracker)
+admin.site.register(PhysicalActivity)
+admin.site.register(UserPhysicalActivity)
 
 
 

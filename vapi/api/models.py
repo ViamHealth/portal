@@ -642,6 +642,36 @@ class FoodItem(models.Model):
     def __unicode__(self):
         return u'%s' % self.name
 
+class PhysicalActivity(models.Model):
+    label = models.TextField()
+    value = models.FloatField()
 
+    history = HistoricalRecords()
+
+    class Meta:
+        db_table = 'tbl_physical_activities'
+
+class UserPhysicalActivity(models.Model):
+    TIME_SPENT_UNIT_CHOICES = (
+        ('1','MINUTE'),
+        ('2','HOUR'),
+    )
+    user = models.ForeignKey('auth.User', related_name="+")
+    weight = models.CharField(max_length=40L)  
+    weight_measure = models.CharField(max_length=40L, choices=MEASURE_CHOICES, blank=True, default='METRIC',null=True)
+    time_spent = models.CharField(max_length=40L)
+    time_spent_unit = models.CharField(max_length=40L, choices=TIME_SPENT_UNIT_CHOICES, blank=True, default='MINUTE',null=True)
+    physical_activity = models.ForeignKey('PhysicalActivity', related_name="physical_activity")
+    user_calories_spent = models.CharField(max_length=40L,blank=True,null=True)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    updated_by = models.ForeignKey('auth.User', related_name="+", db_column='updated_by')
+    
+    #history = HistoricalRecords()
+
+
+    class Meta:
+        db_table = 'tbl_user_physical_activities'
 
 User.profile = property(lambda u: UserProfile.objects.get_or_create(user=u)[0])

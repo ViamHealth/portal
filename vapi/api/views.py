@@ -328,6 +328,8 @@ class ReminderReadingsViewSet(ViamModelViewSetNoStatus):
             queryset = queryset.filter(reading_date=reading_date)
         return queryset
 
+
+
 class HealthfileViewSet(ViamModelViewSet):
 
     """
@@ -553,26 +555,9 @@ class UserBloodPressureGoalViewSet(ViamModelViewSet):
         except UserBloodPressureReading.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
         
-"""
-class UserBloodPressureReadingView(viewsets.ModelViewSet):
-    filter_fields = ('user_blood_pressure_goal',)
-    model = UserBloodPressureReading
-    serializer_class = UserBloodPressureReadingSerializer
-"""
 
 class UserCholesterolGoalViewSet(ViamModelViewSet):
-    """
-    Manage all healthfiles for a user ( authenticated or family member)
-    * Requires token authentication.
-    * CRUD of fields created_at & updated_at are handled by API only.
-    * User field is not to be passed to the API via POST params. It will be ignored if passed.
-    * For family user, pass user in URL . ie append ?user=$user_id
-    * For current logged in user, API automatically picks up  the user
-    * Allowed methods - GET , POST , PUT , DELETE
-    * custom actions :- 
-    * POST set_reading - set a new reading / update old reading. Updation is based on reading_date params
-    """
-
+    
     #filter_fields = ('user')
     model = UserCholesterolGoal
     serializer_class = UserCholesterolGoalSerializer
@@ -622,17 +607,6 @@ class UserCholesterolGoalViewSet(ViamModelViewSet):
 
 
 class UserGlucoseGoalViewSet(ViamModelViewSet):
-    """
-    Manage all healthfiles for a user ( authenticated or family member)
-    * Requires token authentication.
-    * CRUD of fields created_at & updated_at are handled by API only.
-    * User field is not to be passed to the API via POST params. It will be ignored if passed.
-    * For family user, pass user in URL . ie append ?user=$user_id
-    * For current logged in user, API automatically picks up  the user
-    * Allowed methods - GET , POST , PUT , DELETE
-    * custom actions :- 
-    * POST set_reading - set a new reading / update old reading. Updation is based on reading_date params
-    """
 
     #filter_fields = ('user')
     model = UserGlucoseGoal
@@ -739,6 +713,22 @@ class DietTrackerViewSet(ViamModelViewSet):
 
 
 
+class PhysicalActivityViewSet(viewsets.ModelViewSet):
+    model = PhysicalActivity
+    serializer_class = PhysicalActivitySerializer
+    permission_classes = (permissions.IsAuthenticated,)
+
+
+class UserPhysicalActivityViewSet(ViamModelViewSetClean):
+    model = UserPhysicalActivity
+    #serializer_class = UserPhysicalActivityCreateSerializer
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def get_serializer_class(self):
+        if self.request.method in permissions.SAFE_METHODS:
+            return UserPhysicalActivitySerializer
+        else:
+            return UserPhysicalActivityCreateSerializer
 
 #class ObtainAuthToken(APIView):
 #    throttle_classes = ()
