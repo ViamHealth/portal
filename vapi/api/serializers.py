@@ -122,7 +122,7 @@ class UserPhysicalActivitySerializer(serializers.HyperlinkedModelSerializer):
 
     def get_calories_spent(self, obj=None):
         if obj is not None:
-            if obj.user_calories_spent is not None:
+            if obj.user_calories_spent is not None and obj.user_calories_spent != '':
                 return obj.user_calories_spent
             elif obj.weight is not None and obj.time_spent is not None and obj.physical_activity is not None:
                 return ( float(obj.weight) * float(obj.time_spent) * obj.physical_activity.value * 2.2 ) / 60 
