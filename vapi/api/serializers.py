@@ -101,16 +101,14 @@ class UserInviteSerializer(serializers.HyperlinkedModelSerializer):
         model = User
         fields = ('email',)
 
-
-###########
-# EXCERCISE
-###########
+############
+###EXCERCISE
+############
 
 class PhysicalActivitySerializer(serializers.ModelSerializer):
     class Meta:
         model = PhysicalActivity
         fields = ( 'id', 'label','value')
-
 
 class UserPhysicalActivitySerializer(serializers.HyperlinkedModelSerializer):
     user = serializers.Field(source='user.id')
@@ -125,7 +123,7 @@ class UserPhysicalActivitySerializer(serializers.HyperlinkedModelSerializer):
             if obj.user_calories_spent is not None and obj.user_calories_spent != '':
                 return obj.user_calories_spent
             elif obj.weight is not None and obj.time_spent is not None and obj.physical_activity is not None:
-                return ( float(obj.weight) * float(obj.time_spent) * obj.physical_activity.value * 2.2 ) / 60 
+                return ( float(obj.weight) * float(obj.time_spent) * obj.physical_activity.value * 2.2 ) / 60
         else:
             return None
 
@@ -335,6 +333,11 @@ class HealthfileUploadSerializer(serializers.HyperlinkedModelSerializer):
         fields = ('id','file','description')
 
 
+
+######################
+########### GOALS
+######################
+
 class UserWeightReadingCreateSerializer(serializers.HyperlinkedModelSerializer):
     user = serializers.Field(source='user.id')
     class Meta:
@@ -348,10 +351,15 @@ class UserWeightReadingSerializer(serializers.HyperlinkedModelSerializer):
         fields = ('weight' ,'reading_date','comment')
 
 class UserWeightGoalSerializer(serializers.HyperlinkedModelSerializer):
-    #readings = UserWeightReadingSerializer(required=False,read_only=True)
     user = serializers.Field(source='user.id')
     healthy_range = serializers.SerializerMethodField('get_healthy_range')
-    readings = serializers.SerializerMethodField('get_weight_readings')
+    readings = serializers.SerializerMethodField('get_readings')
+    def get_readings(self, obj=None):
+        user = obj.user
+        readings = UserWeightReading.objects.filter(user=user)
+        serializer = UserWeightReadingSerializer(readings, many=True)
+        return serializer.data
+    #readings = UserWeightReadingSerializer(many=True)
     class Meta:
         model = UserWeightGoal
         fields = ('id', 'user','readings','weight','healthy_range' ,'target_date','interval_num','interval_unit',)
@@ -375,24 +383,31 @@ class UserWeightGoalSerializer(serializers.HyperlinkedModelSerializer):
         a['weight']['min_measure'] = 'METRIC'
         return a
 
-    def get_weight_readings(self, obj=None):
-        user = obj.user
-        readings = UserWeightReading.objects.filter(user=user)
-        serializer = UserWeightReadingSerializer(readings, many=True)
-        #pprint.pprint(serializer)
-        return serializer.data
+    
 
+###########
 
-class UserBloodPressureReadingSerializer(serializers.HyperlinkedModelSerializer):
-    user_blood_pressure_goal = serializers.Field(source='user_blood_pressure_goal.id')
+class UserBloodPressureReadingCreateSerializer(serializers.HyperlinkedModelSerializer):
+    user = serializers.Field(source='user.id')
     class Meta:
         model = UserBloodPressureReading
-        fields = ('id','user_blood_pressure_goal','systolic_pressure','diastolic_pressure', 'pulse_rate' ,'reading_date','comment')
+        fields = ('id','user','systolic_pressure','diastolic_pressure', 'pulse_rate' ,'reading_date','comment')
+
+class UserBloodPressureReadingSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = UserBloodPressureReading
+        fields = ('systolic_pressure','diastolic_pressure', 'pulse_rate' ,'reading_date','comment')
 
 class UserBloodPressureGoalSerializer(serializers.HyperlinkedModelSerializer):
-    readings = UserBloodPressureReadingSerializer(required=False,read_only=True)
     user = serializers.Field(source='user.id')
     healthy_range = serializers.SerializerMethodField('get_healthy_range')
+    readings = serializers.SerializerMethodField('get_readings')
+    def get_readings(self, obj=None):
+        user = obj.user
+        readings = UserBloodPressureReading.objects.filter(user=user)
+        serializer = UserBloodPressureReadingSerializer(readings, many=True)
+        return serializer.data
+
     class Meta:
         model = UserBloodPressureGoal
         fields = ('id', 'user','readings','systolic_pressure','diastolic_pressure', 'pulse_rate' ,'healthy_range','target_date','interval_num','interval_unit',)
@@ -414,17 +429,33 @@ class UserBloodPressureGoalSerializer(serializers.HyperlinkedModelSerializer):
         a['diastolic_pressure']['min'] = min_diastolic_pressure;
         return a;
 
+###########################
 
-class UserCholesterolReadingSerializer(serializers.HyperlinkedModelSerializer):
-    user_cholesterol_goal = serializers.Field(source='user_cholesterol_goal.id')
+class UserCholesterolReadingCreateSerializer(serializers.HyperlinkedModelSerializer):
+    user = serializers.Field(source='user.id')
     class Meta:
         model = UserCholesterolReading
-        fields = ('id','user_cholesterol_goal','hdl','ldl', 'triglycerides', 'total_cholesterol' ,'reading_date','comment')
+        fields = ('id','user','hdl','ldl', 'triglycerides' ,'reading_date','comment')
+
+
+class UserCholesterolReadingSerializer(serializers.HyperlinkedModelSerializer):
+    total_cholesterol = serializers.Field(source='total_cholesterol')
+    class Meta:
+        model = UserCholesterolReading
+        fields = ('hdl','ldl', 'triglycerides', 'total_cholesterol' ,'reading_date','comment')
 
 class UserCholesterolGoalSerializer(serializers.HyperlinkedModelSerializer):
-    readings = UserCholesterolReadingSerializer(required=False,read_only=True)
+    total_cholesterol = serializers.Field(source='total_cholesterol')
     user = serializers.Field(source='user.id')
     healthy_range = serializers.SerializerMethodField('get_healthy_range')
+    readings = serializers.SerializerMethodField('get_readings')
+
+    def get_readings(self, obj=None):
+        user = obj.user
+        readings = UserCholesterolReading.objects.filter(user=user)
+        serializer = UserCholesterolReadingSerializer(readings, many=True)
+        return serializer.data
+
     class Meta:
         model = UserCholesterolGoal
         fields = ('id', 'user','readings','hdl','ldl', 'triglycerides', 'total_cholesterol' ,'healthy_range','target_date','interval_num','interval_unit',)
@@ -451,16 +482,31 @@ class UserCholesterolGoalSerializer(serializers.HyperlinkedModelSerializer):
         a['ldl']['min'] = min_ldl;
         return a;
 
-class UserGlucoseReadingSerializer(serializers.HyperlinkedModelSerializer):
-    user_glucose_goal = serializers.Field(source='user_glucose_goal.id')
+###################
+
+class UserGlucoseReadingCreateSerializer(serializers.HyperlinkedModelSerializer):
+    user = serializers.Field(source='user.id')
     class Meta:
         model = UserGlucoseReading
-        fields = ('id','user_glucose_goal','fasting','random' ,'reading_date','comment')
+        fields = ('id','user','fasting','random' ,'reading_date','comment')
+
+
+class UserGlucoseReadingSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = UserGlucoseReading
+        fields = ('fasting','random' ,'reading_date','comment')
 
 class UserGlucoseGoalSerializer(serializers.HyperlinkedModelSerializer):
-    readings = UserGlucoseReadingSerializer(required=False,read_only=True)
     user = serializers.Field(source='user.id')
     healthy_range = serializers.SerializerMethodField('get_healthy_range')
+    readings = serializers.SerializerMethodField('get_readings')
+
+    def get_readings(self, obj=None):
+        user = obj.user
+        readings = UserGlucoseReading.objects.filter(user=user)
+        serializer = UserGlucoseGoalSerializer(readings, many=True)
+        return serializer.data
+        
     class Meta:
         model = UserGlucoseGoal
         fields = ('id', 'user','readings','random','fasting','healthy_range','target_date','interval_num','interval_unit',)
@@ -483,6 +529,9 @@ class UserGlucoseGoalSerializer(serializers.HyperlinkedModelSerializer):
         a['fasting']['min'] = min_fasting;
         return a;
 
+##########################################
+############### FOOD ITEMS ###############
+##########################################
 class FoodItemSerializer(serializers.HyperlinkedModelSerializer):
     display_image_url = serializers.Field(source='display_image_url')
     class Meta:
