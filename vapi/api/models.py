@@ -57,10 +57,10 @@ class UserProfile(models.Model):
 
     user = models.ForeignKey('auth.User', unique=True)
     blood_group = models.CharField(max_length=64L,choices=BLOOD_GROUP_CHOICES,blank=True,null=True)
-    gender = models.CharField(max_length=140L, choices=GENDER_CHOICES, blank=True)  
-    profile_picture = models.ImageField(upload_to=get_profile_image_path, blank=True)
+    gender = models.CharField(max_length=140L, choices=GENDER_CHOICES, blank=True, null=True)  
+    profile_picture = models.ImageField(upload_to=get_profile_image_path, blank=True, null=True)
     date_of_birth = models.DateField(blank=True,null=True)
-    phone_number = models.CharField(max_length=16L, blank=True)
+    phone_number = models.CharField(max_length=16L, blank=True, null=True)
     fb_profile_id = models.CharField(max_length=62L, blank=True, null=True)
     fb_username = models.TextField(blank=True, null=True)
     organization = models.TextField(blank=True, null=True)
@@ -102,9 +102,9 @@ class UserBmiProfile(models.Model):
         ('5', 'EXTREMELY ACTIVE'),
     )
     user = models.ForeignKey('auth.User', unique=True)
-    height = models.CharField(max_length=40L,blank=True,null=True)  
+    height = models.FloatField(blank=True, null=True)
     height_measure = models.CharField(max_length=40L, choices=MEASURE_CHOICES, blank=True, default='METRIC',null=True)
-    weight = models.CharField(max_length=40L,blank=True,null=True)  
+    weight = models.FloatField(blank=True, null=True)
     weight_measure = models.CharField(max_length=40L, choices=MEASURE_CHOICES, blank=True, default='METRIC',null=True)  
     lifestyle = models.CharField(max_length=32L, choices=LIFESTYLE_CHOICES, blank=True, null=True)
 
@@ -172,9 +172,9 @@ class Healthfile(models.Model):
         return 'healthfiles/'+hashlib.sha224(str(self.id)).hexdigest()
 
     user = models.ForeignKey('auth.User', related_name="+")
-    name = models.CharField(max_length=256L,blank=True)
-    description = models.TextField(blank=True)
-    mime_type = models.CharField(max_length=256L,blank=True)
+    name = models.CharField(max_length=256L,blank=True, null=True)
+    description = models.TextField(blank=True, null=True)
+    mime_type = models.CharField(max_length=256L,blank=True, null=True)
     file = models.FileField(upload_to=get_healthfile_path, blank=True, editable=True,)
     status = models.CharField(max_length=18L, choices=GLOBAL_STATUS_CHOICES, default='ACTIVE', db_index=True)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -242,7 +242,7 @@ class Reminder(models.Model):
     user = models.ForeignKey('auth.User', related_name="+")
     type = models.CharField(max_length=64L,choices=REMINDER_TYPES, default='1',db_index=True)
     name = models.TextField(blank=False)
-    details = models.TextField(blank=True)
+    details = models.TextField(blank=True, null=True)
 
     morning_count = models.FloatField(blank=True,null=True)
     afternoon_count = models.FloatField(blank=True,null=True)
@@ -339,10 +339,29 @@ post_save.connect(create_reminder_readings, sender=Reminder)
 #pre_save.connect(delete_reminder_readings, sender=Reminder)
 
 
+#####################
+######### GOALS #####
+#####################
+
+def goal_get_target_date(self, obj, *args, **kwargs):
+    if obj.interval_num > 0 and obj.interval_unit is not None:
+        d1 = datetime.datetime.now()
+    if obj.interval_unit == 'DAY':
+        obj.target_date = d1 + relativedelta(days=obj.interval_num)
+    elif obj.interval_unit == 'WEEK':
+        obj.target_date = d1 + relativedelta(weeks=obj.interval_num)
+    elif obj.interval_unit == 'MONTH':
+        obj.target_date = d1 + relativedelta(months=obj.interval_num)
+    elif obj.interval_unit == 'YEAR':
+        obj.target_date = d1 + relativedelta(years=obj.interval_num)
+    if obj.target_date is not None:
+        obj.target_date = obj.target_date.date()
+    return obj.target_date
+
 class UserWeightGoal(models.Model):
     
     user = models.ForeignKey('auth.User', related_name="+")
-    weight = models.IntegerField()
+    weight = models.FloatField()
     weight_measure = models.CharField(max_length=12L, choices=MEASURE_CHOICES, default='METRIC',null=True)
     target_date = models.DateField(blank=True,null=True)
     interval_num = models.IntegerField(blank=True,default=0)
@@ -350,7 +369,6 @@ class UserWeightGoal(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     updated_by = models.ForeignKey('auth.User', related_name="+", db_column='updated_by')
-    #status = models.CharField(max_length=18L, choices=GLOBAL_STATUS_CHOICES, default='ACTIVE', db_index=True)
 
     history = HistoricalRecords()
 
@@ -363,27 +381,15 @@ class UserWeightGoal(models.Model):
     
     def save(self, *args, **kwargs):
         if self.target_date is None:
-            if self.interval_num > 0 and self.interval_unit is not None:
-                d1 = datetime.datetime.now()
-                if self.interval_unit == 'DAY':
-                    self.target_date = d1 + relativedelta(days=self.interval_num)
-                elif self.interval_unit == 'WEEK':
-                    self.target_date = d1 + relativedelta(weeks=self.interval_num)
-                elif self.interval_unit == 'MONTH':
-                    self.target_date = d1 + relativedelta(months=self.interval_num)
-                elif self.interval_unit == 'YEAR':
-                    self.target_date = d1 + relativedelta(years=self.interval_num)
-                if self.target_date is not None:
-                    self.target_date = self.target_date.date()
+            self.target_date = goal_get_target_date(self, *args, **kwargs)
         super(UserWeightGoal, self).save(*args, **kwargs)
     
 class UserWeightReading(models.Model):
-    #user_weight_goal = models.ForeignKey('UserWeightGoal', related_name="readings")
     user = models.ForeignKey('auth.User', related_name="+")
-    weight = models.IntegerField()
+    weight = models.FloatField()
     weight_measure = models.CharField(max_length=12L, choices=MEASURE_CHOICES, default='METRIC',null=True)
     reading_date = models.DateField()
-    comment = models.TextField(blank=True)
+    comment = models.TextField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     updated_by = models.ForeignKey('auth.User', related_name="+", db_column='updated_by')
@@ -399,18 +405,21 @@ class UserWeightReading(models.Model):
     def __unicode__(self):
         return u'reading %s ' % (self.id)
 
+
 class UserBloodPressureGoal(models.Model):
     user = models.ForeignKey('auth.User', related_name="+")
     target_date = models.DateField(blank=True,null=True)
-    systolic_pressure = models.IntegerField()
-    diastolic_pressure = models.IntegerField()
+    systolic_pressure = models.FloatField()
+    diastolic_pressure = models.FloatField()
     pulse_rate = models.IntegerField()
     interval_num = models.IntegerField(blank=True,default=0)
-    interval_unit = models.CharField(max_length=6L, choices=INTERVAL_UNIT_CHOICES,blank=True)
+    interval_unit = models.CharField(max_length=6L, choices=INTERVAL_UNIT_CHOICES,blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     updated_by = models.ForeignKey('auth.User', related_name="+", db_column='updated_by')
-    status = models.CharField(max_length=18L, choices=GLOBAL_STATUS_CHOICES, default='ACTIVE', db_index=True)
+
+    history = HistoricalRecords()
+    
     class Meta:
         db_table = 'tbl_user_blood_pressure_goals'
         verbose_name_plural = 'BP Goals'
@@ -420,30 +429,23 @@ class UserBloodPressureGoal(models.Model):
 
     def save(self, *args, **kwargs):
         if self.target_date is None:
-            if self.interval_num > 0 and self.interval_unit is not None:
-                d1 = datetime.datetime.now()
-                if self.interval_unit == 'DAY':
-                    self.target_date = d1 + relativedelta(days=self.interval_num)
-                elif self.interval_unit == 'WEEK':
-                    self.target_date = d1 + relativedelta(weeks=self.interval_num)
-                elif self.interval_unit == 'MONTH':
-                    self.target_date = d1 + relativedelta(months=self.interval_num)
-                elif self.interval_unit == 'YEAR':
-                    self.target_date = d1 + relativedelta(years=self.interval_num)
-                if self.target_date is not None:
-                    self.target_date = self.target_date.date()
+            self.target_date = goal_get_target_date(self, *args, **kwargs)
         super(UserBloodPressureGoal, self).save(*args, **kwargs)
 
+
 class UserBloodPressureReading(models.Model):
-    user_blood_pressure_goal = models.ForeignKey('UserBloodPressureGoal', related_name="readings")
-    systolic_pressure = models.IntegerField()
-    diastolic_pressure = models.IntegerField()
+    user = models.ForeignKey('auth.User', related_name="+")
+    systolic_pressure = models.FloatField()
+    diastolic_pressure = models.FloatField()
     pulse_rate = models.IntegerField()
     reading_date = models.DateField()
-    comment = models.TextField(blank=True)
+    comment = models.TextField(blank=True,null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     updated_by = models.ForeignKey('auth.User', related_name="+", db_column='updated_by')
+
+    history = HistoricalRecords()
+
     class Meta:
         db_table = 'tbl_user_blood_pressure_readings'
         verbose_name_plural = 'BP Readings'
@@ -455,16 +457,17 @@ class UserBloodPressureReading(models.Model):
 class UserCholesterolGoal(models.Model):
     user = models.ForeignKey('auth.User', related_name="+")
     target_date = models.DateField(blank=True,null=True)
-    hdl = models.IntegerField()
-    ldl = models.IntegerField()
-    triglycerides = models.IntegerField()
-    total_cholesterol = models.IntegerField()
+    hdl = models.FloatField()
+    ldl = models.FloatField()
+    triglycerides = models.FloatField()
     interval_num = models.IntegerField(blank=True,default=0)
-    interval_unit = models.CharField(max_length=6L, choices=INTERVAL_UNIT_CHOICES,blank=True)
+    interval_unit = models.CharField(max_length=6L, choices=INTERVAL_UNIT_CHOICES,blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     updated_by = models.ForeignKey('auth.User', related_name="+", db_column='updated_by')
-    status = models.CharField(max_length=18L, choices=GLOBAL_STATUS_CHOICES, default='ACTIVE', db_index=True)
+    
+    history = HistoricalRecords()
+
     class Meta:
         db_table = 'tbl_user_cholesterol_goals'
         verbose_name_plural = 'Cholesterol Goals'
@@ -473,31 +476,30 @@ class UserCholesterolGoal(models.Model):
         return u'%s' % (self.id)
     def save(self, *args, **kwargs):
         if self.target_date is None:
-            if self.interval_num > 0 and self.interval_unit is not None:
-                d1 = datetime.datetime.now()
-                if self.interval_unit == 'DAY':
-                    self.target_date = d1 + relativedelta(days=self.interval_num)
-                elif self.interval_unit == 'WEEK':
-                    self.target_date = d1 + relativedelta(weeks=self.interval_num)
-                elif self.interval_unit == 'MONTH':
-                    self.target_date = d1 + relativedelta(months=self.interval_num)
-                elif self.interval_unit == 'YEAR':
-                    self.target_date = d1 + relativedelta(years=self.interval_num)
-                if self.target_date is not None:
-                    self.target_date = self.target_date.date()
+            self.target_date = goal_get_target_date(self, *args, **kwargs)
         super(UserCholesterolGoal, self).save(*args, **kwargs)
 
+    def total_cholesterol(self):
+        total_cholesterol = None
+        if self.id:
+            if self.hdl is not None and self.ldl is not None and self.triglycerides is not None:
+                total_cholesterol = float(self.hdl) + float(self.ldl) + 0.2 * float(self.triglycerides)
+
+        return total_cholesterol
+
 class UserCholesterolReading(models.Model):
-    user_cholesterol_goal = models.ForeignKey('UserCholesterolGoal', related_name="readings")
-    hdl = models.IntegerField()
-    ldl = models.IntegerField()
-    triglycerides = models.IntegerField()
-    total_cholesterol = models.IntegerField()
+    user = models.ForeignKey('auth.User', related_name="+")
+    hdl = models.FloatField()
+    ldl = models.FloatField()
+    triglycerides = models.FloatField()
     reading_date = models.DateField()
-    comment = models.TextField(blank=True)
+    comment = models.TextField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     updated_by = models.ForeignKey('auth.User', related_name="+", db_column='updated_by')
+
+    history = HistoricalRecords()
+
     class Meta:
         db_table = 'tbl_user_cholesterol_readings'
         verbose_name_plural = 'Cholesterol Readings'
@@ -506,17 +508,28 @@ class UserCholesterolReading(models.Model):
     def __unicode__(self):
         return u'reading %s of goal %s' % (self.id, self.user_cholesterol_goal)
 
+    def total_cholesterol(self):
+        total_cholesterol = None
+        if self.id:
+            if self.hdl is not None and self.ldl is not None and self.triglycerides is not None:
+                total_cholesterol = float(self.hdl) + float(self.ldl) + 0.2 * float(self.triglycerides)
+
+        return total_cholesterol
+        
+
 class UserGlucoseGoal(models.Model):
     user = models.ForeignKey('auth.User', related_name="+")
     target_date = models.DateField(blank=True,null=True)
-    random = models.IntegerField()
-    fasting = models.IntegerField()
+    random = models.FloatField()
+    fasting = models.FloatField()
     interval_num = models.IntegerField(blank=True,default=0)
-    interval_unit = models.CharField(max_length=6L, choices=INTERVAL_UNIT_CHOICES,blank=True)
+    interval_unit = models.CharField(max_length=6L, choices=INTERVAL_UNIT_CHOICES,blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     updated_by = models.ForeignKey('auth.User', related_name="+", db_column='updated_by')
-    status = models.CharField(max_length=18L, choices=GLOBAL_STATUS_CHOICES, default='ACTIVE', db_index=True)
+    
+    history = HistoricalRecords()
+
     class Meta:
         db_table = 'tbl_user_glucose_goals'
         verbose_name_plural = 'Glucose Goals'
@@ -525,29 +538,21 @@ class UserGlucoseGoal(models.Model):
         return u'%s' % (self.id)
     def save(self, *args, **kwargs):
         if self.target_date is None:
-            if self.interval_num > 0 and self.interval_unit is not None:
-                d1 = datetime.datetime.now()
-                if self.interval_unit == 'DAY':
-                    self.target_date = d1 + relativedelta(days=self.interval_num)
-                elif self.interval_unit == 'WEEK':
-                    self.target_date = d1 + relativedelta(weeks=self.interval_num)
-                elif self.interval_unit == 'MONTH':
-                    self.target_date = d1 + relativedelta(months=self.interval_num)
-                elif self.interval_unit == 'YEAR':
-                    self.target_date = d1 + relativedelta(years=self.interval_num)
-                if self.target_date is not None:
-                    self.target_date = self.target_date.date()
+            self.target_date = goal_get_target_date(self, *args, **kwargs)
         super(UserGlucoseGoal, self).save(*args, **kwargs)
 
 class UserGlucoseReading(models.Model):
-    user_glucose_goal = models.ForeignKey('UserGlucoseGoal', related_name="readings")
-    random = models.IntegerField(default=0)
-    fasting = models.IntegerField(default=0)
+    user = models.ForeignKey('auth.User', related_name="+")
+    random = models.FloatField(blank=True, null=True)
+    fasting = models.FloatField(blank=True, null=True)
     reading_date = models.DateField()
-    comment = models.TextField(blank=True)
+    comment = models.TextField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     updated_by = models.ForeignKey('auth.User', related_name="+", db_column='updated_by')
+
+    history = HistoricalRecords()
+
     class Meta:
         db_table = 'tbl_user_glucose_readings'
         verbose_name_plural = 'Glucose Readings'
@@ -555,6 +560,11 @@ class UserGlucoseReading(models.Model):
         ordering = ['reading_date']
     def __unicode__(self):
         return u'reading %s of goal %s' % (self.id, self.user_glucose_goal)
+
+
+#######################
+########### DietTracker
+#######################
 
 class DietTracker(models.Model):
     MEAL_TYPE_CHOICES = (
@@ -593,7 +603,7 @@ class FoodItem(models.Model):
         return s3_image_root + pic
 
     name = models.TextField(blank=False)
-    display_image = models.ImageField(upload_to=get_display_image_path, blank=True)
+    display_image = models.ImageField(upload_to=get_display_image_path, blank=True, null=True)
     quantity = models.FloatField(blank=False)
     quantity_unit = models.TextField(blank=False)
     calories = models.FloatField(blank=True,default=0)
@@ -614,25 +624,25 @@ class FoodItem(models.Model):
     calcium   = models.FloatField(blank=True,default=0)
     iron  = models.FloatField(blank=True,default=0)
 
-    calories_unit = models.CharField(max_length=64L,blank=True)
-    total_fat_unit = models.CharField(max_length=64L,blank=True)
-    saturated_fat_unit = models.CharField(max_length=64L,blank=True)
-    polyunsaturated_fat_unit = models.CharField(max_length=64L,blank=True)
-    monounsaturated_fat_unit = models.CharField(max_length=64L,blank=True)
-    trans_fat_unit = models.CharField(max_length=64L,blank=True)
-    cholesterol_unit = models.CharField(max_length=64L,blank=True)
-    sodium_unit = models.CharField(max_length=64L,blank=True)
-    potassium_unit = models.CharField(max_length=64L,blank=True)
-    total_carbohydrates_unit = models.CharField(max_length=64L,blank=True)
-    dietary_fiber_unit = models.CharField(max_length=64L,blank=True)
-    sugars_unit = models.CharField(max_length=64L,blank=True)
-    protein_unit = models.CharField(max_length=64L,blank=True)
-    vitamin_a_unit = models.CharField(max_length=64L,blank=True)
-    vitamin_c_unit = models.CharField(max_length=64L,blank=True)
-    calcium_unit = models.CharField(max_length=64L,blank=True)
-    iron_unit = models.CharField(max_length=64L,blank=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+    calories_unit = models.CharField(max_length=64L,blank=True, null=True)
+    total_fat_unit = models.CharField(max_length=64L,blank=True, null=True)
+    saturated_fat_unit = models.CharField(max_length=64L,blank=True, null=True)
+    polyunsaturated_fat_unit = models.CharField(max_length=64L,blank=True, null=True)
+    monounsaturated_fat_unit = models.CharField(max_length=64L,blank=True, null=True)
+    trans_fat_unit = models.CharField(max_length=64L,blank=True, null=True)
+    cholesterol_unit = models.CharField(max_length=64L,blank=True, null=True)
+    sodium_unit = models.CharField(max_length=64L,blank=True, null=True)
+    potassium_unit = models.CharField(max_length=64L,blank=True, null=True)
+    total_carbohydrates_unit = models.CharField(max_length=64L,blank=True, null=True)
+    dietary_fiber_unit = models.CharField(max_length=64L,blank=True, null=True)
+    sugars_unit = models.CharField(max_length=64L,blank=True, null=True)
+    protein_unit = models.CharField(max_length=64L,blank=True, null=True)
+    vitamin_a_unit = models.CharField(max_length=64L,blank=True, null=True)
+    vitamin_c_unit = models.CharField(max_length=64L,blank=True, null=True)
+    calcium_unit = models.CharField(max_length=64L,blank=True, null=True)
+    iron_unit = models.CharField(max_length=64L,blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True, null=True)
+    updated_at = models.DateTimeField(auto_now=True, null=True)
     updated_by = models.ForeignKey('auth.User', related_name="+", db_column='updated_by')
     status = models.CharField(max_length=18L, choices=GLOBAL_STATUS_CHOICES, default='ACTIVE', db_index=True)
     class Meta:
@@ -657,7 +667,7 @@ class UserPhysicalActivity(models.Model):
         ('2','HOUR'),
     )
     user = models.ForeignKey('auth.User', related_name="+")
-    weight = models.CharField(max_length=40L)  
+    weight = models.FloatField()
     weight_measure = models.CharField(max_length=40L, choices=MEASURE_CHOICES, blank=True, default='METRIC',null=True)
     time_spent = models.CharField(max_length=40L)
     time_spent_unit = models.CharField(max_length=40L, choices=TIME_SPENT_UNIT_CHOICES, blank=True, default='MINUTE',null=True)

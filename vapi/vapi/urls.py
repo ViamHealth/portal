@@ -50,16 +50,12 @@ urlpatterns = patterns('',
     #url(r'^goals/$', views.GoalViewSet.as_view(),name='goal-list'),
     url(r'^weight-readings/$', views.WeightReadingViewSet.as_view({'get':'list','post':'create'}),name='weight-readings'),
     url(r'^weight-readings/(?P<pk>[0-9-]+)/$', views.WeightReadingViewSet.as_view({'get':'retrieve','delete':'destroy','put':'update'}),name='weight-reading-detail'),
-
-    url(r'^blood-pressure-goals/(?P<pk>[0-9]+)/set-reading/$', views.UserBloodPressureGoalViewSet.as_view({'post':'set_reading'}),name='goal-blood-pressure-reading-detail'),
-    url(r'^blood-pressure-goals/(?P<pk>[0-9]+)/destroy-reading/$', views.UserBloodPressureGoalViewSet.as_view({'delete':'destroy_reading'}),name='goal-blood-pressure-reading-detail'),
-
-    url(r'^cholesterol-goals/(?P<pk>[0-9]+)/set-reading/$', views.UserCholesterolGoalViewSet.as_view({'post':'set_reading'}),name='goal-cholesterol-reading-detail'),
-    url(r'^cholesterol-goals/(?P<pk>[0-9]+)/destroy-reading/$', views.UserCholesterolGoalViewSet.as_view({'delete':'destroy_reading'}),name='goal-cholesterol-reading-detail'),
-    
-    url(r'^glucose-goals/(?P<pk>[0-9]+)/set-reading/$', views.UserGlucoseGoalViewSet.as_view({'post':'set_reading'}),name='goal-glucose-reading-detail'),
-    url(r'^glucose-goals/(?P<pk>[0-9]+)/destroy-reading/$', views.UserGlucoseGoalViewSet.as_view({'delete':'destroy_reading'}),name='goal-glucose-reading-detail'),
-
+    url(r'^blood-pressure-readings/$', views.BloodPressureReadingViewSet.as_view({'get':'list','post':'create'}),name='blood-pressure-readings'),
+    url(r'^blood-pressure-readings/(?P<pk>[0-9-]+)/$', views.BloodPressureReadingViewSet.as_view({'get':'retrieve','delete':'destroy','put':'update'}),name='blood-pressure-reading-detail'),
+    url(r'^cholesterol-readings/$', views.CholesterolReadingViewSet.as_view({'get':'list','post':'create'}),name='cholesterol-readings'),
+    url(r'^cholesterol-readings/(?P<pk>[0-9-]+)/$', views.CholesterolReadingViewSet.as_view({'get':'retrieve','delete':'destroy','put':'update'}),name='cholesterol-reading-detail'),
+    url(r'^glucose-readings/$', views.GlucoseReadingViewSet.as_view({'get':'list','post':'create'}),name='glucose-readings'),
+    url(r'^glucose-readings/(?P<pk>[0-9-]+)/$', views.GlucoseReadingViewSet.as_view({'get':'retrieve','delete':'destroy','put':'update'}),name='glucose-reading-detail'),
     
     url(r'^users/(?P<pk>[0-9]+)/$', views.UserView.as_view({'get': 'retrieve', 'put': 'update','delete':'destroy'}),name='user-detail'),
     url(r'^users/(?P<pk>[0-9]+)/profile/$', views.UserView.as_view({'put':'update_profile'}),name='profile-detail'),
