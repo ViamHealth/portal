@@ -57,11 +57,11 @@ class UserProfile(models.Model):
 
     user = models.ForeignKey('auth.User', unique=True)
     blood_group = models.CharField(max_length=64L,choices=BLOOD_GROUP_CHOICES,blank=True,null=True)
-    gender = models.CharField(max_length=140L, choices=GENDER_CHOICES, blank=True, null=True)  
+    gender = models.CharField(max_length=140L, choices=GENDER_CHOICES, blank=True)  
     profile_picture = models.ImageField(upload_to=get_profile_image_path, blank=True, null=True)
     date_of_birth = models.DateField(blank=True,null=True)
-    phone_number = models.CharField(max_length=16L, blank=True, null=True)
-    fb_profile_id = models.CharField(max_length=62L, blank=True, null=True)
+    phone_number = models.CharField(max_length=16L, blank=True)
+    fb_profile_id = models.CharField(max_length=62L, blank=True)
     fb_username = models.TextField(blank=True, null=True)
     organization = models.TextField(blank=True, null=True)
 
