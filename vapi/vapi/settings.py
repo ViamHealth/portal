@@ -6,6 +6,7 @@ TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
     # ('Your Name', 'your_email@example.com'),
+    ('Kunal', 'kunal.rachhoya@viamhealth.com'),
 )
 
 MANAGERS = ADMINS
@@ -13,7 +14,7 @@ MANAGERS = ADMINS
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': 'viam3',                      # Or path to database file if using sqlite3.
+        'NAME': 'viam2',                      # Or path to database file if using sqlite3.
         # The following settings are not used with sqlite3:
         'USER': 'root',
         'PASSWORD': '',
@@ -139,6 +140,7 @@ INSTALLED_APPS = (
     'rest_framework.authtoken',
     'api',
     'storages',
+    'django_ses',
 )
 
 # A sample logging configuration. The only tangible logging
@@ -170,6 +172,8 @@ LOGGING = {
     }
 }
 
+SERVER_EMAIL = 'kunal.rachhoya@viamhealth.com'
+
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': ('rest_framework.permissions.IsAuthenticated',),
@@ -184,6 +188,11 @@ REST_FRAMEWORK = {
 
 DEFAULT_FILE_STORAGE = 'api.s3utils.MediaS3BotoStorage' 
 STATICFILES_STORAGE = 'api.s3utils.StaticS3BotoStorage'
+
+EMAIL_BACKEND = 'django_ses.SESBackend'
+
+FROM_VIAM_EMAIL = 'kunal.rachhoya@viamhealth.com'
+ENABLE_EMAIL_SANDBOX = True
 
 AWS_ACCESS_KEY_ID = 'AKIAI2VBRE4FPIPF6AYA'
 AWS_SECRET_ACCESS_KEY = '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'

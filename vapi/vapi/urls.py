@@ -76,3 +76,4 @@ urlpatterns = patterns('',
     #Uncomment the next line to enable the admin:
     url(r'^admin/', include(admin.site.urls)),
 )
+urlpatterns += (url(r'^admin/ses-stats/', include('django_ses.urls')),)
