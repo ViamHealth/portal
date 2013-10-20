@@ -2,6 +2,8 @@
 #TODOs
 #implement delete for others - status inactive
 from api.views_helper import *
+from api.email_helper import *
+
 from django.contrib.auth.models import User, AnonymousUser
 from rest_framework import viewsets, filters
 from api.models import *
@@ -18,7 +20,7 @@ from rest_framework.reverse import reverse
 from rest_framework.response import Response
 import pprint
 from django.db.models import Q
-from django.http import Http404
+from django.http import Http404, HttpResponse
 from itertools import chain
 import time
 from datetime import datetime, timedelta
@@ -32,8 +34,7 @@ from django.core.paginator import Paginator, PageNotAnInteger
 import boto
 from boto.s3.key import Key
 from django.conf import settings
-    
-from django.http import HttpResponse
+
 
 
 #Temporary create code for all users once.
@@ -120,6 +121,9 @@ class SignupView(viewsets.ViewSet):
             user = User.objects.get(pk=serializer.object.id)
             pserializer = UserSerializer(user, context={'request': request})
             UserBmiProfile.objects.get_or_create(user=user,defaults={'updated_by': user})
+
+            signup_email(user.email)
+
             return Response(pserializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -133,15 +137,21 @@ class InviteView(viewsets.ViewSet):
         if serializer.is_valid():
             try:
                 user = User.objects.get(username=serializer.object.email)
+                invite_existing_email(user, request.user)
             except User.DoesNotExist:
                 password = User.objects.make_random_password()
                 user = User.objects.create_user(username=serializer.object.email, email=serializer.object.email,password=password)
-
-            umap = UserGroupSet(group=request.user, user=user,status='ACTIVE',updated_by=request.user);
-            umap.save()
+                invite_new_email(user, request.user, password)
+            try:
+                UserGroupSet.objects.get(group=request.user, user=user)
+            except UserGroupSet.DoesNotExist:
+                umap = UserGroupSet(group=request.user, user=user,status='ACTIVE',updated_by=request.user);
+                umap.save()
 
             UserProfile.objects.get_or_create(user=user)
             UserBmiProfile.objects.get_or_create(user=user,defaults={'updated_by': request.user})
+
+            
 
             pserializer = UserSerializer(user, data=serializer.object, context={'request': request})
 
