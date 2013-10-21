@@ -46,6 +46,31 @@ class VApi
  
 	}
 
+    public static function signup($params=array())
+    {
+        self::$apiBaseUrl = Yii::app()->params['apiBaseUrl'];
+        if(empty($params))
+            return false;
+        if(isset($params['username']) && isset($params['password']))
+        {
+            $post_data['username'] = $params['username'];
+            $post_data['password'] = $params['password'];
+            $url = 'signup/';
+            $rest = new RESTClient();
+            $rest->initialize(array('server' => self::$apiBaseUrl));
+            if(! $result = $rest->post($url, $post_data))
+            {
+                //return false;
+                throw new CHttpException(500, 'API Server down');
+            }
+            else
+            {
+                //var_dump($result);die();
+                return true;
+            }
+        }
+    }
+
     public static function fetchToken($params=array())
     {
         self::$apiBaseUrl = Yii::app()->params['apiBaseUrl'];
