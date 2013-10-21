@@ -48,6 +48,10 @@ class Controller extends CController
                 return true;
                 //heartbeat url
             }
+            else if(($this->id == "site" && $action->id == "signup")){
+                return true;
+                //heartbeat url
+            }
         	else{
         		if(Yii::app()->request->isAjaxRequest){
         			die("user not logged in");

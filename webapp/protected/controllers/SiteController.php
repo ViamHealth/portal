@@ -107,6 +107,38 @@ class SiteController extends Controller
 	}
 
 	/**
+	 * Displays the Signup page
+	 */
+	public function actionSignup()
+	{
+		if (!Yii::app()->user->isGuest ){
+			$this->redirect(Yii::app()->createUrl('site/index'));
+		}
+		$model=new SignupForm;
+
+		// if it is ajax validation request
+		if(isset($_POST['ajax']) && $_POST['ajax']==='signup-form')
+		{
+			echo CActiveForm::validate($model);
+			Yii::app()->end();
+		}
+
+		// collect user input data
+		if(isset($_POST['SignupForm']))
+		{
+			
+			$attributes = $_POST['SignupForm'];
+			$attributes['confirm_password'] = $_POST['SignupForm']['confirm_password'];
+			$model->attributes = $attributes;
+			// validate user input and redirect to the previous page if valid
+			if($model->validate() && $model->login())
+				$this->redirect(array('user/index'));
+		}
+		// display the login form
+		$this->render('signup',array('model'=>$model));
+	}
+
+	/**
 	 * Logs out the current user and redirect to homepage.
 	 */
 	public function actionLogout()

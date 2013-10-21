@@ -343,7 +343,7 @@ post_save.connect(create_reminder_readings, sender=Reminder)
 ######### GOALS #####
 #####################
 
-def goal_get_target_date(self, obj, *args, **kwargs):
+def goal_get_target_date(obj, *args, **kwargs):
     if obj.interval_num > 0 and obj.interval_unit is not None:
         d1 = datetime.datetime.now()
     if obj.interval_unit == 'DAY':
