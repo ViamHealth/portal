@@ -338,6 +338,22 @@ class HealthfileUploadSerializer(serializers.HyperlinkedModelSerializer):
 ########### GOALS
 ######################
 
+def goal_readings_validator(obj, attrs):
+    if obj.data['reading_date'] is not None and obj.data['reading_date'] != attrs['reading_date']:
+            raise serializers.ValidationError('reading_date cannot be changed')
+
+    fuser = obj.context['request'].QUERY_PARAMS.get('user', None)
+    if fuser is None:
+        user = obj.context['request'].user
+    else:
+        user = User.objects.get(pk=fuser)
+    try:
+        obj.Meta.model.objects.get(reading_date=attrs['reading_date'],user=user)
+        raise serializers.ValidationError('reading for this date already exists')
+
+    except obj.Meta.model.DoesNotExist:
+        return attrs
+
 class UserWeightReadingCreateSerializer(serializers.HyperlinkedModelSerializer):
     user = serializers.Field(source='user.id')
     class Meta:
@@ -345,10 +361,12 @@ class UserWeightReadingCreateSerializer(serializers.HyperlinkedModelSerializer):
         fields = ('id','user','weight' ,'reading_date','comment')
 
 class UserWeightReadingSerializer(serializers.HyperlinkedModelSerializer):
-
     class Meta:
         model = UserWeightReading
         fields = ('weight' ,'reading_date','comment')
+
+    def validate(self, attrs):
+        return goal_readings_validator(self, attrs)
 
 class UserWeightGoalSerializer(serializers.HyperlinkedModelSerializer):
     user = serializers.Field(source='user.id')
@@ -397,6 +415,8 @@ class UserBloodPressureReadingSerializer(serializers.HyperlinkedModelSerializer)
     class Meta:
         model = UserBloodPressureReading
         fields = ('systolic_pressure','diastolic_pressure', 'pulse_rate' ,'reading_date','comment')
+    def validate(self, attrs):
+        return goal_readings_validator(self, attrs)
 
 class UserBloodPressureGoalSerializer(serializers.HyperlinkedModelSerializer):
     user = serializers.Field(source='user.id')
@@ -443,6 +463,8 @@ class UserCholesterolReadingSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = UserCholesterolReading
         fields = ('hdl','ldl', 'triglycerides', 'total_cholesterol' ,'reading_date','comment')
+    def validate(self, attrs):
+        return goal_readings_validator(self, attrs)
 
 class UserCholesterolGoalSerializer(serializers.HyperlinkedModelSerializer):
     total_cholesterol = serializers.Field(source='total_cholesterol')
@@ -495,6 +517,8 @@ class UserGlucoseReadingSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = UserGlucoseReading
         fields = ('fasting','random' ,'reading_date','comment')
+    def validate(self, attrs):
+        return goal_readings_validator(self, attrs)
 
 class UserGlucoseGoalSerializer(serializers.HyperlinkedModelSerializer):
     user = serializers.Field(source='user.id')
@@ -504,7 +528,7 @@ class UserGlucoseGoalSerializer(serializers.HyperlinkedModelSerializer):
     def get_readings(self, obj=None):
         user = obj.user
         readings = UserGlucoseReading.objects.filter(user=user)
-        serializer = UserGlucoseGoalSerializer(readings, many=True)
+        serializer = UserGlucoseReadingSerializer(readings, many=True)
         return serializer.data
         
     class Meta:

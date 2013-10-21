@@ -260,7 +260,7 @@ class UserView(viewsets.ViewSet):
         if serializer.is_valid():
             serializer.object.password = make_password(serializer.object.password)
             serializer.save()
-            return Response(status=status.HTTP_200_OK)
+            return Response(status=status.HTTP_204_NO_CONTENT)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     @action(methods=['PUT'])
