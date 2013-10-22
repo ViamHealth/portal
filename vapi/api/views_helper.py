@@ -105,9 +105,9 @@ class ViamModelViewSetClean(viewsets.ModelViewSet):
 
 
 class GoalReadingsViewSet(ViamModelViewSetClean):
-    def get_object(self, pk):
+    def get_object(self, reading_date):
         try:
-            o = self.model.objects.get(reading_date=pk,user=self.get_user_object())
+            o = self.model.objects.get(reading_date=reading_date,user=self.get_user_object())
             self.check_object_permissions(self.request, o)
             return o
         except self.model.DoesNotExist:
@@ -122,21 +122,21 @@ class GoalReadingsViewSet(ViamModelViewSetClean):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    def retrieve(self, request, pk=None):
-        m = self.get_object(pk)
+    def retrieve(self, request, reading_date):
+        m = self.get_object(reading_date)
         serializer = self.get_serializer(m)
         return Response(serializer.data)
 
-    def update(self, request, pk=None):
-        m = self.get_object(pk)
+    def update(self, request, reading_date):
+        m = self.get_object(reading_date)
         serializer = self.get_serializer(m, data=request.DATA)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    def destroy(self, request, pk=None):
-        o = self.get_object(pk)
+    def destroy(self, request, reading_date):
+        o = self.get_object(reading_date)
         o.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
