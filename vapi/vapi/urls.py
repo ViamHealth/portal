@@ -49,7 +49,7 @@ urlpatterns = patterns('',
 
     #url(r'^goals/$', views.GoalViewSet.as_view(),name='goal-list'),
     url(r'^weight-readings/$', views.WeightReadingViewSet.as_view({'get':'list','post':'create'}),name='weight-readings'),
-    url(r'^weight-readings/(?P<pk>[0-9-]+)/$', views.WeightReadingViewSet.as_view({'get':'retrieve','delete':'destroy','put':'update'}),name='weight-reading-detail'),
+    url(r'^weight-readings/(?P<reading_date>[0-9-]+)/$', views.WeightReadingViewSet.as_view({'get':'retrieve','delete':'destroy','put':'update'}),name='weight-reading-detail'),
     url(r'^blood-pressure-readings/$', views.BloodPressureReadingViewSet.as_view({'get':'list','post':'create'}),name='blood-pressure-readings'),
     url(r'^blood-pressure-readings/(?P<pk>[0-9-]+)/$', views.BloodPressureReadingViewSet.as_view({'get':'retrieve','delete':'destroy','put':'update'}),name='blood-pressure-reading-detail'),
     url(r'^cholesterol-readings/$', views.CholesterolReadingViewSet.as_view({'get':'list','post':'create'}),name='cholesterol-readings'),
