@@ -12,7 +12,7 @@ $this->breadcrumbs=array(
 <h1>Login</h1>
 
 <p>Please fill out the following form with your login credentials:</p>
-
+<p> or <a href="<?php echo Yii::app()->createUrl('site/signup'); ?>">Signup</a> </p>
 <div class="form">
 <?php $form=$this->beginWidget('CActiveForm', array(
 	'id'=>'login-form',
