@@ -22,6 +22,12 @@
 	.navbar .navbar-inner  {
 		background: url(/images/bg-main_menu.jpg) repeat-x 0 0;
 	}
+	.well {
+		background-color: white;
+	}
+	body {
+		background-color: #efefef;
+	}
 	</style>
 	<script type="text/javascript">
 	var VH = {};
@@ -139,7 +145,7 @@ if(!Yii::app()->user->isGuest)
 					</ul>
 				</div>
 			</div>
-			<div class="span9">
+			<div class="span9 well">
 				<?php echo $content; ?>
 			</div>
 		</div>
