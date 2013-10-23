@@ -15,158 +15,29 @@ $this->breadcrumbs=array(
 	'Goals',
 );
 ?>
-
-
-<div class="row-fuild">
-	<!-- Weight -->
-	<div  class="span6" >
-		<a href="#" id="weight_goal_reading_open" goal_id="" style="display:none;" class="pull-right">Add Reading</a>
-		<a href="#" id="weight_goal_delete" goal_id="" style="display:none;" class="pull-right">Delete Goal !</a>
-		<div id="weight-chart" style="height: 400px; margin: 0 auto">
-		</div>
-		<form id="weight-goal-add" class="form-inline" style="display:none;">
-			Create a weight goal
-			<br/>
-      		<input id="weight_goal_weight" type="text" name="weight_goal_weight" class="input input-small" required placeholder="Target weight"/>
-      		<input id="weight_goal_target_date" type="date" name="weight_goal_target_date" class="input input-medium" required/>
-      		<button class="btn btn-primary" id="save-weight-goal">Save</button>
-		</form>
-	</div>
-	<!-- blood pressure -->
-	<div  class="span6" >
-		<a href="#" id="blood_pressure_goal_reading_open" goal_id="" style="display:none;" class="pull-right">Add Reading</a>
-		<a href="#" id="blood_pressure_goal_delete" goal_id="" style="display:none;" class="pull-right">Delete Goal !</a>
-		<div id="blood-pressure-chart" style="height: 400px; margin: 0 auto">
-		</div>
-		<form id="blood-pressure-goal-add" class="form-inline" style="display:none;">
-			Create a blood-pressure goal
-			<br/>
-      		<input id="blood_pressure_goal_systolic_pressure" type="text" name="blood_pressure_goal_systolic_pressure" class="input input-small" required placeholder="Target systolic pressure"/>
-      		<input id="blood_pressure_goal_diastolic_pressure" type="text" name="blood_pressure_goal_diastolic_pressure" class="input input-small" required placeholder="diastolic pressure"/>
-      		<br/>
-      		<input id="blood_pressure_goal_pulse_rate" type="text" name="blood_pressure_goal_pulse_rate" class="input input-small" required placeholder="pulse rate"/>
-      		<input id="blood_pressure_goal_target_date" type="date" name="blood_pressure_goal_target_date" class="input input-medium" required/>
-      		
-      		<button class="btn btn-primary" id="save-blood-pressure-goal">Save</button>
-		</form>
-	</div>
-</div>
-
-<div class="row-fuild" >
-	<!-- cholesterol -->
-	<div  class="span12" style="margin-top:40px;">
-		<a href="#" id="cholesterol_goal_reading_open" goal_id="" style="display:none;" class="pull-right">Add Reading</a>
-		<a href="#" id="cholesterol_goal_delete" goal_id="" style="display:none;" class="pull-right">Delete Goal !</a>
-		<div id="cholesterol-chart" style="height: 400px; margin: 0 auto">
-		</div>
-		<form id="cholesterol-goal-add" class="form-inline" style="display:none;">
-			Create a cholesterol goal
-			<br/>
-      		<input id="cholesterol_goal_hdl" type="text" name="cholesterol_goal_hdl" class="input input-small" required placeholder="Target HDL"/>
-      		<input id="cholesterol_goal_ldl" type="text" name="cholesterol_goal_ldl" class="input input-small" required placeholder="Target LDL"/>
-      		<br/>
-      		<input id="cholesterol_goal_triglycerides" type="text" name="cholesterol_goal_triglycerides" class="input input-small" required placeholder="Target triglycerides"/>
-      		<input id="cholesterol_goal_total_cholesterol" type="text" name="cholesterol_goal_total_cholesterol" class="input input-small" required placeholder="Target total_cholesterol"/>
-      		<br/>      		
-      		<input id="cholesterol_goal_target_date" type="date" name="cholesterol_goal_target_date" class="input input-medium" required/>
-      		
-      		<button class="btn btn-primary" id="save-cholesterol-goal">Save</button>
-		</form>
-	</div>
-
-</div>
-
-
-<div class="row-fuild" >
-	<!-- glucose -->
-	<div  class="span12" style="margin-top:40px;">
-		<a href="#" id="glucose_goal_reading_open" goal_id="" style="display:none;" class="pull-right">Add Reading</a>
-		<a href="#" id="glucose_goal_delete" goal_id="" style="display:none;" class="pull-right">Delete Goal !</a>
-		<div id="glucose-chart" style="height: 400px; margin: 0 auto">
-		</div>
-		<form id="glucose-goal-add" class="form-inline" style="display:none;">
-			Create a glucose goal
-			<br/>
-      		<input id="glucose_goal_random" type="text" name="glucose_goal_random" class="input input-small" required placeholder="Target random"/>
-      		<input id="glucose_goal_fasting" type="text" name="glucose_goal_fasting" class="input input-small" required placeholder="Target fasting"/>
-      		<br/>
-      		<input id="glucose_goal_target_date" type="date" name="glucose_goal_target_date" class="input input-medium" required/>
-      		
-      		<button class="btn btn-primary" id="save-glucose-goal">Save</button>
-		</form>
-	</div>
-
-</div>
-
-
-
-
-<!-- Modals -->
-<div id="weight-goal-reading-model" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="Add reading for weight goal" aria-hidden="true">
-  <div class="modal-header">
-    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-    Add a new reading
-  </div>
-  <div class="modal-body" itemid="">
-    <form id="weight-goal-reading-add" class="form-inline" goal_id="">
-      		<input id="weight_goal_reading_weight" type="text" name="weight_goal_reading_weight" class="input input-small" required placeholder="weight"/>
-      		<input id="weight_goal_reading_reading_date" type="date" name="weight_goal_reading_reading_date" class="input input-medium" required/>
-      		<button class="btn btn-primary" id="save-weight-reading">Save</button>
-		</form>
-  </div>
-</div>
-
-<div id="blood-pressure-goal-reading-model" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="Add reading for goal" aria-hidden="true">
-  <div class="modal-header">
-    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-    Add a new bp reading
-  </div>
-  <div class="modal-body" itemid="">
-    <form id="blood-pressure-goal-reading-add" class="form-inline" goal_id="">
-      		<input id="blood_pressure_goal_reading_systolic_pressure" type="text" name="blood_pressure_goal_reading_systolic_pressure" class="input input-small" required placeholder="systolic pressure"/>
-      		<input id="blood_pressure_goal_reading_diastolic_pressure" type="text" name="blood_pressure_goal_reading_diastolic_pressure" class="input input-small" required placeholder="diastolic pressure"/>
-      		<br/>
-      		<input id="blood_pressure_goal_reading_pulse_rate" type="text" name="blood_pressure_goal_reading_pulse_rate" class="input input-small" required placeholder="pulse rate"/>
-      		<input id="blood_pressure_goal_reading_reading_date" type="date" name="blood_pressure_goal_reading_reading_date" class="input input-medium" required/>
-      		<button class="btn btn-primary" id="save-blood-pressure-reading">Save</button>
-		</form>
-  </div>
-</div>
-
-<div id="cholesterol-goal-reading-model" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="Add reading for goal" aria-hidden="true">
-  <div class="modal-header">
-    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-    Add a new cholesterol reading
-  </div>
-  <div class="modal-body" itemid="">
-    <form id="cholesterol-goal-reading-add" class="form-inline" goal_id="">
-      		<input id="cholesterol_goal_reading_hdl" type="text" name="cholesterol_goal_reading_hdl" class="input input-small" required placeholder="hdl"/>
-      		<input id="cholesterol_goal_reading_ldl" type="text" name="cholesterol_goal_reading_ldl" class="input input-small" required placeholder="ldl"/>
-      		<br/>
-      		<input id="cholesterol_goal_reading_triglycerides" type="text" name="cholesterol_goal_reading_triglycerides" class="input input-small" required placeholder="triglycerides"/>
-      		<input id="cholesterol_goal_reading_total_cholesterol" type="text" name="cholesterol_goal_reading_total_cholesterol" class="input input-small" required placeholder="total_cholesterol"/>
-      		<br/>
-      		<input id="cholesterol_goal_reading_reading_date" type="date" name="cholesterol_goal_reading_reading_date" class="input input-medium" required/>
-      		<button class="btn btn-primary" id="save-cholesterol-reading">Save</button>
-		</form>
-  </div>
-</div>
-
-<div id="glucose-goal-reading-model" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="Add reading for goal" aria-hidden="true">
-  <div class="modal-header">
-    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-    Add a new glucose reading
-  </div>
-  <div class="modal-body" itemid="">
-    <form id="glucose-goal-reading-add" class="form-inline" goal_id="">
-      		<input id="glucose_goal_reading_random" type="text" name="glucose_goal_reading_random" class="input input-small"  placeholder="random"/>
-      		<input id="glucose_goal_reading_fasting" type="text" name="glucose_goal_reading_fasting" class="input input-small"  placeholder="fasting"/>
-      		<br/>
-      		<input id="glucose_goal_reading_reading_date" type="date" name="glucose_goal_reading_reading_date" class="input input-medium" required/>
-      		<button class="btn btn-primary" id="save-glucose-reading">Save</button>
-		</form>
-  </div>
-</div>
+<style>
+.cls_settings {
+	background: url(/images/sprite-icn.png) no-repeat left -1152px;
+}
+.chart-container {
+	background: #eef8fd;
+	border: 1px solid #0099cc;
+	border-radius:5px;
+}
+.chart-title {
+	border-bottom: 1px solid #cccccc;
+	padding:5px 10px;
+	font: bold 12px Segoe UI,Arial,Helvetica,sans-serif;
+	color: #333;
+}
+.chart-content {
+	margin: 20px;
+}
+</style>
+<?php
+$this->renderPartial('_weight',array());
+$this->renderPartial('_ahtml',array());
+?>
 
 <!-- Modals end-->
 <script type="text/javascript">
@@ -176,6 +47,7 @@ var stacks = {};
 
 stacks['weight'] ={};
 stacks['weight']['model'] = _DB.WeightGoal;
+stacks['weight']['model_reading'] = _DB.WeightReading;
 stacks['weight']['graph_title'] = 'Weight Goal';
 stacks['weight']['add_reading_model'] = $("#weight-goal-reading-model");
 stacks['weight']['add_reading_form'] = $("#weight-goal-reading-add");
@@ -372,9 +244,9 @@ function graphDateToApiDate(timestamp){
 }
 
 
-function delete_reading(goal_type, goal_id, reading_id, point){
+function delete_reading(goal_type, reading_date, point){
 	var _stack = stacks[goal_type];
-	_stack['model'].destroy_reading(goal_id, reading_id, function(json,success){
+	_stack['model_reading'].destroy(reading_date, function(json,success){
 		point.remove();
 	});
 }
@@ -399,27 +271,35 @@ function event_click_to_add_reading(goal_type){
 }
 
 $(document).ready(function(){
-	attach_blood_pressure_events();
+	$(".cls_settings").popover({
+		html: true,
+		content: function(){
+			return $("#goal_menu_dropdown").html();
+		},
+		placement: 'bottom',
+	});
+	//attach_blood_pressure_events();
 	attach_weight_events();
-	attach_cholesterol_events();
-	attach_glucose_events();
+	//attach_cholesterol_events();
+	//attach_glucose_events();
 	populate_weight_graph();
-	populate_blood_pressure_graph();
-	populate_cholesterol_graph();
-	populate_glucose_graph();
+	//populate_blood_pressure_graph();
+	//populate_cholesterol_graph();
+	//populate_glucose_graph();
 });
 
 
 function populate_graph(goal_type,options){
 	var options = options || {};
 	var _stack = stacks[goal_type];
-	$(_stack['chart_container']).hide();
+	//$(_stack['chart_container']).hide();
 	$(_stack['new_goal_form']).hide();
 	_stack['model'].list(function(json,success){
 		if(success){
 			if(json.count){
 				
 				var goal = json.results[0];
+				console.log(goal);
 				$(_stack['chart_container']).show();
 				$(_stack['click_to_add_reading']).show();
 				$(_stack['click_to_add_reading']).attr("goal_id",goal.id);
@@ -474,7 +354,8 @@ function populate_graph(goal_type,options){
 				$(_stack['chart_container']).highcharts({
 					exporting: {enabled: false},
 		            chart: {type: 'spline'},
-		            title: {text: _stack['graph_title']},
+		            title: {text: ''},
+		            //title: {text: _stack['graph_title']},
 		            subtitle: {text: ''},
 		            xAxis: {
 		                type: 'datetime',
@@ -493,7 +374,7 @@ function populate_graph(goal_type,options){
 		                alternateGridColor: null,
 		                plotBands: _bands,
 		            },
-		            tooltip: {valueSuffix: ' mmHg'},
+		            tooltip: {valueSuffix: 'Kg'},
 		            plotOptions: {
 		                spline: {
 		                    lineWidth: 1,
@@ -504,7 +385,7 @@ function populate_graph(goal_type,options){
 		                    point: {
 		                        events: {
 		                            'click': function() {
-		                            	delete_reading(goal_type,goal.id, (graphDateToApiDate(this.x)), this);
+		                            	delete_reading(goal_type,(graphDateToApiDate(this.x)), this);
 		                            	//this.remove();
 		                                //if (this.series.data.length > 1) this.remove();
 		                            }

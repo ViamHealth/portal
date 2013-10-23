@@ -46,7 +46,7 @@ function attach_weight_events(){
 			goal.weight = $("#weight_goal_reading_weight").val();
 			goal.weight_measure = 'METRIC';
 			goal.reading_date = $("#weight_goal_reading_reading_date").val();
-			_DB.WeightGoal.set_reading(id, goal,function(){
+			_DB.WeightReading.create(id, goal,function(){
 				$('#weight-goal-reading-model').modal('hide');
 				$("#weight_goal_reading_weight").val('');
 				populate_weight_graph();

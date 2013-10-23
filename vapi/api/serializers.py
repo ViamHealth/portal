@@ -398,9 +398,9 @@ class UserWeightGoalSerializer(serializers.HyperlinkedModelSerializer):
         a = {}
         a['weight'] = {}
         a['weight']['max'] = max_weight
-        a['weight']['max_measure'] = 'METRIC'
+        #a['weight']['max_measure'] = 'METRIC'
         a['weight']['min'] = min_weight
-        a['weight']['min_measure'] = 'METRIC'
+        #a['weight']['min_measure'] = 'METRIC'
         return a
 
     
