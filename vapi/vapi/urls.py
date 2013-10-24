@@ -13,6 +13,7 @@ router.register(r'blood-pressure-goals', views.UserBloodPressureGoalViewSet)
 router.register(r'cholesterol-goals', views.UserCholesterolGoalViewSet)
 router.register(r'glucose-goals', views.UserGlucoseGoalViewSet)
 router.register(r'diet-tracker', views.DietTrackerViewSet)
+
 #router.register(r'food-items', views.FoodItemViewSet)
 
 #router.register(r'goals', views.GoalViewSet)
@@ -71,7 +72,7 @@ urlpatterns = patterns('',
     #url(r'^upload/', ote.upload_food_items),
 
     url(r'^healthfiles/download/(?P<healthfile_id>[0-9]+)/$', views.handles3downloads, name='download-healthfiles'),
-
+    url(r'^goals/$', views.all_goals, name='all-goals'),
 
     #Uncomment the next line to enable the admin:
     url(r'^admin/', include(admin.site.urls)),

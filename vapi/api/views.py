@@ -421,6 +421,7 @@ class HealthfileViewSet(ViamModelViewSet):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+
 class WeightReadingViewSet(GoalReadingsViewSet):
     model = UserWeightReading    
     def get_serializer_class(self):
@@ -502,6 +503,80 @@ class UserGlucoseGoalViewSet(ViamModelViewSetClean):
         except UserGlucoseGoal.DoesNotExist:
             return super(UserGlucoseGoalViewSet, self).create(request,format)
 
+class JSONResponse(HttpResponse):
+    """
+    An HttpResponse that renders its content into JSON.
+    """
+    def __init__(self, data, **kwargs):
+        content = renderers.JSONRenderer().render(data)
+        kwargs['content_type'] = 'application/json'
+        super(JSONResponse, self).__init__(content, **kwargs)
+
+def all_goals(request):
+    glucose = None
+    weight = None
+    blood_pressure = None
+    cholesterol = None
+    result = {}
+
+    has_permission = False
+
+    fuser = request.GET.get('user',None)
+    if fuser is not None:
+        user_id = int(request.user.id)
+        qqueryset = UserGroupSet.objects.filter(user_id__in=[user_id,int(fuser)],group_id__in=[user_id,int(fuser)],status='ACTIVE')
+        for p in qqueryset:
+            if(p.user_id != p.group_id):
+                has_permission = True
+        user = User.objects.get(pk=fuser)
+    else:
+        user = request.user
+        has_permission = True
+
+    if has_permission == False:
+        result["detail"] = "You do not have permission to perform this action."
+        return JSONResponse(result, status=403)
+
+        
+    try:
+        glucose = UserGlucoseGoal.objects.get(user=user)
+    except UserGlucoseGoal.DoesNotExist:
+        pass
+    try:
+        weight = UserWeightGoal.objects.get(user=user)
+    except UserWeightGoal.DoesNotExist:
+        pass
+    try:
+        blood_pressure = UserBloodPressureGoal.objects.get(user=user)
+    except UserBloodPressureGoal.DoesNotExist:
+        pass
+    try:
+        cholesterol = UserCholesterolGoal.objects.get(user=user)
+    except UserCholesterolGoal.DoesNotExist:
+        pass
+    
+
+    if request.method == 'GET':
+        if weight is not None:
+            serializer = UserWeightGoalSerializer(weight)
+            result['weight-goals'] = serializer.data
+            serializer = None
+        if glucose is not None:
+            serializer = UserGlucoseGoalSerializer(glucose)
+            result['glucose-goals'] = serializer.data
+            serializer = None
+        if cholesterol is not None:
+            serializer = UserCholesterolGoalSerializer(cholesterol)
+            result['cholesterol-goals'] = serializer.data
+            serializer = None
+        if blood_pressure is not None:
+            serializer = UserBloodPressureGoalSerializer(blood_pressure)
+            result['blood-pressure-goals'] = serializer.data
+            serializer = None
+
+        return JSONResponse(result)
+    else:
+        return HttpResponse(status=404)
 
 class FoodItemViewSet(viewsets.ModelViewSet):
     model = FoodItem
