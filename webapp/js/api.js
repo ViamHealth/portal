@@ -316,7 +316,29 @@ _DB.WeightGoal = {
 		api_delete(url,callback);
 	}
 }
-
+_DB.WeightReading = {
+	resource : 'weight-readings',
+	retrieve : function(id,callback){
+		var url = api_url(this.resource,id)
+		api_get(url,callback);
+	},
+	list : function(callback){
+		var url = api_url(this.resource)
+		api_get(url,callback);
+	},
+	update : function(id,user,callback){
+		var url = api_url(this.resource,id)
+		api_put(url,user,callback);
+	},
+	create : function(user,callback){
+		var url = api_url(this.resource)
+		api_post(url,user,callback);
+	},
+	destroy: function(id,callback){
+		var url = api_url(this.resource,id);
+		api_delete(url,callback);
+	},
+}
 _DB.User = {
 	resource : 'users',
 	retrieve : function(id,callback){

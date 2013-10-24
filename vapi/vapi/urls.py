@@ -13,6 +13,7 @@ router.register(r'blood-pressure-goals', views.UserBloodPressureGoalViewSet)
 router.register(r'cholesterol-goals', views.UserCholesterolGoalViewSet)
 router.register(r'glucose-goals', views.UserGlucoseGoalViewSet)
 router.register(r'diet-tracker', views.DietTrackerViewSet)
+
 #router.register(r'food-items', views.FoodItemViewSet)
 
 #router.register(r'goals', views.GoalViewSet)
@@ -51,11 +52,11 @@ urlpatterns = patterns('',
     url(r'^weight-readings/$', views.WeightReadingViewSet.as_view({'get':'list','post':'create'}),name='weight-readings'),
     url(r'^weight-readings/(?P<reading_date>[0-9-]+)/$', views.WeightReadingViewSet.as_view({'get':'retrieve','delete':'destroy','put':'update'}),name='weight-reading-detail'),
     url(r'^blood-pressure-readings/$', views.BloodPressureReadingViewSet.as_view({'get':'list','post':'create'}),name='blood-pressure-readings'),
-    url(r'^blood-pressure-readings/(?P<pk>[0-9-]+)/$', views.BloodPressureReadingViewSet.as_view({'get':'retrieve','delete':'destroy','put':'update'}),name='blood-pressure-reading-detail'),
+    url(r'^blood-pressure-readings/(?P<reading_date>[0-9-]+)/$', views.BloodPressureReadingViewSet.as_view({'get':'retrieve','delete':'destroy','put':'update'}),name='blood-pressure-reading-detail'),
     url(r'^cholesterol-readings/$', views.CholesterolReadingViewSet.as_view({'get':'list','post':'create'}),name='cholesterol-readings'),
-    url(r'^cholesterol-readings/(?P<pk>[0-9-]+)/$', views.CholesterolReadingViewSet.as_view({'get':'retrieve','delete':'destroy','put':'update'}),name='cholesterol-reading-detail'),
+    url(r'^cholesterol-readings/(?P<reading_date>[0-9-]+)/$', views.CholesterolReadingViewSet.as_view({'get':'retrieve','delete':'destroy','put':'update'}),name='cholesterol-reading-detail'),
     url(r'^glucose-readings/$', views.GlucoseReadingViewSet.as_view({'get':'list','post':'create'}),name='glucose-readings'),
-    url(r'^glucose-readings/(?P<pk>[0-9-]+)/$', views.GlucoseReadingViewSet.as_view({'get':'retrieve','delete':'destroy','put':'update'}),name='glucose-reading-detail'),
+    url(r'^glucose-readings/(?P<reading_date>[0-9-]+)/$', views.GlucoseReadingViewSet.as_view({'get':'retrieve','delete':'destroy','put':'update'}),name='glucose-reading-detail'),
     
     url(r'^users/(?P<pk>[0-9]+)/$', views.UserView.as_view({'get': 'retrieve', 'put': 'update','delete':'destroy'}),name='user-detail'),
     url(r'^users/(?P<pk>[0-9]+)/profile/$', views.UserView.as_view({'put':'update_profile'}),name='profile-detail'),
@@ -71,7 +72,7 @@ urlpatterns = patterns('',
     #url(r'^upload/', ote.upload_food_items),
 
     url(r'^healthfiles/download/(?P<healthfile_id>[0-9]+)/$', views.handles3downloads, name='download-healthfiles'),
-
+    url(r'^goals/$', views.all_goals, name='all-goals'),
 
     #Uncomment the next line to enable the admin:
     url(r'^admin/', include(admin.site.urls)),
