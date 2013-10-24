@@ -376,7 +376,7 @@ class UserWeightGoalSerializer(serializers.HyperlinkedModelSerializer):
     readings = serializers.SerializerMethodField('get_readings')
     def get_readings(self, obj=None):
         user = obj.user
-        readings = UserWeightReading.objects.filter(user=user)
+        readings = UserWeightReading.objects.filter(user=user,reading_date__gte=obj.created_at)
         serializer = UserWeightReadingSerializer(readings, many=True)
         return serializer.data
     #readings = UserWeightReadingSerializer(many=True)
@@ -426,7 +426,7 @@ class UserBloodPressureGoalSerializer(serializers.HyperlinkedModelSerializer):
     readings = serializers.SerializerMethodField('get_readings')
     def get_readings(self, obj=None):
         user = obj.user
-        readings = UserBloodPressureReading.objects.filter(user=user)
+        readings = UserBloodPressureReading.objects.filter(user=user,reading_date__gte=obj.created_at)
         serializer = UserBloodPressureReadingSerializer(readings, many=True)
         return serializer.data
 
@@ -476,7 +476,7 @@ class UserCholesterolGoalSerializer(serializers.HyperlinkedModelSerializer):
 
     def get_readings(self, obj=None):
         user = obj.user
-        readings = UserCholesterolReading.objects.filter(user=user)
+        readings = UserCholesterolReading.objects.filter(user=user,reading_date__gte=obj.created_at)
         serializer = UserCholesterolReadingSerializer(readings, many=True)
         return serializer.data
 
@@ -529,7 +529,7 @@ class UserGlucoseGoalSerializer(serializers.HyperlinkedModelSerializer):
 
     def get_readings(self, obj=None):
         user = obj.user
-        readings = UserGlucoseReading.objects.filter(user=user)
+        readings = UserGlucoseReading.objects.filter(user=user,reading_date__gte=obj.created_at)
         serializer = UserGlucoseReadingSerializer(readings, many=True)
         return serializer.data
         
