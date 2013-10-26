@@ -46,7 +46,7 @@ for user in User.objects.all():
     #TODO: custom algo for creating token string
     Token.objects.get_or_create(user=user)
 
-
+@api_view(['GET',])
 def handles3downloads(request, healthfile_id):
     LOCAL_PATH = '/tmp/s3/'
 
@@ -54,6 +54,11 @@ def handles3downloads(request, healthfile_id):
         m = Healthfile.objects.get(id=healthfile_id)
 
         has_permission = False
+        if request.user.is_authenticated():
+            pass
+        else:
+            pprint.pprint('not logged in')
+            raise Http404
         user_id = int(request.user.id)
 
         if request.user == m.user:

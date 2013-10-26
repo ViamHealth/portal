@@ -190,7 +190,7 @@ class Healthfile(models.Model):
         return u'%s' % self.id
 
     def download_url(self):
-        return 'http://api.viamhealth.com/healthfiles/download/'+str(self.id);
+        return 'http://api.viamhealth.com/healthfiles/download/'+str(self.id)+'/';
         """
         from django.http import HttpRequest
         from django.core.urlresolvers import reverse 
