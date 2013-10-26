@@ -43,8 +43,8 @@ api_ajax = function(url,options,callback){
 		},
 		error: function(jqXHR, textStatus, errorThrown){
 			console.log('error called of url '+url);
-			console.log(textStatus);
-			console.log(jqXHR);
+			//console.log(textStatus);
+			//console.log(jqXHR);
 			callback(jqXHR,false);
 		}
 	});

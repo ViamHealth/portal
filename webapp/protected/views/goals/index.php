@@ -1,6 +1,6 @@
 <?php
     Yii::app()->clientScript->registerScriptFile(Yii::app()->baseUrl.'/js/jquery.validate.min.js');
-Yii::app()->clientScript->registerScriptFile(Yii::app()->baseUrl.'/js/jquery.ui.widget.js');
+	Yii::app()->clientScript->registerScriptFile(Yii::app()->baseUrl.'/js/bootstrap-datepicker.js');
 	Yii::app()->clientScript->registerScriptFile(Yii::app()->baseUrl.'/js/highcharts/highcharts.js');
 	Yii::app()->clientScript->registerScriptFile(Yii::app()->baseUrl.'/js/highcharts/modules/exporting.js');
 	Yii::app()->clientScript->registerScriptFile(Yii::app()->baseUrl.'/js/weight-goals.js');
@@ -33,12 +33,93 @@ $this->breadcrumbs=array(
 .chart-content {
 	margin: 20px;
 }
+.modal-header {
+
+border-bottom: 1px solid #aaa;
+	font: bold 18px Segoe UI, Arial, Helvetica, sans-serif;
+color: #666666;
+line-height: 30px;
+
+}
+.modal-body {
+	background: #efefef;
+border-bottom: 1px solid #aaa;
+}
+.modal-body label {
+	font: 600 14px Segoe UI, Arial, Helvetica, sans-serif;	
+	cursor: auto;
+}
+
+.weight-inputs .wval {
+	float: left;
+width: 72px;
+height: 32px;
+font: 24px Segoe UI,Helvetica,Arial,sans-serif;
+color: #666;
+background: url(/images/ic_weight.png) no-repeat left center;
+line-height: 32px;
+padding: 0 0 0 40px;
+}
+.weight-inputs .spnr {
+	float: left;
+	width: 16px;
+padding: 4px 0 3px 0;
+margin: 0 0 0 5px;
+}
+.weight-inputs .spnr .inc {
+	height: 8px;
+background-image: url(/images/sprite-icn.png);
+background-position: right -153px;
+background-repeat: no-repeat;
+display: block;
+margin-bottom: 5px;
+}
+.weight-inputs .spnr .dec {
+	height: 8px;
+background-image: url(/images/sprite-icn.png);
+background-position: right -161px;
+background-repeat: no-repeat;
+display: block;
+margin-top: 5px;
+}
+.datepicker{
+	z-index:1151;
+	cursor: pointer;
+	border-radius: 0px;
+	text-align: center;
+}
+.datepicker td{
+	font-size: x-small;
+	padding: 9px 10px;
+}
+.datepicker .prev {
+	/*width: 12px;
+height: 11px;
+background-image: url(/images/sprite-img.png);
+background-repeat: no-repeat;
+margin: 0;
+background-position: 0 -538px;*/
+}
+.datepicker th{
+	font-size: small;
+	padding: 9px 10px;
+	font-weight: normal;
+}
 </style>
 <?php
 $this->renderPartial('_weight',array());
+$this->renderPartial('_models_weight',array());
 $this->renderPartial('_ahtml',array());
 ?>
-
+<div style="display:none;">
+	<div id="goal_menu_dropdown">
+		<a href="#" class="goal_reading_open" goal_id="">Add cReading</a>
+		<br/>
+		<a href="#" class="goal_delete" goal_id="" >Delete Goal !</a>
+		<br/>
+		<a href="#" class="manage-goals" >Manage Goals</a>
+	</div>
+</div>
 <!-- Modals end-->
 <script type="text/javascript">
 VH.vars.profile_id = find_family_user_id()?find_family_user_id():'<?php echo $profile_id; ?>';
@@ -52,7 +133,7 @@ stacks['weight']['graph_title'] = 'Weight Goal';
 stacks['weight']['add_reading_model'] = $("#weight-goal-reading-model");
 stacks['weight']['add_reading_form'] = $("#weight-goal-reading-add");
 stacks['weight']['add_reading_form_save'] = $("#save-weight-reading");
-stacks['weight']['click_to_add_reading'] = $("#weight_goal_reading_open");
+stacks['weight']['click_to_add_reading'] = $(".weight_goal_reading_open");
 stacks['weight']['chart_container'] = $("#weight-chart");
 stacks['weight']['new_goal_form'] = $("#weight-goal-add");
 stacks['weight']['new_goal_form_save_button'] = $("#save-weight-goal");
@@ -262,30 +343,88 @@ function event_delete_goal_button(goal_type,populate_graph_function){
 	});
 }
 
+
 function event_click_to_add_reading(goal_type){
+//console.log(goal_type);
 	var _stack = stacks[goal_type];
+	//console.log($(_stack['click_to_add_reading']).html());
+
 	$(_stack['click_to_add_reading']).click(function(){
+
+		//console.log('asdf');
 		$(_stack['add_reading_form']).attr("goal_id",$(this).attr("goal_id"));
 		$(_stack['add_reading_model']).modal();
 	});
 }
 
+function click_to_add_reading(goal_type){
+	var _stack = stacks[goal_type];
+	$(_stack['add_reading_form']).attr("goal_id",$(this).attr("goal_id"));
+	$(_stack['add_reading_model']).modal();
+}
+
+
 $(document).ready(function(){
+	
+	//attach_blood_pressure_events();
+	attach_weight_events();
+	//attach_cholesterol_events();
+	//attach_glucose_events();
 	$(".cls_settings").popover({
 		html: true,
 		content: function(){
 			return $("#goal_menu_dropdown").html();
 		},
 		placement: 'bottom',
+	}).parent().delegate('.goal_reading_open', 'click', function() {
+		var chart_type  = $(this).parents('.chart-container').attr("chart-type");
+		click_to_add_reading(chart_type);
+    	
 	});
-	//attach_blood_pressure_events();
-	attach_weight_events();
-	//attach_cholesterol_events();
-	//attach_glucose_events();
 	populate_weight_graph();
 	//populate_blood_pressure_graph();
 	//populate_cholesterol_graph();
 	//populate_glucose_graph();
+
+	/*Custom Spinner*/
+	$(function() {
+		/*Date Picker Script*/
+		$(function() {
+			var nowTemp = new Date();
+			var now = new Date(nowTemp.getFullYear(), nowTemp.getMonth(), nowTemp.getDate(), 0, 0, 0, 0);
+			$(".fld_box").datepicker({
+				showOtherMonths: true,
+				selectOtherMonths: true,
+				"dateFormat": "YYYY-MM-DD",
+				/* onRender: function(date) {
+					return date.valueOf() < now.valueOf() ? 'disabled' : '';
+				}*/
+			});
+			$(".fld_box").datepicker("setValue", new Date());
+		});
+		/*Spinner in the weight popup*/
+		$("#adj_weight a.inc").click(function(event){
+			event.preventDefault(); 
+			var wight_v = $("#weight_goal_reading_weight").val();
+			wight_v++; 
+			$("#weight_goal_reading_weight").val(wight_v); 
+			$("p.wval").html(wight_v+"kg");
+		});
+		$("#adj_weight a.dec").click(function(event){
+			event.preventDefault(); 
+			var wight_v = $("#weight_goal_reading_weight").val();
+			wight_v--; 
+			$("#weight_goal_reading_weight").val(wight_v); 
+			$("p.wval").html(wight_v+"kg");		
+		});
+		$("#cwight_arr a.u_arw").click(function(event){
+			event.preventDefault();
+			var wight_v = $("#cwight").val();
+			wight_v++;
+			$("#cwight").val(wight_v);
+			$("div#CW.w_val").html(wight_v+" kg");
+		});
+	});
 });
 
 
@@ -299,8 +438,9 @@ function populate_graph(goal_type,options){
 			if(json.count){
 				
 				var goal = json.results[0];
-				console.log(goal);
+				//console.log($(_stack['chart_container']).parents('.chart-container').html());
 				$(_stack['chart_container']).show();
+				$(_stack['chart_container']).parents('.chart-container').attr("goal_id",goal.id);
 				$(_stack['click_to_add_reading']).show();
 				$(_stack['click_to_add_reading']).attr("goal_id",goal.id);
 				$(_stack['delete_goal_button']).attr("goal_id",goal.id);
@@ -331,7 +471,7 @@ function populate_graph(goal_type,options){
 
 					_series.push(ag);
 				}
-				console.log(_series);
+				//console.log(_series);
 				//plot bands
 				var _bands = [];
 				for(i=0;i< _stack['plots'].length; i++){

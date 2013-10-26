@@ -1,5 +1,5 @@
 <div style="display:none;">
-	<div id="goal_menu_dropdown">
+	<div id="goal_menu_dropdown_old">
 		<a href="#" id="weight_goal_reading_open" goal_id="">Add Reading</a>
 		<br/>
 		<a href="#" id="weight_goal_delete" goal_id="" >Delete Goal !</a>
@@ -34,17 +34,17 @@
 
 <div class="row-fuild">
 	<!-- Weight -->
-	<div  class="span6 chart-container" >
+	<div  class="span6 chart-container" chart-type="weight" goal_id="">
 		<div class="chart-title">Weight
 		<div class="cls_settings pull-right"> &nbsp; &nbsp; &nbsp; </div>
 		</div>
 		<div class="chart-content">
-			<div id="weight-chart" style="height: 400px; margin: 0 auto">
+			<div id="weight-chart"  style="height: 200px; margin: 0 auto">
 			</div>
 		</div>
 	</div>
 	<!-- blood pressure -->
-	<div  class="span6 chart-container" >
+	<div  class="span6 chart-container" chart-type="blood-pressure" >
 		<div class="chart-title">Blood Pressure
 		<div class="cls_settings pull-right"> &nbsp; &nbsp; &nbsp; </div>
 		</div>

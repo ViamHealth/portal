@@ -50,19 +50,7 @@
 
 
 <!-- Modals -->
-<div id="weight-goal-reading-model" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="Add reading for weight goal" aria-hidden="true">
-  <div class="modal-header">
-    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-    Add a new reading
-  </div>
-  <div class="modal-body" itemid="">
-    <form id="weight-goal-reading-add" class="form-inline" goal_id="">
-      		<input id="weight_goal_reading_weight" type="text" name="weight_goal_reading_weight" class="input input-small" required placeholder="weight"/>
-      		<input id="weight_goal_reading_reading_date" type="date" name="weight_goal_reading_reading_date" class="input input-medium" required/>
-      		<button class="btn btn-primary" id="save-weight-reading">Save</button>
-		</form>
-  </div>
-</div>
+
 
 <div id="blood-pressure-goal-reading-model" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="Add reading for goal" aria-hidden="true">
   <div class="modal-header">

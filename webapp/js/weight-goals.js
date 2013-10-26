@@ -28,7 +28,7 @@ function attach_weight_events(){
 		if($form.valid()){
 			var goal = {};
 			goal.weight = $("#weight_goal_weight").val();
-			goal.weight_measure = 'METRIC';
+			//goal.weight_measure = 'METRIC';
 			goal.target_date = $("#weight_goal_target_date").val();
 			_DB.WeightGoal.create(goal,function(){
 				populate_weight_graph();
@@ -41,14 +41,15 @@ function attach_weight_events(){
 		var $form = $("#weight-goal-reading-add");
 		$form.validate();
 		if($form.valid()){
-			var id = $("#weight-goal-reading-add").attr("goal_id");
+			var id = $("#weight-chart").parents('.chart-container').attr("goal_id");
 			var goal = {};
 			goal.weight = $("#weight_goal_reading_weight").val();
-			goal.weight_measure = 'METRIC';
+			//goal.weight_measure = 'METRIC';
 			goal.reading_date = $("#weight_goal_reading_reading_date").val();
-			_DB.WeightReading.create(id, goal,function(){
+			_DB.WeightReading.create(goal,function(response,status){
 				$('#weight-goal-reading-model').modal('hide');
-				$("#weight_goal_reading_weight").val('');
+				//$("#weight_goal_reading_weight").val('');
+				if(!status) console.log(response.responseText);
 				populate_weight_graph();
 			});
 		}
