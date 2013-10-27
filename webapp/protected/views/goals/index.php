@@ -110,13 +110,14 @@ background-position: 0 -538px;*/
 <?php
 $this->renderPartial('_weight',array());
 $this->renderPartial('_models_weight',array());
+$this->renderPartial('_models_blood-pressure',array());
 $this->renderPartial('_ahtml',array());
 ?>
 <div style="display:none;">
 	<div id="goal_menu_dropdown">
 		<a href="#" class="goal_reading_open" >Add Reading</a>
 		<br/>
-		<a href="#" class="goal_delete"  >Delete Goal !</a>
+		<!--<a href="#" class="goal_delete"  >Delete Goal !</a>-->
 		<br/>
 		<a href="#" class="manage-goals" >Manage Goals</a>
 	</div>
@@ -162,7 +163,7 @@ stacks['blood_pressure']['graph_title'] = 'Blood pressure Goal';
 stacks['blood_pressure']['add_reading_model'] = $("#blood-pressure-goal-reading-model");
 stacks['blood_pressure']['add_reading_form'] = $("#blood-pressure-goal-reading-add");
 stacks['blood_pressure']['add_reading_form_save'] = $("#save-blood-pressure-reading");
-stacks['blood_pressure']['click_to_add_reading'] = $("#blood_pressure_goal_reading_open");
+stacks['blood_pressure']['click_to_add_reading'] = $(".blood_pressure_goal_reading_open");
 stacks['blood_pressure']['chart_container'] = $("#blood-pressure-chart");
 stacks['blood_pressure']['new_goal_form'] = $("#blood-pressure-goal-add");
 stacks['blood_pressure']['new_goal_form_save_button'] = $("#save-blood-pressure-goal");
@@ -365,15 +366,17 @@ function event_click_to_add_reading(goal_type){
 }
 
 function click_to_add_reading(goal_type){
+	console.log(goal_type);
 	var _stack = stacks[goal_type];
-	$(_stack['add_reading_form']).attr("goal_id",$(this).attr("goal_id"));
+	
+	//$(_stack['add_reading_form']).attr("goal_id",$(this).attr("goal_id"));
 	$(_stack['add_reading_model']).modal();
 }
 
 
 $(document).ready(function(){
 	
-	//attach_blood_pressure_events();
+	attach_blood_pressure_events();
 	attach_weight_events();
 	//attach_cholesterol_events();
 	//attach_glucose_events();
@@ -389,7 +392,7 @@ $(document).ready(function(){
     	
 	});
 	populate_weight_graph();
-	//populate_blood_pressure_graph();
+	populate_blood_pressure_graph();
 	//populate_cholesterol_graph();
 	//populate_glucose_graph();
 

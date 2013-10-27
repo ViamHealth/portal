@@ -44,7 +44,7 @@
 		</div>
 	</div>
 	<!-- blood pressure -->
-	<div  class="span6 chart-container" chart-type="blood-pressure" >
+	<div  class="span6 chart-container" chart-type="blood_pressure" goal_id="">
 		<div class="chart-title">Blood Pressure
 		<div class="cls_settings pull-right"> &nbsp; &nbsp; &nbsp; </div>
 		</div>
