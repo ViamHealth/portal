@@ -190,7 +190,7 @@ class Healthfile(models.Model):
         return u'%s' % self.id
 
     def download_url(self):
-        return 'http://api.viamhealth.com/healthfiles/download/'+str(self.id);
+        return 'http://api.viamhealth.com/healthfiles/download/'+str(self.id)+'/';
         """
         from django.http import HttpRequest
         from django.core.urlresolvers import reverse 
@@ -452,7 +452,7 @@ class UserBloodPressureReading(models.Model):
         verbose_name = 'BP Reading'
         ordering = ['reading_date']
     def __unicode__(self):
-        return u'reading %s of goal %s' % (self.id, self.user_blood_pressure_goal)
+        return u'reading %s ' % (self.id, )
 
 class UserCholesterolGoal(models.Model):
     user = models.ForeignKey('auth.User', related_name="+")
@@ -506,7 +506,7 @@ class UserCholesterolReading(models.Model):
         verbose_name = 'Cholesterol Reading'
         ordering = ['reading_date']
     def __unicode__(self):
-        return u'reading %s of goal %s' % (self.id, self.user_cholesterol_goal)
+        return u'reading %s ' % (self.id, )
 
     def total_cholesterol(self):
         total_cholesterol = None
@@ -559,7 +559,7 @@ class UserGlucoseReading(models.Model):
         verbose_name = 'Glucose Reading'
         ordering = ['reading_date']
     def __unicode__(self):
-        return u'reading %s of goal %s' % (self.id, self.user_glucose_goal)
+        return u'reading %s ' % (self.id, )
 
 
 #######################

@@ -46,7 +46,7 @@ for user in User.objects.all():
     #TODO: custom algo for creating token string
     Token.objects.get_or_create(user=user)
 
-
+@api_view(['GET',])
 def handles3downloads(request, healthfile_id):
     LOCAL_PATH = '/tmp/s3/'
 
@@ -54,6 +54,11 @@ def handles3downloads(request, healthfile_id):
         m = Healthfile.objects.get(id=healthfile_id)
 
         has_permission = False
+        if request.user.is_authenticated():
+            pass
+        else:
+            pprint.pprint('not logged in')
+            raise Http404
         user_id = int(request.user.id)
 
         if request.user == m.user:
@@ -421,6 +426,7 @@ class HealthfileViewSet(ViamModelViewSet):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+
 class WeightReadingViewSet(GoalReadingsViewSet):
     model = UserWeightReading    
     def get_serializer_class(self):
@@ -459,41 +465,6 @@ class UserBloodPressureGoalViewSet(ViamModelViewSetClean):
             return Response(status=status.HTTP_400_BAD_REQUEST)
         except UserBloodPressureGoal.DoesNotExist:
             return super(UserBloodPressureGoalViewSet, self).create(request,format)
-    """
-    @action(methods=['POST'])
-    def set_reading(self, request, pk):
-        wgoal = UserBloodPressureGoal.objects.get(id=pk)
-        try:
-            reading = UserBloodPressureReading.objects.get(reading_date=request.DATA['reading_date'],user_blood_pressure_goal=wgoal)
-            reading.systolic_pressure = int(request.DATA['systolic_pressure'])
-            reading.diastolic_pressure = request.DATA['diastolic_pressure']
-            reading.pulse_rate = request.DATA['pulse_rate']
-            reading.updated_by = request.user
-            serializer = UserBloodPressureReadingSerializer(reading)
-            return Response(serializer.data)    
-        except UserBloodPressureReading.DoesNotExist:
-            try:
-                reading = UserBloodPressureReading(user_blood_pressure_goal=wgoal,systolic_pressure=int(request.DATA['systolic_pressure']),diastolic_pressure=request.DATA['diastolic_pressure'],pulse_rate=request.DATA['pulse_rate'],reading_date=request.DATA['reading_date'],updated_by=request.user)
-                reading.save()
-                serializer = UserBloodPressureReadingSerializer(reading)
-                return Response(serializer.data)    
-            except:
-                return Response(status=status.HTTP_400_BAD_REQUEST)
-        except:
-            return Response(status=status.HTTP_400_BAD_REQUEST)
-
-    @action(methods=['DELETE'])
-    def destroy_reading(self, request, pk):
-        if request.GET.get('reading_date',None) is None:
-                raise exceptions.ParseError(detail='reading_date GET param is required')
-        m = self.get_object(pk)
-        try:
-            reading = UserBloodPressureReading.objects.get(reading_date=request.GET.get('reading_date'),user_blood_pressure_goal=m)
-            reading.delete()
-            return Response(status=status.HTTP_204_NO_CONTENT)
-        except UserBloodPressureReading.DoesNotExist:
-            return Response(status=status.HTTP_404_NOT_FOUND)
-    """
 
 class CholesterolReadingViewSet(GoalReadingsViewSet):
     model = UserCholesterolReading
@@ -516,50 +487,6 @@ class UserCholesterolGoalViewSet(ViamModelViewSetClean):
         except UserCholesterolGoal.DoesNotExist:
             return super(UserCholesterolGoalViewSet, self).create(request,format)
 
-    """
-    @action(methods=['POST'])
-    def set_reading(self, request, pk):
-        wgoal = UserCholesterolGoal.objects.get(id=pk)
-        try:
-            reading = UserCholesterolReading.objects.get(reading_date=request.DATA['reading_date'],user_cholesterol_goal=wgoal)
-            reading.ldl = int(request.DATA['ldl'])
-            reading.hdl = request.DATA['hdl']
-            reading.triglycerides = request.DATA['triglycerides']
-            reading.total_cholesterol = request.DATA['total_cholesterol']
-            reading.updated_by = request.user
-            serializer = UserCholesterolReadingSerializer(reading)
-            return Response(serializer.data)    
-        except UserCholesterolReading.DoesNotExist:
-            try:
-                #reading = UserCholesterolReading(user_cholesterol_goal=wgoal,ldl=int(request.DATA['ldl']),hdl=int(request.DATA['hdl']),triglycerides=int(request.DATA['triglycerides']),total_cholesterol=int(request.DATA['total_cholesterol']),reading_date=request.DATA['reading_date'],updated_by=request.user)
-                ldl=request.DATA['ldl'];
-                hdl=request.DATA['hdl'];
-                triglycerides=request.DATA['triglycerides'];
-                total_cholesterol=request.DATA['total_cholesterol'];
-                reading_date=request.DATA['reading_date']
-
-                reading = UserCholesterolReading(user_cholesterol_goal=wgoal,ldl=ldl,hdl=hdl,triglycerides=triglycerides,total_cholesterol=total_cholesterol,reading_date=reading_date,updated_by=request.user)
-                reading.save()
-                serializer = UserCholesterolReadingSerializer(reading)
-                return Response(serializer.data)    
-            except:
-                return Response(status=status.HTTP_400_BAD_REQUEST)
-        except:
-            return Response(status=status.HTTP_400_BAD_REQUEST)
-
-    @action(methods=['DELETE'])
-    def destroy_reading(self, request, pk):
-        if request.GET.get('reading_date',None) is None:
-                raise exceptions.ParseError(detail='reading_date GET param is required')
-        m = self.get_object(pk)
-        try:
-            reading = UserCholesterolReading.objects.get(reading_date=request.GET.get('reading_date'),user_cholesterol_goal=m)
-            reading.delete()
-            return Response(status=status.HTTP_204_NO_CONTENT)
-        except UserCholesterolReading.DoesNotExist:
-            return Response(status=status.HTTP_404_NOT_FOUND)
-    """
-
 class GlucoseReadingViewSet(GoalReadingsViewSet):
     model = UserGlucoseReading
     def get_serializer_class(self):
@@ -581,51 +508,80 @@ class UserGlucoseGoalViewSet(ViamModelViewSetClean):
         except UserGlucoseGoal.DoesNotExist:
             return super(UserGlucoseGoalViewSet, self).create(request,format)
 
+class JSONResponse(HttpResponse):
     """
-    @action(methods=['POST'])
-    def set_reading(self, request, pk):
-        wgoal = UserGlucoseGoal.objects.get(id=pk)
-        try:
-            reading = UserGlucoseReading.objects.get(reading_date=request.DATA['reading_date'],user_glucose_goal=wgoal)
-            reading.random = int(request.DATA['random'])
-            reading.fasting = request.DATA['fasting']
-            reading.updated_by = request.user
-            serializer = UserGlucoseReadingSerializer(reading)
-            return Response(serializer.data)    
-        except UserGlucoseReading.DoesNotExist:
-            try:
-                if request.DATA['random'] is None or request.DATA['random'] == '':
-                    random = 0
-                else:
-                    random = request.DATA['random'];
-
-                if request.DATA['fasting'] is None or request.DATA['fasting'] == '':
-                    fasting = 0
-                else:
-                    fasting=request.DATA['fasting'];
-
-                reading_date=request.DATA['reading_date']
-                reading = UserGlucoseReading(user_glucose_goal=wgoal,fasting=fasting,random=random,reading_date=reading_date,updated_by=request.user)
-                reading.save()
-                serializer = UserGlucoseReadingSerializer(reading)
-                return Response(serializer.data)
-            except:
-                return Response(status=status.HTTP_400_BAD_REQUEST)
-        except:
-            return Response(status=status.HTTP_400_BAD_REQUEST)
-
-    @action(methods=['DELETE'])
-    def destroy_reading(self, request, pk):
-        if request.GET.get('reading_date',None) is None:
-                raise exceptions.ParseError(detail='reading_date GET param is required')
-        m = self.get_object(pk)
-        try:
-            reading = UserGlucoseReading.objects.get(reading_date=request.GET.get('reading_date'),user_glucose_goal=m)
-            reading.delete()
-            return Response(status=status.HTTP_204_NO_CONTENT)
-        except UserGlucoseReading.DoesNotExist:
-            return Response(status=status.HTTP_404_NOT_FOUND)
+    An HttpResponse that renders its content into JSON.
     """
+    def __init__(self, data, **kwargs):
+        content = renderers.JSONRenderer().render(data)
+        kwargs['content_type'] = 'application/json'
+        super(JSONResponse, self).__init__(content, **kwargs)
+
+def all_goals(request):
+    glucose = None
+    weight = None
+    blood_pressure = None
+    cholesterol = None
+    result = {}
+
+    has_permission = False
+
+    fuser = request.GET.get('user',None)
+    if fuser is not None:
+        user_id = int(request.user.id)
+        qqueryset = UserGroupSet.objects.filter(user_id__in=[user_id,int(fuser)],group_id__in=[user_id,int(fuser)],status='ACTIVE')
+        for p in qqueryset:
+            if(p.user_id != p.group_id):
+                has_permission = True
+        user = User.objects.get(pk=fuser)
+    else:
+        user = request.user
+        has_permission = True
+
+    if has_permission == False:
+        result["detail"] = "You do not have permission to perform this action."
+        return JSONResponse(result, status=403)
+
+        
+    try:
+        glucose = UserGlucoseGoal.objects.get(user=user)
+    except UserGlucoseGoal.DoesNotExist:
+        pass
+    try:
+        weight = UserWeightGoal.objects.get(user=user)
+    except UserWeightGoal.DoesNotExist:
+        pass
+    try:
+        blood_pressure = UserBloodPressureGoal.objects.get(user=user)
+    except UserBloodPressureGoal.DoesNotExist:
+        pass
+    try:
+        cholesterol = UserCholesterolGoal.objects.get(user=user)
+    except UserCholesterolGoal.DoesNotExist:
+        pass
+    
+
+    if request.method == 'GET':
+        if weight is not None:
+            serializer = UserWeightGoalSerializer(weight)
+            result['weight-goals'] = serializer.data
+            serializer = None
+        if glucose is not None:
+            serializer = UserGlucoseGoalSerializer(glucose)
+            result['glucose-goals'] = serializer.data
+            serializer = None
+        if cholesterol is not None:
+            serializer = UserCholesterolGoalSerializer(cholesterol)
+            result['cholesterol-goals'] = serializer.data
+            serializer = None
+        if blood_pressure is not None:
+            serializer = UserBloodPressureGoalSerializer(blood_pressure)
+            result['blood-pressure-goals'] = serializer.data
+            serializer = None
+
+        return JSONResponse(result)
+    else:
+        return HttpResponse(status=404)
 
 class FoodItemViewSet(viewsets.ModelViewSet):
     model = FoodItem

@@ -7,9 +7,11 @@
 
 	<link rel="icon" href="<?php echo Yii::app()->request->baseUrl; ?>/favicon.ico" type="image/x-icon"/>
 	<!-- blueprint CSS framework -->
-	<link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/screen.css"
-	      media="screen, projection"/>
-	<link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/print.css"
+	<!--<link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/screen.css"
+	      media="screen, projection"/>-->
+	<!--<link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/print.css"
+	      media="print"/>-->
+	<link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/datepicker.css"
 	      media="print"/>
 	<!--[if lt IE 8]>
 	<link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/ie.css"
@@ -21,6 +23,12 @@
 	<style>
 	.navbar .navbar-inner  {
 		background: url(/images/bg-main_menu.jpg) repeat-x 0 0;
+	}
+	.well {
+		background-color: white;
+	}
+	body {
+		background-color: #efefef;
 	}
 	</style>
 	<script type="text/javascript">
@@ -139,7 +147,7 @@ if(!Yii::app()->user->isGuest)
 					</ul>
 				</div>
 			</div>
-			<div class="span9">
+			<div class="span9 well">
 				<?php echo $content; ?>
 			</div>
 		</div>

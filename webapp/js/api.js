@@ -43,8 +43,8 @@ api_ajax = function(url,options,callback){
 		},
 		error: function(jqXHR, textStatus, errorThrown){
 			console.log('error called of url '+url);
-			console.log(textStatus);
-			console.log(jqXHR);
+			//console.log(textStatus);
+			//console.log(jqXHR);
 			callback(jqXHR,false);
 		}
 	});
@@ -123,6 +123,8 @@ api_url = function(resource,pk,sub_resource, sub_resource_id){
 	var url = VH.params.apiUrl+resource;
 	if(pk)
 		url = url+'/'+pk;
+	console.log(pk);
+	console.log(url);
 	if(sub_resource) {
 		url = url+'/'+sub_resource;
 		if(sub_resource_id) 
@@ -271,15 +273,29 @@ _DB.BloodPressureGoal = {
 		var url = api_url(this.resource,id);
 		api_delete(url,callback);
 	},
-	set_reading : function(id,reading,callback){
-		var url = api_url(this.resource,id,'set-reading');
-		api_post(url,reading,callback);
+}
+_DB.BloodPressureReading = {
+	resource : 'blood-pressure-readings',
+	retrieve : function(id,callback){
+		var url = api_url(this.resource,id)
+		api_get(url,callback);
 	},
-	destroy_reading: function(id, reading_date, callback){
-		var url = api_url(this.resource,id,'destroy-reading');
-		url = url + "?reading_date="+reading_date
+	list : function(callback){
+		var url = api_url(this.resource)
+		api_get(url,callback);
+	},
+	update : function(id,data,callback){
+		var url = api_url(this.resource,id)
+		api_put(url,data,callback);
+	},
+	create : function(data,callback){
+		var url = api_url(this.resource)
+		api_post(url,data,callback);
+	},
+	destroy: function(id,callback){
+		var url = api_url(this.resource,id);
 		api_delete(url,callback);
-	}
+	},
 }
 
 _DB.WeightGoal = {
@@ -316,7 +332,29 @@ _DB.WeightGoal = {
 		api_delete(url,callback);
 	}
 }
-
+_DB.WeightReading = {
+	resource : 'weight-readings',
+	retrieve : function(id,callback){
+		var url = api_url(this.resource,id)
+		api_get(url,callback);
+	},
+	list : function(callback){
+		var url = api_url(this.resource)
+		api_get(url,callback);
+	},
+	update : function(id,data,callback){
+		var url = api_url(this.resource,id)
+		api_put(url,data,callback);
+	},
+	create : function(data,callback){
+		var url = api_url(this.resource)
+		api_post(url,data,callback);
+	},
+	destroy: function(id,callback){
+		var url = api_url(this.resource,id);
+		api_delete(url,callback);
+	},
+}
 _DB.User = {
 	resource : 'users',
 	retrieve : function(id,callback){

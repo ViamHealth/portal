@@ -11,7 +11,7 @@ ENABLE_EMAIL_SANDBOX = getattr(settings, "ENABLE_EMAIL_SANDBOX", None)
 def send_mail(subject, message, recipient_list, from_email=None ):
 	html_message = True
 	if ENABLE_EMAIL_SANDBOX is not None and ENABLE_EMAIL_SANDBOX == True:
-		recipient_list = ['kunal.rachhoya@viamhealth.com','narendra.mudigal@viamhealth.com',]
+		recipient_list = ['kunal.rachhoya@viamhealth.com','Narendra.Mudigal@viamhealth.com',]
 
 	try:
 		if from_email is None:
