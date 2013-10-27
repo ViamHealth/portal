@@ -17,7 +17,7 @@
 	</form>
 
 	<a href="#" id="blood_pressure_goal_reading_open" goal_id="" style="display:none;" class="pull-right">Add Reading</a>
-	<a href="#" id="blood_pressure_goal_delete" goal_id="" style="display:none;" class="pull-right">Delete Goal !</a>
+	<!--<a href="#" id="blood_pressure_goal_delete" goal_id="" style="display:none;" class="pull-right">Delete Goal !</a>-->
 	<form id="blood-pressure-goal-add" class="form-inline" style="display:none;">
 		Create a blood-pressure goal
 		<br/>

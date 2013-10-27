@@ -1,5 +1,6 @@
 <?php
     Yii::app()->clientScript->registerScriptFile(Yii::app()->baseUrl.'/js/jquery.validate.min.js');
+    Yii::app()->clientScript->registerScriptFile(Yii::app()->baseUrl.'/js/bootbox.min.js');
 	Yii::app()->clientScript->registerScriptFile(Yii::app()->baseUrl.'/js/bootstrap-datepicker.js');
 	Yii::app()->clientScript->registerScriptFile(Yii::app()->baseUrl.'/js/highcharts/highcharts.js');
 	Yii::app()->clientScript->registerScriptFile(Yii::app()->baseUrl.'/js/highcharts/modules/exporting.js');
@@ -113,9 +114,9 @@ $this->renderPartial('_ahtml',array());
 ?>
 <div style="display:none;">
 	<div id="goal_menu_dropdown">
-		<a href="#" class="goal_reading_open" goal_id="">Add cReading</a>
+		<a href="#" class="goal_reading_open" >Add Reading</a>
 		<br/>
-		<a href="#" class="goal_delete" goal_id="" >Delete Goal !</a>
+		<a href="#" class="goal_delete"  >Delete Goal !</a>
 		<br/>
 		<a href="#" class="manage-goals" >Manage Goals</a>
 	</div>
@@ -133,6 +134,7 @@ stacks['weight']['graph_title'] = 'Weight Goal';
 stacks['weight']['add_reading_model'] = $("#weight-goal-reading-model");
 stacks['weight']['add_reading_form'] = $("#weight-goal-reading-add");
 stacks['weight']['add_reading_form_save'] = $("#save-weight-reading");
+//notuser below line
 stacks['weight']['click_to_add_reading'] = $(".weight_goal_reading_open");
 stacks['weight']['chart_container'] = $("#weight-chart");
 stacks['weight']['new_goal_form'] = $("#weight-goal-add");
@@ -326,10 +328,15 @@ function graphDateToApiDate(timestamp){
 
 
 function delete_reading(goal_type, reading_date, point){
-	var _stack = stacks[goal_type];
-	_stack['model_reading'].destroy(reading_date, function(json,success){
-		point.remove();
-	});
+	bootbox.confirm("Delete Reading?", function(result) {
+	  //Example.show("Confirm result: "+result);
+	  if(result){
+		var _stack = stacks[goal_type];
+		_stack['model_reading'].destroy(reading_date, function(json,success){
+			point.remove();
+		});  	
+	  }
+	}); 
 }
 
 function event_delete_goal_button(goal_type,populate_graph_function){
