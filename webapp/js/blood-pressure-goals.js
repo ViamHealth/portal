@@ -38,9 +38,20 @@ function attach_blood_pressure_events(){
 			goal.pulse_rate = $("#blood_pressure_goal_reading_pulse_rate").val();
 			goal.reading_date = $("#blood_pressure_goal_reading_reading_date").val();
 
-			_stack['model'].set_reading(id, goal,function(){
-				$(_stack['add_reading_model']).modal('hide');
-				populate_blood_pressure_graph();
+			_DB.BloodPressureReading.retrieve(goal.reading_date,function(response,status){
+				if (response.status && response.status == 404) {
+					_DB.BloodPressureReading.create(goal,function(response,status){
+						if(!status) console.log(response.responseText);
+						$(_stack['add_reading_model']).modal('hide');
+						populate_blood_pressure_graph();
+					});
+				} else {
+					_DB.BloodPressureReading.update(goal.reading_date,goal,function(response,status){
+						if(!status) console.log(response.responseText);
+						$(_stack['add_reading_model']).modal('hide');
+						populate_blood_pressure_graph();
+					});
+				}
 			});
 		}
 	});

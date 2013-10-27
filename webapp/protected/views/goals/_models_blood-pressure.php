@@ -8,10 +8,21 @@
       <div class="modal-body" itemid="">
       <form id="blood-pressure-goal-reading-add" class="form-inline" >
         <div class="blood-pressure-inputs span6">
-          
+          Diastolic
+          <br/>
+          <input id="blood_pressure_goal_reading_systolic_pressure" type="text" name="blood_pressure_goal_reading_systolic_pressure" class="input" required placeholder=""/>
+          </br>
+          Systolic
+          <br/>
+          <input id="blood_pressure_goal_reading_diastolic_pressure" type="text" name="blood_pressure_goal_reading_diastolic_pressure" class="input" required />
+          <br/>
+          Pulse
+          <br/>
+          <input id="blood_pressure_goal_reading_pulse_rate" type="text" name="blood_pressure_goal_reading_pulse_rate" class="input" required />
         </div>
         <div class="viam-inputs span6">
           <label>Select a Date :</label>
+          <br/>
           <input style="width: 138px;
   height: 18px;
   font: 12px Segoe UI, Arial, Helvetica, sans-serif;

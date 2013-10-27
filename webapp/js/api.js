@@ -273,15 +273,29 @@ _DB.BloodPressureGoal = {
 		var url = api_url(this.resource,id);
 		api_delete(url,callback);
 	},
-	set_reading : function(id,reading,callback){
-		var url = api_url(this.resource,id,'set-reading');
-		api_post(url,reading,callback);
+}
+_DB.BloodPressureReading = {
+	resource : 'blood-pressure-readings',
+	retrieve : function(id,callback){
+		var url = api_url(this.resource,id)
+		api_get(url,callback);
 	},
-	destroy_reading: function(id, reading_date, callback){
-		var url = api_url(this.resource,id,'destroy-reading');
-		url = url + "?reading_date="+reading_date
+	list : function(callback){
+		var url = api_url(this.resource)
+		api_get(url,callback);
+	},
+	update : function(id,data,callback){
+		var url = api_url(this.resource,id)
+		api_put(url,data,callback);
+	},
+	create : function(data,callback){
+		var url = api_url(this.resource)
+		api_post(url,data,callback);
+	},
+	destroy: function(id,callback){
+		var url = api_url(this.resource,id);
 		api_delete(url,callback);
-	}
+	},
 }
 
 _DB.WeightGoal = {
