@@ -569,7 +569,7 @@ class DietTrackerSerializer(serializers.HyperlinkedModelSerializer):
     food_item = serializers.PrimaryKeyRelatedField(many=False)
     class Meta:
         model = DietTracker
-        fields = ('id','food_item','user','food_quantity_multiplier','meal_type')
+        fields = ('id','food_item','user','food_quantity_multiplier','meal_type','diet_date')
         
 
 #class AuthTokenSerializer(serializers.Serializer):

@@ -631,11 +631,21 @@ class FoodItemViewSet(viewsets.ModelViewSet):
             serializer = PaginationSerializer(instance=fooditems,context={'request': request})
             return Response(serializer.data)
     """
-class DietTrackerViewSet(ViamModelViewSet):
+class DietTrackerViewSet(ViamModelViewSetClean):
     model = DietTracker
     serializer_class = DietTrackerSerializer
-    filter_fields = ('meal_type','user',)
+    filter_fields = ('meal_type','user','diet_date')
 
+     #Over riding viewset functions
+    def get_queryset(self):
+        queryset = super(ViamModelViewSetClean, self).get_queryset()
+        
+        diet_date_value = self.request.QUERY_PARAMS.get('diet_date', None)
+        if diet_date_value:
+            diet_date_list = diet_date_value.split(',')
+            queryset = queryset.filter(diet_date__in=diet_date_list)
+
+        return queryset
 
 
 

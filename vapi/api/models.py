@@ -52,6 +52,7 @@ class UserProfile(models.Model):
         ('7','O+'),
         ('8','O-'),
     )
+    #'SON DAUGHTER FATHER MOTHER BROTHER SISTER COUSIN UNCLE AUNT OTHER'
     def get_profile_image_path(self, filename): 
         return 'users/profile_picture_'+hashlib.sha224(str(self.user.id)).hexdigest()+os.path.splitext(filename)[1]
 
@@ -160,8 +161,11 @@ class UserGroupSet(models.Model):
         return u' %s - %s' % (self.group.username, self.user.username)
 
 class HealthfileTag(models.Model):
-    healthfile = models.ForeignKey('Healthfile', related_name="tags")
+    healthfile = models.ForeignKey('Healthfile', related_name="+")
     tag = models.CharField(max_length=64L)
+
+    history = HistoricalRecords()
+
     class Meta:
         db_table = 'tbl_healthfile_tags'
     def __unicode__(self):
@@ -276,7 +280,7 @@ class Reminder(models.Model):
     
 class ReminderReadings(models.Model):
     user = models.ForeignKey('auth.User', related_name="+")
-    reminder = models.ForeignKey('Reminder', related_name="readings")
+    reminder = models.ForeignKey('Reminder', related_name="+")
     morning_check = models.BooleanField(blank=True,default=False)
     afternoon_check = models.BooleanField(blank=True,default=False)
     evening_check = models.BooleanField(blank=True,default=False)
@@ -286,8 +290,7 @@ class ReminderReadings(models.Model):
 
     reading_date = models.DateField()
 
-    #history = HistoricalRecords()
-    # not working due to clashes with related_names
+    history = HistoricalRecords()
 
     class Meta:
         db_table = 'tbl_reminderreadings'
@@ -574,13 +577,16 @@ class DietTracker(models.Model):
         ('DINNER','DINNER'),
     )
     user = models.ForeignKey('auth.User', related_name="+")
-    food_item = models.ForeignKey('FoodItem', related_name = "food", blank=False)
+    food_item = models.ForeignKey('FoodItem', related_name = "+", blank=False)
     food_quantity_multiplier = models.IntegerField(blank=False)
     meal_type = models.CharField(max_length=18L, choices=MEAL_TYPE_CHOICES, db_index=True, blank=False)
+    diet_date = models.DateField(blank=True,null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     updated_by = models.ForeignKey('auth.User', related_name="+", db_column='updated_by')
-    status = models.CharField(max_length=18L, choices=GLOBAL_STATUS_CHOICES, default='ACTIVE', db_index=True)
+    #status = models.CharField(max_length=18L, choices=GLOBAL_STATUS_CHOICES, default='ACTIVE', db_index=True)
+
+    history = HistoricalRecords()
 
     class Meta:
         db_table = 'tbl_diet_tracker'
@@ -671,14 +677,14 @@ class UserPhysicalActivity(models.Model):
     weight_measure = models.CharField(max_length=40L, choices=MEASURE_CHOICES, blank=True, default='METRIC',null=True)
     time_spent = models.CharField(max_length=40L)
     time_spent_unit = models.CharField(max_length=40L, choices=TIME_SPENT_UNIT_CHOICES, blank=True, default='MINUTE',null=True)
-    physical_activity = models.ForeignKey('PhysicalActivity', related_name="physical_activity")
+    physical_activity = models.ForeignKey('PhysicalActivity', related_name="+")
     user_calories_spent = models.CharField(max_length=40L,blank=True,null=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     updated_by = models.ForeignKey('auth.User', related_name="+", db_column='updated_by')
     
-    #history = HistoricalRecords()
+    history = HistoricalRecords()
 
 
     class Meta:
