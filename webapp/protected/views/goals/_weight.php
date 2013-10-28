@@ -1,3 +1,4 @@
+<!--
 <div style="display:none;">
 	<div id="goal_menu_dropdown_old">
 		<a href="#" id="weight_goal_reading_open" goal_id="">Add Reading</a>
@@ -17,7 +18,6 @@
 	</form>
 
 	<a href="#" id="blood_pressure_goal_reading_open" goal_id="" style="display:none;" class="pull-right">Add Reading</a>
-	<!--<a href="#" id="blood_pressure_goal_delete" goal_id="" style="display:none;" class="pull-right">Delete Goal !</a>-->
 	<form id="blood-pressure-goal-add" class="form-inline" style="display:none;">
 		Create a blood-pressure goal
 		<br/>
@@ -30,7 +30,7 @@
   		<button class="btn btn-primary" id="save-blood-pressure-goal">Save</button>
 	</form>
 </div>
-
+-->
 
 <div class="row-fuild" >
 	<!-- Weight -->
@@ -62,6 +62,16 @@
 		</div>
 		<div class="chart-content">
 			<div id="cholesterol-chart" style="height: 400px; margin: 0 auto">
+			</div>
+		</div>
+	</div>
+	<!-- glucose -->
+	<div  class="span6 chart-container" chart-type="glucose" goal_id="">
+		<div class="chart-title">Glucose
+		<div class="cls_settings pull-right"> &nbsp; &nbsp; &nbsp; </div>
+		</div>
+		<div class="chart-content">
+			<div id="glucose-chart" style="height: 400px; margin: 0 auto">
 			</div>
 		</div>
 	</div>

@@ -113,7 +113,8 @@ $this->renderPartial('_weight',array());
 $this->renderPartial('_models_weight',array());
 $this->renderPartial('_models_blood-pressure',array());
 $this->renderPartial('_models_cholesterol',array());
-$this->renderPartial('_ahtml',array());
+$this->renderPartial('_models_glucose',array());
+//$this->renderPartial('_ahtml',array());
 ?>
 <div style="display:none;">
 	<div id="goal_menu_dropdown">
@@ -161,6 +162,7 @@ stacks['weight']['plots'] = [
 
 stacks['blood_pressure'] ={};
 stacks['blood_pressure']['model'] = _DB.BloodPressureGoal;
+stacks['blood_pressure']['model_reading'] = _DB.BloodPressureReading;
 stacks['blood_pressure']['graph_title'] = 'Blood pressure Goal';
 stacks['blood_pressure']['add_reading_model'] = $("#blood-pressure-goal-reading-model");
 stacks['blood_pressure']['add_reading_form'] = $("#blood-pressure-goal-reading-add");
@@ -201,6 +203,7 @@ stacks['blood_pressure']['plots'] = [
 
 stacks['cholesterol'] ={};
 stacks['cholesterol']['model'] = _DB.CholesterolGoal;
+stacks['cholesterol']['model_reading'] = _DB.CholesterolReading;
 stacks['cholesterol']['graph_title'] = 'Cholesterol Goal';
 stacks['cholesterol']['add_reading_model'] = $("#cholesterol-goal-reading-model");
 stacks['cholesterol']['add_reading_form'] = $("#cholesterol-goal-reading-add");
@@ -261,11 +264,12 @@ stacks['cholesterol']['plots'] = [
 
 stacks['glucose'] ={};
 stacks['glucose']['model'] = _DB.GlucoseGoal;
+stacks['glucose']['model_reading'] = _DB.GlucoseReading;
 stacks['glucose']['graph_title'] = 'glucose Goal';
 stacks['glucose']['add_reading_model'] = $("#glucose-goal-reading-model");
 stacks['glucose']['add_reading_form'] = $("#glucose-goal-reading-add");
 stacks['glucose']['add_reading_form_save'] = $("#save-glucose-reading");
-stacks['glucose']['click_to_add_reading'] = $("#glucose_goal_reading_open");
+stacks['glucose']['click_to_add_reading'] = $(".glucose_goal_reading_open");
 stacks['glucose']['chart_container'] = $("#glucose-chart");
 stacks['glucose']['new_goal_form'] = $("#glucose-goal-add");
 stacks['glucose']['new_goal_form_save_button'] = $("#save-glucose-goal");
@@ -381,7 +385,7 @@ $(document).ready(function(){
 	attach_blood_pressure_events();
 	attach_weight_events();
 	attach_cholesterol_events();
-	//attach_glucose_events();
+	attach_glucose_events();
 	$(".cls_settings").popover({
 		html: true,
 		content: function(){
@@ -396,7 +400,7 @@ $(document).ready(function(){
 	populate_weight_graph();
 	populate_blood_pressure_graph();
 	populate_cholesterol_graph();
-	//populate_glucose_graph();
+	populate_glucose_graph();
 
 	/*Custom Spinner*/
 	$(function() {
@@ -526,7 +530,7 @@ function populate_graph(goal_type,options){
 		                alternateGridColor: null,
 		                plotBands: _bands,
 		            },
-		            tooltip: {valueSuffix: 'Kg'},
+		            tooltip: {valueSuffix: ''},
 		            plotOptions: {
 		                spline: {
 		                    lineWidth: 1,

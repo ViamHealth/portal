@@ -208,6 +208,29 @@ _DB.CholesterolGoal = {
 		api_delete(url,callback);
 	},
 }
+_DB.CholesterolReading = {
+	resource : 'cholesterol-readings',
+	retrieve : function(id,callback){
+		var url = api_url(this.resource,id)
+		api_get(url,callback);
+	},
+	list : function(callback){
+		var url = api_url(this.resource)
+		api_get(url,callback);
+	},
+	update : function(id,data,callback){
+		var url = api_url(this.resource,id)
+		api_put(url,data,callback);
+	},
+	create : function(data,callback){
+		var url = api_url(this.resource)
+		api_post(url,data,callback);
+	},
+	destroy: function(id,callback){
+		var url = api_url(this.resource,id);
+		api_delete(url,callback);
+	},
+}
 
 _DB.GlucoseGoal = {
 	resource : 'glucose-goals',
@@ -232,8 +255,9 @@ _DB.GlucoseGoal = {
 		api_delete(url,callback);
 	},
 }
-_DB.CholesterolReading = {
-	resource : 'cholesterol-readings',
+
+_DB.GlucoseReading = {
+	resource : 'glucose-readings',
 	retrieve : function(id,callback){
 		var url = api_url(this.resource,id)
 		api_get(url,callback);

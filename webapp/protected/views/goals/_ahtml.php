@@ -1,7 +1,6 @@
 
-
+<!--
 <div class="row-fuild" >
-	<!-- cholesterol -->
 	<div  class="span12" style="margin-top:40px;">
 		<a href="#" id="cholesterol_goal_reading_open" goal_id="" style="display:none;" class="pull-right">Add Reading</a>
 		<a href="#" id="cholesterol_goal_delete" goal_id="" style="display:none;" class="pull-right">Delete Goal !</a>
@@ -26,7 +25,6 @@
 
 
 <div class="row-fuild" >
-	<!-- glucose -->
 	<div  class="span12" style="margin-top:40px;">
 		<a href="#" id="glucose_goal_reading_open" goal_id="" style="display:none;" class="pull-right">Add Reading</a>
 		<a href="#" id="glucose_goal_delete" goal_id="" style="display:none;" class="pull-right">Delete Goal !</a>
@@ -45,7 +43,7 @@
 	</div>
 
 </div>
-
+-->
 
 
 
@@ -87,7 +85,7 @@
 		</form>
   </div>
 </div>-->
-
+<!--
 <div id="glucose-goal-reading-model" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="Add reading for goal" aria-hidden="true">
   <div class="modal-header">
     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
@@ -103,3 +101,4 @@
 		</form>
   </div>
 </div>
+-->

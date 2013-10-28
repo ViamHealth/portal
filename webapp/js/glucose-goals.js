@@ -35,9 +35,21 @@ function attach_glucose_events(){
 			goal.fasting = $("#glucose_goal_reading_fasting").val();
 			goal.reading_date = $("#glucose_goal_reading_reading_date").val();
 
-			_stack['model'].set_reading(id, goal,function(){
-				$(_stack['add_reading_model']).modal('hide');
-				populate_glucose_graph();
+			_DB.GlucoseReading.retrieve(goal.reading_date,function(response,status){
+				if (response.status && response.status == 404) {
+					_DB.GlucoseReading.create(goal,function(response,status){
+						$('#glucose-goal-reading-model').modal('hide');
+						
+						if(!status) console.log(response.responseText);
+						populate_cholesterol_graph();
+					});
+				} else {
+					_DB.GlucoseReading.update(goal.reading_date,goal,function(response,status){
+						$('#glucose-goal-reading-model').modal('hide');
+						if(!status) console.log(response.responseText);
+						populate_cholesterol_graph();
+					});
+				}
 			});
 		}
 	});
