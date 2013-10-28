@@ -324,23 +324,24 @@ class HealthfileTagListingField(serializers.RelatedField):
 class HealthfileSerializer(serializers.HyperlinkedModelSerializer):
     user = serializers.Field(source='user.id')
     download_url = serializers.Field(source='download_url')
-    tags = HealthfileTagListingField(many=True)
+    #tags = HealthfileTagListingField(many=True)
     class Meta:
         model = Healthfile
-        fields = ('id', 'user','tags','name' ,'description','mime_type','download_url')
+        fields = ('id', 'user','name' ,'description','mime_type','download_url')
 
 class HealthfileEditSerializer(serializers.HyperlinkedModelSerializer):
     user = serializers.Field(source='user.id')
-    tags = HealthfileTagListingField(many=True,read_only=True)
+    #tags = HealthfileTagListingField(many=True,read_only=True)
     class Meta:
         model = Healthfile
-        fields = ('id','description','tags')
+        fields = ('id','description',)
 
 class HealthfileUploadSerializer(serializers.HyperlinkedModelSerializer):
     user = serializers.Field(source='user.id')
+    download_url = serializers.Field(source='download_url')
     class Meta:
         model = Healthfile
-        fields = ('id','file','description')
+        fields = ('id','file',)
 
 
 

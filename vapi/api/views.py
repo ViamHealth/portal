@@ -350,7 +350,7 @@ class ReminderReadingsViewSet(ViamModelViewSetNoStatus):
         queryset = queryset.filter(user=user)
 
         reading_date_value = self.request.QUERY_PARAMS.get('reading_date', None)
-        
+
         if reading_date_value:
             reading_date_list = reading_date_value.split(',')
             queryset = queryset.filter(reading_date__in=reading_date_list)
@@ -392,6 +392,21 @@ class HealthfileViewSet(ViamModelViewSet):
                 return HealthfileUploadSerializer
             else:
                 return HealthfileEditSerializer
+
+    def create(self, request, format=None):
+
+        serializer = self.get_serializer(data=request.DATA,)
+        if serializer.is_valid():
+            file = self.request.FILES.get('file',None)
+            if file is not None:
+                serializer.object.file = self.request.FILES['file']
+                serializer.object.uploading_file = True
+            serializer.object.user = self.get_user_object()
+            serializer.object.updated_by = self.request.user
+            serializer.save()
+            f=Healthfile.objects.get(pk=serializer.data.get('id'))
+            fserializer = HealthfileSerializer(f, data=serializer.object, context={'request': request})
+            return Response(fserializer.data, status=status.HTTP_201_CREATED)
 
     def update(self, request, pk=None):
         tags_sent = False
