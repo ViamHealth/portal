@@ -38,10 +38,6 @@
           name="blood_pressure_goal_reading_reading_date" class="disp_dp fld_box hasDatepicker" 
           type="text" value="" id="blood_pressure_goal_reading_reading_date" data-date-format="yyyy-mm-dd">
         </div>
-        <!--<form id="blood-pressure-goal-reading-add" class="form-inline" goal_id="">
-          		<input id="blood_pressure_goal_reading_blood-pressure" type="text" name="blood_pressure_goal_reading_blood-pressure" class="input input-small" required placeholder="blood-pressure"/>
-          		<input id="blood_pressure_goal_reading_reading_date" type="date" name="blood_pressure_goal_reading_reading_date" class="input input-medium" required/>
-    		</form>-->
       </form>
       </div><!-- /.modal-body -->
       <div class="modal-footer">

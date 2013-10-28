@@ -32,14 +32,14 @@
 </div>
 
 
-<div class="row-fuild">
+<div class="row-fuild" >
 	<!-- Weight -->
 	<div  class="span6 chart-container" chart-type="weight" goal_id="">
 		<div class="chart-title">Weight
 		<div class="cls_settings pull-right"> &nbsp; &nbsp; &nbsp; </div>
 		</div>
 		<div class="chart-content">
-			<div id="weight-chart"  style="height: 200px; margin: 0 auto">
+			<div id="weight-chart"  style="height: 400px; margin: 0 auto">
 			</div>
 		</div>
 	</div>
@@ -50,6 +50,18 @@
 		</div>
 		<div class="chart-content">
 			<div id="blood-pressure-chart" style="height: 400px; margin: 0 auto">
+			</div>
+		</div>
+	</div>
+</div>
+<div class="row-fuild" >
+	<!-- cholesterol -->
+	<div  class="span6 chart-container" chart-type="cholesterol" goal_id="">
+		<div class="chart-title">Cholesterol
+		<div class="cls_settings pull-right"> &nbsp; &nbsp; &nbsp; </div>
+		</div>
+		<div class="chart-content">
+			<div id="cholesterol-chart" style="height: 400px; margin: 0 auto">
 			</div>
 		</div>
 	</div>

@@ -24,6 +24,7 @@ $this->breadcrumbs=array(
 	background: #eef8fd;
 	border: 1px solid #0099cc;
 	border-radius:5px;
+	margin-top:10px;
 }
 .chart-title {
 	border-bottom: 1px solid #cccccc;
@@ -111,6 +112,7 @@ background-position: 0 -538px;*/
 $this->renderPartial('_weight',array());
 $this->renderPartial('_models_weight',array());
 $this->renderPartial('_models_blood-pressure',array());
+$this->renderPartial('_models_cholesterol',array());
 $this->renderPartial('_ahtml',array());
 ?>
 <div style="display:none;">
@@ -203,7 +205,7 @@ stacks['cholesterol']['graph_title'] = 'Cholesterol Goal';
 stacks['cholesterol']['add_reading_model'] = $("#cholesterol-goal-reading-model");
 stacks['cholesterol']['add_reading_form'] = $("#cholesterol-goal-reading-add");
 stacks['cholesterol']['add_reading_form_save'] = $("#save-cholesterol-reading");
-stacks['cholesterol']['click_to_add_reading'] = $("#cholesterol_goal_reading_open");
+stacks['cholesterol']['click_to_add_reading'] = $(".cholesterol_goal_reading_open");
 stacks['cholesterol']['chart_container'] = $("#cholesterol-chart");
 stacks['cholesterol']['new_goal_form'] = $("#cholesterol-goal-add");
 stacks['cholesterol']['new_goal_form_save_button'] = $("#save-cholesterol-goal");
@@ -378,7 +380,7 @@ $(document).ready(function(){
 	
 	attach_blood_pressure_events();
 	attach_weight_events();
-	//attach_cholesterol_events();
+	attach_cholesterol_events();
 	//attach_glucose_events();
 	$(".cls_settings").popover({
 		html: true,
@@ -393,7 +395,7 @@ $(document).ready(function(){
 	});
 	populate_weight_graph();
 	populate_blood_pressure_graph();
-	//populate_cholesterol_graph();
+	populate_cholesterol_graph();
 	//populate_glucose_graph();
 
 	/*Custom Spinner*/

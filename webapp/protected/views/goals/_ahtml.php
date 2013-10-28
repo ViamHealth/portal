@@ -52,7 +52,7 @@
 <!-- Modals -->
 
 
-<div id="blood-pressure-goal-reading-model" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="Add reading for goal" aria-hidden="true">
+<!--<div id="blood-pressure-goal-reading-model" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="Add reading for goal" aria-hidden="true">
   <div class="modal-header">
     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
     Add a new bp reading
@@ -67,9 +67,9 @@
       		<button class="btn btn-primary" id="save-blood-pressure-reading">Save</button>
 		</form>
   </div>
-</div>
+</div>-->
 
-<div id="cholesterol-goal-reading-model" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="Add reading for goal" aria-hidden="true">
+<!--<div id="cholesterol-goal-reading-model" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="Add reading for goal" aria-hidden="true">
   <div class="modal-header">
     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
     Add a new cholesterol reading
@@ -86,7 +86,7 @@
       		<button class="btn btn-primary" id="save-cholesterol-reading">Save</button>
 		</form>
   </div>
-</div>
+</div>-->
 
 <div id="glucose-goal-reading-model" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="Add reading for goal" aria-hidden="true">
   <div class="modal-header">

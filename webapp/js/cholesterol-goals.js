@@ -39,10 +39,28 @@ function attach_cholesterol_events(){
 			goal.total_cholesterol = $("#cholesterol_goal_reading_total_cholesterol").val();
 			goal.reading_date = $("#cholesterol_goal_reading_reading_date").val();
 
-			_stack['model'].set_reading(id, goal,function(){
+			_DB.CholesterolReading.retrieve(goal.reading_date,function(response,status){
+				if (response.status && response.status == 404) {
+					_DB.CholesterolReading.create(goal,function(response,status){
+						$('#cholesterol-goal-reading-model').modal('hide');
+						
+						if(!status) console.log(response.responseText);
+						populate_cholesterol_graph();
+					});
+				} else {
+					_DB.CholesterolReading.update(goal.reading_date,goal,function(response,status){
+						$('#cholesterol-goal-reading-model').modal('hide');
+						if(!status) console.log(response.responseText);
+						populate_cholesterol_graph();
+					});
+				}
+			});
+
+
+			/*_stack['model'].set_reading(id, goal,function(){
 				$(_stack['add_reading_model']).modal('hide');
 				populate_cholesterol_graph();
-			});
+			});*/
 		}
 	});
 
