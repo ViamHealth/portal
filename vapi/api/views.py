@@ -342,16 +342,19 @@ class ReminderReadingsViewSet(ViamModelViewSetNoStatus):
             return queryset
 
         type = self.request.QUERY_PARAMS.get('type', 'ALL')
-        
-        reading_date = self.request.QUERY_PARAMS.get('reading_date',None)
 
         if type == '1' or type == '2' or type == '3' :
             queryset = self.model.objects.filter(reminder__type=type, reminder_id = F('reminder__id'))
 
         user = self.get_user_object()
         queryset = queryset.filter(user=user)
-        if reading_date is not None:
-            queryset = queryset.filter(reading_date=reading_date)
+
+        reading_date_value = self.request.QUERY_PARAMS.get('reading_date', None)
+        
+        if reading_date_value:
+            reading_date_list = reading_date_value.split(',')
+            queryset = queryset.filter(reading_date__in=reading_date_list)
+        
         return queryset
 
 
