@@ -580,7 +580,7 @@ class DietTracker(models.Model):
     food_item = models.ForeignKey('FoodItem', related_name = "+", blank=False)
     food_quantity_multiplier = models.IntegerField(blank=False)
     meal_type = models.CharField(max_length=18L, choices=MEAL_TYPE_CHOICES, db_index=True, blank=False)
-    diet_date = models.DateField(blank=True,null=True)
+    diet_date = models.DateField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     updated_by = models.ForeignKey('auth.User', related_name="+", db_column='updated_by')

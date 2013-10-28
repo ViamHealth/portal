@@ -46,6 +46,17 @@ for user in User.objects.all():
     #TODO: custom algo for creating token string
     Token.objects.get_or_create(user=user)
 
+
+@api_view(['GET',])
+def logout(request):
+    if request.user.is_authenticated():
+        Token.objects.get(user=request.user).delete()
+        Token.objects.get_or_create(user=user)
+        return Response(status=status.HTTP_204_NO_CONTENT)
+    else:
+        return Response(status=status.HTTP_401_UNAUTHORIZED)
+
+
 @api_view(['GET',])
 def handles3downloads(request, healthfile_id):
     LOCAL_PATH = '/tmp/s3/'
@@ -57,8 +68,8 @@ def handles3downloads(request, healthfile_id):
         if request.user.is_authenticated():
             pass
         else:
-            pprint.pprint('not logged in')
-            raise Http404
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
+
         user_id = int(request.user.id)
 
         if request.user == m.user:
@@ -70,24 +81,24 @@ def handles3downloads(request, healthfile_id):
                     has_permission = True
             
         if has_permission:
-		try:
-	            conn = boto.connect_s3(settings.AWS_ACCESS_KEY_ID, settings.AWS_SECRET_ACCESS_KEY)
+            try:
+                conn = boto.connect_s3(settings.AWS_ACCESS_KEY_ID, settings.AWS_SECRET_ACCESS_KEY)
                 
-                    key = conn.get_bucket(settings.AWS_STORAGE_BUCKET_NAME).get_key('media/'+str(m.file))
-                    # delete file first and after wards
-                    if os.path.exists(LOCAL_PATH+str(m.id)+'-'+m.name):
-                        os.remove(LOCAL_PATH+str(m.id)+'-'+m.name)
-                    key.get_contents_to_filename(LOCAL_PATH+str(m.id)+'-'+m.name)
-                
-                    response = HttpResponse(file(LOCAL_PATH+str(m.id)+'-'+m.name), content_type = m.mime_type)
-                    response['Content-Length'] = os.path.getsize(LOCAL_PATH+str(m.id)+'-'+m.name)
-                    return response
-                except:
-                    raise Http404
+                key = conn.get_bucket(settings.AWS_STORAGE_BUCKET_NAME).get_key('media/'+str(m.file))
+                # delete file first and after wards
+                if os.path.exists(LOCAL_PATH+str(m.id)+'-'+m.name):
+                    os.remove(LOCAL_PATH+str(m.id)+'-'+m.name)
+                key.get_contents_to_filename(LOCAL_PATH+str(m.id)+'-'+m.name)
+            
+                response = HttpResponse(file(LOCAL_PATH+str(m.id)+'-'+m.name), content_type = m.mime_type)
+                response['Content-Length'] = os.path.getsize(LOCAL_PATH+str(m.id)+'-'+m.name)
+                return response
+            except:
+                return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         else:
-            raise Http404
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
     except Healthfile.DoesNotExist:
-        raise Http404
+        return Response(status=status.HTTP_404_NOT_FOUND)
 
 
 

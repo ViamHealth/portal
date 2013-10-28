@@ -73,6 +73,7 @@ urlpatterns = patterns('',
 
     url(r'^healthfiles/download/(?P<healthfile_id>[0-9]+)/$', views.handles3downloads, name='download-healthfiles'),
     url(r'^goals/$', views.all_goals, name='all-goals'),
+    url(r'^logout/$', views.logout, name='logout'),
 
     #Uncomment the next line to enable the admin:
     url(r'^admin/', include(admin.site.urls)),
