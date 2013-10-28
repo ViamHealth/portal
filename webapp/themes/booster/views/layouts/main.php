@@ -21,14 +21,57 @@
 
 	<title><?php echo CHtml::encode($this->pageTitle); ?></title>
 	<style>
+	.navbar.navbar-fixed-top {
+		border-bottom-color: rgb(52, 171, 76);
+border-bottom-style: solid;
+border-bottom-width: 1px;
+	}
+	
 	.navbar .navbar-inner  {
-		background: url(/images/bg-main_menu.jpg) repeat-x 0 0;
+		/*background: url(/images/bg-main_menu.jpg) repeat-x 0 0;*/
+		background-color: #37AA4F;
+		background-image: none;
+		padding: 10px 0px;
+		font-size: 20px;
+		font-family: Roboto;
+		line-height: 20px;
+		border-bottom-color: rgb(52, 171, 76);
+border-bottom-style: solid;
+border-bottom-width: 1px;
+	}
+	.navbar .nav>li>a {
+float: none;
+padding: 10px 15px 10px;
+color: white;
+text-decoration: none;
+}
+
+	.navbar .nav .active>a, .navbar .nav .active>a:hover, .navbar .nav .active>a:focus {
+color: black;
+background-color: #37AA4F;
+}
+	.navbar .brand, .navbar .nav>li>a {
+color: white;
+text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+}
+a {
+color: black;
+text-decoration: none;
+}
+.navbar-inverse .nav-collapse .nav > li > a, .navbar-inverse .nav-collapse .dropdown-menu a {
+    color: white;
+}
+	.navbar .nav>.active>a, .navbar .nav>.active>a:hover, .navbar .nav>.active>a:focus {
+		box-shadow: none;
 	}
 	.well {
 		background-color: white;
 	}
 	body {
-		background-color: #efefef;
+		background-color: #38B452;
+	}
+	.nav-list>li>a {
+		font-size:12px;
 	}
 	</style>
 	<script type="text/javascript">
@@ -54,18 +97,25 @@ if(!Yii::app()->user->isGuest)
 	if(!$family) $family = array();
 	$current_profile_name = Yii::app()->user->username;
 	foreach ($family as $key => $value) {
+		$active = false;
 		if(isset($value->username)){
 			if(isset($value->id) && $value->id != $this->getCurrentUserId()){
 				$family_array[] = array('label' => $value->username, 'url' => array('/u/'.$value->id.'/site/index'), 'visible' => !Yii::app()->user->isGuest,);
 			}
 			else {
 				$current_profile_name = $value->username;
+				$active = true;
 			}
 			if($value->first_name && $value->last_name)
 				$visible_identity = $value->first_name." ".$value->last_name;
 			else
 				$visible_identity = $value->first_name?$value->first_name:$value->username;	
-			$sidebar_family_array[] = "<li><a href='".$this->createUrl('site/index',array(),'&',$value->id)."'><img  height='25' width='25' src='".$value->profile->profile_picture_url."' /> &nbsp; $visible_identity</a></li>";
+			if(strlen($visible_identity)>15) $visible_identity = substr($visible_identity, 0,15);
+			$li_class =''; 
+			if($active){
+				$li_class = " class='active' ";
+			}
+			$sidebar_family_array[] = "<li $li_class ><a href='".$this->createUrl('site/index',array(),'&',$value->id)."'><img  height='25' width='25' src='".$value->profile->profile_picture_url."' /> &nbsp; $visible_identity</a></li>";
 		}
 		
 	}
@@ -76,9 +126,9 @@ if(!Yii::app()->user->isGuest)
 ?>
 <div class="container" id="page">
 	<?php $this->widget('bootstrap.widgets.TbNavbar', array(
-	'type' => 'inverse', // null or 'inverse'
+	'type' => '', // null or 'inverse'
 	'brand' => ' &nbsp; ',
-	'brandOptions' => array('style'=>'background:url(/images/logo.png) no-repeat 0 8px;width:148px;'),
+	'brandOptions' => array('style'=>'background:url(/images/logo.png) no-repeat;background-size:180px 33px;width: 155px;'),
 	'brandUrl' => $this->createUrl('site/index'),
 	'collapse' => true, // requires bootstrap-responsive.css
 	'items' => array(
@@ -126,8 +176,8 @@ if(!Yii::app()->user->isGuest)
 	),
 )); ?>
 	<!-- mainmenu -->
-	<div class="container-fluid" <?php if(Yii::app()->user->isGuest) { ?> style="margin-top:50px" <?php } ?>>
-		<?php if (isset($this->breadcrumbs)): ?>
+	<div class="container-fluid" style="margin: 70px 0;" <?php if(Yii::app()->user->isGuest) { ?> style="margin-top:50px" <?php } ?>>
+		<?php if (0)://isset($this->breadcrumbs)): ?>
 			<?php $this->widget('bootstrap.widgets.TbBreadcrumbs', array(
 				'links' => $this->breadcrumbs,
 			)); ?><!-- breadcrumbs -->
