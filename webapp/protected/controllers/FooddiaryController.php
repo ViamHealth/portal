@@ -34,7 +34,7 @@ class FooddiaryController extends Controller
 
 	public function actionIndex()
 	{	
-		$this->render('index');
+		$this->render('diary');
 	}
 
   public function actionGetdiary($type)

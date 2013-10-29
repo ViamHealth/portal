@@ -21,9 +21,33 @@
 
 	<title><?php echo CHtml::encode($this->pageTitle); ?></title>
 	<style>
-	.navbar.navbar-fixed-top {
+	.datepicker{
+	z-index:1151;
+	cursor: pointer;
+	border-radius: 0px;
+	text-align: center;
+}
+.datepicker td{
+	font-size: x-small;
+	padding: 9px 10px;
+}
+.datepicker .prev {
+	/*width: 12px;
+height: 11px;
+background-image: url(/images/sprite-img.png);
+background-repeat: no-repeat;
+margin: 0;
+background-position: 0 -538px;*/
+}
+.datepicker th{
+	font-size: small;
+	padding: 9px 10px;
+	font-weight: normal;
+}
+
+.navbar.navbar-fixed-top {
 		border-bottom-color: rgb(52, 171, 76);
-border-bottom-style: solid;
+		border-bottom-style: solid;
 border-bottom-width: 1px;
 	}
 	

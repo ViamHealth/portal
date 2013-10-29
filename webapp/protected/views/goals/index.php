@@ -84,29 +84,7 @@ background-repeat: no-repeat;
 display: block;
 margin-top: 5px;
 }
-.datepicker{
-	z-index:1151;
-	cursor: pointer;
-	border-radius: 0px;
-	text-align: center;
-}
-.datepicker td{
-	font-size: x-small;
-	padding: 9px 10px;
-}
-.datepicker .prev {
-	/*width: 12px;
-height: 11px;
-background-image: url(/images/sprite-img.png);
-background-repeat: no-repeat;
-margin: 0;
-background-position: 0 -538px;*/
-}
-.datepicker th{
-	font-size: small;
-	padding: 9px 10px;
-	font-weight: normal;
-}
+
 </style>
 <?php
 $this->renderPartial('_weight',array());

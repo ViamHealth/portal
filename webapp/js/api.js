@@ -117,14 +117,14 @@ api_url_x = function(resource,options){
 	return url;
 }
 
-api_url = function(resource,pk,sub_resource, sub_resource_id){
+api_url = function(resource,pk,sub_resource, sub_resource_id,get_params){
 	if(!resource)
 		throw new Error('resource not defined');
 	var url = VH.params.apiUrl+resource;
+	var get_started = false;
 	if(pk)
 		url = url+'/'+pk;
-	console.log(pk);
-	console.log(url);
+
 	if(sub_resource) {
 		url = url+'/'+sub_resource;
 		if(sub_resource_id) 
@@ -132,8 +132,21 @@ api_url = function(resource,pk,sub_resource, sub_resource_id){
 	}
 
 	if(api_backslash) url = url+'/';
-	if(find_family_user_id())
+	if(find_family_user_id()){
 		url=url+'?user='+find_family_user_id()
+		get_started = true;
+	}
+	if(get_params){
+		if(get_started){
+			url = url+'&';
+		} else {
+			url = url+'?';
+		}
+		$.each(get_params, function(i, val){
+			url = url+i+"="+val+"&";
+		});
+		url = url.substring(0, url.length - 1);
+	}
 	return url;
 }
 
@@ -372,6 +385,40 @@ _DB.WeightReading = {
 		api_delete(url,callback);
 	},
 }
+
+_DB.FoodDiary = {
+	resource : 'diet-tracker',
+	retrieve : function(id,callback){
+		var url = api_url(this.resource,id)
+		api_get(url,callback);
+	},
+	list : function(params,callback){
+		var url = api_url(this.resource,null,null,null,params);
+		//if(meal_type) url = url + '&meal_type='+meal_type;
+		api_get(url,callback);
+	},
+	update : function(id,user,callback){
+		var url = api_url(this.resource,id)
+		api_put(url,user,callback);
+	},
+	create : function(user,callback){
+		var url = api_url(this.resource)
+		api_post(url,user,callback);
+	},
+	destroy: function(id,callback){
+		var url = api_url(this.resource,id);
+		api_delete(url,callback);
+	},
+}
+
+_DB.FoodItems = {
+	resource : 'food-items',
+	retrieve : function(id,callback){
+		var url = api_url(this.resource,id)
+		api_get(url,callback);
+	},
+}
+
 _DB.User = {
 	resource : 'users',
 	retrieve : function(id,callback){
