@@ -209,16 +209,29 @@ function load_diary_page(meal_type,dairy_date){
 				var data_rows = $(".dinner-data");
 				var _t = '<?php $this->renderPartial("_dinner_row",array()); ?>';
 			}
-
-			$($(predessor).find("td")[0]).addClass("diary-pahar").on('click',function(){
-				$(data_rows).toggle();
-			});
 			
 			
 			$.each(data,function(i,val){
 				var _t_elem = $.parseHTML(_t);
 				$(predessor).after(_t_elem);
 				
+				if(meal_type == 'BREAKFAST'){
+                        var data_rows = $(".breakfast-data");
+                }
+                else if (meal_type == 'LUNCH'){
+                        var data_rows = $(".lunch-data");
+                }
+                else if (meal_type == 'SNACKS'){
+                        var data_rows = $(".snacks-data");
+                }
+                else if (meal_type == 'DINNER'){
+                        var data_rows = $(".dinner-data");
+                }
+
+                $($(predessor).find("td")[0]).addClass("diary-pahar").on('click',function(){
+                        $(data_rows).toggle();
+                });
+
 				var food_item_id = val.food_item;
 				if(food_items_collection.food_item_id){
 					var f = food_items_collection.food_item_id;

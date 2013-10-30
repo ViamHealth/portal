@@ -173,7 +173,8 @@ class HealthfileTag(models.Model):
 
 class Healthfile(models.Model):
     def get_healthfile_path(self, filename):
-        return 'healthfiles/'+hashlib.sha224(str(self.id)).hexdigest()
+        #return 'healthfiles/'+hashlib.sha224(str(self.id)+'-'+str(self.created_at)).hexdigest()
+        return 'healthfiles/'+str(self.user.id)+str(self.name)+str(datetime.datetime.now())
 
     user = models.ForeignKey('auth.User', related_name="+")
     name = models.CharField(max_length=256L,blank=True, null=True)

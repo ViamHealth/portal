@@ -48,6 +48,8 @@ urlpatterns = patterns('',
     #url(r'^bmi-profile/$', views.UserBmiProfileViewSet.as_view({'get':'list','post':'create'}),name='userbmiprofile-list'),
     #url(r'^bmi-profile/(?P<pk>[0-9]+)/$', views.UserBmiProfileViewSet.as_view({'get':'retrieve','put':'update','delete':'destroy'}),name='userbmiprofile-detail'),
 
+    #url(r'^healthfiles/(?P<pk>[0-9]+)/get-text/$', views.HealthfileViewSet.as_view({'get': 'get_text'}), name='healthfile-text'),
+
     #url(r'^goals/$', views.GoalViewSet.as_view(),name='goal-list'),
     url(r'^weight-readings/$', views.WeightReadingViewSet.as_view({'get':'list','post':'create'}),name='weight-readings'),
     url(r'^weight-readings/(?P<reading_date>[0-9-]+)/$', views.WeightReadingViewSet.as_view({'get':'retrieve','delete':'destroy','put':'update'}),name='weight-reading-detail'),

@@ -411,6 +411,30 @@ _DB.FoodDiary = {
 	},
 }
 
+_DB.HealthFile = {
+	resource : 'healthfiles',
+	retrieve : function(id,callback){
+		var url = api_url(this.resource,id)
+		api_get(url,callback);
+	},
+	list : function(params,callback){
+		var url = api_url(this.resource,null,null,null,params);
+		api_get(url,callback);
+	},
+	update : function(id,user,callback){
+		var url = api_url(this.resource,id)
+		api_put(url,user,callback);
+	},
+	create : function(user,callback){
+		var url = api_url(this.resource)
+		api_post(url,user,callback);
+	},
+	destroy: function(id,callback){
+		var url = api_url(this.resource,id);
+		api_delete(url,callback);
+	},
+}
+
 _DB.FoodItems = {
 	resource : 'food-items',
 	retrieve : function(id,callback){

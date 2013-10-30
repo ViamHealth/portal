@@ -37,6 +37,7 @@ from django.conf import settings
 
 
 
+
 #Temporary create code for all users once.
 for user in User.objects.all():
     enddate = datetime.today() - timedelta(days=7)
@@ -228,6 +229,7 @@ class UserView(viewsets.ViewSet):
         qqueryset = UserGroupSet.objects.filter(group=request.user,status='ACTIVE')
         users = [p.user for p in qqueryset]
         users = list(set(users))
+        users = [request.user] + users
         serializer = UserSerializer(users, many=True, context={'request': request})
         return Response(serializer.data)
 
@@ -405,7 +407,7 @@ class HealthfileViewSet(ViamModelViewSet):
             serializer.object.updated_by = self.request.user
             serializer.save()
             f=Healthfile.objects.get(pk=serializer.data.get('id'))
-            fserializer = HealthfileSerializer(f, data=serializer.object, context={'request': request})
+            fserializer = HealthfileSerializer(f, context={'request': request})
             return Response(fserializer.data, status=status.HTTP_201_CREATED)
 
     def update(self, request, pk=None):
@@ -453,7 +455,6 @@ class HealthfileViewSet(ViamModelViewSet):
             
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
 
 
 class WeightReadingViewSet(GoalReadingsViewSet):

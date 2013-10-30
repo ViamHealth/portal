@@ -34,8 +34,8 @@ class HealthfilesController extends Controller
 
 	public function actionIndex()
 	{
-		$model=Healthfile::model();
-		$this->render('index',array('model'=>$model, 'profile_id'=>$this->getCurrentUserId()));
+		//$model=Healthfile::model();
+		$this->render('files',array());
 	}
 
 	public function actionUpdate($id)
