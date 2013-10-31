@@ -395,7 +395,7 @@ class HealthfileViewSet(ViamModelViewSet):
             else:
                 return HealthfileEditSerializer
 
-    #TODO: remove csrf_exempt
+    #TODO: remove csrf_exempt   
     @csrf_exempt
     def create(self, request, format=None):
         #pprint.pprint(request.META)
@@ -406,14 +406,16 @@ class HealthfileViewSet(ViamModelViewSet):
         if serializer.is_valid():
             file = self.request.FILES.get('file',None)
             if file is not None:
-                serializer.object.file = self.request.FILES['file']
+                serializer.object.file = request.FILES['file']
                 serializer.object.uploading_file = True
             serializer.object.user = self.get_user_object()
-            serializer.object.updated_by = self.request.user
+            serializer.object.updated_by = request.user
             serializer.save()
             f=Healthfile.objects.get(pk=serializer.data.get('id'))
             fserializer = HealthfileSerializer(f, context={'request': request})
             return Response(fserializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def update(self, request, pk=None):
         tags_sent = False
