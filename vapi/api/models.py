@@ -680,6 +680,7 @@ class UserPhysicalActivity(models.Model):
     time_spent_unit = models.CharField(max_length=40L, choices=TIME_SPENT_UNIT_CHOICES, blank=True, default='MINUTE',null=True)
     physical_activity = models.ForeignKey('PhysicalActivity', related_name="+")
     user_calories_spent = models.CharField(max_length=40L,blank=True,null=True)
+    activity_date = models.DateField(null=True,blank=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -687,6 +688,11 @@ class UserPhysicalActivity(models.Model):
     
     history = HistoricalRecords()
 
+    def save(self, *args, **kwargs):
+        if not self.id:
+            if self.activity_date is None:
+                self.activity_date = datetime.date.today()
+        super(UserPhysicalActivity, self).save(*args, **kwargs)
 
     class Meta:
         db_table = 'tbl_user_physical_activities'

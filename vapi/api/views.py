@@ -35,7 +35,7 @@ import boto
 from boto.s3.key import Key
 from django.conf import settings
 
-
+from django.views.decorators.csrf import csrf_exempt
 
 
 #Temporary create code for all users once.
@@ -395,8 +395,13 @@ class HealthfileViewSet(ViamModelViewSet):
             else:
                 return HealthfileEditSerializer
 
+    #TODO: remove csrf_exempt
+    @csrf_exempt
     def create(self, request, format=None):
-
+        #pprint.pprint(request.META)
+        #pprint.pprint(request.DATA)
+        #pprint.pprint(request.FILES['file'].size)
+        #return 'a'
         serializer = self.get_serializer(data=request.DATA,)
         if serializer.is_valid():
             file = self.request.FILES.get('file',None)
@@ -690,6 +695,7 @@ class UserPhysicalActivityViewSet(ViamModelViewSetClean):
     model = UserPhysicalActivity
     #serializer_class = UserPhysicalActivityCreateSerializer
     permission_classes = (permissions.IsAuthenticated,)
+    filter_fields = ('user','activity_date',)
 
     def get_serializer_class(self):
         if self.request.method in permissions.SAFE_METHODS:
