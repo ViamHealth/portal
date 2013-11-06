@@ -120,7 +120,7 @@ class UserCreateSerializer(serializers.HyperlinkedModelSerializer):
     #        raise serializers.ValidationError("Enter a valid e-mail address.")
     class Meta:
         model = User
-        fields = ('id',  'first_name', 'last_name','username', )
+        fields = ('id',  'first_name', 'last_name','username', 'email')
 
 
 class EmailUserSignupSerializer(serializers.HyperlinkedModelSerializer):

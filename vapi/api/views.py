@@ -36,6 +36,8 @@ from boto.s3.key import Key
 from django.conf import settings
 
 from django.views.decorators.csrf import csrf_exempt
+from django.core.validators import validate_email
+from django.core.exceptions import ValidationError
 
 
 #Temporary create code for all users once.
@@ -259,19 +261,104 @@ class UserView(viewsets.ViewSet):
         serializer = UserSerializer(users, many=True, context={'request': request})
         return Response(serializer.data)
 
-    def create(self, request, format=None):
-        serializer = UserCreateSerializer(data=request.DATA, context={'request': request})
-        if serializer.is_valid():
-            serializer.save()
-            umap = UserGroupSet(group=request.user, user=User.objects.get(pk=serializer.data.get('id')),status='ACTIVE',updated_by=request.user);
+    def create_connections(self, request, user):
+        try:
+            UserGroupSet.objects.get(group=request.user, user=user)
+            #why add again . 400 for you moron
+            result = {}
+            result['email'] = 'User already added as a family member'
+            return Response(result,status=status.HTTP_400_BAD_REQUEST)
+
+        except UserGroupSet.DoesNotExist:
+            #create connection
+            #TODO: send connection made mail
+            umap = UserGroupSet(group=request.user, user=user,status='ACTIVE',updated_by=request.user);
             umap.save()
-            #TODO:check for adding updated_by
-            user=User.objects.get(pk=serializer.data.get('id'))
-            UserProfile.objects.get_or_create(user=user)
-            UserBmiProfile.objects.get_or_create(user=user,defaults={'updated_by': user})
-            pserializer = UserSerializer(user, data=serializer.object, context={'request': request})
-            return Response(pserializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            invite_existing_email(user, request.user)
+            """
+            if user.email:
+                #send email
+            profile = user.get_profile()
+            if profile.mobile:
+                #send sms
+            """
+            serializer = UserSerializer(user)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+
+    def create(self, request, format=None):
+        email_exists = False
+        mobile_exists = False
+
+        data = request.DATA.copy()
+        username = None
+        first_name = data.get('first_name',None)
+        last_name = data.get('last_name', None)
+        email = data.get('email',None)
+        password = User.objects.make_random_password()
+        mobile = data.get('mobile',None)
+
+        username = generate_random_username()
+
+        if email and len(email.strip()):
+            email = email.strip()
+            try:
+                validate_email(email)
+            except ValidationError:
+                result = {}
+                result['email'] = 'Enter a valid e-mail address.'
+                return Response(result,status=status.HTTP_400_BAD_REQUEST)
+
+        if mobile and len(mobile.strip()):
+            mobile = mobile.strip()
+            #TODO mobile validation
+
+        if email is not None:
+            try:
+                user_email = User.objects.get(email=email)
+                email_exists = True
+            except User.DoesNotExist:
+                email_exists = False
+
+        if mobile is not None:
+            try:
+                user_profile_mobile = UserProfile.objects.get(mobile=mobile)
+                user_mobile = user_profile_mobile.user
+                mobile_exists = True
+            except UserProfile.DoesNotExist:
+                mobile_exists = False
+
+        if mobile_exists and email_exists:
+            if user_email.id != user_mobile.id:
+                result = {}
+                result['non_field_errors'] = 'Mobile and Email belong to different users'
+                return Response(result,status=status.HTTP_400_BAD_REQUEST)
+            else:
+                return self.create_connections(request,user_email)    
+
+        elif email_exists:
+            #existing user. Bring in the permission framework, which is yet to be built
+            return self.create_connections(request,user_email)
+        elif mobile_exists:
+            #existing user. Bring in the permission framework, which is yet to be built
+            return self.create_connections(request,user_mobile)
+        else:
+            #create new user
+            #authenticating user
+            serializer = UserCreateSerializer(data={'username':username,'email':email,'password':password,'first_name':first_name,'last_name':'last_name'})
+            if serializer.is_valid():
+                serializer.save()
+                user=User.objects.get(pk=serializer.data.get('id'))
+                UserProfile.objects.get_or_create(user=user,defaults={'mobile':mobile})
+                UserBmiProfile.objects.get_or_create(user=user,defaults={'updated_by': user})
+
+                umap = UserGroupSet(group=request.user, user=user,status='ACTIVE',updated_by=request.user);
+                umap.save()
+                invite_new_email(user, request.user, password)
+                
+                pserializer = UserSerializer(user)
+                return Response(pserializer.data, status=status.HTTP_201_CREATED)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)     
 
     def retrieve(self, request, pk=None):
         user = self.get_object(pk)
