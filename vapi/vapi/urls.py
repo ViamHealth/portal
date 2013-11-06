@@ -47,7 +47,9 @@ urlpatterns = patterns('',
 
     url(r'^signup/$', views.SignupView.as_view({'post': 'user_signup'}), name='user-signup'),
     url(r'^invite/$', views.InviteView.as_view({'post': 'user_invite'}), name='user-invite'),
-    
+    url(r'^forgot-password-email/$', views.ForgotPasswordView.as_view({'post': 'forgot_password_email'}), name='forgot-password-email'),
+    url(r'^forgot-password-mobile/$', views.ForgotPasswordView.as_view({'post': 'forgot_password_mobile'}), name='forgot-password-mobile'),
+
     url(r'^users/$', views.UserView.as_view({'get': 'list','post': 'create'}),name='user-list'),
     url(r'^users/me/$', views.UserView.as_view({'get': 'current_user'}), name='user-me'),
 

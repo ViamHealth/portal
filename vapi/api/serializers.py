@@ -149,6 +149,7 @@ class UserSignupSerializer(serializers.HyperlinkedModelSerializer):
         fields = ('username', 'password','email')
 
 class UserInviteSerializer(serializers.HyperlinkedModelSerializer):
+    """
     def validate_username(self, attrs, source):
         value = attrs[source]   
         try:
@@ -156,9 +157,44 @@ class UserInviteSerializer(serializers.HyperlinkedModelSerializer):
             return attrs
         except ValidationError:
             raise serializers.ValidationError("Enter a valid e-mail address.")
+    """
     class Meta:
         model = User
         fields = ('email',)
+
+class ForgotPasswordEmailSerializer(serializers.Serializer):
+    email = serializers.CharField(required=True)
+
+    def validate_email(self, attrs, source):
+        value = attrs[source]
+        try:
+            validate_email(value)
+            try:
+                user = User.objects.get(email=value)
+                if not user.is_active:
+                    raise serializers.ValidationError('User account is disabled.')
+                attrs['user'] = user
+                return attrs
+            except User.DoesNotExist:
+                raise serializers.ValidationError("E-mail address not found.") 
+        except ValidationError:
+            raise serializers.ValidationError("Enter a valid e-mail address.")
+
+class ForgotPasswordMobileSerializer(serializers.Serializer):
+    mobile = serializers.CharField(required=True)
+
+    def validate_mobile(self,attrs, source):
+        value = attrs[source]
+        try:
+            userprofile = UserProfile.objects.get(mobile=value)
+            user = userprofile.user
+            if not user.is_active:
+                raise serializers.ValidationError('User account is disabled.')
+            attrs['user'] = user
+            return attrs
+        except UserProfile.DoesNotExist:
+            raise serializers.ValidationError("Mobile not found.")
+
 
 ############
 ###EXCERCISE

@@ -126,6 +126,40 @@ def api_root(request, format=None):
         
     })
 
+class ForgotPasswordView(viewsets.ViewSet):
+    
+    permission_classes=(permissions.AllowAny,)
+
+    @action(methods=['POST',])
+    def forgot_password_email(self, request, format=None):
+        email = request.DATA.get('email')
+        serializer = ForgotPasswordEmailSerializer(data=request.DATA, context={'request': request})
+        if serializer.is_valid():
+            user = serializer.object.get('user',None)
+            if user is not None:
+                password = User.objects.make_random_password()
+                user.password = make_password(password)
+                user.save()
+                forgot_password_email(user,password)
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    @action(methods=['POST',])
+    def forgot_password_mobile(self, request, format=None):
+        mobile = request.DATA.get('mobile')
+        serializer = ForgotPasswordMobileSerializer(data=request.DATA, context={'request': request})
+        if serializer.is_valid():
+            user = serializer.object.get('user',None)
+            if user is not None:
+                password = User.objects.make_random_password()
+                password = '1111'
+                user.password = make_password(password)
+                user.save()
+                #forgot_password_email(user,password)
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
 class SignupView(viewsets.ViewSet):
     model = User
     permission_classes=(permissions.AllowAny,)
@@ -274,10 +308,11 @@ class UserView(viewsets.ViewSet):
             #TODO: send connection made mail
             umap = UserGroupSet(group=request.user, user=user,status='ACTIVE',updated_by=request.user);
             umap.save()
-            invite_existing_email(user, request.user)
-            """
+            
+            
             if user.email:
-                #send email
+                invite_existing_email(user, request.user)
+            """
             profile = user.get_profile()
             if profile.mobile:
                 #send sms
@@ -355,7 +390,7 @@ class UserView(viewsets.ViewSet):
                 umap = UserGroupSet(group=request.user, user=user,status='ACTIVE',updated_by=request.user);
                 umap.save()
                 invite_new_email(user, request.user, password)
-                
+
                 pserializer = UserSerializer(user)
                 return Response(pserializer.data, status=status.HTTP_201_CREATED)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)     
