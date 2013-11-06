@@ -7,22 +7,70 @@ import pprint
 from datetime import date
 from api.serializers_helper import *
 import calendar
-
-"""
-from django.contrib.auth import authenticate
+from allauth.socialaccount.models import *
 
 
-class AuthTokenSerializer(serializers.Serializer):
-    username = serializers.CharField()
+class MobileAuthTokenSerializer(serializers.Serializer):
+    mobile = serializers.CharField()
     password = serializers.CharField()
 
     def validate(self, attrs):
-        username = attrs.get('username')
+        mobile = attrs.get('mobile').strip()
         password = attrs.get('password')
 
-        if username and password:
-            user = authenticate(username=username, password=password)
+        if mobile and password:
+            try:
+                userprofile = UserProfile.objects.get(mobile=mobile)
+                user = userprofile.user
+                if user.check_password(password):
+                    if not user.is_active:
+                        raise serializers.ValidationError('User account is disabled.')
+                    attrs['user'] = user
+                    return attrs
+                else:
+                    raise serializers.ValidationError('Unable to login with provided credentials.')    
+            except UserProfile.DoesNotExist:
+                raise serializers.ValidationError('Unable to login with provided credentials.')
+        else:
+            raise serializers.ValidationError('Must include "mobile" and "password"')
 
+
+class EmailAuthTokenSerializer(serializers.Serializer):
+    email = serializers.CharField()
+    password = serializers.CharField()
+
+    def validate(self, attrs):
+        email = attrs.get('email').strip()
+        password = attrs.get('password')
+
+        if email and password:
+            try:
+                user = User.objects.get(email=email)
+                if user.check_password(password):
+                    if not user.is_active:
+                        raise serializers.ValidationError('User account is disabled.')
+                    attrs['user'] = user
+                    return attrs
+                else:
+                    raise serializers.ValidationError('Unable to login with provided credentials.')    
+            except User.DoesNotExist:
+                raise serializers.ValidationError('Unable to login with provided credentials.')
+        else:
+            raise serializers.ValidationError('Must include "email" and "password"')
+
+
+class SocialAuthTokenSerializer(serializers.Serializer):
+    access_token = serializers.CharField()
+
+    def validate(self, attrs):
+        access_token = attrs.get('access_token').strip()
+        if access_token:
+            d1 = datetime.datetime.now()
+            try:
+                socialtoken = SocialToken.objects.get(token=access_token)
+                user = socialtoken.account.user
+            except SocialToken.DoesNotExist:
+                raise serializers.ValidationError('Unable to login with provided credentials')    
             if user:
                 if not user.is_active:
                     raise serializers.ValidationError('User account is disabled.')
@@ -31,14 +79,13 @@ class AuthTokenSerializer(serializers.Serializer):
             else:
                 raise serializers.ValidationError('Unable to login with provided credentials.')
         else:
-            raise serializers.ValidationError('Must include "username" and "password"')
-"""
+            raise serializers.ValidationError('Must include "access_token"')
 
 class UserProfileSerializer(serializers.ModelSerializer):
     profile_picture_url = serializers.Field(source='profile_picture_url')
     class Meta:
         model = UserProfile
-        fields = ( 'gender', 'date_of_birth', 'profile_picture_url','phone_number','blood_group','fb_profile_id','fb_username','organization', 'street','city','state','country','zip_code','lattitude','longitude','address',)
+        fields = ( 'gender', 'date_of_birth', 'profile_picture_url','mobile','blood_group','fb_profile_id','fb_username','organization', 'street','city','state','country','zip_code','lattitude','longitude','address',)
 
 class UserPasswordSerializer(serializers.ModelSerializer):
     class Meta:
@@ -64,30 +111,42 @@ class UserEditSerializer(serializers.HyperlinkedModelSerializer):
 
 class UserCreateSerializer(serializers.HyperlinkedModelSerializer):
     
-    def validate_username(self, attrs, source):
-        value = attrs[source]
-        try:
-            validate_email( value )
-            return attrs
-        except ValidationError:
-            raise serializers.ValidationError("Enter a valid e-mail address.")
+    #def validate_username(self, attrs, source):
+    #    value = attrs[source]
+    #    try:
+    #        validate_email( value )
+    #        return attrs
+    #    except ValidationError:
+    #        raise serializers.ValidationError("Enter a valid e-mail address.")
     class Meta:
         model = User
         fields = ('id',  'first_name', 'last_name','username', )
 
 
-class UserSignupSerializer(serializers.HyperlinkedModelSerializer):
+class EmailUserSignupSerializer(serializers.HyperlinkedModelSerializer):
     
-    def validate_username(self, attrs, source):
+    class Meta:
+        model = User
+        fields = ('email', 'password','username')
+
+    def validate_email(self, attrs, source):
         value = attrs[source]   
         try:
             validate_email( value )
-            return attrs
         except ValidationError:
             raise serializers.ValidationError("Enter a valid e-mail address.")
+
+        try:
+            u = User.objects.get(email=value)
+            raise serializers.ValidationError("e-mail already exists")
+        except User.DoesNotExist:
+            return attrs
+
+
+class UserSignupSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = User
-        fields = ('username', 'password')
+        fields = ('username', 'password','email')
 
 class UserInviteSerializer(serializers.HyperlinkedModelSerializer):
     def validate_username(self, attrs, source):

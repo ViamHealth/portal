@@ -12,7 +12,7 @@ from rest_framework.authtoken.models import Token
 from django.core.signals import request_started
 from rest_framework.views import APIView
 from rest_framework.generics import ListAPIView
-#from rest_framework.authtoken.serializers import AuthTokenSerializer
+from rest_framework.authtoken.serializers import AuthTokenSerializer
 from rest_framework import permissions, renderers, parsers, status, exceptions
 from rest_framework.decorators import api_view, link, action
 from rest_framework.mixins import DestroyModelMixin
@@ -130,19 +130,45 @@ class SignupView(viewsets.ViewSet):
 
     @action(methods=['POST',])
     def user_signup(self, request, format=None):
-        serializer = UserSignupSerializer(data=request.DATA, context={'request': request})
-        if serializer.is_valid():
-            serializer.object.email = serializer.object.username
-            serializer.object.password = make_password(serializer.object.password)
-            serializer.save()
-            user = User.objects.get(pk=serializer.object.id)
-            pserializer = UserSerializer(user, context={'request': request})
-            UserBmiProfile.objects.get_or_create(user=user,defaults={'updated_by': user})
+        username = request.POST.get("username",None)
+        email = request.POST.get("email",None)
+        mobile = request.POST.get("mobile",None)
+        password = request.POST.get("password",None)
 
-            signup_email(user.email)
+        if mobile is not None:
+            try:
+                UserProfile.objects.get(mobile = mobile)
+                result = {}
+                result['mobile'] = 'Mobile number already exists'
+                return Response(result,status=status.HTTP_400_BAD_REQUEST)
+            except UserProfile.DoesNotExist:
+                user = User(username=generate_random_username(),email=None,password=make_password(password))
+                user.save()
+                UserProfile.objects.get_or_create(user=user, defaults={'mobile':mobile})
+                UserBmiProfile.objects.get_or_create(user=user,defaults={'updated_by': user})
+                pserializer = UserSerializer(user, context={'request': request})
+                return Response(pserializer.data, status=status.HTTP_201_CREATED)
 
-            return Response(pserializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            if email is not None:
+                serializer = EmailUserSignupSerializer(data={'username':generate_random_username(),'email':email,'password':password,})
+            else :
+                serializer = UserSignupSerializer(data={'username':username,'email':None,'password':password,})
+
+            if serializer.is_valid():
+                serializer.object.password = make_password(serializer.object.password)
+                serializer.save()
+                user = User.objects.get(pk=serializer.object.id)
+                    
+                UserProfile.objects.get_or_create(user=user)
+                pserializer = UserSerializer(user, context={'request': request})
+                UserBmiProfile.objects.get_or_create(user=user,defaults={'updated_by': user})
+
+                if email is not None:
+                    signup_email(user.email)
+
+                return Response(pserializer.data, status=status.HTTP_201_CREATED)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class InviteView(viewsets.ViewSet):
     model = User
@@ -153,11 +179,11 @@ class InviteView(viewsets.ViewSet):
         #ADD EMAIL
         if serializer.is_valid():
             try:
-                user = User.objects.get(username=serializer.object.email)
+                user = User.objects.get(email=serializer.object.email)
                 invite_existing_email(user, request.user)
             except User.DoesNotExist:
                 password = User.objects.make_random_password()
-                user = User.objects.create_user(username=serializer.object.email, email=serializer.object.email,password=password)
+                user = User.objects.create_user(username=generate_random_username(), email=serializer.object.email,password=password)
                 invite_new_email(user, request.user, password)
             try:
                 UserGroupSet.objects.get(group=request.user, user=user)
@@ -545,14 +571,7 @@ class UserGlucoseGoalViewSet(ViamModelViewSetClean):
         except UserGlucoseGoal.DoesNotExist:
             return super(UserGlucoseGoalViewSet, self).create(request,format)
 
-class JSONResponse(HttpResponse):
-    """
-    An HttpResponse that renders its content into JSON.
-    """
-    def __init__(self, data, **kwargs):
-        content = renderers.JSONRenderer().render(data)
-        kwargs['content_type'] = 'application/json'
-        super(JSONResponse, self).__init__(content, **kwargs)
+
 
 def all_goals(request):
     glucose = None
@@ -705,17 +724,28 @@ class UserPhysicalActivityViewSet(ViamModelViewSetClean):
         else:
             return UserPhysicalActivityCreateSerializer
 
-#class ObtainAuthToken(APIView):
-#    throttle_classes = ()
-#    permission_classes = ()
-#    parser_classes = (parsers.FormParser, parsers.MultiPartParser, parsers.JSONParser,)
-#    renderer_classes = (renderers.JSONRenderer,) 
-#    model = Token
+class ObtainAuthToken(APIView):
+    throttle_classes = ()
+    permission_classes = ()
+    parser_classes = (parsers.FormParser, parsers.MultiPartParser, parsers.JSONParser,)
+    renderer_classes = (renderers.JSONRenderer,)
+    serializer_class = AuthTokenSerializer
+    model = Token
 
-#    def post(self, request):
-#        serializer = AuthTokenSerializer(data=request.DATA)
-#        if serializer.is_valid():
-#            token, created = Token.objects.get_or_create(user=serializer.object['user'])
-#            return Response({'token': token.key, 'user_id': serializer.object['user'].id})
-#        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    def post(self, request):
+        access_token = request.GET.get("access_token",None)
+        email = request.POST.get("email",None)
+        mobile = request.POST.get("mobile",None)
 
+        if access_token is not None:
+            serializer = SocialAuthTokenSerializer(data=request.GET)
+        elif email is not None:
+            serializer = EmailAuthTokenSerializer(data=request.DATA)
+        elif mobile is not None:
+            serializer = MobileAuthTokenSerializer(data=request.DATA)
+        else:
+            serializer = self.serializer_class(data=request.DATA)
+        if serializer.is_valid():
+            token, created = Token.objects.get_or_create(user=serializer.object['user'])
+            return Response({'token': token.key})
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

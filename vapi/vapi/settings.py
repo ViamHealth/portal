@@ -14,7 +14,7 @@ MANAGERS = ADMINS
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': 'viam2',                      # Or path to database file if using sqlite3.
+        'NAME': 'viam4',                      # Or path to database file if using sqlite3.
         # The following settings are not used with sqlite3:
         'USER': 'root',
         'PASSWORD': '',
@@ -129,7 +129,7 @@ INSTALLED_APPS = (
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
-    #'django.contrib.sites',
+    'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
     # Uncomment the next line to enable the admin:
@@ -141,7 +141,23 @@ INSTALLED_APPS = (
     'api',
     'storages',
     'django_ses',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.facebook',
 )
+
+ACCOUNT_EMAIL_REQUIRED = True
+
+LOGIN_REDIRECT_URL = '/'
+
+ACCOUNT_AUTHENTICATION_METHOD = "email"
+
+ACCOUNT_EMAIL_VERIFICATION = "none"
+
+ACCOUNT_UNIQUE_EMAIL =True
+
+ACCOUNT_USER_USERNAME_FIELD = "none"
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to
@@ -151,22 +167,35 @@ INSTALLED_APPS = (
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
-    'filters': {
-        'require_debug_false': {
-            '()': 'django.utils.log.RequireDebugFalse'
-        }
+    'formatters': {
+        'verbose': {
+            'format': '%(levelname)s %(asctime)s %(module)s %(process)d %(thread)d %(message)s'
+        },
+        'simple': {
+            'format': '%(levelname)s %(message)s'
+        },
     },
+    #'filters': {
+    #    'require_debug_false': {
+    #        '()': 'django.utils.log.RequireDebugFalse'
+    #    }
+    #},
     'handlers': {
-        'mail_admins': {
-            'level': 'ERROR',
-            'filters': ['require_debug_false'],
-            'class': 'django.utils.log.AdminEmailHandler'
-        }
+        #'mail_admins': {
+        #    'level': 'ERROR',
+        #    'filters': ['require_debug_false'],
+        #    'class': 'django.utils.log.AdminEmailHandler'
+        #},
+        'console':{
+            'level':'DEBUG',
+            'class':'logging.StreamHandler',
+            'formatter': 'simple'
+        },
     },
     'loggers': {
         'django.request': {
-            'handlers': ['mail_admins'],
-            'level': 'ERROR',
+            'handlers': ['console',],
+            'level': 'INFO',
             'propagate': True,
         },
     }
@@ -174,7 +203,30 @@ LOGGING = {
 
 SERVER_EMAIL = 'kunal.rachhoya@viamhealth.com'
 
+TEMPLATE_CONTEXT_PROCESSORS = (
+    "django.core.context_processors.request",
+    "django.contrib.auth.context_processors.auth",
+    "allauth.account.context_processors.account",
+    "allauth.socialaccount.context_processors.socialaccount",
+)
 
+AUTHENTICATION_BACKENDS = (
+    # Needed to login by username in Django admin, regardless of `allauth`
+    "django.contrib.auth.backends.ModelBackend",
+
+    # `allauth` specific authentication methods, such as login by e-mail
+    #"allauth.account.auth_backends.AuthenticationBackend",
+)
+
+
+SOCIALACCOUNT_PROVIDERS = { 'facebook':
+    {
+        'SCOPE': ['email',],
+        'AUTH_PARAMS': {  },
+        'METHOD': 'oauth2' ,
+        #'LOCALE_FUNC': 'path.to.callable'
+    } 
+}
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': ('rest_framework.permissions.IsAuthenticated',),
     'DEFAULT_AUTHENTICATION_CLASSES': (

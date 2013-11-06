@@ -23,6 +23,31 @@ from rest_framework.parsers import MultiPartParser
 import mimetypes
 from django.core import exceptions
 from django.contrib.auth.hashers import *
+from django.http import Http404, HttpResponse
+from random import choice
+from string import ascii_lowercase, digits
+
+def generate_random_username(length=8, chars=ascii_lowercase+digits, split=4, delimiter='-'):
+    
+    username = ''.join([choice(chars) for i in xrange(length)])
+    
+    if split:
+        username = delimiter.join([username[start:start+split] for start in range(0, len(username), split)])
+    
+    try:
+        User.objects.get(username=username)
+        return generate_random_username(length=length, chars=chars, split=split, delimiter=delimiter)
+    except User.DoesNotExist:
+        return username;
+
+class JSONResponse(HttpResponse):
+    """
+    An HttpResponse that renders its content into JSON.
+    """
+    def __init__(self, data, **kwargs):
+        content = renderers.JSONRenderer().render(data)
+        kwargs['content_type'] = 'application/json'
+        super(JSONResponse, self).__init__(content, **kwargs)
 
 class FamilyPermission(permissions.BasePermission):
     def check_family_permission(self,user_id, family_user_id):

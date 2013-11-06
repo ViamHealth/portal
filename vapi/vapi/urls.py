@@ -1,6 +1,10 @@
 from django.conf.urls import patterns, include, url
 from rest_framework import routers
 from api import views
+
+from django.views.decorators.csrf import csrf_exempt
+from allauth.socialaccount.providers.facebook.views import login_by_token
+
 #from api import ote
 
 router = routers.DefaultRouter(trailing_slash=True)
@@ -23,16 +27,24 @@ router.register(r'diet-tracker', views.DietTrackerViewSet)
 from django.contrib import admin
 admin.autodiscover()
 
-#obtain_auth_token = views.ObtainAuthToken.as_view()
+obtain_auth_token = views.ObtainAuthToken.as_view()
 urlpatterns = patterns('',
     # Examples:
     # url(r'^$', 'vapi.views.home', name='home'),
     #url(r'^', include('api.urls')),
+    
+    
+
+    url(r'^account/facebook/login/token/$', csrf_exempt(login_by_token),name="facebook_login_by_token"),
+    url(r'^account/', include('allauth.urls')),
+
+    url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+    url(r'^api-token-auth/', obtain_auth_token),
+    #url(r'^api-token-auth/', 'rest_framework.authtoken.views.obtain_auth_token'),
+
     url(r'^$', views.api_root),
     url(r'^', include(router.urls)),
-    url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
-    #url(r'^api-token-auth/', obtain_auth_token),
-    url(r'^api-token-auth/', 'rest_framework.authtoken.views.obtain_auth_token'),
+
     url(r'^signup/$', views.SignupView.as_view({'post': 'user_signup'}), name='user-signup'),
     url(r'^invite/$', views.InviteView.as_view({'post': 'user_invite'}), name='user-invite'),
     
@@ -79,5 +91,6 @@ urlpatterns = patterns('',
 
     #Uncomment the next line to enable the admin:
     url(r'^admin/', include(admin.site.urls)),
+
 )
 urlpatterns += (url(r'^admin/ses-stats/', include('django_ses.urls')),)

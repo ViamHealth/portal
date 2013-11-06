@@ -93,6 +93,16 @@ python manage.py runserver 127.0.0.1:8080
 
 To test server hit http://127.0.0.1:8080/ or 127.0.0.1:8080/admin
 
+** for facebook **
+
+Login at 127.0.0.1:8080/admin
+
+go to http://localhost:8080/admin/sites/site/  and change example.com to viamhealth.com or localhost:8080
+
+go to http://localhost:8080/admin/socialaccount/socialapp/ and add FB app settings
+
+**for facebook ends**
+
 To get your token make a POST call to http://127.0.0.1:8080/api-token-auth/ with username and password are POST data
 
 Eg. API calls for users
