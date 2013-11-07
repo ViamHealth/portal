@@ -139,6 +139,12 @@ INSTALLED_APPS = (
     'rest_framework',
     'rest_framework.authtoken',
     'api',
+    'api.goals',
+    'api.activity',
+    'api.diet',
+    'api.healthfiles',
+    'api.reminders',
+    'api.users',
     'storages',
     'django_ses',
     'allauth',
@@ -158,6 +164,7 @@ ACCOUNT_EMAIL_VERIFICATION = "none"
 ACCOUNT_UNIQUE_EMAIL =True
 
 ACCOUNT_USER_USERNAME_FIELD = "none"
+
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to

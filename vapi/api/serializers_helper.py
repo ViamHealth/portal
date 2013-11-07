@@ -1,9 +1,5 @@
-from django.contrib.auth.models import User
-from api.models import *
+
 from rest_framework import serializers
-from django.core.validators import validate_email
-from django.core.exceptions import ValidationError
-import pprint
 from datetime import date
 
 
