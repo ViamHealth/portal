@@ -4,40 +4,35 @@ from api.email_helper import *
 from django.contrib.auth.models import User, AnonymousUser
 from rest_framework import viewsets, filters
 from api.models import *
+from api.healthfiles.models import *
 from api.serializers import *
 
-
+import hashlib, os
 
 from rest_framework.authtoken.models import Token
-from django.core.signals import request_started
+
 from rest_framework.views import APIView
-from rest_framework.generics import ListAPIView
 from rest_framework.authtoken.serializers import AuthTokenSerializer
-from rest_framework import permissions, renderers, parsers, status, exceptions
-from rest_framework.decorators import api_view, link, action
-from rest_framework.mixins import DestroyModelMixin
-from rest_framework.reverse import reverse
+from rest_framework import permissions, renderers, parsers, status
+from rest_framework.decorators import api_view
+
+
 from rest_framework.response import Response
-import pprint
-from django.db.models import Q
-from django.http import Http404, HttpResponse
+
+from django.http import  HttpResponse
 from itertools import chain
-import time
+
 from datetime import datetime, timedelta
 from django.shortcuts import get_object_or_404
-from rest_framework.parsers import MultiPartParser
-import mimetypes
+
 #from django.core import exceptions
 from django.contrib.auth.hashers import *
-from rest_framework.pagination import PaginationSerializer
-from django.core.paginator import Paginator, PageNotAnInteger
+
 import boto
 from boto.s3.key import Key
 from django.conf import settings
 
-from django.views.decorators.csrf import csrf_exempt
-from django.core.validators import validate_email
-from django.core.exceptions import ValidationError
+
 
 
 #Temporary create code for all users once.
