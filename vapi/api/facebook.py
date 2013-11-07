@@ -53,7 +53,7 @@ def populate_profile(token,user):
     pic_data = pic_data['data']
     
     pic_is_set = pic_data.get('is_silhouette',None)
-    if pic_is_set is not None and pic_is_set != 'true':
+    if pic_is_set is not None and pic_is_set.lower() != 'true':
     	pic_url = pic_data.get('url',None)
 
     	if pic_url is not None:
