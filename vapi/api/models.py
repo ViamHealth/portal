@@ -19,6 +19,8 @@ from dateutil.rrule import *
 from django.utils.dateformat import format
 from history.models import HistoricalRecords
 from dateutil.parser import *
+from api.facebook import *
+from allauth.socialaccount.models import SocialToken
 
 s3_image_root = 'http://viamhealth-docsbucket.s3.amazonaws.com/';
 
@@ -579,7 +581,7 @@ class DietTracker(models.Model):
     )
     user = models.ForeignKey('auth.User', related_name="+")
     food_item = models.ForeignKey('FoodItem', related_name = "+", blank=False)
-    food_quantity_multiplier = models.IntegerField(blank=False)
+    food_quantity_multiplier = models.FloatField(blank=False)
     meal_type = models.CharField(max_length=18L, choices=MEAL_TYPE_CHOICES, db_index=True, blank=False)
     diet_date = models.DateField()
     created_at = models.DateTimeField(auto_now_add=True)
@@ -698,3 +700,8 @@ class UserPhysicalActivity(models.Model):
         db_table = 'tbl_user_physical_activities'
 
 User.profile = property(lambda u: UserProfile.objects.get_or_create(user=u)[0])
+
+@receiver(post_save, sender=SocialToken)
+def intercept_facebook_login(sender, instance, created, **kwargs):
+    if created and instance.account.provider=='facebook':
+        populate_profile(instance.token,instance.account.user)
