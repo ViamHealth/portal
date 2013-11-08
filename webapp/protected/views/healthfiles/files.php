@@ -154,9 +154,11 @@ background-repeat: no-repeat;
   </div>
   <div class="modal-body" >
   	<img id="file_edit_img" width="100px" src="" style="display:none;"></img>
-  	<div><span class="filetype_icon img_ft"></span></div>
+  	<div style="height:40px;"><span class="filetype_icon img_ft"></span>
+    	<span type="text" id="file_edit_name" name="name"  ></span>
+    </div>	
   	<div>
-  	<label>Description</label>
+  	Description :-
     <input type="text" id="file_edit_description" name="description" value="" />
     </div>
     <br/>
@@ -224,11 +226,14 @@ function populate_file_edit_details(fid){
 	$('#edit-file-modal').attr("data-fileid",fid);
 	_DB.HealthFile.retrieve(fid,function(json,success){
 		if(success){
-			if (json.mime_type == "image/jpeg"){
+			/*if (json.mime_type == "image/jpeg"){
 				$("#file_edit_img").attr("src","/healthfiles/getdownloadurl/"+json.id).show();	
 				$('#edit-file-modal').find(".filetype_icon").hide();
-			}
+			}*/
+			$('#edit-file-modal').find(".filetype_icon").addClass(get_filtype_icon_class(json.mime_type));
+
 			$("#file_edit_description").val(json.description);
+			$("#file_edit_name").html(json.name);
 
 			$('#edit-file-modal').find("button").click(function(){
 				var params = {};
