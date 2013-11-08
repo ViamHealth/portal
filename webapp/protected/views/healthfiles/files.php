@@ -6,6 +6,9 @@ $this->breadcrumbs=array(
     Yii::app()->clientScript->registerScriptFile(Yii::app()->baseUrl.'/js/jquery.validate.min.js');
     Yii::app()->clientScript->registerScriptFile(Yii::app()->baseUrl.'/js/bootbox.min.js');
 	Yii::app()->clientScript->registerScriptFile(Yii::app()->baseUrl.'/js/bootstrap-datepicker.js');
+	Yii::app()->clientScript->registerScriptFile(Yii::app()->baseUrl.'/js/jquery.ui.widget.js');
+	Yii::app()->clientScript->registerScriptFile(Yii::app()->baseUrl.'/js/jquery.iframe-transport.js');
+	Yii::app()->clientScript->registerScriptFile(Yii::app()->baseUrl.'/js/jquery.fileupload.js');
 
 ?>
 <style>
@@ -80,10 +83,42 @@ background-repeat: no-repeat;
 			
         </tbody>
 	</table>
+	<a href="#" onclick="$('#upload-file-modal').modal();"><button id="family-users-add" class="btn btn-success" type="button">Upload File</button></a>
+</div>
+
+
+<div id="upload-file-modal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="Upload a file" aria-hidden="true">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    Upload new file
+  </div>
+  <div class="modal-body" itemid="">
+    <input id="fileupload" type="file" name="file" data-url="<?php echo Yii::app()->params['apiBaseUrl'] ?>healthfiles/" >
+	<div id="fileupload-status" style="display:none;">Uploading..</div>
+  </div>
 </div>
 
 <script>
 $(document).ready(function(){
+	$(function () {
+	    $('#fileupload').fileupload({
+	        dataType: 'json',
+	        beforeSend: function(xhr) {
+	                 xhr.setRequestHeader("Authorization", "Token <?php echo Yii::app()->user->token; ?>")
+	                 console.log(xhr);
+
+	              $('#fileupload-status').show();
+	            },
+	        done: function (e, data) {
+	          $('#fileupload-status').hide();
+	          var id = data.result.id;
+	          $('#upload-file-modal').modal('hide');
+	          fetch_healthfiles();
+	          //window.location.replace("<?php echo $this->createUrl('/healthfiles/update/'); ?>"+'/'+id);
+	        }
+	    });
+	});
+
 	fetch_healthfiles();
 	$("#healthfiles-table .files-options").mousemove(function(){
 			$(this).css({"position":"relative"});
@@ -112,12 +147,18 @@ function fetch_healthfiles(page){
 		
 		if(success){
 			var data = json.results;
+			$("#healthfiles-table > tbody").html('');
 			$.each(data,function(i,val){
 				var _t = $.parseHTML(_t_hf_row);
 
 				var f_date = new Date(val.updated_at*1000);
 				$(_t).find(".filetype_icon").addClass(get_filtype_icon_class(val.mime_type));
-				$(_t).find(".filename").html(val.name);
+				var name = val.name;
+				if(name.length>10){
+					name = name.substring(0,6);
+					name = name + '...';
+				}
+				$(_t).find(".filename").html(name);
 				$(_t).find(".file_description").html(val.description);
 				$(_t).find(".file_date").html(f_date.toDateString());
 				$(_t).find(".files-options").html(_t_fo);
