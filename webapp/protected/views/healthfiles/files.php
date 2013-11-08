@@ -127,6 +127,7 @@ background-repeat: no-repeat;
 
     	<input id="fileupload" type="file" name="file" data-url="<?php echo Yii::app()->params['apiBaseUrl'] ?>healthfiles/" >
    	</span>
+   	
 	<div id="fileupload-status" style="display:none;">Uploading..</div>
 	<div id="fileupload-error" style="display:none;">There was some error. Please try again after some time.</div>
 
@@ -134,17 +135,19 @@ background-repeat: no-repeat;
 </div>
 
 
-<div id="upload-file-modal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="Upload a file" aria-hidden="true">
+<div id="upload-file-modal" class="modal hide fade" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="Upload a file" aria-hidden="true">
   <div class="modal-header">
-    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-    Upload new file
+    <!--<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>-->
+    Uploading new file
   </div>
   <div class="modal-body" itemid="">
- 
+ 	<div id="progress">
+	    <div class="bar" style="width: 0%;height: 18px;background: #38B452;"></div>
+	</div>
   </div>
 </div>
 
-<div id="edit-file-modal" data-fileid="" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="Upload a file" aria-hidden="true">
+<div id="edit-file-modal" data-fileid="" data-backdrop="static" data-keyboard="false" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="Upload a file" aria-hidden="true">
   <div class="modal-header">
     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
     Edit file description
@@ -177,13 +180,20 @@ $(document).ready(function(){
 	    $('#fileupload').fileupload({
 	        dataType: 'json',
 	        beforeSend: function(xhr) {
-	                 xhr.setRequestHeader("Authorization", "Token <?php echo Yii::app()->user->token; ?>")
-	                 console.log(xhr);
-
-	              $('#fileupload-status').show();
+	                 xhr.setRequestHeader("Authorization", "Token <?php echo Yii::app()->user->token; ?>");
+	                 $('#upload-file-modal').modal()
+	              //$('#fileupload-status').show();
 	            },
+	        progressall: function (e, data) {
+		        var progress = parseInt(data.loaded / data.total * 100, 10);
+		        if (progress > 90) progress = 90;
+		        $('#progress .bar').css(
+		            'width',
+		            progress + '%'
+		        );
+		    },
 	        done: function (e, data) {
-	          $('#fileupload-status').hide();
+	          //$('#fileupload-status').hide();
 	          if(data.textStatus == 'success'){
 	          	$('#upload-file-modal').modal('hide');
 	          	var fid = data.result.id;
@@ -258,8 +268,8 @@ function fetch_healthfiles(page){
 				var f_date = new Date(val.updated_at*1000);
 				$(_t).find(".filetype_icon").addClass(get_filtype_icon_class(val.mime_type));
 				var name = val.name;
-				if(name && name.length>10){
-					name = name.substring(0,6);
+				if(name && name.length>15){
+					name = name.substring(0,8);
 					name = name + '...';
 				}
 				var fid = val.id;
