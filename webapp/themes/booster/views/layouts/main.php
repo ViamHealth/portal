@@ -268,7 +268,7 @@ if(!Yii::app()->user->isGuest)
 						<?php foreach ($sidebar_family_array as $key => $value) echo $value; ?>
 						<?php endif ?>
 					</ul>
-					<div class="row-fluid">
+					<div class="row-fluid" style="margin-top:5px;">
 						<a href="<?php echo $this->createUrl('/user/add',array()); ?>"><button id="family-users-add" class="btn btn-success  span4 offset1" type="button">Add</button></a>
 						<a href="<?php echo $this->createUrl('/user/invite',array()); ?>"><button id="family-users-invite" class="btn btn-info  span5 offset1" type="button">Invite</button></a>
 
@@ -282,7 +282,6 @@ if(!Yii::app()->user->isGuest)
 		<?php endif ?>
 		<!-- -->
 
-		<hr/>
 		<div id="footer" ><div style="margin:0 auto;">
 			Copyright &copy; <?php echo date('Y'); ?> by Viamhealth.
 			All Rights Reserved.<br/>

@@ -11,7 +11,7 @@ Yii::app()->clientScript->registerScriptFile(Yii::app()->baseUrl.'/js/jquery.fil
 ?>
 
 <div class="row-fluid">
-	<div class="span12 well well-small">
+	<div class="span12">
 		<span class="user-form-loader">Loading..</span>
 		<strong >Profile Details</strong>
 		<br/><br/>
@@ -128,7 +128,7 @@ $(document).ready(function(){
 		$("#profile_picture_img").attr('src',json.profile.profile_picture_url);
 		$("#first_name").val(json.first_name);
 	  	$("#last_name").val(json.last_name);
-	  	$("#location").val(json.profile.location);
+	  	$("#location").val(json.profile.address);
 	  	$("#date_of_birth").val(json.profile.date_of_birth);
 	  	if(json.profile.gender)
 	  	{
@@ -174,7 +174,7 @@ $(document).ready(function(){
 			user.profile = {};
 			user.first_name = $("#first_name").val();
 		  	user.last_name = $("#last_name").val();
-		  	user.profile.location = $("#location").val();
+		  	user.profile.address = $("#location").val();
 		  	user.profile.date_of_birth = $("#date_of_birth").val();
 		  	//user.email = $("#email").val();
 		  	user.profile.gender = $("input:radio[name=gender]:checked").val().toUpperCase();
