@@ -121,7 +121,16 @@ background-repeat: no-repeat;
 			
         </tbody>
 	</table>
-	<a href="#" onclick="$('#upload-file-modal').modal();"><button id="family-users-add" class="btn btn-success" type="button">Upload File</button></a>
+	 <span class="btn btn-success fileinput-button">
+        <!--<i class="glyphicon glyphicon-plus"></i>-->
+        <span>Upload file</span>
+
+    	<input id="fileupload" type="file" name="file" data-url="<?php echo Yii::app()->params['apiBaseUrl'] ?>healthfiles/" >
+   	</span>
+	<div id="fileupload-status" style="display:none;">Uploading..</div>
+	<div id="fileupload-error" style="display:none;">There was some error. Please try again after some time.</div>
+
+	<!--<a href="#" onclick="$('#upload-file-modal').modal();"><button id="family-users-add" class="btn btn-success" type="button">Upload File</button></a>-->
 </div>
 
 
@@ -131,14 +140,7 @@ background-repeat: no-repeat;
     Upload new file
   </div>
   <div class="modal-body" itemid="">
-  <span class="btn btn-success fileinput-button">
-        <!--<i class="glyphicon glyphicon-plus"></i>-->
-        <span>Upload file</span>
-
-    <input id="fileupload" type="file" name="file" data-url="<?php echo Yii::app()->params['apiBaseUrl'] ?>healthfiles/" >
-   </span>
-	<div id="fileupload-status" style="display:none;">Uploading..</div>
-	<div id="fileupload-error" style="display:none;">There was some error. Please try again after some time.</div>
+ 
   </div>
 </div>
 
