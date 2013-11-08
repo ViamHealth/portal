@@ -334,7 +334,7 @@ class UserView(viewsets.ViewSet):
     @action(methods=['PUT'])
     def update_profile(self, request, pk=None):
         user = self.get_object(pk)
-        profile = user.get_profile()
+        profile = user.profile
         serializer = UserProfileSerializer(profile, data=request.DATA)
         if serializer.is_valid():
             serializer.save()
@@ -362,7 +362,7 @@ class UserView(viewsets.ViewSet):
     def update_profile_pic(self, request, pk=None):
         user = self.get_object(pk)
         data = request.DATA
-        profile = user.get_profile()
+        profile = user.profile
         data.profile_picture = self.request.FILES['profile_picture']
         serializer = UserProfilePicSerializer(profile, data=data)
         if serializer.is_valid():
