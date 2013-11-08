@@ -421,9 +421,9 @@ _DB.HealthFile = {
 		var url = api_url(this.resource,null,null,null,params);
 		api_get(url,callback);
 	},
-	update : function(id,user,callback){
+	update : function(id,params,callback){
 		var url = api_url(this.resource,id)
-		api_put(url,user,callback);
+		api_put(url,params,callback);
 	},
 	create : function(user,callback){
 		var url = api_url(this.resource)

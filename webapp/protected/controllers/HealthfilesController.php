@@ -40,6 +40,34 @@ class HealthfilesController extends Controller
 		//$this->render('index',array('model'=>$model, 'profile_id'=>$this->getCurrentUserId()));
 	}
 
+  public function actionGetdownloadurl($id)
+  {
+
+    
+
+    $data = VApi::apiCall('get', "healthfiles/".$id);
+    //var_dump($data);
+    $url = $data->download_url;
+    //echo $url;
+    $urla = str_replace( "http://api.viamhealth.com/", 'http://localhost:8080/', $url);
+    $context = stream_context_create(array(
+    'http' => array(
+        'method' => 'GET',
+        'header' => "Authorization: Token ".Yii::app()->user->token."\r\n"
+      )
+    ));
+
+    //header('Content-Disposition: attachment; filename:image.jpg');
+    //echo file_get_contents($url);
+    header("content-type: image/jpg");
+    echo file_get_contents($urla,false,$context);
+
+  }
+  public function actionDownloadfile($url)
+  {
+    
+  }
+
 	public function actionUpdate($id)
 	{
 		$model = $this->loadModel($id);
