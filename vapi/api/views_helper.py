@@ -1,6 +1,7 @@
 from django.contrib.auth.models import User, AnonymousUser
 from rest_framework import viewsets
 from api.models import *
+from api.users.models import *
 from api.serializers import *
 from rest_framework.authtoken.models import Token
 from django.core.signals import request_started
