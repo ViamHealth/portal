@@ -108,8 +108,9 @@ background-repeat: no-repeat;
 </style>
 
 <div class="row-fluid" style="font-size:12px;">
-	<span class="loading_healthfiles" style="display:none;">Loading Data</span>
-	<table class="table table-condensed " id="healthfiles-table">
+	<span class="loading_healthfiles" style="display:none;">Loading Data. Please wait....</span>
+	<br/>
+	<table class="table table-condensed " id="healthfiles-table" >
 		<thead> 
 			<tr class="">
 				<th style="">Filename</td>
@@ -126,7 +127,7 @@ background-repeat: no-repeat;
         <!--<i class="glyphicon glyphicon-plus"></i>-->
         <span>Upload file</span>
 
-    	<input id="fileupload" type="file" name="file" data-url="<?php echo Yii::app()->params['apiBaseUrl'] ?>healthfiles/" >
+    	<input id="fileupload" type="file" name="file" data-url="<?php echo Yii::app()->params['apiBaseUrl'].'healthfiles/?user='.$profile_id;?>" >
    	</span>
    	
 	<div id="fileupload-status" style="display:none;">Uploading..</div>
@@ -260,6 +261,7 @@ var _t_fo = '<div class="sb_list1"><ul><li class="download"><a href="#">Download
 
 function fetch_healthfiles(page){
 	$(".loading_healthfiles").show();
+	//$("#healthfiles-table").hide();
 	if(!page) page = 1;
 	var page_size = 100;
 	var options = {};
@@ -267,7 +269,7 @@ function fetch_healthfiles(page){
 	_DB.HealthFile.list(options,function(json,success){
 		
 		if(success){
-
+			$("#healthfiles-table").show();
 			var data = json.results;
 			$("#healthfiles-table > tbody").html('');
 			$.each(data,function(i,val){
