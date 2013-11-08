@@ -97,6 +97,47 @@ text-decoration: none;
 	.nav-list>li>a {
 		font-size:12px;
 	}
+
+
+	a.btn.btn-navbar {
+		border: none;
+background: none;
+box-shadow: none;
+	}
+	a:hover.btn.btn-navbar {
+		border: none;
+		background-color: #38B452;
+box-shadow: none;
+	}
+	.navbar-inner .container .brand {
+		background:url(/images/logo.png) no-repeat;background-size:180px 33px;width: 155px;
+		margin-left:10px;
+	}
+	.container-fluid {
+			margin:70px;
+		}
+	@media (max-width: 979px) {
+
+		.navbar-inner .container .brand {
+			width: 17px;
+		}
+		.container-fluid {
+			margin:0px;
+		}
+		.nav-collapse, .nav-collapse.collapse > ul{
+			/*border-top-color: #38B452;
+			border-top-style: solid;
+			border-top-width: 1px;*/
+		}
+		.nav-collapse .nav>li>a:hover, .nav-collapse .nav>li>a:focus, .nav-collapse .dropdown-menu a:hover, .nav-collapse .dropdown-menu a:focus {
+			background-color: #37AA4F;
+		}
+		.nav-collapse .nav>li>a, .nav-collapse .dropdown-menu a {
+			background-color: none;
+		}
+
+		}
+	}
 	</style>
 	<script type="text/javascript">
 	var VH = {};
@@ -137,7 +178,9 @@ if(!Yii::app()->user->isGuest)
 			if(strlen($visible_identity)>15) $visible_identity = substr($visible_identity, 0,15);
 			$li_class =''; 
 			if($active){
-				$li_class = " class='active' ";
+				$li_class = " class='active visible-lg hidden-sm hidden-xs ' ";
+			} else {
+				$li_class = " class='visible-lg hidden-sm hidden-xs' ";
 			}
 			$sidebar_family_array[] = "<li $li_class ><a href='".$this->createUrl('site/index',array(),'&',$value->id)."'><img  height='25' width='25' src='".$value->profile->profile_picture_url."' /> &nbsp; $visible_identity</a></li>";
 		}
@@ -152,7 +195,7 @@ if(!Yii::app()->user->isGuest)
 	<?php $this->widget('bootstrap.widgets.TbNavbar', array(
 	'type' => '', // null or 'inverse'
 	'brand' => ' &nbsp; ',
-	'brandOptions' => array('style'=>'background:url(/images/logo.png) no-repeat;background-size:180px 33px;width: 155px;'),
+	'brandOptions' => array('style'=>''),
 	'brandUrl' => $this->createUrl('site/index'),
 	'collapse' => true, // requires bootstrap-responsive.css
 	'items' => array(
@@ -175,10 +218,11 @@ if(!Yii::app()->user->isGuest)
 			'htmlOptions' => array('class' => 'pull-right'),
 
 			'items' => array(
-				array('label' => $current_profile_name , 'url' => '#', 'visible' => !Yii::app()->user->isGuest,
-					'items' =>
-						$family_array
-				),
+				array('label' => 'Logout', 'url' => array('/site/logout'), 'visible' => !Yii::app()->user->isGuest)
+//				array('label' => $current_profile_name , 'url' => '#', 'visible' => !Yii::app()->user->isGuest,
+//					'items' =>
+//						$family_array
+//				),
 			),
 		),
 
@@ -200,7 +244,7 @@ if(!Yii::app()->user->isGuest)
 	),
 )); ?>
 	<!-- mainmenu -->
-	<div class="container-fluid" style="margin: 70px 0;" <?php if(Yii::app()->user->isGuest) { ?> style="margin-top:50px" <?php } ?>>
+	<div class="container-fluid"  <?php if(Yii::app()->user->isGuest) { ?> style="margin-top:50px" <?php } ?>>
 		<?php if (0)://isset($this->breadcrumbs)): ?>
 			<?php $this->widget('bootstrap.widgets.TbBreadcrumbs', array(
 				'links' => $this->breadcrumbs,
@@ -219,6 +263,11 @@ if(!Yii::app()->user->isGuest)
 						<?php foreach ($sidebar_family_array as $key => $value) echo $value; ?>
 						<?php endif ?>
 					</ul>
+					<div class="row-fluid">
+						<a href="<?php echo $this->createUrl('/user/add',array()); ?>"><button id="family-users-add" class="btn btn-success  span4 offset1" type="button">Add</button></a>
+						<a href="<?php echo $this->createUrl('/user/invite',array()); ?>"><button id="family-users-invite" class="btn btn-info  span5 offset1" type="button">Invite</button></a>
+
+					</div>
 				</div>
 			</div>
 			<div class="span9 well">
@@ -228,10 +277,10 @@ if(!Yii::app()->user->isGuest)
 		<!-- -->
 
 		<hr/>
-		<div id="footer">
-			Copyright &copy; <?php echo date('Y'); ?> by Viamhealth.<br/>
+		<div id="footer" ><div style="margin:0 auto;">
+			Copyright &copy; <?php echo date('Y'); ?> by Viamhealth.
 			All Rights Reserved.<br/>
-		</div>
+		</div></div>
 		<!-- footer -->
 	</div>
 </div>
