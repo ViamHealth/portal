@@ -108,6 +108,7 @@ background-repeat: no-repeat;
 </style>
 
 <div class="row-fluid" style="font-size:12px;">
+	<span class="loading_healthfiles" style="display:none;">Loading Data</span>
 	<table class="table table-condensed " id="healthfiles-table">
 		<thead> 
 			<tr class="">
@@ -258,6 +259,7 @@ var _t_fo = '<div class="sb_list1"><ul><li class="download"><a href="#">Download
 
 
 function fetch_healthfiles(page){
+	$(".loading_healthfiles").show();
 	if(!page) page = 1;
 	var page_size = 100;
 	var options = {};
@@ -265,6 +267,7 @@ function fetch_healthfiles(page){
 	_DB.HealthFile.list(options,function(json,success){
 		
 		if(success){
+
 			var data = json.results;
 			$("#healthfiles-table > tbody").html('');
 			$.each(data,function(i,val){
@@ -303,6 +306,7 @@ function fetch_healthfiles(page){
 				$("#healthfiles-table > tbody").append(_t);
 
 			});
+			$(".loading_healthfiles").hide();
 		}
 	});
 }
