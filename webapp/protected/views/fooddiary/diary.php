@@ -128,17 +128,24 @@ $(document).ready(function(){
 
 function events_diet(){
 	$(".breakfast-diary").click(function(){
-		$(".breakfast-data").toggle();
+		toggle_data_row(this);
 	});
 	$(".lunch-diary").click(function(){
-		$(".lunch-data").toggle();
+		toggle_data_row(this);
 	});
 	$(".snacks-diary").click(function(){
-		$(".snacks-data").toggle();
+		toggle_data_row(this);
 	});
 	$(".dinner-diary").click(function(){
-		$(".dinner-data").toggle();
+		toggle_data_row(this);
 	});
+}
+function toggle_data_row(e){
+	var elem = $(e).find('.diary-pahar');
+	if($(elem).hasClass("hide"))
+		$(elem).removeClass("hide");
+	else
+		 $(elem).addClass("hide");
 }
 function load_diary(dairy_date){
 	
