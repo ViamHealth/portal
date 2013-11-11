@@ -19,11 +19,23 @@ color: #ff0000;
 width:17px;
 text-align: center;
 }
+.table tbody tr.success>td.childhidden {
+	background: url(/images/ic-tgle_1.png) no-repeat 5px center #dff0d8;
+}
+.table tbody tr.success>td.childshown {
+	background: url(/images/ic-tgle_2.png) no-repeat 5px center #dff0d8;
+}
+.table tbody tr>td.childhidden {
+	background: url(/images/ic-tgle_1.png) no-repeat 5px center #f9f9f9;
+}
+.table tbody tr>td.childshown {
+	background: url(/images/ic-tgle_2.png) no-repeat 5px center #f9f9f9;
+}
 .table tbody tr.success>td.diary-pahar {
-	padding-left:20px;background: url(/images/ic-tgle_1.png) no-repeat 5px center #dff0d8;
+	padding-left:20px;
 }
 .table tbody tr>td.diary-pahar {
-	padding-left:20px;background: url(/images/ic-tgle_1.png) no-repeat 5px center;
+	padding-left:20px;
 }
 #total-items {
 	font-size: 10px;
@@ -126,7 +138,7 @@ $(document).ready(function(){
 	
 });
 
-function events_diet(){
+/*function events_diet(){
 	$(".breakfast-diary").click(function(){
 		toggle_data_row(this);
 	});
@@ -141,12 +153,18 @@ function events_diet(){
 	});
 }
 function toggle_data_row(e){
-	var elem = $(e).find('.diary-pahar');
-	if($(elem).hasClass("hide"))
+	var elem = $(e).parent().next();
+	if($(elem).hasClass("hide")){
 		$(elem).removeClass("hide");
-	else
+		$(e).removeClass("childhidden");
+		$(e).addClass("childshown");
+	}
+	else{
 		 $(elem).addClass("hide");
-}
+		$(e).removeClass("childshown");
+		$(e).addClass("childhidden");
+	}
+}*/
 function load_diary(dairy_date){
 	
 	$("#diet-table").html('<?php  $this->renderPartial("_table",array()); ?>');
@@ -234,8 +252,8 @@ function load_diary_page(meal_type,dairy_date){
                 else if (meal_type == 'DINNER'){
                         var data_rows = $(".dinner-data");
                 }
-
-                $($(predessor).find("td")[0]).addClass("diary-pahar").on('click',function(){
+		
+                $($(predessor).find("td")[0]).addClass("diary-pahar").addClass("childhidden").on('click',function(){
                         $(data_rows).toggle();
                 });
 
@@ -286,7 +304,7 @@ function load_diary_rows(diet,food,predessor,_t_elem){
 
 	total_food_items++;
 	set_total_food_items();	
-	events_diet();
+	//events_diet();
 	
 }
 function set_total_food_items(){
