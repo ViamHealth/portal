@@ -382,6 +382,22 @@ function load_search_detail(fi){
 	$(k).find(".calories").html(fi.calories+' '+fi.calories_unit);
 	$(k).find(".total_fat").html(fi.total_fat+' '+fi.total_fat_unit);
 
+	$(k).find(".total_carbohydrates").html(fi.total_carbohydrates+' '+fi.total_carbohydrates_unit);
+	$(k).find(".protein").html(fi.protein+' '+fi.protein_unit);
+	$(k).find(".sugars").html(fi.sugars+' '+fi.sugars_unit);
+	$(k).find(".cholesterol").html(fi.cholesterol+' '+fi.cholesterol_unit);
+	$(k).find(".sodium").html(fi.sodium+' '+fi.sodium_unit);
+	$(k).find(".potassium").html(fi.potassium+' '+fi.potassium_unit);
+	$(k).find(".saturated_fat").html(fi.saturated_fat+' '+fi.saturated_fat_unit);
+	$(k).find(".polyunsaturated_fat").html(fi.polyunsaturated_fat+' '+fi.polyunsaturated_fat_unit);
+	$(k).find(".dietary_fiber").html(fi.dietary_fiber+' '+fi.dietary_fiber_unit);
+	$(k).find(".trans_fat").html(fi.trans_fat+' '+fi.trans_fat_unit);
+	$(k).find(".vitamin_a").html(fi.vitamin_a+' '+fi.vitamin_a_unit);
+	$(k).find(".calcium").html(fi.calcium+' '+fi.calcium_unit);
+	$(k).find(".vitamin_c").html(fi.vitamin_c+' '+fi.vitamin_c_unit);
+	$(k).find(".iron").html(fi.iron+' '+fi.iron_unit);
+	
+
 	var q = fi.quantity;
 	var q_u = fi.quantity_unit;
 
