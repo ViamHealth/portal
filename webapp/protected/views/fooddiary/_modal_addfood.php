@@ -14,25 +14,21 @@
 .dd-select label {
 	margin-bottom: 0px;
 }
+.fid_row {
+	font: 12px Segoe UI, Arial, Helvetica, sans-serif;
+	line-height: 16px;
+	color: #666;
+	
+}
 .fid_val {
 	text-align: right;
-	/*font: 11px Segoe UI, Arial, Helvetica, sans-serif;*/
-	line-height: 16px;
-	color: #666;
-	font-weight: bold;
 }
-.fid_text {
-	/*font: 11px Segoe UI, Arial, Helvetica, sans-serif;*/
-	line-height: 16px;
-	color: #666;
-	font-weight: bold;
-}
+
 .fid_row .name {
-	/*font: 11px Segoe UI, Arial, Helvetica, sans-serif;*/
-	line-height: 16px;
-	color: #666;
-	font-weight: bold;	
+	font: 14px Segoe UI, Arial, Helvetica, sans-serif;
+	font-weight: bold;
 }
+
 .fid_row > .span6 {
 	min-height:10px;
 }
@@ -40,7 +36,7 @@
 	font-size: 12px;
 }
 #add_food_details {
-	border-left: 3px solid #666;
+	
 }
 .fi_result {
 	background-color: #fff;
