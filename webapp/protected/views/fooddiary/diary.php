@@ -3,11 +3,14 @@ $this->pageTitle=Yii::app()->name;
 $this->breadcrumbs=array(
 	'Food Diary',
 );
+	Yii::app()->clientScript->registerScriptFile(Yii::app()->baseUrl.'/js/jquery.ui.widget.js');
     Yii::app()->clientScript->registerScriptFile(Yii::app()->baseUrl.'/js/jquery.validate.min.js');
     Yii::app()->clientScript->registerScriptFile(Yii::app()->baseUrl.'/js/bootbox.min.js');
 	Yii::app()->clientScript->registerScriptFile(Yii::app()->baseUrl.'/js/bootstrap-datepicker.js');
+	Yii::app()->clientScript->registerScriptFile(Yii::app()->baseUrl.'/js/jquery.ddslick.min.js');
 
 ?>
+
 <style>
 .diary-plus {
 	background: url(/images/gr-plus-ic.png) no-repeat 3px 3px;
@@ -71,6 +74,8 @@ text-align: center;
 	</div>
 </div>
 </div>
+<?php  $this->renderPartial("_modal_addfood",array()); ?>
+
 <script>
 var food_items_collection = {};
 var total_food_items = 0;
@@ -133,38 +138,15 @@ $(document).ready(function(){
 	});
 
 	
+
 	load_diary();
-	//events_diet();
+
+	$("#add_food_item_search").keyup(function(){
+		populate_search_data($( this ).val());
+	});
 	
 });
 
-/*function events_diet(){
-	$(".breakfast-diary").click(function(){
-		toggle_data_row(this);
-	});
-	$(".lunch-diary").click(function(){
-		toggle_data_row(this);
-	});
-	$(".snacks-diary").click(function(){
-		toggle_data_row(this);
-	});
-	$(".dinner-diary").click(function(){
-		toggle_data_row(this);
-	});
-}
-function toggle_data_row(e){
-	var elem = $(e).parent().next();
-	if($(elem).hasClass("hide")){
-		$(elem).removeClass("hide");
-		$(e).removeClass("childhidden");
-		$(e).addClass("childshown");
-	}
-	else{
-		 $(elem).addClass("hide");
-		$(e).removeClass("childshown");
-		$(e).addClass("childhidden");
-	}
-}*/
 function load_diary(dairy_date){
 	
 	$("#diet-table").html('<?php  $this->renderPartial("_table",array()); ?>');
@@ -290,9 +272,79 @@ function load_diary_page(meal_type,dairy_date){
             		$(val).toggle();
             	});
             });
+
+			console.log($(predessor).find(".diary-plus")[0]);
+            $($(predessor).find(".diary-plus")[0]).on('click',function(){
+            	$("#add-food-item-modal").modal();
+            	$("#add-food-item-modal").on("shown",function(){
+            		populate_search_data();
+            	});
+            });
 		}
 	});
+}
 
+function populate_search_data(keyword){
+	if(!keyword) keyword = '';
+	var options = {};
+	options['page_size'] = 7;
+	options['search'] = keyword;
+	$('#add_food_results').html('');
+	_DB.FoodItems.search(options,function(json,success){
+		if(success){
+			console.log(json);
+
+			var _ft = '<div class="fi_result" ><div class="fi_name"></div></div>';
+			$.each(json.results,function(i,val){
+
+				food_items_collection[val.id] = val;
+
+				var _ft_elem = $.parseHTML(_ft);
+				$(_ft_elem).find(".fi_name").html(val.name);
+				
+
+				$(_ft_elem).on('click', function(){
+					load_search_detail(val);
+					$("#add_food_results").parent().find(".fi_result").removeClass("active");
+					$("#add_food_results").addClass("active");
+				});
+
+				$('#add_food_results').append(_ft_elem);
+
+				load_search_detail(val);
+			});
+			$($("#add-food-item-modal").find(".fi_result")[0]).addClass("active");
+		}						
+	});
+}
+function load_search_detail(fi){
+	var k = $("#add_food_details");
+	$(k).find(".name").html(fi.name);
+	$(k).find(".calories").html(fi.calories+' '+fi.calories_unit);
+	$(k).find(".total_fat").html(fi.total_fat+' '+fi.total_fat_unit);
+
+	var q = fi.quantity;
+	var q_u = fi.quantity_unit;
+
+	var ddData = [];
+	for (var i = 1; i <= 5; i++) {
+		var a = {
+			text:  i*parseFloat(q) + " "+q_u,
+			value:  i,
+		}
+		ddData.push(a);
+	};
+	
+	$('#add_food_quantity_selector').ddslick({
+	    data:ddData,
+	    width:100,
+	    selectText: "Servings",
+	    defaultSelectedIndex:0,
+	    //imagePosition:"left",
+	    onSelected: function(selectedData){
+	        //callback function: do something with selectedData;
+	    }   
+	});	
 }
 
 function reset_diary_group(predessor){

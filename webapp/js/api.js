@@ -96,6 +96,7 @@ api_url_x = function(resource,options){
 	var sub_resource_id = options['sub_resource_id'] || null;
 	var current_page = options['current_page'] || null;
 	var page_size = options['page_size'] || null;
+	var search = options['search'] || null;
 
 	var url = VH.params.apiUrl+resource;
 	if(pk)
@@ -105,8 +106,11 @@ api_url_x = function(resource,options){
 		if(sub_resource_id) 
 			url = url+'/'+sub_resource_id;
 	}
+	
 
 	if(api_backslash) url = url+'/';
+
+	if(search) url  = url+'?search='+search;
 	if(find_family_user_id())
 		url=url+get_url_amp_ques(url)+'user='+find_family_user_id();
 	if(current_page && current_page !=1 )
@@ -441,6 +445,10 @@ _DB.FoodItems = {
 		var url = api_url(this.resource,id)
 		api_get(url,callback);
 	},
+	search: function(params,callback){
+		var url = api_url_x(this.resource,params);
+		api_get(url,callback);
+	}
 }
 
 _DB.User = {
