@@ -162,7 +162,8 @@ function load_diary(dairy_date){
 		var dd = date.getDate();
 		var dairy_date = yyyy + '-' + mm + '-' + dd;
 	}
-	$("#diet-table").attr("diary-date",dairy_date);	
+	$("#diet-table").attr("diary-date",dairy_date);
+	total_food_items = 0;
 	set_total_food_items();
 	load_diary_page('BREAKFAST',dairy_date);
 	load_diary_page('LUNCH',dairy_date);
@@ -293,6 +294,7 @@ function load_diary_page(meal_type,dairy_date){
             	data['dairy_date'] = dairy_date;
 		$("#add_food_item_search").val('');
             	$("#add-food-item-modal").modal();
+		$($("#add-food-item-modal").find('.save')[0]).attr('onclick','').unbind('click');
             	$("#add-food-item-modal").on("shown",handle_modal_shown(data));
 
             });
@@ -467,15 +469,15 @@ function reset_diary_group(predessor){
     $($(predessor).find(".diary-plus")[0]).attr('onclick','').unbind('click');
 }
 function load_diary_rows(diet,food,predessor,_t_elem){
-	console.log('here');
-	var ratio = parseFloat(diet.food_quantity_multiplier)/parseFloat(food.quantity);
-
+	//console.log('here');
+	//var ratio = parseFloat(diet.food_quantity_multiplier)/parseFloat(food.quantity);
+	var ratio = parseFloat(diet.food_quantity_multiplier);
 	$(_t_elem).find(".dairy-food-item-delete").attr("data-diet-id",diet.id);
 	$(_t_elem).find(".dairy-food-item-delete").click(function(){
 		delete_diary_row($(this));
 	});
 	$(_t_elem).find('.food-item-name').html(food.name);
-	$(_t_elem).find('.food-item-calories').html(parseFloat(food.calories)*ratio);
+	$(_t_elem).find('.food-item-calories').html(parseFloat(food.calories)/ratio);
 	$(_t_elem).find('.food-item-carbs').html(parseFloat(food.total_carbohydrates)*ratio);
 	$(_t_elem).find('.food-item-fat').html(parseFloat(food.total_fat)*ratio);
 	$(_t_elem).find('.food-item-protein').html(parseFloat(food.protein)*ratio);
