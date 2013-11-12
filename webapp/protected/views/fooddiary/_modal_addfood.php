@@ -72,10 +72,10 @@ $modal_body_html = '<div class="row-fluid"  style="border-bottom: 1px solid #ccc
 </div>
 <div class="row-fluid">
 
-<div class="span3" id="add_food_results">
+<div class="span5" id="add_food_results">
 
 </div>
-<div class="span9" id="add_food_details">
+<div class="span7" id="add_food_details">
 	<div class="row-fluid"><div class="span11 offset1">
 		<div class="fid_row row-fluid">
 			<div class="span12 name">Loading...</div>

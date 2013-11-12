@@ -142,6 +142,7 @@ $(document).ready(function(){
 	load_diary();
 
 	$("#add_food_item_search").keyup(function(){
+		$('#add_food_results').attr('loading',"1");
 		populate_search_data($( this ).val());
 	});
 	
@@ -329,6 +330,7 @@ function save_new_item(elem){
 
 }
 function populate_search_data(keyword){
+	$('#add_food_results').attr('loading',"2");
 	if(!keyword) keyword = '';
 	var options = {};
 	options['page_size'] = 6;
@@ -336,6 +338,8 @@ function populate_search_data(keyword){
 	$('#add_food_results').html('');
 	console.log($('#add_food_results').html());
 	_DB.FoodItems.search(options,function(json,success){
+		if($('#add_food_results').attr('loading')!='1')
+			return ;
 		if(success){
 			console.log(json);
 
