@@ -43,6 +43,10 @@ text-align: center;
 #total-items {
 	font-size: 10px;
 }
+#add_food_quantity_selector label
+{font-size: 12px;
+line-height: 10px;
+}
 </style>
 <div>
 <div class="row-fluid">
@@ -288,6 +292,7 @@ function load_diary_page(meal_type,dairy_date){
             	var data = {};
             	data['meal_type']=meal_type;
             	data['dairy_date'] = dairy_date;
+		$("#add_food_item_search").val('');
             	$("#add-food-item-modal").modal();
             	$("#add-food-item-modal").on("shown",handle_modal_shown(data));
 
@@ -377,6 +382,7 @@ function populate_search_data(keyword){
 	});
 }
 function load_search_detail(fi){
+	$('#add_food_quantity_selector').ddslick('destroy');
 	var k = $("#add_food_details");
 	$(k).find(".name").html(fi.name);
 	$(k).find(".calories").html(fi.calories+' '+fi.calories_unit);

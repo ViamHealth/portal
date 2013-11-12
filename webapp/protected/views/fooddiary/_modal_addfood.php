@@ -2,8 +2,10 @@
 .modal-body{
 	background-color: #efefef;
 }
+@media (min-width: 979px) {
 .dd-options {
 	position: fixed;
+}
 }
 .dd-selected {
 	padding: 5px;
@@ -20,12 +22,12 @@
 	color: #666;
 	
 }
-.fid_val {
+.fid_row  .fid_val {
 	text-align: right;
-	min-height: 20px;
+	min-height: 10px;
 }
-.fid_text {
-	min-height: 20px;
+.fid_row .fid_text {
+	min-height: 10px;
 }
 .fid_row .name {
 	font: 14px Segoe UI, Arial, Helvetica, sans-serif;
@@ -83,68 +85,68 @@ $modal_body_html = '<div class="row-fluid"  style="border-bottom: 1px solid #ccc
 			<div class="span12 name">Loading...</div>
 		</div>
 		<div class="fid_row row-fluid">
-			<div class="span2 fid_text">Calories</div>
+			<div class="span5 fid_text">Calories</div>
 			<div class="span3 fid_val calories"></div>
 		</div>
 
 		<div class="fid_row row-fluid">
-			<div class="span2 fid_text">Fat</div>
+			<div class="span5 fid_text">Fat</div>
 			<div class="span3 fid_val total_fat"></div>
 		</div>
 		<div class="fid_row row-fluid">
-			<div class="span2 fid_text">Carbs</div>
+			<div class="span5 fid_text">Carbs</div>
 			<div class="span3 fid_val total_carbohydrates"></div>
 		</div>
 		<div class="fid_row row-fluid">
-			<div class="span2 fid_text">Protein</div>
+			<div class="span5 fid_text">Protein</div>
 			<div class="span3 fid_val protein"></div>
 		</div>
 		<div class="fid_row row-fluid">
-			<div class="span2 fid_text">Sugars</div>
+			<div class="span5 fid_text">Sugars</div>
 			<div class="span3 fid_val sugars"></div>
 		</div>
 		<div class="fid_row row-fluid">
-			<div class="span2 fid_text">Cholesterol</div>
+			<div class="span5 fid_text">Cholesterol</div>
 			<div class="span3 fid_val cholesterol"></div>
 		</div>
 		<div class="fid_row row-fluid">
-			<div class="span2 fid_text">Sodium</div>
+			<div class="span5 fid_text">Sodium</div>
 			<div class="span3 fid_val sodium"></div>
 		</div>
 		<div class="fid_row row-fluid">
-			<div class="span2 fid_text">Potassium</div>
+			<div class="span5 fid_text">Potassium</div>
 			<div class="span3 fid_val potassium"></div>
 		</div>
 		<div class="fid_row row-fluid">
-			<div class="span2 fid_text">Saturated</div>
+			<div class="span5 fid_text">Saturated</div>
 			<div class="span3 fid_val saturated_fat"></div>
 		</div>
 		<div class="fid_row row-fluid">
-			<div class="span2 fid_text">Polyunsaturated</div>
+			<div class="span5 fid_text">Polyunsaturated</div>
 			<div class="span3 fid_val polyunsaturated_fat"></div>
 		</div>
 		<div class="fid_row row-fluid">
-			<div class="span2 fid_text">Dietary Fiber</div>
+			<div class="span5 fid_text">Dietary Fiber</div>
 			<div class="span3 fid_val dietary_fiber"></div>
 		</div>
 		<div class="fid_row row-fluid">
-			<div class="span2 fid_text">Trans</div>
+			<div class="span5 fid_text">Trans</div>
 			<div class="span3 fid_val trans_fat"></div>
 		</div>
 		<div class="fid_row row-fluid">
-			<div class="span2 fid_text">Vitamin A</div>
+			<div class="span5 fid_text">Vitamin A</div>
 			<div class="span3 fid_val vitamin_a"></div>
 		</div>
 		<div class="fid_row row-fluid">
-			<div class="span2 fid_text">Calcium</div>
+			<div class="span5 fid_text">Calcium</div>
 			<div class="span3 fid_val calcium"></div>
 		</div>
 		<div class="fid_row row-fluid">
-			<div class="span2 fid_text">Vitamin C</div>
+			<div class="span5 fid_text">Vitamin C</div>
 			<div class="span3 fid_val vitamin_c"></div>
 		</div>
 		<div class="fid_row row-fluid">
-			<div class="span2 fid_text">Iron</div>
+			<div class="span5 fid_text">Iron</div>
 			<div class="span3 fid_val iron"></div>
 		</div>
 
