@@ -79,6 +79,7 @@ text-align: center;
 <script>
 var food_items_collection = {};
 var total_food_items = 0;
+var results_page_size = 6;
 
 var total_diet_numbers = {
 	'BREAKFAST' : {
@@ -333,20 +334,24 @@ function populate_search_data(keyword){
 	$('#add_food_results').attr('loading',"2");
 	if(!keyword) keyword = '';
 	var options = {};
-	options['page_size'] = 6;
+	options['page_size'] = results_page_size;
 	options['search'] = keyword;
 	$('#add_food_results').html('');
 	console.log($('#add_food_results').html());
 	_DB.FoodItems.search(options,function(json,success){
-		if($('#add_food_results').attr('loading')!='1')
+		if($('#add_food_results').attr('loading')!='2')
 			return ;
+		$('#add_food_results').attr('loading',"3");
+
 		if(success){
-			console.log(json);
 
 			var _ft = '<div class="fi_result" ><div class="fi_name"></div></div>';
 			var loaded = false;
 
 			$.each(json.results,function(i,val){
+
+				if($('#add_food_results').attr('loading')!='3')
+					return false;
 
 				food_items_collection[val.id] = val;
 
