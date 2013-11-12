@@ -37,7 +37,7 @@
 	min-height:10px;
 }
 #add_food_results {
-	
+	font-size: 12px;
 }
 #add_food_details {
 	border-left: 3px solid #666;
@@ -46,7 +46,7 @@
 	background-color: #fff;
 	color:#000;
 	border-bottom: 1px dotted #ccc;
-	padding:5px 10px;
+	padding:5px 5px;
 }
 .fi_result.active {
 	background-color: #0099cc;	

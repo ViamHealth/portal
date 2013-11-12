@@ -281,7 +281,7 @@ function load_diary_page(meal_type,dairy_date){
             });
 
 			$($(predessor).find(".diary-plus")[0]).attr('onclick','').unbind('click');
-				
+
             $($(predessor).find(".diary-plus")[0]).on('click',function(){
             	var data = {};
             	data['meal_type']=meal_type;
@@ -331,7 +331,7 @@ function save_new_item(elem){
 function populate_search_data(keyword){
 	if(!keyword) keyword = '';
 	var options = {};
-	options['page_size'] = 7;
+	options['page_size'] = 6;
 	options['search'] = keyword;
 	$('#add_food_results').html('');
 	console.log($('#add_food_results').html());
