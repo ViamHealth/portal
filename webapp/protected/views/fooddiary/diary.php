@@ -175,7 +175,7 @@ function load_diary(dairy_date){
 		var dd = date.getDate();
 		var dairy_date = yyyy + '-' + mm + '-' + dd;
 	}
-		
+	$("#diet-table").attr("diary-date",dairy_date);	
 	set_total_food_items();
 	load_diary_page('BREAKFAST',dairy_date);
 	load_diary_page('LUNCH',dairy_date);
@@ -191,8 +191,15 @@ function delete_diary_row(elem){
 		if(id){
 			_DB.FoodDiary.destroy(id,function(json,success){
 				if(success){
+					total_food_items --;
+					var type = $(elem).parent().attr("diary-type");
+					var dairy_date = $(elem).parents("table").attr("diary-date");
+					
+
 					$(elem).parent().remove();
-					set_total_food_items();
+					load_diary_page(type,dairy_date);
+
+					//set_total_food_items();
 				}
 			});
 		}	
@@ -204,58 +211,43 @@ function delete_diary_row(elem){
 
 function load_diary_page(meal_type,dairy_date){
 	
-	if(!meal_type) return false;
+	if(!meal_type) throw "no meal_type";
 	var options = {};
 	options.meal_type = meal_type;
 	options.diet_date = dairy_date;
 	options.page_size = 100;
 	_DB.FoodDiary.list(options,function(json,success){
 		set_total_food_items();
-		if(success && json.count){
+		if(success){
+
 			var data = json.results;
 
 			if(meal_type == 'BREAKFAST'){
 				var predessor = $("#breakfast-tr");
-				var data_rows = $(".breakfast-data");
 				var _t = '<?php $this->renderPartial("_breakfast_row",array()); ?>';
 			}
 			else if (meal_type == 'LUNCH'){
 				var predessor = $("#lunch-tr");
-				var data_rows = $(".lunch-data");
 				var _t = '<?php $this->renderPartial("_lunch_row",array()); ?>';
 			}
 			else if (meal_type == 'SNACKS'){
 				var predessor = $("#snacks-tr");
-				var data_rows = $(".snacks-data");
 				var _t = '<?php $this->renderPartial("_snacks_row",array()); ?>';
 			}
 			else if (meal_type == 'DINNER'){
 				var predessor = $("#dinner-tr");
-				var data_rows = $(".dinner-data");
 				var _t = '<?php $this->renderPartial("_dinner_row",array()); ?>';
 			}
+			reset_diary_group(predessor);
 			
-			
+			if(json.count){
+				var _a = $($(predessor).find("td")[0]);
+				$(_a).addClass("diary-pahar").addClass("childhidden");
+			}
 			$.each(data,function(i,val){
 				var _t_elem = $.parseHTML(_t);
 				$(predessor).after(_t_elem);
 				
-				if(meal_type == 'BREAKFAST'){
-                        var data_rows = $(".breakfast-data");
-                }
-                else if (meal_type == 'LUNCH'){
-                        var data_rows = $(".lunch-data");
-                }
-                else if (meal_type == 'SNACKS'){
-                        var data_rows = $(".snacks-data");
-                }
-                else if (meal_type == 'DINNER'){
-                        var data_rows = $(".dinner-data");
-                }
-		
-                $($(predessor).find("td")[0]).addClass("diary-pahar").addClass("childhidden").on('click',function(){
-                        $(data_rows).toggle();
-                });
 
 				var food_item_id = val.food_item;
 				if(food_items_collection.food_item_id){
@@ -270,14 +262,78 @@ function load_diary_page(meal_type,dairy_date){
 					});	
 				}
 			});
+			
 
+			$($(predessor).find("td")[0]).on('click',function(){
+            	if($(this).hasClass("childhidden")){
+            		$(this).removeClass("childhidden");
+            		$(this).addClass("childshown");
+            	} else if($(this).hasClass("childshown")){
+            		$(this).removeClass("childshown");
+            		$(this).addClass("childhidden");
+            	}
+            	if(meal_type == 'BREAKFAST'){
+                    var data_rows = $(".breakfast-data");
+	            }
+	            else if (meal_type == 'LUNCH'){
+	                    var data_rows = $(".lunch-data");
+	            }
+	            else if (meal_type == 'SNACKS'){
+	                    var data_rows = $(".snacks-data");
+	            }
+	            else if (meal_type == 'DINNER'){
+	                    var data_rows = $(".dinner-data");
+	            }
+				$(data_rows).attr("diary-type",meal_type);
+
+            	$.each(data_rows,function(i,val){
+            		$(val).toggle();
+            	});
+            });
 		}
 	});
 
 }
+
+function reset_diary_group(predessor){
+	total_diet_numbers = {
+	'BREAKFAST' : {
+	"total_calories" : 0,
+	"total_fat" : 0,
+	"total_carbs" : 0,
+	"total_proteins" : 0,
+},
+	'LUNCH' : {
+	"total_calories" : 0,
+	"total_fat" : 0,
+	"total_carbs" : 0,
+	"total_proteins" : 0,
+},
+	'SNACKS' : {
+	"total_calories" : 0,
+	"total_fat" : 0,
+	"total_carbs" : 0,
+	"total_proteins" : 0,
+},
+	'DINNER' :{
+	"total_calories" : 0,
+	"total_fat" : 0,
+	"total_carbs" : 0,
+	"total_proteins" : 0,
+},
+}
+	var _a = $($(predessor).find("td")[0]);
+	$(_a).removeClass("diary-pahar").removeClass("childhidden").removeClass("childshown");
+	$(predessor).find(".total-calories").html('');
+	$(predessor).find(".total-fat").html('');
+	$(predessor).find(".total-carbs").html('');
+	$(predessor).find(".total-proteins").html('');
+	$($(predessor).find("td")[0]).removeClass("childshown").removeClass("childhidden");
+}
 function load_diary_rows(diet,food,predessor,_t_elem){
-	
+	console.log('here');
 	var ratio = parseFloat(diet.food_quantity_multiplier)/parseFloat(food.quantity);
+
 	$(_t_elem).find(".dairy-food-item-delete").attr("data-diet-id",diet.id);
 	$(_t_elem).find(".dairy-food-item-delete").click(function(){
 		delete_diary_row($(this));
