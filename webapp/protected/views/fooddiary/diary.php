@@ -147,7 +147,6 @@ $(document).ready(function(){
 	load_diary();
 
 	$("#add_food_item_search").keyup(function(){
-		$('#add_food_results').attr('loading',"1");
 		populate_search_data($( this ).val());
 	});
 	
@@ -336,7 +335,8 @@ function save_new_item(elem){
 
 }
 function populate_search_data(keyword){
-	$('#add_food_results').attr('loading',"2");
+	var tim = new Date().getTime();
+	$('#add_food_results').attr('loading_time',tim);
 	if(!keyword) keyword = '';
 	var options = {};
 	options['page_size'] = results_page_size;
@@ -344,9 +344,8 @@ function populate_search_data(keyword){
 	$('#add_food_results').html('');
 	console.log($('#add_food_results').html());
 	_DB.FoodItems.search(options,function(json,success){
-		if($('#add_food_results').attr('loading')!='2')
+		if($('#add_food_results').attr('loading_time')!=tim)
 			return ;
-		$('#add_food_results').attr('loading',"3");
 
 		if(success){
 
@@ -355,8 +354,8 @@ function populate_search_data(keyword){
 
 			$.each(json.results,function(i,val){
 
-				if($('#add_food_results').attr('loading')!='3')
-					return false;
+			if($('#add_food_results').attr('loading_time')!=tim)
+				return ;
 
 				food_items_collection[val.id] = val;
 
