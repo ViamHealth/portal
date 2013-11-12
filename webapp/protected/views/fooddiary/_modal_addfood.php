@@ -56,7 +56,7 @@
 
 <?php 
 $modal_id = "add-food-item-modal";
-$aria_labelledby = "Food Diary / Add Breakfast";
+$aria_labelledby = "Food Diary / Add new item";
 
 $footer_html = '<div class="span3 offset4">'.
 '<div id="add_food_quantity_selector"></div>'.
@@ -78,7 +78,7 @@ $modal_body_html = '<div class="row-fluid"  style="border-bottom: 1px solid #ccc
 <div class="span9" id="add_food_details">
 	<div class="row-fluid"><div class="span11 offset1">
 		<div class="fid_row row-fluid">
-			<div class="span12 name">d</div>
+			<div class="span12 name">Loading...</div>
 		</div>
 		<div class="fid_row row-fluid">
 			<div class="span2 fid_text">Calories</div>

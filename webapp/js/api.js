@@ -401,13 +401,13 @@ _DB.FoodDiary = {
 		//if(meal_type) url = url + '&meal_type='+meal_type;
 		api_get(url,callback);
 	},
-	update : function(id,user,callback){
-		var url = api_url(this.resource,id)
-		api_put(url,user,callback);
+	update : function(id,data,callback){
+		var url = api_url(this.resource,id);
+		api_put(url,data,callback);
 	},
-	create : function(user,callback){
-		var url = api_url(this.resource)
-		api_post(url,user,callback);
+	create : function(data,callback){
+		var url = api_url(this.resource);
+		api_post(url,data,callback);
 	},
 	destroy: function(id,callback){
 		var url = api_url(this.resource,id);

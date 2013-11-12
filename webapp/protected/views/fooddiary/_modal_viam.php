@@ -1,7 +1,5 @@
 <?php
 
-
-echo $modal_id;
 /*****
 
 modal_id
@@ -37,7 +35,7 @@ btn_primary_text
 
             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
             <?php if(isset($btn_primary_text)): ?>
-            <button type="button"  id="save-cholesterol-reading" class="btn btn-primary"><?php echo $btn_primary_text ?></button>
+            <button type="button"  class="btn btn-primary save"><?php echo $btn_primary_text ?></button>
             <?php endif ?>
           </div>
         <?php endif ?>
