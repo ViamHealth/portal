@@ -41,6 +41,9 @@
 $route['default_controller'] = "site/login";
 $route['login'] = "site/login";
 $route['signup'] = "site/signup";
+$route['loginapi/(:any)'] = "site/loginapi/$1";
+
+$route['app/home'] = "healthfiles/index";
 //$route['(:any)'] = 'site/view/$1';
 $route['404_override'] = '';
 
