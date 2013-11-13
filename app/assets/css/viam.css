@@ -1,0 +1,53 @@
+@-webkit-viewport   { width: device-width; }
+@-moz-viewport      { width: device-width; }
+@-ms-viewport       { width: device-width; }
+@-o-viewport        { width: device-width; }
+@viewport           { width: device-width; }
+
+
+body {
+background-color: #38B452;
+}
+.navbar>.container .navbar-brand {
+		background:url(/assets/images/logo.png) no-repeat;
+		background-size:180px 33px;
+		width: 190px;
+		margin-left:10px;
+	}
+.navbar.navbar-default.navbar-static-top {
+	background-color: #37AA4F;
+	background-image: none;
+padding: 10px 0px;
+font-size: 20px;
+font-family: Roboto;
+line-height: 20px;
+border-bottom-color: rgb(52, 171, 76);
+border-bottom-style: solid;
+border-bottom-width: 1px;
+}
+.navbar-nav.nav>.active>a, .navbar-nav.nav>.active>a:hover, .navbar-nav.nav>.active>a:focus {
+box-shadow: none;
+background-image: none;
+}
+.navbar-nav.nav .active>a, .navbar-nav.nav .active>a:hover, .navbar-nav.nav .active>a:focus {
+color: black;
+background-color: #37AA4F;
+}
+.navbar .nav>li>a {
+float: none;
+padding: 10px 15px 10px;
+color: white;
+text-decoration: none;
+}
+.navbar-default .navbar-toggle:hover, .navbar-default .navbar-toggle:focus {
+background-color: #37AA4F;
+}
+.navbar-default .navbar-toggle:hover, .navbar-default .navbar-toggle:focus {
+background-color: #37AA4F;
+}
+.navbar-default .navbar-toggle {
+border-color: #37AA4F;
+}
+.navbar-default .navbar-collapse, .navbar-default .navbar-form {
+border-color: #37AA4F;
+}
