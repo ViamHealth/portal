@@ -477,7 +477,7 @@ function load_diary_rows(diet,food,predessor,_t_elem){
 		delete_diary_row($(this));
 	});
 	$(_t_elem).find('.food-item-name').html(food.name);
-	$(_t_elem).find('.food-item-calories').html(parseFloat(food.calories)/ratio);
+	$(_t_elem).find('.food-item-calories').html(parseFloat(food.calories)*ratio);
 	$(_t_elem).find('.food-item-carbs').html(parseFloat(food.total_carbohydrates)*ratio);
 	$(_t_elem).find('.food-item-fat').html(parseFloat(food.total_fat)*ratio);
 	$(_t_elem).find('.food-item-protein').html(parseFloat(food.protein)*ratio);
