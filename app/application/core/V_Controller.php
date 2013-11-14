@@ -5,6 +5,12 @@ class V_Controller extends CI_Controller
 	function __construct()
 	{
 		parent::__construct();
+        if(!isset($this->session->userdata('user')->id)) {
+            $CI =& get_instance();
+            $class = $CI->router->fetch_class();
+            if($class != 'site')
+                header('location: /login');
+        }
         //loggedin
 	}
 
