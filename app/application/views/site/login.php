@@ -38,15 +38,17 @@ $("#login-button-home").on("click",function(event){
 
             });
 		} else {
-            var r = $.parseJSON(json.responseText);
-            if(r['non_field_errors'][0] == 'Unable to login with provided credentials.'){
-                alert('Can not login please try again');
+            if(json.responseText){
+                if(json.responseText){
+                    var r = $.parseJSON(json.responseText);
+                    if(r['non_field_errors'][0] == 'Unable to login with provided credentials.'){
+                        $("#login-unsuccess-message").show();    
+                    }
+                    console.log(r['non_field_errors'][0]);
+                    }        
             }
-            console.log(r['non_field_errors'][0]);
-            $("#login-unsuccess-message").show();
         }
 	});
-
 });
 });
 </script>

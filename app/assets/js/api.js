@@ -527,6 +527,17 @@ _DB.Login = {
 		options.type = 'POST';
 		options.data = data;
 		api_ajax_no_auth(url,options,callback)
+	},
+	by_username: function(username,password,callback){
+		var url = api_url(this.resource);
+		var data = {
+			'username': username,
+			'password' : password,
+		}
+		var options = {};
+		options.type = 'POST';
+		options.data = data;
+		api_ajax_no_auth(url,options,callback)
 	}
 
 }

@@ -40,6 +40,7 @@
 
 $route['default_controller'] = "site/login";
 $route['login'] = "site/login";
+$route['login(:any)'] = "site/login/$1";
 $route['signup'] = "site/signup";
 $route['loginapi/(:any)'] = "site/loginapi/$1";
 

@@ -3,10 +3,10 @@
 class Site extends V_Controller {
 
 
-	public function login()
+	public function login($login_type='email')
 	{
 		$data['title'] = 'Login'; // Capitalize the first letter
-
+		$data['login_type'] = $login_type;
 		$this->template('site/login',$data);
 	}
 
