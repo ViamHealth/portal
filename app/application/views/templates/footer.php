@@ -14,7 +14,6 @@
 
    <script src="<?php echo base_url('assets/js/bootstrap.min.js') ?>"></script>
    <script src="<?php echo base_url('assets/js/bootbox.min.js') ?>"></script>
-   <script src="<?php echo base_url('assets/js/jquery.validate.min.js') ?>"></script>
    <script src="<?php echo base_url('assets/js/bootstrap-datepicker.js') ?>"></script>
    <script src="<?php echo base_url('assets/js/jquery.iframe-transport.js') ?>"></script>
    <script src="<?php echo base_url('assets/js/jquery.fileupload.js') ?>"></script>
