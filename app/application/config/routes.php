@@ -53,7 +53,7 @@ $route['diary'] = "fooddiary/index";
 $route['goals'] = "goals/index";
 $route['u/(:num)/files'] = "healthfiles/index/";
 $route['u/(:num)/goals'] = "goals/index";
-$route['u/(:num)/diary'] = "diary/index";
+$route['u/(:num)/diary'] = "fooddiary/index";
 
 
 //$route['(:any)'] = 'site/view/$1';
