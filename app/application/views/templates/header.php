@@ -25,7 +25,7 @@
 	VH.params = {};
 	VH.params.auth_token = "<?php echo $token; ?>";
 	VH.params.apiUrl = '<?php echo $api_url; ?>';
-	VH.vars.profile_id = '<?php if($loggedin) echo $appuser->id;?>';
+	VH.vars.profile_id = '<?php if($loggedin) echo $current_user_id;?>';
    </script>
    <script src="<?php echo base_url('assets/js/jquery.min.js') ?>"></script>
    <script src="<?php echo base_url('assets/js/jquery-ui.min.js') ?>"></script>

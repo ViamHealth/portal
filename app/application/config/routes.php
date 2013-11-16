@@ -42,10 +42,19 @@ $route['default_controller'] = "site/login";
 $route['login'] = "site/login";
 $route['login(:any)'] = "site/login/$1";
 $route['signup'] = "site/signup";
+$route['logout'] = "site/logout";
 $route['loginapi/(:any)'] = "site/loginapi/$1";
+
+$route['home'] = "app/index";
+$route['u/(:num)/home'] = "app/index/";
 
 $route['files'] = "healthfiles/index";
 $route['diary'] = "fooddiary/index";
+$route['u/(:num)/files'] = "healthfiles/index/";
+$route['u/(:num)/diary'] = "fooddiary/index";
+
+
+
 //$route['(:any)'] = 'site/view/$1';
 $route['404_override'] = '';
 

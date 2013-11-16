@@ -19,25 +19,26 @@ class Site extends V_Controller {
 
 	public function loginapi($token)
 	{
-		$api_url = $this->config->item('api_url').'users/me/';
-
-		$context = stream_context_create(array(
-	    'http' => array(
-	        'method' => 'GET',
-	        'header' => "Authorization: Token ".$token."\r\n"
-	      )
-	    ));
-
-    	
-    	$a = file_get_contents($api_url,false,$context);
+		$this->session->set_userdata('token',$token);
+		$a = $this->apiCall('get','users/me/');;
     	if($a){
-    		$user = json_decode($a);
+    		$user = $a;
 	    	$this->session->set_userdata('user',$user);
 	    	$this->session->set_userdata('token',$token);
 	    	echo "1";	
     	} else {
+    		$this->session->unset_userdata('token');
     		echo "0";
     	}
     	
+	}
+
+	public function logout()
+	{
+		$this->session->unset_userdata('user');
+		$this->session->unset_userdata('token');
+		$this->session->unset_userdata('family');
+		redirect('/login', 'refresh');
+
 	}
 }

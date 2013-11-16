@@ -1,17 +1,31 @@
 <?php
 class V_Controller extends CI_Controller
 {
+    public $current_user_id ;
+    public $appuser;
 
 	function __construct()
 	{
 		parent::__construct();
-        if(!isset($this->session->userdata('user')->id)) {
-            $CI =& get_instance();
-            $class = $CI->router->fetch_class();
-            if($class != 'site')
-                header('location: /login');
+        $this->appuser = $this->session->userdata('user');
+        if(isset($this->session->userdata('user')->id))
+            $this->current_user_id = $this->session->userdata('user')->id;
+
+        if( $this->uri->segment(1) == 'u'){
+            $this->current_user_id = $this->uri->segment(2,$this->current_user_id);
         }
-        //loggedin
+
+        $class = $this->router->fetch_class();
+        $method = $this->router->fetch_method();
+        if(!isset($this->session->userdata('user')->id)) {
+            if($class != 'site' && $method !='logout')
+                header('location: /login');
+        } else {
+            //loggedin
+            if($class == 'site')
+                header('location: /files');
+        }
+        
 	}
 
 	public function template($template_name, $vars = array(), $return = FALSE)
@@ -21,6 +35,21 @@ class V_Controller extends CI_Controller
         $vars['loggedin'] = isset($this->session->userdata('user')->id)?true:false;
         $token = $this->session->userdata('token');
         $vars['token'] = $token;
+
+        //var_dump($this->session->userdata['family']);
+        if($this->router->fetch_class() != 'site'){
+            if(!isset($this->session->userdata['family'])){
+                $family = $this->apiCall('get','users/');
+              //  var_dump($family);die();
+               $this->session->set_userdata('family',$family);
+            }
+            
+            $vars['family'] = $this->session->userdata['family'];
+                
+        }
+        
+        $vars['current_user_id'] = $this->current_user_id;
+        
         $content  = $this->load->view('templates/header', $vars, $return);
         $content  = $this->load->view('templates/nav', $vars, $return);
         $content  = $this->load->view('templates/body', $vars, $return);
@@ -32,4 +61,12 @@ class V_Controller extends CI_Controller
             return $content;
         }
     }
+
+    public function apicall($method, $url, $params =array())
+    {
+        return Vapi::apicall($method, $url, $params =array());
+    }
+
+    
+
 }

@@ -32,8 +32,10 @@ $("#login-button-home").on("click",function(event){
 	_DB.Login.by_email(email,password,function(json,success){
 		if(success){
 			$.get("<?php echo site_url('site/loginapi/'); ?>/"+json.token, function(data){
-                if(data == 1){
+                if(data == '1'){
                     window.location.href = "<?php echo site_url('files'); ?>";
+                } else {
+                    $("#login-unsuccess-message").show();
                 }
 
             });

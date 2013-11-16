@@ -15,19 +15,19 @@
       
       <?php if($loggedin): ?>
       	<li class="<?php echo active_link('healthfiles','index'); ?>">
-        	<a href="<?php echo site_url('files'); ?>">Files</a>
+        	<a href="<?php echo viam_url('files',$current_user_id); ?>">Files</a>
         </li>
         <li class="<?php echo active_link('fooddiary','index'); ?>">
-          <a href="<?php echo site_url('diary'); ?>">Food Diary</a>
+          <a href="<?php echo viam_url('diary',$current_user_id); ?>">Food Diary</a>
         </li>
 
 
   	  <?php else: ?>
         <li class="<?php echo active_link('site','login'); ?>">
-        	<a href="<?php echo site_url('login'); ?>">Login</a>
+        	<a href="<?php echo viam_url('login',$current_user_id); ?>">Login</a>
         </li>
         <li class="<?php echo active_link('site','signup'); ?>">
-        	<a href="<?php echo site_url('signup'); ?>">Signup</a>
+        	<a href="<?php echo viam_url('signup',$current_user_id); ?>">Signup</a>
         </li>
       <?php endif ?>
       </ul>
