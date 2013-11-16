@@ -10,27 +10,40 @@
       <a class="navbar-brand" href="#"> &nbsp; </a>
     </div>
     <div class="navbar-collapse collapse">
-      <ul class="nav navbar-nav">
+      
 
       
       <?php if($loggedin): ?>
+      <ul class="nav navbar-nav">
+        <li class="<?php echo active_link('goals','index'); ?>">
+          <a href="<?php echo viam_url('goals',$current_user_id); ?>">Goals</a>
+        </li>
+        <li class="<?php echo active_link('healthwatch','index'); ?>">
+          <a href="<?php echo viam_url('healthwatch',$current_user_id); ?>">Health Watch</a>
+        </li>
       	<li class="<?php echo active_link('healthfiles','index'); ?>">
         	<a href="<?php echo viam_url('files',$current_user_id); ?>">Files</a>
         </li>
         <li class="<?php echo active_link('fooddiary','index'); ?>">
           <a href="<?php echo viam_url('diary',$current_user_id); ?>">Food Diary</a>
         </li>
+      </ul>
+      <ul class="pull-right nav navbar-nav" >
+        <li><a href="/logout">Logout</a></li>
+      </ul>
+
 
 
   	  <?php else: ?>
+      <ul class="nav navbar-nav">
         <li class="<?php echo active_link('site','login'); ?>">
         	<a href="<?php echo viam_url('login',$current_user_id); ?>">Login</a>
         </li>
         <li class="<?php echo active_link('site','signup'); ?>">
         	<a href="<?php echo viam_url('signup',$current_user_id); ?>">Signup</a>
         </li>
-      <?php endif ?>
       </ul>
+      <?php endif ?>
     </div><!--/.nav-collapse -->
   </div>
 </div>
