@@ -5,12 +5,14 @@ $sidebar_family_array = array();
 if($loggedin)
 {
 	foreach ($family as $key => $value) {
+		$li_class ='';
 		$active = false;
-		if($value->id == $appuser->id){
-			$li_class = " class='active visible-lg hidden-sm hidden-xs ' ";
+		if($value->id == $current_user_id){
+			$li_class = " class='active visible-lg hidden-sm hidden-xs  ' ";
 		} else {
-			$li_class = " class='visible-lg hidden-sm hidden-xs' ";
+			$li_class = " class='visible-lg hidden-sm hidden-xs  ' ";
 		}
+		
 		if($value->first_name && $value->last_name)
 			$visible_identity = $value->first_name." ".$value->last_name;
 		else if($value->first_name)
@@ -29,9 +31,10 @@ if($loggedin)
 <div class="container" >
 <?php if($loggedin): ?>
 	<div class="col-md-3">
-		<div class="well well-small sidebar-nav">
-			<ul class="nav nav-list">
-				<li class="nav-header">Family Profiles</li>
+		<div class="well">
+			<p>Family Profiles</p>
+			<ul class="nav nav-pills nav-stacked">
+				
 				<?php foreach($sidebar_family_array as $li): ?>
 					<?php echo $li; ?>
 				<?php endforeach; ?>

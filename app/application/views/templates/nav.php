@@ -18,14 +18,17 @@
         <li class="<?php echo active_link('goals','index'); ?>">
           <a href="<?php echo viam_url('/goals',$current_user_id); ?>">Goals</a>
         </li>
-        <li class="<?php echo active_link('healthwatch','index'); ?>">
-          <a href="<?php echo viam_url('/healthwatch',$current_user_id); ?>">Health Watch</a>
+        <!--<li class="<?php echo active_link('healthwatch','index'); ?>">
+          <a href="<?php echo viam_url('/healthwatch',$current_user_id); ?>">Health Watch</a>-->
         </li>
       	<li class="<?php echo active_link('healthfiles','index'); ?>">
         	<a href="<?php echo viam_url('/files',$current_user_id); ?>">Files</a>
         </li>
         <li class="<?php echo active_link('fooddiary','index'); ?>">
           <a href="<?php echo viam_url('/diary',$current_user_id); ?>">Food Diary</a>
+        </li>
+        <li class="<?php echo active_link('user','index'); ?>">
+          <a href="<?php echo viam_url('/user',$current_user_id); ?>">Profile</a>
         </li>
       </ul>
       <ul class="pull-right nav navbar-nav" >
