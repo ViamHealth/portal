@@ -36,7 +36,10 @@ class V_Controller extends CI_Controller
         $token = $this->session->userdata('token');
         $vars['token'] = $token;
 
-        //var_dump($this->session->userdata['family']);
+        $bug = $this->session->userdata('family');
+        if(isset($bug->detail) && $bug->detail == 'Authentication credentials were not provided.')
+            $this->session->unset_userdata('family');
+
         if($this->router->fetch_class() != 'site'){
             if(!isset($this->session->userdata['family'])){
                 $family = $this->apiCall('get','users/');

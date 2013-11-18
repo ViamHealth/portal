@@ -63,6 +63,8 @@ border-color: #37AA4F;
 background-color: #efefef;
 }
 
+
+
 /**** Health files **/
 #healthfiles-table thead th
 {font: bold 12px Segoe UI, Arial, Helvetica, sans-serif;
@@ -184,17 +186,20 @@ margin-top: 10px;
 .weight-inputs .wval {
 	float: left;
 width: 72px;
-height: 32px;
+height: 30px;
 font: 24px Segoe UI,Helvetica,Arial,sans-serif;
 color: #666;
 background: url(/assets/images/ic_weight.png) no-repeat left center;
-line-height: 32px;
+line-height: 40px;
 padding: 0 0 0 40px;
+}
+.weight-inputs .wval input{
+background: url(/assets/images/ic_weight.png) no-repeat left center;
 }
 .weight-inputs .spnr {
 	float: left;
 	width: 40px;
-padding: 4px 0 3px 0;
+padding: 5px 0 3px 0;
 margin: 0 0 0 5px;
 }
 .weight-inputs .spnr .inc {
@@ -203,7 +208,7 @@ background-image: url(/assets/images/sprite-icn.png);
 background-position: right -153px;
 background-repeat: no-repeat;
 display: block;
-margin-bottom: 5px;
+margin-bottom: 10px;
 }
 .weight-inputs .spnr .dec {
 	height: 8px;
@@ -211,6 +216,41 @@ background-image: url(/assets/images/sprite-icn.png);
 background-position: right -161px;
 background-repeat: no-repeat;
 display: block;
-margin-top: 5px;
+margin-top: 10px;
+}
+.weight-inputs .spnr .dec.d_arw_red {
+	background-position: right -185px;
+}
+.weight-inputs .spnr .inc.u_arw_grn {
+	background-position: right -171px;
+}
+.goal_time_watch {
+width: 30px;
+height: 26px;
+background: url(/assets/images/ic-clock.png) no-repeat left center;
+padding: 0;
+}
+.delete-goal {
+	font-size: 12px;
+	color: red;
+}
+
+.goal_range_dd {
+	font-size: 12px;
+}
+#weight_time_range .dd-select {
+	border:none;
+}
+
+#manage-goals-modal .dd-option {
+padding: 1px 5px;
+}
+#manage-goals-modal .dd-selected {
+padding: 1px 5px;
+}
+#manage-goals-modal .panel-group .panel {
+margin-bottom: 0;
+overflow: inherit;
+border-radius: 4px;
 }
 /***** Goals end****/

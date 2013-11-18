@@ -57,6 +57,8 @@
 <?php $this->load->view('goals/_modal_add_cholesterol_reading'); ?>
 <?php $this->load->view('goals/_modal_add_blood_pressure_reading'); ?>
 
+<?php $this->load->view('goals/_modal_manage_goals'); ?>
+
 
 <script type="text/javascript">
 
@@ -333,6 +335,14 @@ $(document).ready(function(){
 		click_to_add_reading(chart_type);
     	
 	});
+
+	$(".cls_settings").delegate('.manage_goals', 'click', function() {
+		//var chart_type  = $(this).parents('.chart-container').attr("chart-type");
+		//click_to_add_reading(chart_type);
+		console.log('sdf');
+    	$("#manage-goals-modal").modal();
+	});
+
 	
 	populate_weight_graph();
 	populate_blood_pressure_graph();
@@ -406,22 +416,78 @@ $(document).ready(function(){
 			var wight_v = $("#weight_goal_reading_weight").val();
 			wight_v++; 
 			$("#weight_goal_reading_weight").val(wight_v); 
-			$("p.wval").html(wight_v+"kg");
+			$("p.wval").html(wight_v+"Kg");
 		});
 		$("#adj_weight a.dec").click(function(event){
 			event.preventDefault(); 
 			var wight_v = $("#weight_goal_reading_weight").val();
 			wight_v--; 
 			$("#weight_goal_reading_weight").val(wight_v); 
-			$("p.wval").html(wight_v+"kg");		
+			$("p.wval").html(wight_v+"Kg");		
 		});
-		$("#cwight_arr a.u_arw").click(function(event){
-			event.preventDefault();
-			var wight_v = $("#cwight").val();
-			wight_v++;
-			$("#cwight").val(wight_v);
-			$("div#CW.w_val").html(wight_v+" kg");
+
+		$("#adj_current_weight a.inc").click(function(event){
+			event.preventDefault(); 
+			var wight_v = $("#weight_goal_current_weight").val();
+			wight_v++; 
+			$("#weight_goal_current_weight").val(wight_v); 
+			$("#weight_goal_current_weight_div p.wval").html(wight_v+"Kg");
 		});
+		$("#adj_current_weight a.dec").click(function(event){
+			event.preventDefault(); 
+			var wight_v = $("#weight_goal_current_weight").val();
+			wight_v--; 
+			$("#weight_goal_current_weight").val(wight_v); 
+			$("#weight_goal_current_weight_div p.wval").html(wight_v+"Kg");		
+		});
+
+		$("#adj_target_weight a.inc").click(function(event){
+			event.preventDefault(); 
+			var wight_v = $("#weight_goal_target_weight").val();
+			wight_v++; 
+			$("#weight_goal_target_weight").val(wight_v); 
+			$("#weight_goal_target_weight_div p.wval").html(wight_v+"Kg");
+		});
+		$("#adj_target_weight a.dec").click(function(event){
+			event.preventDefault(); 
+			var wight_v = $("#weight_goal_target_weight").val();
+			wight_v--; 
+			$("#weight_goal_target_weight").val(wight_v); 
+			$("#weight_goal_target_weight_div p.wval").html(wight_v+"Kg");		
+		});
+
+
+		var ddData = [
+			{
+				text: '3 Months',
+				value: '3'
+			},
+			{
+				text: '6 Months',
+				value: '6'
+			},
+			{
+				text: '9 Months',
+				value: '9'
+			},
+			{
+				text: '1 Year',
+				value: '12'
+			}
+		];
+
+		$('#weight_time_range').ddslick({
+		    data:ddData,
+		    width:100,
+		    selectText: "Months",
+		    defaultSelectedIndex:0,
+		    background: '#fff',
+		    //imagePosition:"left",
+		    onSelected: function(selectedData){
+		        //callback function: do something with selectedData;
+		    }   
+		});	
+		
 	});
 });
 
