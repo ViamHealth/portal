@@ -4,27 +4,33 @@ function populate_blood_pressure_graph(){
 }
 
 function attach_blood_pressure_events(){
-	var _stack = stacks['blood_pressure'];
+	var goal_type = 'blood_pressure';
+	var _stack = stacks[goal_type];
 
-	event_delete_goal_button('blood_pressure',populate_blood_pressure_graph);
-	event_click_to_add_reading('blood_pressure');
+	event_delete_goal_button(goal_type,populate_blood_pressure_graph);
+	event_click_to_add_reading(goal_type);
 
 	$(_stack['new_goal_form_save_button']).click(function(event){
-		event.preventDefault();
-		var $form = $(_stack['new_goal_form']);
-		$form.validate();
-		if($form.valid()){
-			var goal = {};
-			goal.systolic_pressure = $("#blood_pressure_goal_systolic_pressure").val();
-			goal.diastolic_pressure = $("#blood_pressure_goal_diastolic_pressure").val();
-			goal.pulse_rate = $("#blood_pressure_goal_pulse_rate").val();
-			goal.target_date = $("#blood_pressure_goal_target_date").val();
+		var goal = {};
+		goal.systolic_pressure = $("#blood_pressure_goal_systolic_pressure").val();
+		goal.diastolic_pressure = $("#blood_pressure_goal_diastolic_pressure").val();
+		goal.pulse_rate = $("#blood_pressure_goal_pulse_rate").val();
+		
+		var goal_id = $("#blood_pressure_goal_id").val();	
 
-			_stack['model'].create(goal,function(){
-				populate_blood_pressure_graph();
-			});
+		var reading = {};
+		reading.systolic_pressure = $("#blood_pressure_goal_current_systolic_pressure").val();
+		reading.diastolic_pressure = $("#blood_pressure_goal_current_diastolic_pressure").val();
+		reading.pulse_rate = $("#blood_pressure_goal_current_pulse_rate").val();
+
+		if(!reading.systolic_pressure || !reading.diastolic_pressure|| !reading.pulse_rate){
+			reading = null;
 		}
-	});	
+
+		save_goal(this,goal_type,goal_id,goal,reading, populate_blood_pressure_graph)
+		
+	});
+
 //add_reading_form_save
 	$(_stack['add_reading_form_save']).click(function(){
 		event.preventDefault();

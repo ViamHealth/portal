@@ -24,46 +24,12 @@ function attach_weight_events(){
 	event_click_to_add_reading(goal_type);
 
 	$(_stack['new_goal_form_save_button']).click(function(event){
-		var that = this;
-		if($(that).hasClass("disbaled"))
-			return;
-		$(that).addClass("disabled");
-		$(that).attr("data-loading-text","Saving");
-		//event.preventDefault();
-		var goal = {};
+		var goal = {}
 		goal.weight = $("#weight_goal_target_weight").val();
-		goal = from_ui_to_api_goal_interval(goal_type,goal);
-
-		
-		var gid = $("#weight_goal_id").val();		
-		
-
+		var goal_id = $("#weight_goal_id").val();	
 		var reading = {};
 		reading.weight = $("#weight_goal_current_weight").val();
-		reading.reading_date = get_today_date_for_api();
-		_DB.WeightReading.retrieve(reading.reading_date,function(response,status){
-			if (response.status && response.status == 404) {
-				_DB.WeightReading.create(reading,function(response,status){
-					if(!status) console.log(response.responseText);
-				});
-			} else {
-				_DB.WeightReading.update(reading.reading_date,reading,function(response,status){
-					if(!status) console.log(response.responseText);
-				});
-			}
-		});
-
-		if(gid){
-			_DB.WeightGoal.update(gid,goal,function(){
-				populate_weight_graph();
-				$(that).removeClass("disabled");
-			});
-		} else {
-			_DB.WeightGoal.create(goal,function(){
-				populate_weight_graph();
-				$(that).removeClass("disabled");
-			});
-		}
+		save_goal(this,goal_type,goal_id,goal,reading, populate_weight_graph)
 	});
 
 	$(_stack['add_reading_form_save']).click(function(){

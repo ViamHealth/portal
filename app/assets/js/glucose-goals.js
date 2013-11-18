@@ -3,6 +3,7 @@ function populate_glucose_graph(){
 }
 
 function attach_glucose_events(){
+	var goal_type = 'glucose';
 	var _stack = stacks['glucose'];
 
 	event_delete_goal_button('glucose',populate_glucose_graph);
@@ -11,16 +12,24 @@ function attach_glucose_events(){
 	$(_stack['new_goal_form_save_button']).click(function(event){
 		event.preventDefault();
 		var $form = $(_stack['new_goal_form']);
-		$form.validate();
-		if($form.valid()){
+
+		//$form.validate();
+		//if($form.valid()){
+		if(1){
 			var goal = {};
 			goal.random = $("#glucose_goal_random").val();
 			goal.fasting = $("#glucose_goal_fasting").val();
-			goal.target_date = $("#glucose_goal_target_date").val();
-
-			_stack['model'].create(goal,function(){
-				populate_glucose_graph();
-			});
+			
+			var goal_id = $("#glucose_goal_id").val();	
+			
+			var reading = {};
+			reading.random = $("#glucose_goal_current_random").val();
+			reading.fasting = $("#glucose_goal_current_fasting").val();
+			
+			if(!reading.random || !reading.fasting){
+				reading = null;
+			}
+			save_goal(this,goal_type,goal_id,goal,reading, populate_glucose_graph)
 		}
 	});	
 //add_reading_form_save

@@ -4,7 +4,38 @@
 <div class="row">
 	<input type="hidden" id="blood_pressure_goal_id" value="" />
 
-    
+    <div class="blood-pressure-inputs col-md-4" >
+      <label>Current BP</label>
+      <div class="">
+        Diastolic
+      <br/>
+      <input id="blood_pressure_goal_current_systolic_pressure" type="text" name="blood_pressure_goal_current_systolic_pressure" class="input" required placeholder=""/>
+      </br>
+      Systolic
+      <br/>
+      <input id="blood_pressure_goal_current_diastolic_pressure" type="text" name="blood_pressure_goal_current_diastolic_pressure" class="input" required />
+      <br/>
+      Pulse
+      <br/>
+      <input id="blood_pressure_goal_current_pulse_rate" type="text" name="blood_pressure_goal_current_pulse_rate" class="input" required />
+      </div>
+    </div>
+    <div class="blood-pressure-inputs col-md-4" >
+      <label>Target BP</label>
+      <div class="">
+        Diastolic
+      <br/>
+      <input id="blood_pressure_goal_systolic_pressure" type="text" name="blood_pressure_goal_systolic_pressure" class="input" required placeholder=""/>
+      </br>
+      Systolic
+      <br/>
+      <input id="blood_pressure_goal_diastolic_pressure" type="text" name="blood_pressure_goal_diastolic_pressure" class="input" required />
+      <br/>
+      Pulse
+      <br/>
+      <input id="blood_pressure_goal_pulse_rate" type="text" name="blood_pressure_goal_pulse_rate" class="input" required />
+      </div>
+    </div>
     <div class="blood-pressure-inputs col-md-4" >
       <label>Goal Time</label>
       <div class="">

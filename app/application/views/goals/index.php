@@ -148,6 +148,7 @@ stacks['cholesterol']['click_to_add_reading'] = $(".cholesterol_goal_reading_ope
 stacks['cholesterol']['chart_container'] = $("#cholesterol-chart");
 stacks['cholesterol']['new_goal_form'] = $("#cholesterol-goal-add");
 stacks['cholesterol']['new_goal_form_save_button'] = $("#save-cholesterol-goal");
+stacks['cholesterol']['goal_time_range'] = "#cholesterol_time_range";
 stacks['cholesterol']['delete_goal_button'] = $("#cholesterol_goal_delete");
 stacks['cholesterol']['yaxis'] = [
 	{   'field':'hdl',
@@ -209,6 +210,7 @@ stacks['glucose']['click_to_add_reading'] = $(".glucose_goal_reading_open");
 stacks['glucose']['chart_container'] = $("#glucose-chart");
 stacks['glucose']['new_goal_form'] = $("#glucose-goal-add");
 stacks['glucose']['new_goal_form_save_button'] = $("#save-glucose-goal");
+stacks['glucose']['goal_time_range'] = "#glucose_time_range";
 stacks['glucose']['delete_goal_button'] = $("#glucose_goal_delete");
 stacks['glucose']['yaxis'] = [
 	{   'field':'random',
@@ -468,8 +470,8 @@ $(document).ready(function(){
 
 		set_goal_time_range_ui('weight');
 		set_goal_time_range_ui('blood_pressure');
-
-		
+		set_goal_time_range_ui('glucose');
+		set_goal_time_range_ui('cholesterol');
 		
 	});
 });
@@ -494,7 +496,7 @@ function set_goal_time_range_ui(goal_type){
 			}
 		];
 	var _stack = stacks[goal_type];
-	console.log('sadsdfsfsdfds');
+	
 	$(_stack['goal_time_range']).ddslick({
 		    data:ddData,
 		    width:100,
@@ -531,6 +533,19 @@ function populate_manage_goals(goal_type,goal){
 		$("#weight_goal_target_weight").val(goal.weight);
 		$("#weight_goal_target_weight_div p.wval").html(goal.weight+"Kg");
 		$("#weight_goal_id").val(goal.id);	
+	} else if (goal_type == 'blood_pressure'){
+		$("#blood_pressure_goal_systolic_pressure").val(goal.systolic_pressure);
+		$("#blood_pressure_goal_diastolic_pressure").val(goal.diastolic_pressure);
+		$("#blood_pressure_goal_pulse_rate").val(goal.pulse_rate);
+		$("#blood_pressure_goal_id").val(goal.id);	
+	} else if (goal_type == 'glucose'){
+		$("#glucose_goal_random").val(goal.random);
+		$("#glucose_goal_fasting").val(goal.fasting);
+		$("#glucose_goal_id").val(goal.id);	
+	} else if (goal_type == 'cholesterol'){
+		$("#cholesterol_goal_hdl").val(goal.hdl);
+		$("#cholesterol_goal_ldl").val(goal.hdl);
+		$("#cholesterol_goal_triglycerides").val(goal.triglycerides);
 	}
 
 	
@@ -672,11 +687,49 @@ function populate_graph(goal_type,options){
 				if(isFunction(options['no_goal_action'])){
 					options['no_goal_action']();
 				} else {
-					$(_stack['new_goal_form']).show();	
+					$(_stack['chart_container']).html('');
+					//$(_stack['new_goal_form']).show();	
 				}
 			}
 		}
 	});
+}
+
+function save_goal(elem,goal_type,goal_id,goal,reading, callback){
+	if($(elem).hasClass("disbaled"))
+		return;
+	$(elem).addClass("disabled");
+	$(elem).attr("data-loading-text","Saving");
+	var _stack = stacks[goal_type];
+	goal = from_ui_to_api_goal_interval(goal_type,goal);
+
+	if(reading){
+		reading.reading_date = get_today_date_for_api();
+		_stack['model_reading'].retrieve(reading.reading_date,function(response,status){
+			if (response.status && response.status == 404) {
+				_stack['model_reading'].create(reading,function(response,status){
+					if(!status) console.log(response.responseText);
+				});
+			} else {
+				_stack['model_reading'].update(reading.reading_date,reading,function(response,status){
+					if(!status) console.log(response.responseText);
+				});
+			}
+		});	
+	}
+	
+
+	if(goal_id){
+		_stack['model'].update(goal_id,goal,function(){
+			callback();
+			$(elem).removeClass("disabled");
+		});
+	} else {
+		_stack['model'].create(goal,function(){
+			callback();
+			$(elem).removeClass("disabled");
+		});
+	}
 }
 
 </script>

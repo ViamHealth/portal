@@ -3,6 +3,7 @@ function populate_cholesterol_graph(){
 }
 
 function attach_cholesterol_events(){
+	var goal_type = 'cholesterol';
 	var _stack = stacks['cholesterol'];
 
 	event_delete_goal_button('cholesterol',populate_cholesterol_graph);
@@ -11,18 +12,26 @@ function attach_cholesterol_events(){
 	$(_stack['new_goal_form_save_button']).click(function(event){
 		event.preventDefault();
 		var $form = $(_stack['new_goal_form']);
-		$form.validate();
-		if($form.valid()){
+
+		//$form.validate();
+		//if($form.valid()){
+		if(1){
 			var goal = {};
 			goal.hdl = $("#cholesterol_goal_hdl").val();
 			goal.ldl = $("#cholesterol_goal_ldl").val();
 			goal.triglycerides = $("#cholesterol_goal_triglycerides").val();
-			goal.total_cholesterol = $("#cholesterol_goal_total_cholesterol").val();
-			goal.target_date = $("#cholesterol_goal_target_date").val();
-
-			_stack['model'].create(goal,function(){
-				populate_cholesterol_graph();
-			});
+			
+			var goal_id = $("#cholesterol_goal_id").val();	
+			
+			var reading = {};
+			reading.hdl = $("#cholesterol_goal_current_hdl").val();
+			reading.ldl = $("#cholesterol_goal_current_ldl").val();
+			reading.triglycerides = $("#cholesterol_goal_current_triglycerides").val();
+			
+			if(!reading.hdl || !reading.ldl || !reading.triglycerides){
+				reading = null;
+			}
+			save_goal(this,goal_type,goal_id,goal,reading, populate_cholesterol_graph)
 		}
 	});	
 //add_reading_form_save
