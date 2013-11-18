@@ -36,6 +36,23 @@ function attach_weight_events(){
 
 		
 		var gid = $("#weight_goal_id").val();		
+		
+
+		var reading = {};
+		reading.weight = $("#weight_goal_current_weight").val();
+		reading.reading_date = get_today_date_for_api();
+		_DB.WeightReading.retrieve(reading.reading_date,function(response,status){
+			if (response.status && response.status == 404) {
+				_DB.WeightReading.create(reading,function(response,status){
+					if(!status) console.log(response.responseText);
+				});
+			} else {
+				_DB.WeightReading.update(reading.reading_date,reading,function(response,status){
+					if(!status) console.log(response.responseText);
+				});
+			}
+		});
+
 		if(gid){
 			_DB.WeightGoal.update(gid,goal,function(){
 				populate_weight_graph();
