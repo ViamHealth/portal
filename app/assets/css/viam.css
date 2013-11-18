@@ -233,12 +233,13 @@ padding: 0;
 .delete-goal {
 	font-size: 12px;
 	color: red;
+	display:none;
 }
 
 .goal_range_dd {
 	font-size: 12px;
 }
-#weight_time_range .dd-select {
+.weight_time_range .dd-select {
 	border:none;
 }
 

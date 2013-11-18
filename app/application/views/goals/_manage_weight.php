@@ -1,7 +1,8 @@
 <div class="row">
-	<div class="pull-right"><a class="delete-goal" href="#">Delete</a></div>
+	<div class="pull-right"><a id="weight_goal_delete" goal_id="" class="delete-goal" href="#">Delete</a></div>
 </div>
 <div class="row">
+	<input type="hidden" id="weight_goal_id" value="" />
 	<div class="weight-inputs col-md-4" id="weight_goal_current_weight_div">
       <label>Current Weight</label>
       <div class="">
@@ -33,4 +34,9 @@
         </div>
       </div>
     </div>
+</div>
+<div class="row">
+	<div class="pull-right">
+		<button type="button" id="save-weight-goal" class="btn btn-primary">Save</button>
+	</div>
 </div>

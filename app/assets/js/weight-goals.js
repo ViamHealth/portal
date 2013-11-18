@@ -15,23 +15,36 @@ function populate_weight_graph(){
 	populate_graph('weight',options);
 }
 
+
 function attach_weight_events(){
-	var _stack = stacks['weight'];
+	var goal_type = "weight";
+	var _stack = stacks[goal_type];
 
-	event_delete_goal_button('weight',populate_weight_graph);
-	event_click_to_add_reading('weight');
+	event_delete_goal_button(goal_type,populate_weight_graph);
+	event_click_to_add_reading(goal_type);
 
-	$("#save-weight-goal").click(function(event){
-		event.preventDefault();
-		var $form = $("#weight-goal-add");
-		$form.validate();
-		if($form.valid()){
-			var goal = {};
-			goal.weight = $("#weight_goal_weight").val();
-			//goal.weight_measure = 'METRIC';
-			goal.target_date = $("#weight_goal_target_date").val();
+	$(_stack['new_goal_form_save_button']).click(function(event){
+		var that = this;
+		if($(that).hasClass("disbaled"))
+			return;
+		$(that).addClass("disabled");
+		$(that).attr("data-loading-text","Saving");
+		//event.preventDefault();
+		var goal = {};
+		goal.weight = $("#weight_goal_target_weight").val();
+		goal = from_ui_to_api_goal_interval(goal_type,goal);
+
+		
+		var gid = $("#weight_goal_id").val();		
+		if(gid){
+			_DB.WeightGoal.update(gid,goal,function(){
+				populate_weight_graph();
+				$(that).removeClass("disabled");
+			});
+		} else {
 			_DB.WeightGoal.create(goal,function(){
 				populate_weight_graph();
+				$(that).removeClass("disabled");
 			});
 		}
 	});

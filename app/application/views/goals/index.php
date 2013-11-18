@@ -77,6 +77,7 @@ stacks['weight']['click_to_add_reading'] = $(".weight_goal_reading_open");
 stacks['weight']['chart_container'] = $("#weight-chart");
 stacks['weight']['new_goal_form'] = $("#weight-goal-add");
 stacks['weight']['new_goal_form_save_button'] = $("#save-weight-goal");
+stacks['weight']['goal_time_range'] = "#weight_time_range";
 stacks['weight']['delete_goal_button'] = $("#weight_goal_delete");
 stacks['weight']['yaxis'] = [
 	{   'field':'weight',
@@ -105,6 +106,7 @@ stacks['blood_pressure']['click_to_add_reading'] = $(".blood_pressure_goal_readi
 stacks['blood_pressure']['chart_container'] = $("#blood-pressure-chart");
 stacks['blood_pressure']['new_goal_form'] = $("#blood-pressure-goal-add");
 stacks['blood_pressure']['new_goal_form_save_button'] = $("#save-blood-pressure-goal");
+stacks['blood_pressure']['goal_time_range'] = "#blood_pressure_time_range";
 stacks['blood_pressure']['delete_goal_button'] = $("#blood_pressure_goal_delete");
 stacks['blood_pressure']['yaxis'] = [
 	{   'field':'systolic_pressure',
@@ -283,10 +285,17 @@ function delete_reading(goal_type, reading_date, point){
 function event_delete_goal_button(goal_type,populate_graph_function){
 	var _stack = stacks[goal_type];
 	$(_stack['delete_goal_button']).click(function(event){
-		var id = $(_stack['delete_goal_button']).attr("goal_id");
+		var that = this;
 		event.preventDefault();
-		_stack['model'].destroy(id,function(){
-			populate_graph_function();
+		bootbox.confirm("Delete Goal?", function(result) {
+		  if(result){
+			var id = $(_stack['delete_goal_button']).attr("goal_id");
+			
+			_stack['model'].destroy(id,function(){
+				populate_graph_function();
+				$(this).hide();
+			});
+		  }
 		});
 	});
 }
@@ -339,7 +348,7 @@ $(document).ready(function(){
 	$(".cls_settings").delegate('.manage_goals', 'click', function() {
 		//var chart_type  = $(this).parents('.chart-container').attr("chart-type");
 		//click_to_add_reading(chart_type);
-		console.log('sdf');
+		
     	$("#manage-goals-modal").modal();
 	});
 
@@ -457,7 +466,16 @@ $(document).ready(function(){
 		});
 
 
-		var ddData = [
+		set_goal_time_range_ui('weight');
+		set_goal_time_range_ui('blood_pressure');
+
+		
+		
+	});
+});
+
+function set_goal_time_range_ui(goal_type){
+	var ddData = [
 			{
 				text: '3 Months',
 				value: '3'
@@ -475,8 +493,9 @@ $(document).ready(function(){
 				value: '12'
 			}
 		];
-
-		$('#weight_time_range').ddslick({
+	var _stack = stacks[goal_type];
+	console.log('sadsdfsfsdfds');
+	$(_stack['goal_time_range']).ddslick({
 		    data:ddData,
 		    width:100,
 		    selectText: "Months",
@@ -487,21 +506,68 @@ $(document).ready(function(){
 		        //callback function: do something with selectedData;
 		    }   
 		});	
-		
-	});
-});
+}
+function from_ui_to_api_goal_interval(goal_type,goal){
+	var _stack = stacks[goal_type];
+	var dr = $(_stack['goal_time_range']).data('ddslick');
+	dr = dr.selectedIndex;
+	if(dr >= '0' && dr <= '2'){
+		goal.interval_num = (parseInt(dr)+1)*3;
+		goal.interval_unit = 'MONTH';
+	} else if (dr == '3'){
+		goal.interval_num = '1';
+		goal.interval_unit = 'YEAR';
+	} else {
+		console.log(dr);
+		throw ('interval values not proper') ;
+	}
+	return goal;
+}
 
+function populate_manage_goals(goal_type,goal){
+	var _stack = stacks[goal_type];
+
+	if(goal_type == 'weight'){
+		$("#weight_goal_target_weight").val(goal.weight);
+		$("#weight_goal_target_weight_div p.wval").html(goal.weight+"Kg");
+		$("#weight_goal_id").val(goal.id);	
+	}
+
+	
+	var i_int = 0;
+
+	if(goal.interval_unit=='MONTH' ){
+		if(goal.interval_num =='3'){
+			i_int = 0;
+		} else if (goal.interval_num == '6'){
+			i_int = 1;
+		} else if (goal.interval_num == '9'){
+			i_int = 2;
+		}
+	} else if (goal.interval_unit == 'YEAR'){
+		 if (goal.interval_num == '1'){
+			i_int = 3;
+		}
+	}
+	$(_stack['goal_time_range']).ddslick('select', {index: i_int });
+
+	//$(_stack['delete_goal_button']).attr("goal_id",goal.id).show();
+}
 
 function populate_graph(goal_type,options){
 	var options = options || {};
 	var _stack = stacks[goal_type];
 	//$(_stack['chart_container']).hide();
-	$(_stack['new_goal_form']).hide();
+	//$(_stack['new_goal_form']).hide();
 	_stack['model'].list(function(json,success){
 		if(success){
 			if(json.count){
-				
 				var goal = json.results[0];
+
+				//Populate Manage goals
+				populate_manage_goals(goal_type,goal);
+				
+				
 				//console.log($(_stack['chart_container']).parents('.chart-container').html());
 				$(_stack['chart_container']).show();
 				$(_stack['chart_container']).parents('.chart-container').attr("goal_id",goal.id);
