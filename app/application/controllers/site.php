@@ -2,6 +2,10 @@
 
 class Site extends V_Controller {
 
+	public function heartbeat()
+	{
+		echo "~~";
+	}
 
 	public function login($login_type='email')
 	{

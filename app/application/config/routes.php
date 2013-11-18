@@ -39,6 +39,7 @@
 */
 
 $route['default_controller'] = "site/login";
+$route['heartbeat'] = "site/heartbeat";
 $route['login'] = "site/login";
 $route['login(:any)'] = "site/login/$1";
 $route['signup'] = "site/signup";
