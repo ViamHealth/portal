@@ -8,6 +8,17 @@ function fb_login(){
             //console.log(response); // dump complete info
             access_token = response.authResponse.accessToken; //get access token
             user_id = response.authResponse.userID; //get FB UID
+	    _DB.Login.by_facebook(access_token,function(json,success){
+                if(success){
+			set_login_session(json.token,'fb');
+            //FB.api('/me', function(response) {
+              //  user_email = response.email; //get user email
+          // you can store this data into your database             
+            //});
+               } else {
+                    alert('Your facebook account is not attached to any registered user');
+               }
+            });
 
             FB.api('/me', function(response) {
                 user_email = response.email; //get user email
@@ -23,6 +34,20 @@ function fb_login(){
         scope: 'publish_stream,email'
     });
 }
+function set_login_session(token,type)
+{
+	$.get("<?php echo site_url('site/loginapi/'); ?>/"+token, function(data){
+		if(data == '1'){
+			window.location.href = "<?php echo site_url('files'); ?>";
+		} else {
+		    if(type == 'email')
+	                    $("#login-unsuccess-message").show();
+		    elseif(type=='fb')
+			alert('Your facebook account is not attached to any registered user');
+		}
+	});
+}
+
 $(document).ready(function(){
 $("#login-button-home").on("click",function(event){
     $("#login-unsuccess-message").hide();
@@ -31,14 +56,7 @@ $("#login-button-home").on("click",function(event){
 	var password = $("input[name=password]").val();
 	_DB.Login.by_email(email,password,function(json,success){
 		if(success){
-			$.get("<?php echo site_url('site/loginapi/'); ?>/"+json.token, function(data){
-                if(data == '1'){
-                    window.location.href = "<?php echo site_url('files'); ?>";
-                } else {
-                    $("#login-unsuccess-message").show();
-                }
-
-            });
+			set_login_session(json.token,'email');
 		} else {
             if(json.responseText){
                 if(json.responseText){

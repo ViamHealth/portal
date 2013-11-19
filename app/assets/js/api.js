@@ -538,6 +538,16 @@ _DB.Login = {
 		options.type = 'POST';
 		options.data = data;
 		api_ajax_no_auth(url,options,callback)
+	},
+	by_facebook: function(access_token,callback){
+		var url = VH.params.apiUrl+'/account/facebook/login/token/?next=/api-token-auth/?access_token='+access_token;
+		var data = {
+			'access_token': access_token
+		}
+		var options = {};
+                options.type = 'POST';
+                options.data = data;
+                api_ajax_no_auth(url,options,callback)
 	}
 
 }
