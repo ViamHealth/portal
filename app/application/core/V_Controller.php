@@ -31,6 +31,7 @@ class V_Controller extends CI_Controller
 	public function template($template_name, $vars = array(), $return = FALSE)
     {
     	$vars['api_url'] = $this->config->item('api_url');
+        $vars['fb_app_id'] = $this->config->item('fb_app_id');
     	$vars['appuser'] = $this->session->userdata('user');
         $vars['loggedin'] = isset($this->session->userdata('user')->id)?true:false;
         $token = $this->session->userdata('token');

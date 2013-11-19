@@ -25,6 +25,7 @@
 	VH.params = {};
 	VH.params.auth_token = "<?php echo $token; ?>";
 	VH.params.apiUrl = '<?php echo $api_url; ?>';
+  VH.params.fb_app_id = '<?php echo $fb_app_id; ?>'
 	VH.vars.profile_id = '<?php if($loggedin) echo $current_user_id;?>';
    </script>
    <script src="<?php echo base_url('assets/js/jquery.min.js') ?>"></script>
@@ -39,3 +40,24 @@
     <![endif]-->
 </head>
 <body>
+  <div id="fb-root"></div>
+  <script>
+    window.fbAsyncInit = function() {
+      FB.init({
+        appId      : VH.params.fb_app_id,
+        status     : true, // check login status
+        cookie     : true, // enable cookies to allow the server to access the session
+        xfbml      : true  // parse XFBML
+      });
+    };
+
+
+    // Load the SDK asynchronously
+    (function(d){
+     var js, id = 'facebook-jssdk', ref = d.getElementsByTagName('script')[0];
+     if (d.getElementById(id)) {return;}
+     js = d.createElement('script'); js.id = id; js.async = true;
+     js.src = "//connect.facebook.net/en_US/all.js";
+     ref.parentNode.insertBefore(js, ref);
+    }(document));
+  </script>

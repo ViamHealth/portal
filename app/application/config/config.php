@@ -362,3 +362,4 @@ $config['proxy_ips'] = '';
 /* Location: ./application/config/config.php */
 
 $config['api_url'] = 'http://localhost:8080/';
+$config['fb_app_id'] = '603777449653645';
