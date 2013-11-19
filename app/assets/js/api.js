@@ -491,6 +491,12 @@ _DB.User = {
 		var url = api_url(this.resource,id,'bmi-profile');
 		api_put(url,profile,callback);
 	},
+        fb_login : function(access_token,callback){
+		var url = VH.params.apiUrl+'account/facebook/login/token/';
+		var data = {};
+		data.access_token = access_token;
+		api_post(url,data,callback);
+	}
 
 }
 
@@ -540,7 +546,7 @@ _DB.Login = {
 		api_ajax_no_auth(url,options,callback)
 	},
 	by_facebook: function(access_token,callback){
-		var url = VH.params.apiUrl+'/account/facebook/login/token/?next=/api-token-auth/?access_token='+access_token;
+		var url = api_url(this.resource);
 		var data = {
 			'access_token': access_token
 		}
