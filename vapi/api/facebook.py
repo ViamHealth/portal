@@ -1,11 +1,11 @@
 import requests
 #from django.contrib.auth.models import User, Group
+from api.users.models import UserProfile
 
 import datetime
 import urllib
 
 def populate_profile(token,user):
-    from api.models import *
     profile =  UserProfile.objects.get_or_create(user=user)[0]
 
     resp = requests.get( 'https://graph.facebook.com/me', params={'access_token': token } )
@@ -53,7 +53,7 @@ def populate_profile(token,user):
     pic_data = pic_data['data']
     
     pic_is_set = pic_data.get('is_silhouette',None)
-    if pic_is_set is not None and pic_is_set.lower() != 'true':
+    if pic_is_set is not None and pic_is_set != 'true':
     	pic_url = pic_data.get('url',None)
 
     	if pic_url is not None:

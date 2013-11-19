@@ -62,7 +62,7 @@ class SocialAuthTokenSerializer(serializers.Serializer):
     def validate(self, attrs):
         access_token = attrs.get('access_token').strip()
         if access_token:
-            d1 = datetime.datetime.now()
+            d1 = datetime.now()
             try:
                 socialtoken = SocialToken.objects.get(token=access_token)
                 user = socialtoken.account.user

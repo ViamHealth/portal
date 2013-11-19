@@ -114,12 +114,12 @@ class ObtainAuthToken(APIView):
     model = Token
 
     def post(self, request):
-        access_token = request.GET.get("access_token",None)
+        access_token = request.POST.get("access_token",None)
         email = request.POST.get("email",None)
         mobile = request.POST.get("mobile",None)
 
         if access_token is not None:
-            serializer = SocialAuthTokenSerializer(data=request.GET)
+            serializer = SocialAuthTokenSerializer(data=request.DATA)
         elif email is not None:
             serializer = EmailAuthTokenSerializer(data=request.DATA)
         elif mobile is not None:
@@ -130,3 +130,5 @@ class ObtainAuthToken(APIView):
             token, created = Token.objects.get_or_create(user=serializer.object['user'])
             return Response({'token': token.key})
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    
