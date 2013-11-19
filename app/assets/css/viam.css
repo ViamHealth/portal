@@ -1,0 +1,257 @@
+@-webkit-viewport   { width: device-width; }
+@-moz-viewport      { width: device-width; }
+@-ms-viewport       { width: device-width; }
+@-o-viewport        { width: device-width; }
+@viewport           { width: device-width; }
+
+
+body {
+background-color: #38B452;
+}
+.well {
+	background-image: none;
+	background-color: white;
+}
+.row {
+	margin:0px;
+}
+.navbar>.container .navbar-brand {
+		background:url(/assets/images/logo.png) no-repeat;
+		background-size:180px 33px;
+		width: 190px;
+		margin-left:10px;
+	}
+.navbar.navbar-default.navbar-static-top {
+	background-color: #37AA4F;
+	background-image: none;
+padding: 10px 0px 0px 0px;
+font-size: 20px;
+font-family: Roboto;
+line-height: 20px;
+border-bottom-color: rgb(52, 171, 76);
+border-bottom-style: solid;
+border-bottom-width: 1px;
+}
+.navbar-nav.nav>.active>a, .navbar-nav.nav>.active>a:hover, .navbar-nav.nav>.active>a:focus {
+box-shadow: none;
+background-image: none;
+}
+.navbar-nav.nav .active>a, .navbar-nav.nav .active>a:hover, .navbar-nav.nav .active>a:focus {
+color: black;
+background-color: #37AA4F;
+}
+.navbar .nav>li>a {
+float: none;
+padding: 10px 15px 10px;
+color: white;
+text-decoration: none;
+}
+.navbar-default .navbar-toggle:hover, .navbar-default .navbar-toggle:focus {
+background-color: #37AA4F;
+}
+.navbar-default .navbar-toggle:hover, .navbar-default .navbar-toggle:focus {
+background-color: #37AA4F;
+}
+.navbar-default .navbar-toggle {
+border-color: #37AA4F;
+}
+.navbar-default .navbar-collapse, .navbar-default .navbar-form {
+border-color: #37AA4F;
+}
+
+.modal-body {
+background-color: #efefef;
+}
+
+
+
+/**** Health files **/
+#healthfiles-table thead th
+{font: bold 12px Segoe UI, Arial, Helvetica, sans-serif;
+line-height: 36px;
+color: #0099cc;
+border-bottom: 2px solid #ccc;
+}
+#healthfiles-table {
+	font: 12px Segoe UI, Arial, Helvetica, sans-serif;
+
+color: #000;
+}
+#healthfiles-table  .files-options {
+width: 18px;
+height: 15px;
+background: url(/assets/images/sprite-icn.png) no-repeat -9px -788px;
+padding: 0 0 3px 0;
+margin: 0 auto;
+display: block;
+
+cursor: pointer;
+}
+#healthfiles-table .sb_list1 {
+	width: 110px;
+position: absolute;
+top: 16px;
+right: 0;
+z-index: 1;
+display: none;
+background-color: white;
+border: 1px solid #ccc;
+border-radius:5px;
+}
+#healthfiles-table .sb_list1 ul {
+	list-style: none;
+	margin:10px 0 10px 15px;
+	padding-left: 0px;
+}
+#healthfiles-table .sb_list1 ul  li {
+background: url(/assets/images/sprite-icn.png) no-repeat scroll 0 0 transparent;
+padding: 2px 0;
+border: none;
+padding-left:20px;
+}
+
+#healthfiles-table .sb_list1 ul li.download{
+background-position: -10px -858px;
+}
+
+#healthfiles-table .sb_list1 ul li.share{
+background-position: -10px -937px;
+}
+#healthfiles-table .sb_list1 ul li.edit{
+background-position: -10px -967px;
+}
+
+#healthfiles-table .sb_list1 ul li.delete{
+background-position: -10px -1058px;
+}
+
+.filetype_icon {
+	padding: 0 0 22px 48px;
+background-image: url(/assets/images/sprite-icn.png);
+background-repeat: no-repeat;
+}
+.img_ft {
+	background-position: -2px -705px;
+}
+.pdf_ft {
+	background-position: -2px -446px;
+}
+
+/**** Healthfile ends */
+
+/**** Goals ****/
+.cls_settings {
+	/*background: url(/assets/images/sprite-icn.png) no-repeat left -1152px;*/
+	width: 18px;
+height: 15px;
+background: url(/assets/images/sprite-icn.png) no-repeat -9px -788px;
+padding: 0 0 3px 0;
+margin: 0 auto;
+display: block;
+
+cursor: pointer;
+}
+.cls_settings .sb_list1 {
+width: 110px;
+position: absolute;
+top: 10px;
+right: 0;
+z-index: 1;
+display: none;
+background-color: white;
+border: 1px solid #ccc;
+border-radius: 5px;
+}
+.cls_settings .sb_list1 ul {
+	list-style: none;
+	margin:10px 0 10px 15px;
+	padding-left: 0px;
+}
+.chart-container {
+background: #eef8fd;
+border: 1px solid #0099cc;
+border-radius: 5px;
+margin-top: 10px;
+}
+.chart-title {
+	border-bottom: 1px solid #cccccc;
+	padding:5px 10px;
+	font: bold 12px Segoe UI,Arial,Helvetica,sans-serif;
+	color: #333;
+}
+.chart-content {
+	margin: 20px;
+}
+
+.weight-inputs .wval {
+	float: left;
+width: 72px;
+height: 30px;
+font: 24px Segoe UI,Helvetica,Arial,sans-serif;
+color: #666;
+background: url(/assets/images/ic_weight.png) no-repeat left center;
+line-height: 40px;
+padding: 0 0 0 40px;
+}
+.weight-inputs .wval input{
+background: url(/assets/images/ic_weight.png) no-repeat left center;
+}
+.weight-inputs .spnr {
+	float: left;
+	width: 40px;
+padding: 5px 0 3px 0;
+margin: 0 0 0 5px;
+}
+.weight-inputs .spnr .inc {
+	height: 8px;
+background-image: url(/assets/images/sprite-icn.png);
+background-position: right -153px;
+background-repeat: no-repeat;
+display: block;
+margin-bottom: 10px;
+}
+.weight-inputs .spnr .dec {
+	height: 8px;
+background-image: url(/assets/images/sprite-icn.png);
+background-position: right -161px;
+background-repeat: no-repeat;
+display: block;
+margin-top: 10px;
+}
+.weight-inputs .spnr .dec.d_arw_red {
+	background-position: right -185px;
+}
+.weight-inputs .spnr .inc.u_arw_grn {
+	background-position: right -171px;
+}
+.goal_time_watch {
+width: 30px;
+height: 26px;
+background: url(/assets/images/ic-clock.png) no-repeat left center;
+padding: 0;
+}
+.delete-goal {
+	font-size: 12px;
+	color: red;
+	display:none;
+}
+
+.goal_range_dd {
+	font-size: 12px;
+}
+.weight_time_range .dd-select {
+	border:none;
+}
+
+#manage-goals-modal .dd-option {
+padding: 1px 5px;
+}
+#manage-goals-modal .dd-selected {
+padding: 1px 5px;
+}
+#manage-goals-modal .panel-group .panel {
+margin-bottom: 0;
+overflow: inherit;
+border-radius: 4px;
+}
+/***** Goals end****/
