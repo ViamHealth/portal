@@ -1,4 +1,14 @@
 <div class="col-md-3">
+  <img src="<?php echo $profile->profile_picture_url ?>" class="img-polaroid" id="profile_picture_img" height="100px" width="100px">
+      <br/>
+      <div style="display: block; width: 100px; height: 20px; overflow: hidden;">
+        
+        <button style="width: 110px; height: 30px; position: relative; top: -5px; left: -5px;"><a href="javascript: void(0)">Change image</a></button>
+        <input style="opacity: 0; filter:alpha(opacity: 0);position: relative; top: -40px;; left: -20px;" 
+          id="fileupload" 
+          type="file" name="profile_picture" 
+          data-url="<?php echo $api_url."users/".$id."/profile-picture/" ?>" >
+      </div>
 </div>
 <div class="col-md-9">
 	<form class="form-horizontal" id="profile-details-form" role="form">

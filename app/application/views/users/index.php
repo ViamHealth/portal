@@ -57,6 +57,10 @@ $(document).ready(function(){
 		$("#health-stats").addClass("in");
 	});
 
+	_DB.User.update_profile_picture(function(result, textStatus){
+		$("#profile_picture_img").attr('src',result.profile_picture_url);
+	});
+
 	$('#profile-detail-save').on('click',function(){
 		event.preventDefault();
 		var form = $('#profile-details-form');
