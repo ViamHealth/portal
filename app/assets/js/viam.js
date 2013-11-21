@@ -21,4 +21,7 @@ function format_date_for_api(ev)
 	var formattedTime = yyyy + '-' + mm + '-' + dd;
 	return formattedTime;
 }
-
+function reset_session_user_data()
+{
+  $.get('resetsessionuserdata/');
+}

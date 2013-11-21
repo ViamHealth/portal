@@ -36,6 +36,7 @@
 	</div>
 </div>
 <script type="text/javascript">
+
 $(document).ready(function(){
 	var nowTemp = new Date();
 	var now = new Date(nowTemp.getFullYear(), nowTemp.getMonth(), nowTemp.getDate(), 0, 0, 0, 0);
@@ -59,6 +60,7 @@ $(document).ready(function(){
 
 	_DB.User.update_profile_picture(function(result, textStatus){
 		$("#profile_picture_img").attr('src',result.profile_picture_url);
+		reset_session_user_data();
 	});
 
 	$('#profile-detail-save').on('click',function(){

@@ -53,10 +53,12 @@ $route['files'] = "healthfiles/index";
 $route['diary'] = "fooddiary/index";
 $route['goals'] = "goals/index";
 $route['user'] = "user/index";
+$route['resetsessionuserdata'] = "app/resetsessionuserdata";
 $route['u/(:num)/files'] = "healthfiles/index/";
 $route['u/(:num)/goals'] = "goals/index";
 $route['u/(:num)/diary'] = "fooddiary/index";
 $route['u/(:num)/user'] = "user/index";
+$route['u/(:num)/resetsessionuserdata'] = "app/resetsessionuserdata";
 
 
 //$route['(:any)'] = 'site/view/$1';
