@@ -52,9 +52,11 @@ $route['u/(:num)/home'] = "app/index/";
 $route['files'] = "healthfiles/index";
 $route['diary'] = "fooddiary/index";
 $route['goals'] = "goals/index";
+$route['user'] = "user/index";
 $route['u/(:num)/files'] = "healthfiles/index/";
 $route['u/(:num)/goals'] = "goals/index";
 $route['u/(:num)/diary'] = "fooddiary/index";
+$route['u/(:num)/user'] = "user/index";
 
 
 //$route['(:any)'] = 'site/view/$1';

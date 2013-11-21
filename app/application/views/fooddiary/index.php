@@ -109,13 +109,7 @@ $(document).ready(function(){
 	    autoclose: true,
 	    todayHighlight: true
 	}).on('changeDate', function(ev){
-				var date = new Date(ev.date);
-				
-				var yyyy = date.getFullYear();
-				var mm = date.getMonth()+1;
-				var dd = date.getDate();
-				var formattedTime = yyyy + '-' + mm + '-' + dd;
-				load_diary(formattedTime);
+				load_diary(format_date_for_api(ev));
 				//set_date.hide();
 			});;
 	$('#sandbox-container input').datepicker("setValue", new Date());

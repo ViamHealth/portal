@@ -704,7 +704,7 @@ function save_goal(elem,goal_type,goal_id,goal,reading, callback){
 	goal = from_ui_to_api_goal_interval(goal_type,goal);
 
 	if(reading){
-		reading.reading_date = get_today_date_for_api();
+		reading.reading_date = format_date_for_api();
 		_stack['model_reading'].retrieve(reading.reading_date,function(response,status){
 			if (response.status && response.status == 404) {
 				_stack['model_reading'].create(reading,function(response,status){

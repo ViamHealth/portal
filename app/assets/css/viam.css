@@ -196,6 +196,20 @@ padding: 0 0 0 40px;
 .weight-inputs .wval input{
 background: url(/assets/images/ic_weight.png) no-repeat left center;
 }
+.weight-inputs .hval {
+	float: left;
+width: 72px;
+height: 30px;
+font: 24px Segoe UI,Helvetica,Arial,sans-serif;
+color: #666;
+background: url(/assets/images/ic_height.png) no-repeat left center;
+line-height: 40px;
+padding: 0 0 0 40px;
+}
+.weight-inputs .hval input{
+background: url(/assets/images/ic_height.png) no-repeat left center;
+}
+
 .weight-inputs .spnr {
 	float: left;
 	width: 40px;

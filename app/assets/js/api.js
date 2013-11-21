@@ -467,7 +467,11 @@ _DB.User = {
 		api_post(url,user,callback);
 	},
 	update_profile : function(id,profile,callback){
-		var url = api_url(this.resource,id,'profile');
+		var options = {};
+		options['pk'] = id;
+		options['sub_resource'] = 'profile'
+		var url = api_url_x(this.resource,options);
+		//var url = VH.params.apiUrl+this.resource+'/'+id+'/';
 		profile.gender = profile.gender?profile.gender.toUpperCase():profile.gender;
 		api_put(url,profile,callback);
 	},
@@ -484,14 +488,20 @@ _DB.User = {
     	});
 	},
 	retrieve_bmi_profile : function(id,callback){
-		var url = api_url(this.resource,id,'bmi-profile')
+		var options = {};
+		options['pk'] = id;
+		options['sub_resource'] = 'bmi-profile'
+		var url = api_url_x(this.resource,options);
 		api_get(url,callback);	
 	},
 	update_bmi_profile : function(id,profile,callback){
-		var url = api_url(this.resource,id,'bmi-profile');
+		var options = {};
+		options['pk'] = id;
+		options['sub_resource'] = 'bmi-profile'
+		var url = api_url_x(this.resource,options);
 		api_put(url,profile,callback);
 	},
-        fb_login : function(access_token,callback){
+    fb_login : function(access_token,callback){
 		var url = VH.params.apiUrl+'account/facebook/login/token/';
 		var data = {};
 		data.access_token = access_token;
