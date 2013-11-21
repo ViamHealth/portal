@@ -56,13 +56,22 @@
 			</select>
 			</div>
 		</div>
-	  
-	  <div class="form-group">
-	    <div class="col-sm-offset-2 col-sm-10">
-	      <button type="submit" id="health-stats-save" class="btn btn-default">Save</button>
-	      <button type="button" id="health-stats-next" class="btn btn-default">Next</button>
-	    </div>
-	  </div>
+		<?php if($bmi_profile->bmr): ?>
+	   	<div class="form-group">
+	   		<label for="bmr" class="col-sm-2 col-md-3  control-label">Bmr</label>
+		    <div class="col-sm-10 col-md-5">
+		      <?php echo $bmi_profile->bmr; ?> Kg/m<span style="font-size: 12px;vertical-align: top;">2</span>
+		      <br/>
+		      <?php echo $bmi_profile->bmi_classification_text; ?>
+		    </div>
+	  	</div>
+	  	<?php endif ?>
+	  	<div class="form-group">
+	    	<div class="col-sm-offset-2 col-sm-10">
+	    	  	<button type="submit" id="health-stats-save" class="btn btn-default">Save</button>
+	      		<button type="button" id="health-stats-next" class="btn btn-default">Next</button>
+	    	</div>
+	  	</div>
 	</form>
 </div>
 

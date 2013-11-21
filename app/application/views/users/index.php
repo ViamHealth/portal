@@ -9,21 +9,24 @@
 		        </a>
 		      </h4>
 		    </div>
-		    <div id="profile-details" class="panel-collapse collapse">
+		    <div id="profile-details" class="panel-collapse collapse in">
 		     	<div class="panel-body" >
 		      		<?php $this->load->view('users/_profile_details',$user); ?>
 		     	</div>
 		    </div>
 		  </div>
-		  <div class="panel panel-default">
+		  <div class="panel panel-primary">
 		    <div class="panel-heading">
 		      <h4 class="panel-title">
 		        <a data-toggle="collapse" data-parent="#accordion" href="#health-stats">
 		          Basic Information
 		        </a>
+		        <div class="pull-right">
+		        <?php echo $user->bmi_profile->bmi_classification_text; ?>
+		        </div>
 		      </h4>
 		    </div>
-		    <div id="health-stats" class="panel-collapse collapse in">
+		    <div id="health-stats" class="panel-collapse collapse">
 		      <div class="panel-body">
 		        <?php $this->load->view('users/_health_stats',$user); ?>
 		      </div>
@@ -59,10 +62,10 @@ $(document).ready(function(){
 		var form = $('#profile-details-form');
 		form.validate();
 		if(form.valid()){
-			$("#profile-details").removeClass("in");
+			//$("#profile-details").removeClass("in");
 			$("#profile-details").parents('.panel').removeClass('panel-primary').addClass('panel-success');
-			$("#health-stats").addClass("in");
-			$("#health-stats").parents('.panel').addClass('panel-primary');
+			//$("#health-stats").addClass("in");
+			//$("#health-stats").parents('.panel').addClass('panel-primary');
 
 			var user = {};
 			var profile = {};
@@ -122,7 +125,7 @@ $(document).ready(function(){
 		var form = $('#health-stats-form');
 		form.validate();
 		if(form.valid()){
-			$("#health-stats").removeClass("in");
+			//$("#health-stats").removeClass("in");
 			$("#health-stats").parents('.panel').removeClass('panel-primary').addClass('panel-success');
 			//$("#health-stats").addClass("in");
 			//$("#health-stats").parents('.panel').addClass('panel-primary');
