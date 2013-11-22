@@ -8,13 +8,13 @@
 			</div>
 		</div>
 		<div class="form-group">
-			<label for="systolic" class="col-sm-2 col-md-3 control-label">Diastolic Pressure</label>
+			<label for="diastolic_pressure" class="col-sm-2 col-md-3 control-label">Diastolic Pressure</label>
 			<div class="col-sm-10 col-md-5">
 			  <input type="text" class="form-control" name="diastolic_pressure" placeholder="diastolic" value="<?php echo $bmi_profile->diastolic_pressure; ?>" required>
 			</div>
 		</div>
 		<div class="form-group">
-			<label for="systolic" class="col-sm-2 col-md-3 control-label">Pulse rate</label>
+			<label for="pulse_rate" class="col-sm-2 col-md-3 control-label">Pulse rate</label>
 			<div class="col-sm-10 col-md-5">
 			  <input type="text" class="form-control" name="pulse_rate" placeholder="Pulse Rate" value="<?php echo $bmi_profile->pulse_rate; ?>" required>
 			</div>

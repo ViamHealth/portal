@@ -49,6 +49,43 @@
 		     	</div>
 		    </div>
 		  </div>
+
+		  <div class="panel panel-primary">
+		    <div class="panel-heading">
+		      <h4 class="panel-title">
+		        <a data-toggle="collapse" data-parent="#accordion" href="#profile-cholesterol">
+		          Cholesterol Profile
+		        </a>
+		        <div class="pull-right">
+		        <?php echo $user->bmi_profile->cholesterol_classification_text; ?>
+		        </div>
+		      </h4>
+		    </div>
+		    <div id="profile-cholesterol" class="panel-collapse collapse">
+		     	<div class="panel-body" >
+		      		<?php $this->load->view('users/_profile_cholesterol',$user); ?>
+		     	</div>
+		    </div>
+		  </div>
+
+		  <div class="panel panel-primary">
+		    <div class="panel-heading">
+		      <h4 class="panel-title">
+		        <a data-toggle="collapse" data-parent="#accordion" href="#profile-glucose">
+		          Sugar Profile
+		        </a>
+		        <div class="pull-right">
+		        <?php echo $user->bmi_profile->sugar_classification_text; ?>
+		        </div>
+		      </h4>
+		    </div>
+		    <div id="profile-glucose" class="panel-collapse collapse">
+		     	<div class="panel-body" >
+		      		<?php $this->load->view('users/_profile_glucose',$user); ?>
+		     	</div>
+		    </div>
+		  </div>
+
 		</div>
 	</div>
 </div>
@@ -181,6 +218,50 @@ $(document).ready(function(){
 			bmi_profile.systolic_pressure = $(form).find("input:text[name=systolic_pressure]").val();
 			bmi_profile.diastolic_pressure = $(form).find("input:text[name=diastolic_pressure]").val();
 			bmi_profile.pulse_rate = $(form).find("input:text[name=pulse_rate]").val();
+			
+			_DB.User.update_bmi_profile(user_id,bmi_profile,function(json, success){
+				if(!success)
+					throw 'Something went wrong with user bmi updation';
+			});
+		}
+	});
+
+	$('#profile-cholesterol-save').on('click',function(event){
+		event.preventDefault();
+		var form = $('#profile-cholesterol-form');
+		form.validate();
+		if(form.valid()){
+			$("#profile-cholesterol").collapse("hide");
+			$("#profile-cholesterol").parents('.panel').removeClass('panel-primary').addClass('panel-success');
+
+			var user_id = $("input:hidden[name=user_id]").val();
+			
+			var bmi_profile = {};
+			bmi_profile.ldl = $(form).find("input:text[name=ldl]").val();
+			bmi_profile.hdl = $(form).find("input:text[name=hdl]").val();
+			bmi_profile.triglycerides = $(form).find("input:text[name=triglycerides]").val();
+			
+			_DB.User.update_bmi_profile(user_id,bmi_profile,function(json, success){
+				if(!success)
+					throw 'Something went wrong with user bmi updation';
+			});
+		}
+	});
+
+
+	$('#profile-glucose-save').on('click',function(event){
+		event.preventDefault();
+		var form = $('#profile-glucose-form');
+		form.validate();
+		if(form.valid()){
+			$("#profile-glucose").collapse("hide");
+			$("#profile-glucose").parents('.panel').removeClass('panel-primary').addClass('panel-success');
+
+			var user_id = $("input:hidden[name=user_id]").val();
+			
+			var bmi_profile = {};
+			bmi_profile.random = $(form).find("input:text[name=random]").val();
+			bmi_profile.fasting = $(form).find("input:text[name=fasting]").val();
 			
 			_DB.User.update_bmi_profile(user_id,bmi_profile,function(json, success){
 				if(!success)

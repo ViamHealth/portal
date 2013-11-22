@@ -37,6 +37,22 @@ class User extends V_Controller {
 				break;
 		}
 
+		switch($b->cholesterol_classification){
+			default : $b->cholesterol_classification_text = '';
+				break;
+		}
+
+		switch($b->sugar_classification){
+			case '1' : $b->sugar_classification_text = 'Low';
+				break;
+			case '2' : $b->sugar_classification_text = 'Normal';
+				break;
+			case '3' : $b->sugar_classification_text = 'High';
+				break;
+			default : $b->sugar_classification_text = '';
+				break;
+		}
+
 		$d->bmi_profile = $b;
 		$data['user'] = $d;
 		$data['title'] = 'User';
