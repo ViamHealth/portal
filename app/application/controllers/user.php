@@ -18,7 +18,7 @@ class User extends V_Controller {
 	
 		$data['title'] = 'User';
 		$data['user'] = $this->user;
-		$data['allow_edit_profile_image'] = false;
+		$data['allow_edit_profile_image'] = true;
 		$this->template('users/index',$data);
 	}
 

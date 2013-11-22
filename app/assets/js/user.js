@@ -74,11 +74,13 @@ $(document).ready(function(){
 				_DB.User.update(user_id,user,function(json, success){
 					if(!success)
 						throw 'Something went wrong with user updation';
+					reset_session_user_data();
 				});
 				
 				_DB.User.update_profile(user_id,profile,function(json, success){
 					if(!success)
 						throw 'Something went wrong with user  profile updation';
+					reset_session_user_data();
 				});
 			} else {
 				_DB.User.create(user,function(json,success){
@@ -87,6 +89,7 @@ $(document).ready(function(){
 						_DB.User.update_profile(user_id,profile,function(pp, success){
 							if(!success)
 								throw 'Something went wrong with user  profile updation';
+							reset_session_user_data();
 							
 							window.location.href = "/u/"+user_id+"/user/";
 						});	
