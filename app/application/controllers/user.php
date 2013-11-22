@@ -5,57 +5,29 @@ class User extends V_Controller {
 
 	public function index()
 	{
+		$data = array();
+		$data['user'] = '';
 
 		$d = $this->apiCall('get','users/'.$this->current_user_id);
-		
-//		var_dump($d);
 		$b = $this->apiCall('get','users/'.$this->current_user_id.'/bmi-profile/');
-		//var_dump($b);
 		
-
-		switch($b->bmi_classification){
-			case '1' : $b->bmi_classification_text = 'Underweight';
-				break;
-			case '2' : $b->bmi_classification_text = 'Normal range';
-				break;
-			case '3' : $b->bmi_classification_text = 'Overweight';
-				break;
-			case '4' : $b->bmi_classification_text = 'Obese';
-				break;
-			default : $b->bmi_classification_text = '';
-				break;
-		}
-
-		switch($b->bp_classification){
-			case '1' : $b->bp_classification_text = 'Low';
-				break;
-			case '2' : $b->bp_classification_text = 'Normal';
-				break;
-			case '3' : $b->bp_classification_text = 'High';
-				break;
-			default : $b->bp_classification_text = '';
-				break;
-		}
-
-		switch($b->cholesterol_classification){
-			default : $b->cholesterol_classification_text = '';
-				break;
-		}
-
-		switch($b->sugar_classification){
-			case '1' : $b->sugar_classification_text = 'Low';
-				break;
-			case '2' : $b->sugar_classification_text = 'Normal';
-				break;
-			case '3' : $b->sugar_classification_text = 'High';
-				break;
-			default : $b->sugar_classification_text = '';
-				break;
-		}
-
 		$d->bmi_profile = $b;
-		$data['user'] = $d;
+		$this->load->model('User_model','user');
+
+		$this->user->set_data($d);
+	
 		$data['title'] = 'User';
+		$data['user'] = $this->user;
+		$data['allow_edit_profile_image'] = false;
 		$this->template('users/index',$data);
+	}
+
+	public function add()
+	{
+		$this->load->model('User_model','user');
+		$data['title'] = 'Add User';
+		$data['user'] = $this->user;
+		$data['allow_edit_profile_image'] = false;
+		$this->template('users/add',$data);
 	}
 }

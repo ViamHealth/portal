@@ -53,6 +53,7 @@ $route['files'] = "healthfiles/index";
 $route['diary'] = "fooddiary/index";
 $route['goals'] = "goals/index";
 $route['user'] = "user/index";
+$route['user/add'] = "user/add";
 $route['resetsessionuserdata'] = "app/resetsessionuserdata";
 $route['u/(:num)/files'] = "healthfiles/index/";
 $route['u/(:num)/goals'] = "goals/index";
