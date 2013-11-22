@@ -89,9 +89,11 @@ $(document).ready(function(){
 						_DB.User.update_profile(user_id,profile,function(pp, success){
 							if(!success)
 								throw 'Something went wrong with user  profile updation';
-							reset_session_user_data();
+							reset_session_user_data(funtion(){
+								window.location.href = "/u/"+user_id+"/user/";
+							});
 							
-							window.location.href = "/u/"+user_id+"/user/";
+							
 						});	
 					}
 				});
