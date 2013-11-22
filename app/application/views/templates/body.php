@@ -40,8 +40,8 @@ if($loggedin)
 				<?php endforeach; ?>
 			</ul>
 			<div class="row" style="margin-top:5px;">
-				<a href="<?php //echo $this->createUrl('/user/add',array()); ?>"><button id="family-users-add" class="btn btn-success  col-md-4 col-md-offset-1" type="button">Add</button></a>
-				<a href="<?php //echo $this->createUrl('/user/invite',array()); ?>"><button id="family-users-invite" class="btn btn-info  col-md-5 col-md-offset-1" type="button">Invite</button></a>
+				<a href="/user/add"><button id="family-users-add" class="btn btn-success  col-md-4 col-md-offset-1" type="button">Add</button></a>
+				<a href="#"><button id="family-users-invite" class="btn btn-info  col-md-5 col-md-offset-1" type="button">Invite</button></a>
 
 			</div>
 		</div>
