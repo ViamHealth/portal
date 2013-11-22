@@ -75,6 +75,7 @@ class UserInviteSerializer(serializers.HyperlinkedModelSerializer):
         except ValidationError:
             raise serializers.ValidationError("Enter a valid e-mail address.")
     """
+    email = serializers.CharField(required=True)
     class Meta:
         model = User
         fields = ('email',)

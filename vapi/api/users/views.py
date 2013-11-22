@@ -114,8 +114,9 @@ class InviteView(viewsets.ViewSet):
     @action(methods=['POST',])
     def user_invite(self, request, format=None):
         serializer = UserInviteSerializer(data=request.DATA, context={'request': request})
-        #ADD EMAIL
-        if serializer.is_valid():
+        email = request.DATA.get('email',None)
+
+        if serializer.is_valid() and email is not None:
             try:
                 user = User.objects.get(email=serializer.object.email)
                 invite_existing_email(user, request.user)

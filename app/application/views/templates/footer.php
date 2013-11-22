@@ -1,4 +1,6 @@
 
+   <?php $this->load->view('app/_family_users_invite'); ?>
+
    <!--<script src="//cdnjs.cloudflare.com/ajax/libs/lodash.js/1.3.1/lodash.min.js"></script>-->
 		</div>
 	</div>

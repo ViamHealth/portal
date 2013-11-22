@@ -506,6 +506,10 @@ _DB.User = {
 		var data = {};
 		data.access_token = access_token;
 		api_post(url,data,callback);
+	},
+	invite: function(data,callback){
+		var url = api_url_x('invite');
+		api_post(url,data,callback);
 	}
 
 }
