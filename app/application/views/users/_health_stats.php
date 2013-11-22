@@ -1,6 +1,4 @@
-<div class="col-md-3">
-</div>
-<div class="col-md-9">
+<div class="col-md-12">
 	<form class="form-horizontal" id="health-stats-form" role="form">
 	  	<input type="hidden" value="<?php echo $id ?>" name="user_id" >
 	  	<div class="form-group weight-inputs">
@@ -69,7 +67,6 @@
 	  	<div class="form-group">
 	    	<div class="col-sm-offset-2 col-sm-10">
 	    	  	<button type="submit" id="health-stats-save" class="btn btn-default">Save</button>
-	      		<button type="button" id="health-stats-next" class="btn btn-default">Next</button>
 	    	</div>
 	  	</div>
 	</form>

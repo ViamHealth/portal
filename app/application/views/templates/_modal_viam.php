@@ -33,12 +33,12 @@ footer_html
 
           <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
           <?php if(isset($btn_primary_text)): ?>
-          <button type="button" class="btn btn-primary"><?php echo $btn_primary_text ?></button>
+          <button type="button" class="btn btn-primary btn-save"><?php echo $btn_primary_text ?></button>
           <?php endif ?>
         <?php else: ?>
           <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
           <?php if(isset($btn_primary_text)): ?>
-          <button type="button" class="btn btn-primary"><?php echo $btn_primary_text ?></button>
+          <button type="button" class="btn btn-primary btn-save"><?php echo $btn_primary_text ?></button>
           <?php endif ?>
         <?php endif ?>
       </div>

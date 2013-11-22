@@ -63,16 +63,10 @@
       <input type="text" class="form-control" id="mobile" placeholder="mobile" value="<?php echo $profile->mobile; ?>">
     </div>
   </div>
-  <div class="form-group">
-    <label for="organization" class="col-sm-2 col-md-3  control-label">Organization</label>
-    <div class="col-sm-10 col-md-5">
-      <input type="text" class="form-control" id="organization" placeholder="Organization" value="<?php echo $profile->organization; ?>">
-    </div>
-  </div>
+  
   <div class="form-group">
     <div class="col-sm-offset-2 col-sm-10">
       <button type="submit" id="profile-detail-save" class="btn btn-default">Save</button>
-      <button type="button" id="profile-detail-next" class="btn btn-default">Next</button>
     </div>
   </div>
 </form>

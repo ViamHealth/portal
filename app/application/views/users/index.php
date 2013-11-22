@@ -32,6 +32,23 @@
 		      </div>
 		    </div>
 		  </div>
+		  <div class="panel panel-primary">
+		    <div class="panel-heading">
+		      <h4 class="panel-title">
+		        <a data-toggle="collapse" data-parent="#accordion" href="#profile-bp">
+		          Blood Pressure Profile
+		        </a>
+		        <div class="pull-right">
+		        <?php echo $user->bmi_profile->bp_classification_text; ?>
+		        </div>
+		      </h4>
+		    </div>
+		    <div id="profile-bp" class="panel-collapse collapse">
+		     	<div class="panel-body" >
+		      		<?php $this->load->view('users/_profile_bp',$user); ?>
+		     	</div>
+		    </div>
+		  </div>
 		</div>
 	</div>
 </div>
@@ -51,27 +68,47 @@ $(document).ready(function(){
 	});
 	$('#sandbox-container input').datepicker("setValue", new Date());
 
-
-	$('#profile-detail-next').on('click',function(){
-		event.preventDefault();
-		$("#profile-details").removeClass("in");
-		$("#health-stats").addClass("in");
-	});
-
 	_DB.User.update_profile_picture(function(result, textStatus){
 		$("#profile_picture_img").attr('src',result.profile_picture_url);
 		reset_session_user_data();
 	});
 
-	$('#profile-detail-save').on('click',function(){
+	$("#profile_adj_weight a.inc").click(function(event){
+		event.preventDefault(); 
+		var wight_v = $("#profile_weight").val();
+		wight_v++; 
+		$("#profile_weight").val(wight_v); 
+		$("#profile_weight").parent().find("p.wval").html(wight_v+"Kg");
+	});
+	$("#profile_adj_weight a.dec").click(function(event){
+		event.preventDefault(); 
+		var wight_v = $("#profile_weight").val();
+		wight_v--; 
+		$("#profile_weight").val(wight_v); 
+		$("#profile_weight").parent().find("p.wval").html(wight_v+"Kg");	
+	});
+	$("#profile_adj_height a.inc").click(function(event){
+		event.preventDefault(); 
+		var wight_v = $("#profile_height").val();
+		wight_v++; 
+		$("#profile_height").val(wight_v); 
+		$("#profile_height").parent().find("p.hval").html(wight_v+"cms");
+	});
+	$("#profile_adj_height a.dec").click(function(event){
+		event.preventDefault(); 
+		var wight_v = $("#profile_height").val();
+		wight_v--; 
+		$("#profile_height").val(wight_v); 
+		$("#profile_height").parent().find("p.hval").html(wight_v+"cms");	
+	});
+
+	$('#profile-detail-save').on('click',function(event){
 		event.preventDefault();
 		var form = $('#profile-details-form');
 		form.validate();
 		if(form.valid()){
-			//$("#profile-details").removeClass("in");
+			$("#profile-details").collapse("hide");
 			$("#profile-details").parents('.panel').removeClass('panel-primary').addClass('panel-success');
-			//$("#health-stats").addClass("in");
-			//$("#health-stats").parents('.panel').addClass('panel-primary');
 
 			var user = {};
 			var profile = {};
@@ -88,7 +125,6 @@ $(document).ready(function(){
 			profile.date_of_birth = format_date_for_api($("#date_of_birth").val());
 			profile.city = $("#city").val();
 			profile.mobile = $("#mobile").val();
-			profile.organization = $("#organization").val();
 			
 			_DB.User.update_profile(user_id,profile,function(json, success){
 				if(!success)
@@ -97,44 +133,16 @@ $(document).ready(function(){
 		}
 	});
 
-	$("#profile_adj_weight a.inc").click(function(event){
-		event.preventDefault(); 
-		var wight_v = $("#profile_weight").val();
-		wight_v++; 
-		$("#profile_weight").val(wight_v); 
-		$("#profile_weight").parent().find("p.wval").html(wight_v+"Kg");
-	});
-	$("#profile_adj_weight a.dec").click(function(event){
-		event.preventDefault(); 
-		var wight_v = $("#weight").val();
-		wight_v--; 
-		$("#profile_weight").val(wight_v); 
-		$("#profile_weight").parent().find("p.wval").html(wight_v+"Kg");	
-	});
-	$("#profile_adj_height a.inc").click(function(event){
-		event.preventDefault(); 
-		var wight_v = $("#profile_height").val();
-		wight_v++; 
-		$("#profile_height").val(wight_v); 
-		$("#profile_height").parent().find("p.hval").html(wight_v+"cms");
-	});
-	$("#profile_adj_height a.dec").click(function(event){
-		event.preventDefault(); 
-		var wight_v = $("#height").val();
-		wight_v--; 
-		$("#profile_height").val(wight_v); 
-		$("#profile_height").parent().find("p.hval").html(wight_v+"cms");	
-	});
+	
 
-	$('#health-stats-save').on('click',function(){
+	$('#health-stats-save').on('click',function(event){
 		event.preventDefault();
 		var form = $('#health-stats-form');
 		form.validate();
 		if(form.valid()){
-			//$("#health-stats").removeClass("in");
+			$("#health-stats").collapse("hide");
 			$("#health-stats").parents('.panel').removeClass('panel-primary').addClass('panel-success');
-			//$("#health-stats").addClass("in");
-			//$("#health-stats").parents('.panel').addClass('panel-primary');
+
 			var user_id = $("input:hidden[name=user_id]").val();
 			
 			var profile = {};
@@ -158,5 +166,30 @@ $(document).ready(function(){
 			});
 		}
 	});
+
+	$('#profile-bp-save').on('click',function(event){
+		event.preventDefault();
+		var form = $('#profile-bp-form');
+		form.validate();
+		if(form.valid()){
+			$("#profile-bp").collapse("hide");
+			$("#profile-bp").parents('.panel').removeClass('panel-primary').addClass('panel-success');
+
+			var user_id = $("input:hidden[name=user_id]").val();
+			
+			var bmi_profile = {};
+			bmi_profile.systolic_pressure = $(form).find("input:text[name=systolic_pressure]").val();
+			bmi_profile.diastolic_pressure = $(form).find("input:text[name=diastolic_pressure]").val();
+			bmi_profile.pulse_rate = $(form).find("input:text[name=pulse_rate]").val();
+			
+			_DB.User.update_bmi_profile(user_id,bmi_profile,function(json, success){
+				if(!success)
+					throw 'Something went wrong with user bmi updation';
+			});
+		}
+	});
+
+
+	
 });
 </script>
