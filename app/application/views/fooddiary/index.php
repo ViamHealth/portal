@@ -269,7 +269,7 @@ function load_diary_page(meal_type,dairy_date){
             	data['dairy_date'] = dairy_date;
 		$("#add_food_item_search").val('');
             	$("#add-food-item-modal").modal();
-		$($("#add-food-item-modal").find('.save')[0]).attr('onclick','').unbind('click');
+		$($("#add-food-item-modal").find('.btn-save')[0]).attr('onclick','').unbind('click');
             	$("#add-food-item-modal").on("shown",handle_modal_shown(data));
 
             });
@@ -279,9 +279,9 @@ function load_diary_page(meal_type,dairy_date){
 
 function handle_modal_shown(data){
 	populate_search_data();
-	$("#add-food-item-modal").find('.save').attr("meal-type",data['meal_type']);
-	$("#add-food-item-modal").find('.save').attr("diet_date",data['dairy_date']);
-	$("#add-food-item-modal").find('.save').on('click',function(){
+	$("#add-food-item-modal").find('.btn-save').attr("meal-type",data['meal_type']);
+	$("#add-food-item-modal").find('.btn-save').attr("diet_date",data['dairy_date']);
+	$("#add-food-item-modal").find('.btn-save').on('click',function(){
 		save_new_item(this);
 	});
 	$('#add-food-item-modal').off('shown', handle_modal_shown);
@@ -403,7 +403,7 @@ function load_search_detail(fi){
 	    }   
 	});	
 
-	$("#add-food-item-modal").find('.save').attr("itemid",fi.id);
+	$("#add-food-item-modal").find('.btn-save').attr("itemid",fi.id);
 }
 
 function reset_diary_group(predessor){

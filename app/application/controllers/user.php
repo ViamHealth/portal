@@ -26,6 +26,17 @@ class User extends V_Controller {
 				break;
 		}
 
+		switch($b->bp_classification){
+			case '1' : $b->bp_classification_text = 'Low';
+				break;
+			case '2' : $b->bp_classification_text = 'Normal';
+				break;
+			case '3' : $b->bp_classification_text = 'High';
+				break;
+			default : $b->bp_classification_text = '';
+				break;
+		}
+
 		$d->bmi_profile = $b;
 		$data['user'] = $d;
 		$data['title'] = 'User';
