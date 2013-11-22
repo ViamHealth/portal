@@ -283,7 +283,7 @@ class UserView(viewsets.ViewSet):
         else:
             #create new user
             #authenticating user
-            serializer = UserCreateSerializer(data={'username':username,'email':email,'password':password,'first_name':first_name,'last_name':'last_name'})
+            serializer = UserCreateSerializer(data={'username':username,'email':email,'password':password,'first_name':first_name,'last_name':last_name})
             if serializer.is_valid():
                 serializer.save()
                 user=User.objects.get(pk=serializer.data.get('id'))
