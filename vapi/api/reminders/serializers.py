@@ -47,4 +47,4 @@ class ReminderReadingsSerializer(serializers.HyperlinkedModelSerializer):
     user = serializers.Field(source='user.id')
     class Meta:
         model = ReminderReadings
-        fields = ('id','reminder','morning_check','afternoon_check','evening_check','night_check','complete_check','user')
+        fields = ('id','reminder','reading_date','morning_check','afternoon_check','evening_check','night_check','complete_check','user')
