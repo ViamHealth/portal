@@ -31,7 +31,7 @@ class ReminderReadingsViewSet(ViamModelViewSetNoStatus):
 
         type = self.request.QUERY_PARAMS.get('type', 'ALL')
 
-        if type == '1' or type == '2' or type == '3' :
+        if type == '1' or type == '2' or type == '3' or type == '4' or type == '5' or type == '6' or type == '7' :
             queryset = self.model.objects.filter(reminder__type=type, reminder_id = F('reminder__id'))
 
         user = self.get_user_object()
