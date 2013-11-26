@@ -33,6 +33,47 @@ class UserEditSerializer(serializers.HyperlinkedModelSerializer):
         model = User
         fields = ('id',  'first_name', 'last_name',)
 
+
+class UserShareSerializer(serializers.Serializer):
+    share_user_id = serializers.CharField(required=True)
+    email = serializers.CharField(required=True)
+    is_self = serializers.BooleanField(default=False)
+    
+    def validate_email(self, attrs, source):
+        value = attrs[source]   
+        try:
+            validate_email( value )
+            return attrs
+        except ValidationError:
+            raise serializers.ValidationError("Enter a valid e-mail address.")
+    
+    def validate(self, attrs):
+        is_self = attrs['is_self']
+        share_user_id = attrs['share_user_id']
+        email = attrs['email']
+        try:
+            share_user = User.objects.get(pk=share_user_id)
+            if not share_user.is_active:
+                raise serializers.ValidationError('Share User account is disabled.')
+            attrs['share_user'] = share_user
+
+            if is_self:
+                if share_user.email is None:
+                    try:
+                        User.objects.get(email=email)
+                        raise serializers.ValidationError('Email belongs to some other user.')
+                    except User.DoesNotExist:
+                        return attrs
+                elif share_user.email == email:
+                    return attrs
+                else:
+                    raise serializers.ValidationError('Email nonempty and  mis match for self user')
+            else:
+                return attrs
+        except User.DoesNotExist:
+            raise serializers.ValidationError('Can not share user as user id does not exist')
+
+
 class UserCreateSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:

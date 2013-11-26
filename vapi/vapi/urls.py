@@ -34,6 +34,7 @@ from django.contrib import admin
 admin.autodiscover()
 
 obtain_auth_token = ObtainAuthToken.as_view()
+
 urlpatterns = patterns('',
     # Examples:
     # url(r'^$', 'vapi.home', name='home'),
@@ -46,6 +47,8 @@ urlpatterns = patterns('',
 
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     url(r'^api-token-auth/', obtain_auth_token),
+    url(r'^social-login-success/', SocialLoginCallback.as_view()),
+    
     #url(r'^api-token-auth/', 'rest_framework.authtoken.obtain_auth_token'),
 
     url(r'^$', api_root),
@@ -53,6 +56,8 @@ urlpatterns = patterns('',
 
     url(r'^signup/$', SignupView.as_view({'post': 'user_signup'}), name='user-signup'),
     url(r'^invite/$', InviteView.as_view({'post': 'user_invite'}), name='user-invite'),
+    url(r'^share/$', ShareView.as_view({'post': 'user_share'}), name='user-share'),
+
     url(r'^forgot-password-email/$', ForgotPasswordView.as_view({'post': 'forgot_password_email'}), name='forgot-password-email'),
     url(r'^forgot-password-mobile/$', ForgotPasswordView.as_view({'post': 'forgot_password_mobile'}), name='forgot-password-mobile'),
 

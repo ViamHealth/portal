@@ -39,9 +39,6 @@ class Reminder(models.Model):
         ('2','MEDICATION'),
         ('3','MEDICALTEST'),
         ('4','DRAPPOINTMENT'),
-        ('5','LABTEST'),
-        ('6','MEAL'),
-        ('7','ACTIVITY'),
     )
     WEEKDAY_CHOICES = (
         ('1','SUNDAY'),

@@ -127,8 +127,10 @@ class InviteView(viewsets.ViewSet):
             try:
                 UserGroupSet.objects.get(group=request.user, user=user)
             except UserGroupSet.DoesNotExist:
-                umap = UserGroupSet(group=request.user, user=user,status='ACTIVE',updated_by=request.user);
-                umap.save()
+                pass
+                #no attaching on invite
+                #umap = UserGroupSet(group=request.user, user=user,status='ACTIVE',updated_by=request.user);
+                #umap.save()
 
             UserProfile.objects.get_or_create(user=user)
             UserBmiProfile.objects.get_or_create(user=user,defaults={'updated_by': request.user})
@@ -139,6 +141,53 @@ class InviteView(viewsets.ViewSet):
 
             return Response(pserializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class ShareView(viewsets.ViewSet):
+    
+    permission_classes = (permissions.IsAuthenticated,)
+    @action(methods=['POST',])
+    def user_share(self, request, format=None):
+        serializer = UserShareSerializer(data=request.DATA, context={'request': request})
+
+        if serializer.is_valid():
+            
+            share_user = serializer.object.get('share_user',None)
+            email = serializer.object.get('email',None)
+
+            try:
+                UserGroupSet.objects.get(group=share_user, user=request.user,status='ACTIVE')
+            except UserGroupSet.DoesNotExist:
+                return Response(status=status.HTTP_401_UNAUTHORIZED)
+
+            if serializer.object.get('is_self',False):
+                # Self user. validated. All is well. Just update the email, create password and send email
+                share_user.email = email
+                share_user.password = User.objects.make_random_password()
+                share_user.save()
+                invite_new_email(share_user, request.user, password)
+
+            else:
+                try:
+                    # sharing with already existing user. Great. Move on
+                    user = User.objects.get(email=email)
+                except User.DoesNotExist:
+                    password = User.objects.make_random_password()
+                    user = User.objects.create_user(username=generate_random_username(), email=email,password=password)
+                    UserProfile.objects.get_or_create(user=user)
+                    UserBmiProfile.objects.get_or_create(user=user,defaults={'updated_by': request.user})        
+                    invite_new_email(user, request.user, password)
+
+                try:
+                    #check if connection exists. Do nothing
+                    UserGroupSet.objects.get(group=share_user, user=user)
+                except UserGroupSet.DoesNotExist:
+                    #create connection and send share email
+                    umap = UserGroupSet(group=share_user, user=user,status='ACTIVE',updated_by=request.user);
+                    umap.save()
+                    share_user_email(user, request.user, share_user)
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 #TODO: Move to mixins for less  code
 class UserView(viewsets.ViewSet):
