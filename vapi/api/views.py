@@ -96,15 +96,6 @@ def handles3downloads(request, healthfile_id):
 def api_root(request, format=None):
     return Response({})
 
-
-
-
-
-
-
-
-
-
 class ObtainAuthToken(APIView):
     throttle_classes = ()
     permission_classes = ()
@@ -130,11 +121,3 @@ class ObtainAuthToken(APIView):
             token, created = Token.objects.get_or_create(user=serializer.object['user'])
             return Response({'token': token.key})
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    
-class SocialLoginCallback(APIView):
-    throttle_classes = ()
-    permission_classes = ()
-
-    def get(self, request):
-        return Response(status=status.HTTP_204_NO_CONTENT)

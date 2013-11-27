@@ -1,10 +1,10 @@
 from django.contrib.auth.models import User
 from api.models import *
+from api.users.models import *
 from rest_framework import serializers
-from datetime import datetime
 from api.serializers_helper import *
-
-from allauth.socialaccount.models import *
+from api.facebook import *
+#from allauth.socialaccount.models import *
 
 
 class MobileAuthTokenSerializer(serializers.Serializer):
@@ -57,23 +57,43 @@ class EmailAuthTokenSerializer(serializers.Serializer):
 
 
 class SocialAuthTokenSerializer(serializers.Serializer):
-    access_token = serializers.CharField()
+    access_token = serializers.CharField(required=True)
 
     def validate(self, attrs):
         access_token = attrs.get('access_token').strip()
-        if access_token:
-            d1 = datetime.now()
+        try:
+            data = get_user_facebook_data(access_token)
+
+            fb_profile_id = data.get('id',None)
+            if fb_profile_id is None:
+                raise serializers.ValidationError('Invalid access_token')
             try:
-                socialtoken = SocialToken.objects.get(token=access_token)
-                user = socialtoken.account.user
-            except SocialToken.DoesNotExist:
-                raise serializers.ValidationError('Unable to login with provided credentials')    
-            if user:
+                profile = UserProfile.objects.get(fb_profile_id=fb_profile_id)
+                user = profile.user
                 if not user.is_active:
                     raise serializers.ValidationError('User account is disabled.')
+                ####################User Login#################
                 attrs['user'] = user
-                return attrs
-            else:
-                raise serializers.ValidationError('Unable to login with provided credentials.')
-        else:
-            raise serializers.ValidationError('Must include "access_token"')
+                return attrs    
+
+            except UserProfile.DoesNotExist:
+                try:
+                    user = User.objects.get(email=data.get('email'))
+                    #catching the user via email field. Security Flaw ?
+                    if not user.is_active:
+                        raise serializers.ValidationError('User account is disabled.')
+                    ################ User Login + Merging of accounts ###############
+                    #This user now belongs to fb_profile_id facebook user !!
+                    facebook_populate_profile(user,data)
+                    attrs['user'] = user
+                    return attrs
+                except User.DoesNotExist:
+                    #raise serializers.ValidationError('Signup with facebook disabled')    
+                    ############### User Signup Via Facebook ###############
+                    user = facebook_create_user(data)
+                    attrs['user'] = user
+                    return attrs
+            except MultipleObjectsReturned:
+                raise serializers.ValidationError('Unable to login with provided credentials. Multiple accounts attached with same fb id')
+        except:
+            raise serializers.ValidationError('Could not connect to facebook')

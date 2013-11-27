@@ -147,23 +147,23 @@ INSTALLED_APPS = (
     'api.users',
     'storages',
     'django_ses',
-    'allauth',
-    'allauth.account',
-    'allauth.socialaccount',
-    'allauth.socialaccount.providers.facebook',
+    #'allauth',
+    #'allauth.account',
+    #'allauth.socialaccount',
+    #'allauth.socialaccount.providers.facebook',
 )
 
-ACCOUNT_EMAIL_REQUIRED = True
+#ACCOUNT_EMAIL_REQUIRED = True
 
-LOGIN_REDIRECT_URL = '/social-login-success/'
+#LOGIN_REDIRECT_URL = '/social-login-success/'
 
-ACCOUNT_AUTHENTICATION_METHOD = "email"
+#ACCOUNT_AUTHENTICATION_METHOD = "email"
 
-ACCOUNT_EMAIL_VERIFICATION = "none"
+#ACCOUNT_EMAIL_VERIFICATION = "none"
 
-ACCOUNT_UNIQUE_EMAIL =True
+#ACCOUNT_UNIQUE_EMAIL =True
 
-ACCOUNT_USER_USERNAME_FIELD = "none"
+#ACCOUNT_USER_USERNAME_FIELD = "none"
 
 
 # A sample logging configuration. The only tangible logging
@@ -213,8 +213,8 @@ SERVER_EMAIL = 'kunal.rachhoya@viamhealth.com'
 TEMPLATE_CONTEXT_PROCESSORS = (
     "django.core.context_processors.request",
     "django.contrib.auth.context_processors.auth",
-    "allauth.account.context_processors.account",
-    "allauth.socialaccount.context_processors.socialaccount",
+    #"allauth.account.context_processors.account",
+    #"allauth.socialaccount.context_processors.socialaccount",
 )
 
 AUTHENTICATION_BACKENDS = (
@@ -226,14 +226,14 @@ AUTHENTICATION_BACKENDS = (
 )
 
 
-SOCIALACCOUNT_PROVIDERS = { 'facebook':
-    {
-        'SCOPE': ['email',],
-        'AUTH_PARAMS': {  },
-        'METHOD': 'oauth2' ,
-        #'LOCALE_FUNC': 'path.to.callable'
-    } 
-}
+#SOCIALACCOUNT_PROVIDERS = { 'facebook':
+#    {
+#        'SCOPE': ['email',],
+#        'AUTH_PARAMS': {  },
+#        'METHOD': 'oauth2' ,
+#        #'LOCALE_FUNC': 'path.to.callable'
+#    } 
+#}
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': ('rest_framework.permissions.IsAuthenticated',),
     'DEFAULT_AUTHENTICATION_CLASSES': (
@@ -262,3 +262,6 @@ STATIC_DIRECTORY = '/static/'
 MEDIA_DIRECTORY = '/media/'
 STATIC_URL = S3_URL + STATIC_DIRECTORY
 MEDIA_URL = S3_URL + MEDIA_DIRECTORY
+
+FACEBOOK_APP_ID = '603777449653645'
+FACEBOOK_APP_SECRET = '97c795e525ba60ade8bf4c781662a901'

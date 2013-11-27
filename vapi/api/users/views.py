@@ -421,3 +421,14 @@ class UserView(viewsets.ViewSet):
             pserializer = UserProfileSerializer(profile, data=serializer.object)
             return Response(pserializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    @action(methods=['POST'])
+    def attach_facebook(self, request):
+        serializer = UserFacebookConnectSerializer(request.DATA)
+        if serializer.is_valid():
+            facebook_populate_profile(request.user, serializer.object.get('fb_data'))
+            pserializer = UserSerializer(request.user)
+            return Response(pserializer.data)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        

@@ -74,6 +74,22 @@ class UserShareSerializer(serializers.Serializer):
             raise serializers.ValidationError('Can not share user as user id does not exist')
 
 
+class UserFacebookConnectSerializer(serializers.Serializer):
+    access_token = serializers.CharField(required=True)
+
+    def validate(self, attrs):
+        access_token = attrs.get('access_token').strip()
+        try:
+            data = get_user_facebook_data(access_token)
+
+            fb_profile_id = data.get('id',None)
+            if fb_profile_id is None:
+                raise serializers.ValidationError('Invalid access_token')
+            attrs['fb_data'] = data
+            return attrs
+        except:
+            raise serializers.ValidationError('Could not connect to facebook')
+
 class UserCreateSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:

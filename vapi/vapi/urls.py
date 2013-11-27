@@ -9,7 +9,7 @@ from api.reminders.views import *
 from api.users.views import *
 
 from django.views.decorators.csrf import csrf_exempt
-from allauth.socialaccount.providers.facebook.views import login_by_token
+#from allauth.socialaccount.providers.facebook.views import login_by_token
 
 #from api import ote
 
@@ -42,12 +42,12 @@ urlpatterns = patterns('',
     
     
 
-    url(r'^account/facebook/login/token/$', csrf_exempt(login_by_token),name="facebook_login_by_token"),
-    url(r'^account/', include('allauth.urls')),
+    #url(r'^account/facebook/login/token/$', csrf_exempt(login_by_token),name="facebook_login_by_token"),
+    #url(r'^account/', include('allauth.urls')),
 
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     url(r'^api-token-auth/', obtain_auth_token),
-    url(r'^social-login-success/', SocialLoginCallback.as_view()),
+    #url(r'^social-login-success/', SocialLoginCallback.as_view()),
     
     #url(r'^api-token-auth/', 'rest_framework.authtoken.obtain_auth_token'),
 
