@@ -119,11 +119,11 @@ class InviteView(viewsets.ViewSet):
 
         if serializer.is_valid() and email is not None:
             try:
-                user = User.objects.get(email=serializer.object.email)
+                user = User.objects.get(email=serializer.object.get('email'))
                 invite_existing_email(user, request.user)
             except User.DoesNotExist:
                 password = User.objects.make_random_password()
-                user = User.objects.create_user(username=generate_random_username(), email=serializer.object.email,password=password)
+                user = User.objects.create_user(username=generate_random_username(), email=serializer.object.get('email'),password=password)
                 invite_new_email(user, request.user, password)
             try:
                 UserGroupSet.objects.get(group=request.user, user=user)
@@ -373,12 +373,12 @@ class UserView(viewsets.ViewSet):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
     @action(methods=['POST'])
-    def change_password(self, request, pk):
-        user = self.get_object(pk)
-        serializer = UserPasswordSerializer(user, data=request.DATA)
+    def change_password(self, request):
+        serializer = UserPasswordSerializer(data=request.DATA, context={'request': request})
         if serializer.is_valid():
-            serializer.object.password = make_password(serializer.object.password)
-            serializer.save()
+            user = request.user
+            user.password = make_password(serializer.object['password'])
+            user.save()
             return Response(status=status.HTTP_204_NO_CONTENT)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 

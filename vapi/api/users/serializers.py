@@ -1,4 +1,4 @@
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, AnonymousUser
 from .models import *
 from rest_framework import serializers
 from django.core.validators import validate_email
@@ -12,10 +12,16 @@ class UserProfileSerializer(serializers.ModelSerializer):
         model = UserProfile
         fields = ( 'gender', 'date_of_birth', 'profile_picture_url','mobile','blood_group','fb_profile_id','fb_username','organization', 'street','city','state','country','zip_code','lattitude','longitude','address',)
 
-class UserPasswordSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = ( 'password',)
+class UserPasswordSerializer(serializers.Serializer):
+    old_password = serializers.CharField(required=True)
+    password = serializers.CharField(required=True)
+    
+    def validate_old_password(self, attrs, source):
+        value = attrs[source]
+        user = self.context['request'].user
+        if not user.check_password(value):
+            raise serializers.ValidationError("Incorrect password")
+        return attrs
     
 
 class UserProfilePicSerializer(serializers.ModelSerializer):

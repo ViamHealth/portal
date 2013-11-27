@@ -89,7 +89,7 @@ urlpatterns = patterns('',
     url(r'^users/(?P<pk>[0-9]+)/profile/$', UserView.as_view({'put':'update_profile'}),name='profile-detail'),
     url(r'^users/(?P<pk>[0-9]+)/profile-picture/$', UserView.as_view({'put':'update_profile_pic'}),name='profile-detail'),
     url(r'^users/(?P<pk>[0-9]+)/bmi-profile/$', UserView.as_view({'get':'retrieve_bmi_profile','put':'update_bmi_profile'}),name='userbmiprofile-detail'),
-    url(r'^users/(?P<pk>[0-9]+)/change-password/$', UserView.as_view({'post':'change_password'}),name='password-detail'),
+    url(r'^users/change-password/$', UserView.as_view({'post':'change_password'}),name='password-detail'),
 
     url(r'^food-items/$', FoodItemViewSet.as_view({'get':'list'}),name='fooditem-detail'),
     url(r'^food-items/(?P<pk>[0-9]+)/$', FoodItemViewSet.as_view({'get':'retrieve'}),name='fooditem-detail'),
