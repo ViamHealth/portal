@@ -4,6 +4,7 @@ from rest_framework import serializers
 from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
 from api.serializers_helper import *
+from api.vfacebook import *
 
 class UserProfileSerializer(serializers.ModelSerializer):
     profile_picture_url = serializers.Field(source='profile_picture_url')

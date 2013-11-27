@@ -16,6 +16,7 @@ from itertools import chain
 from datetime import datetime
 from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
+from api.vfacebook import *
 
 
 @api_view(['GET',])
@@ -426,7 +427,7 @@ class UserView(viewsets.ViewSet):
     def attach_facebook(self, request):
         serializer = UserFacebookConnectSerializer(request.DATA)
         if serializer.is_valid():
-            facebook_populate_profile(request.user, serializer.object.get('fb_data'))
+            facebook_populate_profile(request.user, serializer.object.get('fb_data'),serializer.object.get('access_token'))
             pserializer = UserSerializer(request.user)
             return Response(pserializer.data)
         else:

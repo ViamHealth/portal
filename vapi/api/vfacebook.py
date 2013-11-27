@@ -72,7 +72,7 @@ def facebook_populate_profile(user,data,token):
 
     #picture = data.get('picture',None)
     picture = None
-
+    #Move this code to graph api
     pic_resp = requests.get('https://graph.facebook.com/me/picture?redirect=false&type=large', params={'access_token':token} )
 
     pic_data = pic_resp.json()
