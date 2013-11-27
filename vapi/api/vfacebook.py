@@ -13,13 +13,9 @@ import urllib
 
 
 def get_user_facebook_data(token):
-    data = facebook.GraphAPI(token)
-    print data
-    return data
-    
-    resp = requests.get( 'https://graph.facebook.com/me', params={'access_token': token } )
-    data = resp.json()
-    return data
+    graph = facebook.GraphAPI(token)
+    profile = graph.get_object("me")
+    return profile
 
 #do not send both token and data as None
 def facebook_create_user(data):
@@ -39,7 +35,7 @@ def facebook_create_user(data):
 
     return user
 
-def facebook_populate_profile(user,data):
+def facebook_populate_profile(user,data,token):
     profile =  UserProfile.objects.get_or_create(user=user)[0]
     
     if not profile.gender:

@@ -1,9 +1,10 @@
 from django.contrib.auth.models import User
+from django.core.exceptions import ValidationError
 from api.models import *
 from api.users.models import *
 from rest_framework import serializers
 from api.serializers_helper import *
-from api.facebook import *
+from api.vfacebook import *
 #from allauth.socialaccount.models import *
 
 
@@ -84,7 +85,7 @@ class SocialAuthTokenSerializer(serializers.Serializer):
                         raise serializers.ValidationError('User account is disabled.')
                     ################ User Login + Merging of accounts ###############
                     #This user now belongs to fb_profile_id facebook user !!
-                    facebook_populate_profile(user,data)
+                    facebook_populate_profile(user,data,access_token)
                     attrs['user'] = user
                     return attrs
                 except User.DoesNotExist:
@@ -95,5 +96,6 @@ class SocialAuthTokenSerializer(serializers.Serializer):
                     return attrs
             except MultipleObjectsReturned:
                 raise serializers.ValidationError('Unable to login with provided credentials. Multiple accounts attached with same fb id')
-        except:
+        except ValidationError, err:
+            print '; '.join(err.messages)
             raise serializers.ValidationError('Could not connect to facebook')
