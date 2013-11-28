@@ -92,8 +92,13 @@ class UserFacebookConnectSerializer(serializers.Serializer):
             fb_profile_id = data.get('id',None)
             if fb_profile_id is None:
                 raise serializers.ValidationError('Invalid access_token')
-            attrs['fb_data'] = data
-            return attrs
+            else:
+                try:
+                    UserProfile.objects.get(fb_profile_id=fb_profile_id)
+                    raise serializers.ValidationError('FB_ACCOUNT_BELONGS_OTHER')   
+                except UserProfile.DoesNotExist:
+                    attrs['fb_data'] = data
+                    return attrs
         except:
             raise serializers.ValidationError('Could not connect to facebook')
 
