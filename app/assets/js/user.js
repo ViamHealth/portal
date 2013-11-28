@@ -1,3 +1,24 @@
+function fb_attach() {
+	FB.login(function(response) {
+        if (response.authResponse) {
+            access_token = response.authResponse.accessToken; //get access token
+            user_id = response.authResponse.userID; //get FB UID
+            _DB.User.attach_facebook(access_token,function(json,success){
+              if(success){
+              	console.log('sdf');
+                //set_login_session(json.token,'fb');
+              } else {
+                //alert('Can not login right now. Please try again later.');
+              }
+            });
+        } else {
+            //user hit cancel button
+            console.log('User cancelled login or did not fully authorize.');
+        }
+    }, {
+        scope: 'email'
+    });
+}
 $(document).ready(function(){
 	var nowTemp = new Date();
 	var now = new Date(nowTemp.getFullYear(), nowTemp.getMonth(), nowTemp.getDate(), 0, 0, 0, 0);
@@ -89,11 +110,10 @@ $(document).ready(function(){
 						_DB.User.update_profile(user_id,profile,function(pp, success){
 							if(!success)
 								throw 'Something went wrong with user  profile updation';
-							reset_session_user_data(funtion(){
+
+							reset_session_user_data(function(){
 								window.location.href = "/u/"+user_id+"/user/";
 							});
-							
-							
 						});	
 					}
 				});
@@ -203,6 +223,6 @@ $(document).ready(function(){
 		}
 	});
 
-
+	
 	
 });

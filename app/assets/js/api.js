@@ -203,6 +203,38 @@ _DB.Medicaltest = {
 	},
 }
 
+_DB.PhysicalActivity = {
+	resource : 'physical-activity',
+	list : function(options,callback){
+		var url = api_url_x(this.resource,options);
+		api_get(url,callback);
+	},
+}
+
+_DB.UserPhysicalActivity = {
+	resource : 'user-physical-activity',
+	retrieve : function(id,callback){
+		var url = api_url(this.resource,id);
+		api_get(url,callback);
+	},
+	list : function(options,callback){
+		var url = api_url_x(this.resource,options);
+		api_get(url,callback);
+	},
+	update : function(id,goal,callback){
+		var url = api_url(this.resource,id);
+		api_put(url,goal,callback);
+	},
+	create : function(goal,callback){
+		var url = api_url(this.resource);
+		api_post(url,goal,callback);
+	},
+	destroy: function(id,callback){
+		var url = api_url(this.resource,id);
+		api_delete(url,callback);
+	},
+}
+
 _DB.CholesterolGoal = {
 	resource : 'cholesterol-goals',
 	retrieve : function(id,callback){
@@ -501,8 +533,8 @@ _DB.User = {
 		var url = api_url_x(this.resource,options);
 		api_put(url,profile,callback);
 	},
-    fb_login : function(access_token,callback){
-		var url = VH.params.apiUrl+'account/facebook/login/token/';
+    attach_facebook : function(access_token,callback){
+		var url = VH.params.apiUrl+'users/attach-facebook/';
 		var data = {};
 		data.access_token = access_token;
 		api_post(url,data,callback);

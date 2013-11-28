@@ -1,51 +1,39 @@
 <script>
 
+
 function fb_login(){
     FB.login(function(response) {
-
         if (response.authResponse) {
-            console.log('Welcome!  Fetching your information.... ');
-            //console.log(response); // dump complete info
             access_token = response.authResponse.accessToken; //get access token
             user_id = response.authResponse.userID; //get FB UID
-	    _DB.Login.by_facebook(access_token,function(json,success){
-                if(success){
-			set_login_session(json.token,'fb');
-            //FB.api('/me', function(response) {
-              //  user_email = response.email; //get user email
-          // you can store this data into your database             
-            //});
-               } else {
-                    alert('Your facebook account is not attached to any registered user');
-               }
+            _DB.Login.by_facebook(access_token,function(json,success){
+              if(success){
+                set_login_session(json.token,'fb');
+              } else {
+                alert('Can not login right now. Please try again later.');
+              }
             });
-
-            FB.api('/me', function(response) {
-                user_email = response.email; //get user email
-          // you can store this data into your database             
-            });
-
         } else {
             //user hit cancel button
             console.log('User cancelled login or did not fully authorize.');
-
         }
     }, {
-        scope: 'publish_stream,email'
+        scope: 'email'
     });
 }
+
 function set_login_session(token,type)
 {
-	$.get("<?php echo site_url('site/loginapi/'); ?>/"+token, function(data){
-		if(data == '1'){
-			window.location.href = "<?php echo site_url('files'); ?>";
-		} else {
-		    if(type == 'email')
-	                    $("#login-unsuccess-message").show();
-		    elseif(type=='fb')
-			alert('Your facebook account is not attached to any registered user');
-		}
-	});
+  $.get("<?php echo site_url('site/loginapi/'); ?>/"+token, function(data){
+    if(data == '1'){
+      window.location.href = "<?php echo site_url('files'); ?>";
+    } else {
+        if(type == 'email')
+                      $("#login-unsuccess-message").show();
+        elseif(type=='fb')
+      alert('Your facebook account is not attached to any registered user');
+    }
+  });
 }
 
 $(document).ready(function(){

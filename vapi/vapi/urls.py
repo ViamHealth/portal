@@ -63,6 +63,7 @@ urlpatterns = patterns('',
 
     url(r'^users/$', UserView.as_view({'get': 'list','post': 'create'}),name='user-list'),
     url(r'^users/me/$', UserView.as_view({'get': 'current_user'}), name='user-me'),
+    url(r'^users/attach-facebook/$', UserView.as_view({'post': 'attach_facebook'}), name='user-me'),
 
     url(r'^reminders/$', ReminderViewSet.as_view({'get':'list','post':'create'}),name='reminder-list'),
     url(r'^reminders/(?P<pk>[0-9]+)/$', ReminderViewSet.as_view({'get':'retrieve','put':'update','delete':'destroy'}),name='reminder-detail'),

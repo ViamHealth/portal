@@ -1,5 +1,7 @@
 <script src="<?php echo base_url('assets/js/user.js') ?>"></script>
-
+<?php if ($current_user_id == $appuser->id) : ?>
+	<button onclick="fb_attach();" class="btn btn-facebook1 btn-block btn-default">Login with Facebook</button>
+<?php endif ?>
 <div class="row" >
 	<div  class="col-md-12">
 		<div class="panel-group" id="accordion">

@@ -82,11 +82,13 @@ class SiteController extends Controller
 	 */
 	public function actionLogin()
 	{
-		if (!Yii::app()->user->isGuest ){
+		$this->render('login_js',array());
+		
+		/*if (!Yii::app()->user->isGuest ){
 			$this->redirect(Yii::app()->createUrl('site/index'));
 		}
 		$model=new LoginForm;
-
+var_dump($model);die();
 		// if it is ajax validation request
 		if(isset($_POST['ajax']) && $_POST['ajax']==='login-form')
 		{
@@ -103,7 +105,27 @@ class SiteController extends Controller
 				$this->redirect(Yii::app()->user->returnUrl);
 		}
 		// display the login form
-		$this->render('login',array('model'=>$model));
+		$this->render('login',array('model'=>$model));*/
+		
+	}
+
+	public function actionLoginapi($token)
+	{
+	
+		$_identity=new UserIdentityApi($token);
+		$_identity->authenticate();
+		$duration=3600*24*30; // 30 days
+		Yii::app()->user->login($_identity,$duration);
+	
+
+		Yii::app()->user->setState('token', $token);
+			
+		$res = VApi::apiCall('get','users/me/');
+		Yii::app()->user->setState('username', $res->username);
+		Yii::app()->user->setState('email', $res->email);
+		Yii::app()->user->setState('url', Yii::app()->params['apiBaseUrl'],'users/'.$res->id.'/');
+		echo '1';
+
 	}
 
 	/**

@@ -31,7 +31,7 @@ def facebook_create_user(data,token):
     last_name = data.get('last_name',None)
 
     user = User.objects.create_user(username=username, email=email,first_name=first_name,last_name=last_name)
-    facebook_populate_profile(data,user,token)
+    facebook_populate_profile(user,data,token)
 
     return user
 
@@ -67,8 +67,8 @@ def facebook_populate_profile(user,data,token):
     if not profile.address:
     	location = data.get('location',None)
     	if location is not None:
-    		location = location.name
-    		profile.address = location
+            location = location.get('name',None)
+            profile.address = location
 
     #picture = data.get('picture',None)
     picture = None

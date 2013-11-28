@@ -13,6 +13,9 @@
 	      media="print"/>-->
 	<link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/datepicker.css"
 	      media="print"/>
+	
+
+	
 	<!--[if lt IE 8]>
 	<link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/ie.css"
 	      media="screen, projection"/>
@@ -115,9 +118,13 @@ box-shadow: none;
 	}
 	.container-fluid {
 			margin:70px;
+			margin-top:62px
 		}
-	@media (max-width: 979px) {
 
+	@media (max-width: 979px) {
+		.navbar-fixed-top {
+			margin-bottom: 0px;
+		}
 		.navbar-inner .container .brand {
 			width: 17px;
 		}
@@ -151,6 +158,32 @@ box-shadow: none;
 </head>
 
 <body>
+<div id="fb-root"></div>
+<script>
+  // Additional JS functions here
+  window.fbAsyncInit = function() {
+    FB.init({
+      appId      : '<?php echo Yii::app()->params["facebook_app_id"] ?>', // App ID
+      channelUrl : '/channel.html', // Channel File
+      status     : true, // check login status
+      cookie     : true, // enable cookies to allow the server to access the session
+      xfbml      : true  // parse XFBML
+    });
+
+    // Additional init code here
+
+  };
+
+  // Load the SDK asynchronously
+  (function(d){
+     var js, id = 'facebook-jssdk', ref = d.getElementsByTagName('script')[0];
+     if (d.getElementById(id)) {return;}
+     js = d.createElement('script'); js.id = id; js.async = true;
+     js.src = "//connect.facebook.net/en_US/all.js";
+     ref.parentNode.insertBefore(js, ref);
+   }(document));
+</script>
+
 <?php  Yii::app()->clientScript->registerScriptFile(Yii::app()->baseUrl.'/js/api.js'); ?>
 <?php
 $family_array = array();
@@ -245,7 +278,7 @@ if(!Yii::app()->user->isGuest)
 	),
 )); ?>
 	<!-- mainmenu -->
-	<div class="container-fluid"  <?php if(Yii::app()->user->isGuest) { ?> style="margin-top:50px" <?php } ?>>
+	<div class="container-fluid" >
 		<?php if (0)://isset($this->breadcrumbs)): ?>
 			<?php $this->widget('bootstrap.widgets.TbBreadcrumbs', array(
 				'links' => $this->breadcrumbs,
@@ -256,7 +289,7 @@ if(!Yii::app()->user->isGuest)
 		<div class="row-fluid">
 		<!-- TODO Move content block -->
 		<?php if(Yii::app()->user->isGuest): ?>
-			<div class="span12 well">
+			<div class="span12" style="margin-top">
 				<?php echo $content; ?>
 			</div>
 		<?php else: ?>
@@ -290,7 +323,5 @@ if(!Yii::app()->user->isGuest)
 	</div>
 </div>
 <!-- page -->
-<link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/viam.css"
-	      media="print"/>
 </body>
 </html>

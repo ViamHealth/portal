@@ -40,4 +40,12 @@
 	  				<td class="total-proteins"></td> \
 	  				<td class="diary-plus"></td> \
 	  			</tr> \
+	  			<tr class="success" id="exercise-tr"> \
+	  				<td class="exercise-diary">EXCERCISE</td> \
+	  				<td class="total-calories"></td> \
+	  				<td class="total-carbs"></td> \
+	  				<td class="total-fat"></td> \
+	  				<td class="total-proteins"></td> \
+	  				<td class="exercise-plus"></td> \
+	  			</tr> \
   			</tbody>
