@@ -44,6 +44,8 @@ class V_Controller extends CI_Controller
         if($this->router->fetch_class() != 'site'){
             if(!isset($this->session->userdata['family'])){
                 $family = $this->apiCall('get','users/');
+                if(!is_array($family))
+                    redirect('/logout', 'refresh');
               //  var_dump($family);die();
                $this->session->set_userdata('family',$family);
             }

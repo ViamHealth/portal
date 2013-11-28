@@ -43,10 +43,14 @@ api_ajax = function(url,options,callback){
 			callback(json,true);
 		},
 		error: function(jqXHR, textStatus, errorThrown){
-			console.log('error called of url '+url);
-			//console.log(textStatus);
-			//console.log(jqXHR);
-			callback(jqXHR,false);
+			if(errorThrown == 'UNAUTHORIZED'){
+				window.location.href = "/logout/";
+			} else {
+				console.log('error called of url '+url);
+				//console.log(textStatus);
+				//console.log(jqXHR);
+				callback(jqXHR,false);
+			}
 		}
 	});
 } 
@@ -541,6 +545,14 @@ _DB.User = {
 	},
 	invite: function(data,callback){
 		var url = api_url_x('invite');
+		api_post(url,data,callback);
+	},
+	change_password: function(data,callback){
+		var url = VH.params.apiUrl+'users/change-password/';
+		api_post(url,data,callback);
+	},
+	share: function(data,callback){
+		var url = VH.params.apiUrl+'share/';
 		api_post(url,data,callback);
 	}
 

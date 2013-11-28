@@ -126,13 +126,6 @@ class InviteView(viewsets.ViewSet):
                 password = User.objects.make_random_password()
                 user = User.objects.create_user(username=generate_random_username(), email=email,password=password)
                 invite_new_email(user, request.user, password)
-            try:
-                UserGroupSet.objects.get(group=request.user, user=user)
-            except UserGroupSet.DoesNotExist:
-                pass
-                #no attaching on invite
-                #umap = UserGroupSet(group=request.user, user=user,status='ACTIVE',updated_by=request.user);
-                #umap.save()
 
             UserProfile.objects.get_or_create(user=user)
             UserBmiProfile.objects.get_or_create(user=user,defaults={'updated_by': request.user})
@@ -159,14 +152,17 @@ class ShareView(viewsets.ViewSet):
                 try:
                     UserGroupSet.objects.get(group=share_user, user=request.user,status='ACTIVE')
                 except UserGroupSet.DoesNotExist:
-                    return Response(status=status.HTTP_401_UNAUTHORIZED)
+                    try:
+                        UserGroupSet.objects.get(group=request.user, user=share_user,status='ACTIVE')
+                    except UserGroupSet.DoesNotExist:
+                        return Response(status=status.HTTP_401_UNAUTHORIZED)
 
             if serializer.object.get('is_self',False):
                 # Self user. validated. All is well. Just update the email, create password and send email
                 share_user.email = email
                 share_user.password = User.objects.make_random_password()
                 share_user.save()
-                invite_new_email(share_user, request.user, password)
+                invite_new_email(share_user, request.user, share_user.password)
 
             else:
                 try:
@@ -183,10 +179,13 @@ class ShareView(viewsets.ViewSet):
                     #check if connection exists. Do nothing
                     UserGroupSet.objects.get(group=share_user, user=user)
                 except UserGroupSet.DoesNotExist:
-                    #create connection and send share email
-                    umap = UserGroupSet(group=share_user, user=user,status='ACTIVE',updated_by=request.user);
-                    umap.save()
-                    share_user_email(user, request.user, share_user)
+                    try:
+                        UserGroupSet.objects.get(group=user, user=share_user)
+                    except UserGroupSet.DoesNotExist:
+                        #create connection and send share email
+                        umap = UserGroupSet(group=share_user, user=user,status='ACTIVE',updated_by=request.user);
+                        umap.save()
+                        share_user_email(user, request.user, share_user)
             return Response(status=status.HTTP_204_NO_CONTENT)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -264,21 +263,25 @@ class UserView(viewsets.ViewSet):
             return Response(result,status=status.HTTP_400_BAD_REQUEST)
 
         except UserGroupSet.DoesNotExist:
-            #create connection
-            #TODO: send connection made mail
-            umap = UserGroupSet(group=request.user, user=user,status='ACTIVE',updated_by=request.user);
-            umap.save()
-            
-            
-            if user.email:
-                invite_existing_email(user, request.user)
-            """
-            profile = user.get_profile()
-            if profile.mobile:
-                #send sms
-            """
-            serializer = UserSerializer(user)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            try:
+                UserGroupSet.objects.get(group=user, user=request.user)
+                result = {}
+                result['email'] = 'User already added as a family member'
+                return Response(result,status=status.HTTP_400_BAD_REQUEST)
+            except UserGroupSet.DoesNotExist:
+                #create connection
+                umap = UserGroupSet(group=request.user, user=user,status='ACTIVE',updated_by=request.user);
+                umap.save()
+
+                if user.email:
+                    invite_existing_email(user, request.user)
+                """
+                profile = user.get_profile()
+                if profile.mobile:
+                    #send sms
+                """
+                serializer = UserSerializer(user)
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
     def create(self, request, format=None):

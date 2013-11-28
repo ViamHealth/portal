@@ -223,6 +223,51 @@ $(document).ready(function(){
 		}
 	});
 
-	
+	$("#change-password-modal .btn-save").on('click',function(event){
+		event.preventDefault();
+		var form = $('#change-password-form');
+		form.validate();
+		if(form.valid()){
+			var data = {};
+			data.old_password = $(form).find("input:password[name=old_password]").val();
+			data.password = $(form).find("input:password[name=password]").val();
+			
+			_DB.User.change_password(data,function(json,success){
+				if(success){
+					$("#change-password-modal").modal('hide');
+				} else {
+					if(json.responseText == '{"old_password": ["Incorrect password"]}'){
+						$(".wrong_password").show();
+					} else {
+						$("#change-password-modal").modal('hide');
+						alert('Could not complete the request. Please try again later.');
+					}
+				}
+			})
+		}
+	});
+
+	$("#share-user-modal .btn-save").on('click',function(event){
+		event.preventDefault();
+		var form = $('#share-user-form');
+		form.validate();
+		if(form.valid()){
+			var data = {};
+			data.share_user_id = $(form).find("input:hidden[name=user_id]").val();
+			data.email = $(form).find("input[name=email]").val();
+			data.is_self = $(form).find("input:radio[name=is_self]").val();
+			if (!data.is_self) { data.is_self = 'False'}
+			_DB.User.share(data,function(json,success){
+				if(success){
+					$("#share-user-modal").modal('hide');
+					if(data.is_self == 'True')
+						location.reload();
+				} else {
+					$("#share-user-modal").modal('hide');
+					alert('Could not complete the request. Please try again later.');
+				}
+			})
+		}
+	});
 	
 });

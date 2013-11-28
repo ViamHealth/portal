@@ -1,7 +1,39 @@
+<style>
+.btn.btn-facebook1
+{
+    background-color: #3b5998;
+    color: #fff;
+    font-weight:bold;
+    background-image: none;
+}
+
+.btn.btn-facebook1:hover, .btn.btn-block.btn-facebook1:focus
+{
+    background-color: #3b5998;
+    color: #fff;
+    font-weight:bold;
+}
+</style>
 <script src="<?php echo base_url('assets/js/user.js') ?>"></script>
-<?php if ($current_user_id == $appuser->id) : ?>
-	<button onclick="fb_attach();" class="btn btn-facebook1 btn-block btn-default">Login with Facebook</button>
-<?php endif ?>
+
+<?php $this->load->view('users/_modal_change_password'); ?>
+
+<?php $this->load->view('users/_modal_share_user',$user); ?>
+
+<div class="row">
+	<div class="col-md-6 pull-right">
+	<?php if ($current_user_id == $appuser->id) : ?>
+		<a href="#" onclick='$("#change-password-modal").modal()'; >Change password</a>
+		<?php if(!$appuser->profile->fb_profile_id): ?>
+			<button onclick="fb_attach();" class="btn btn-facebook1 btn-default">Login with Facebook</button>
+		<?php endif ?>
+		
+	<?php else: ?>
+		<button onclick='$("#share-user-modal").modal();' class="btn btn-facebook1 btn-default pull-right">Share User</button>
+	<?php endif ?>
+	</div>
+</div>	
+
 <div class="row" >
 	<div  class="col-md-12">
 		<div class="panel-group" id="accordion">
