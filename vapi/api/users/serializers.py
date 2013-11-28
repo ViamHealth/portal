@@ -88,19 +88,23 @@ class UserFacebookConnectSerializer(serializers.Serializer):
         access_token = attrs.get('access_token').strip()
         try:
             data = get_user_facebook_data(access_token)
-
-            fb_profile_id = data.get('id',None)
-            if fb_profile_id is None:
-                raise serializers.ValidationError('Invalid access_token')
-            else:
-                try:
-                    UserProfile.objects.get(fb_profile_id=fb_profile_id)
-                    raise serializers.ValidationError('FB_ACCOUNT_BELONGS_OTHER')   
-                except UserProfile.DoesNotExist:
-                    attrs['fb_data'] = data
-                    return attrs
         except:
             raise serializers.ValidationError('Could not connect to facebook')
+
+        fb_profile_id = data.get('id',None)
+        if fb_profile_id is None:
+            raise serializers.ValidationError('Invalid access_token')
+        else:
+            try:
+                profile = UserProfile.objects.get(fb_profile_id=fb_profile_id)
+                if profile.user.id != self.context['request'].user.id:
+                    raise serializers.ValidationError('FB_ACCOUNT_BELONGS_OTHER')
+                else:
+                    attrs['fb_data'] = data
+                    return attrs
+            except UserProfile.DoesNotExist:
+                attrs['fb_data'] = data
+                return attrs
 
 class UserCreateSerializer(serializers.HyperlinkedModelSerializer):
 

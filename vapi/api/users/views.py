@@ -1,5 +1,6 @@
 from api.views_helper import *
 from api.email_helper import *
+from django.db.models import Q
 
 from django.contrib.auth.models import User, AnonymousUser
 from rest_framework import viewsets
@@ -241,9 +242,15 @@ class UserView(viewsets.ViewSet):
             raise Http404
 
     def list(self, request, format=None):
-        qqueryset = UserGroupSet.objects.filter(group=request.user,status='ACTIVE')
-        users = [p.user for p in qqueryset]
+        qqueryset = UserGroupSet.objects.filter(Q(group=request.user)|Q(user=request.user)).filter(status='ACTIVE')
+        users = []
         users = list(set(users))
+        #users = [p.user for p in qqueryset]
+        for p in qqueryset:
+            if p.group.id != request.user.id:
+                users = [p.group] + users
+            if p.user.id != request.user.id:
+                users = [p.user] + users
         users = [request.user] + users
         serializer = UserSerializer(users, many=True, context={'request': request})
         return Response(serializer.data)
