@@ -154,11 +154,11 @@ class ShareView(viewsets.ViewSet):
             
             share_user = serializer.object.get('share_user',None)
             email = serializer.object.get('email',None)
-
-            try:
-                UserGroupSet.objects.get(group=share_user, user=request.user,status='ACTIVE')
-            except UserGroupSet.DoesNotExist:
-                return Response(status=status.HTTP_401_UNAUTHORIZED)
+            if share_user.id != request.user.id:
+                try:
+                    UserGroupSet.objects.get(group=share_user, user=request.user,status='ACTIVE')
+                except UserGroupSet.DoesNotExist:
+                    return Response(status=status.HTTP_401_UNAUTHORIZED)
 
             if serializer.object.get('is_self',False):
                 # Self user. validated. All is well. Just update the email, create password and send email
@@ -425,7 +425,7 @@ class UserView(viewsets.ViewSet):
 
     @action(methods=['POST'])
     def attach_facebook(self, request):
-        serializer = UserFacebookConnectSerializer(request.DATA)
+        serializer = UserFacebookConnectSerializer(data=request.DATA,context={'request': request})
         if serializer.is_valid():
             facebook_populate_profile(request.user, serializer.object.get('fb_data'),serializer.object.get('access_token'))
             pserializer = UserSerializer(request.user)
