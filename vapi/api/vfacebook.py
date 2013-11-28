@@ -18,7 +18,7 @@ def get_user_facebook_data(token):
     return profile
 
 #do not send both token and data as None
-def facebook_create_user(data):
+def facebook_create_user(data,token):
     fb_username = data.get('username',None)
 
     if fb_username is None:
@@ -31,7 +31,7 @@ def facebook_create_user(data):
     last_name = data.get('last_name',None)
 
     user = User.objects.create_user(username=username, email=email,first_name=first_name,last_name=last_name)
-    facebook_populate_profile(data,user)
+    facebook_populate_profile(data,user,token)
 
     return user
 

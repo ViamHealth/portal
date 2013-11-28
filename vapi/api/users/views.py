@@ -119,11 +119,11 @@ class InviteView(viewsets.ViewSet):
 
         if serializer.is_valid() and email is not None:
             try:
-                user = User.objects.get(email=serializer.object.get('email'))
+                user = User.objects.get(email=email)
                 invite_existing_email(user, request.user)
             except User.DoesNotExist:
                 password = User.objects.make_random_password()
-                user = User.objects.create_user(username=generate_random_username(), email=serializer.object.get('email'),password=password)
+                user = User.objects.create_user(username=generate_random_username(), email=email,password=password)
                 invite_new_email(user, request.user, password)
             try:
                 UserGroupSet.objects.get(group=request.user, user=user)

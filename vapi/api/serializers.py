@@ -91,7 +91,7 @@ class SocialAuthTokenSerializer(serializers.Serializer):
                 except User.DoesNotExist:
                     #raise serializers.ValidationError('Signup with facebook disabled')    
                     ############### User Signup Via Facebook ###############
-                    user = facebook_create_user(data)
+                    user = facebook_create_user(data,access_token)
                     attrs['user'] = user
                     return attrs
             except MultipleObjectsReturned:
