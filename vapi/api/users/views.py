@@ -155,7 +155,7 @@ class ShareView(viewsets.ViewSet):
                     try:
                         UserGroupSet.objects.get(group=request.user, user=share_user,status='ACTIVE')
                     except UserGroupSet.DoesNotExist:
-                        return Response(status=status.HTTP_401_UNAUTHORIZED)
+                        return Response(status=status.HTTP_403_FORBIDDEN)
 
             if serializer.object.get('is_self',False):
                 # Self user. validated. All is well. Just update the email, create password and send email
