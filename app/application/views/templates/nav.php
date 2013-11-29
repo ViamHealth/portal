@@ -24,6 +24,9 @@
       	<li class="<?php echo active_link('healthfiles','index'); ?>">
         	<a href="<?php echo viam_url('/files',$current_user_id); ?>">Files</a>
         </li>
+        <li class="<?php echo active_link('reminders','index'); ?>">
+          <a href="<?php echo viam_url('/reminders',$current_user_id); ?>">Reminders</a>
+        </li>
         <li class="<?php echo active_link('fooddiary','index'); ?>">
           <a href="<?php echo viam_url('/diary',$current_user_id); ?>">Food Diary</a>
         </li>

@@ -10,11 +10,13 @@ if (navigator.userAgent.match(/IEMobile\/10\.0/)) {
 
 function format_date_for_api(ev)
 {
+
   if(!ev)
 	 var date = new Date();
-  else
-    var date = new Date(ev);
-  
+  else {
+    var date = new Date(Date.parse(ev));
+  }
+
 	var yyyy = date.getFullYear();
 	var mm = date.getMonth()+1;
 	var dd = date.getDate();

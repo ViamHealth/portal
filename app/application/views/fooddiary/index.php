@@ -60,7 +60,6 @@ line-height: 10px;
 	          name="food_diary_date" 
 	          type="text" id="food_diary_date" >
 	</div>
-	</h5>
 </div>
 <div class="row">
 	<div class="col-md-12" id="total-items">Loading..</div>

@@ -102,6 +102,7 @@ api_url_x = function(resource,options){
 	var current_page = options['current_page'] || null;
 	var page_size = options['page_size'] || null;
 	var search = options['search'] || null;
+	var reading_date = options['reading_date'] || null;
 
 	var url = VH.params.apiUrl+resource;
 	if(pk)
@@ -122,6 +123,9 @@ api_url_x = function(resource,options){
 		url = url+get_url_amp_ques(url)+'page='+current_page;
 	if(page_size)
 		url = url+get_url_amp_ques(url)+'page_size='+page_size;
+
+	if(reading_date)
+		url = url+get_url_amp_ques(url)+'reading_date='+reading_date;
 	
 	return url;
 }
@@ -159,8 +163,8 @@ api_url = function(resource,pk,sub_resource, sub_resource_id,get_params){
 	return url;
 }
 
-_DB.Medication = {
-	resource : 'medications',
+_DB.Reminder = {
+	resource : 'reminders',
 	retrieve : function(id,callback){
 		var url = api_url(this.resource,id);
 		api_get(url,callback);
@@ -169,13 +173,13 @@ _DB.Medication = {
 		var url = api_url_x(this.resource,options);
 		api_get(url,callback);
 	},
-	update : function(id,goal,callback){
+	update : function(id,reminder,callback){
 		var url = api_url(this.resource,id);
-		api_put(url,goal,callback);
+		api_put(url,reminder,callback);
 	},
-	create : function(goal,callback){
+	create : function(reminder,callback){
 		var url = api_url(this.resource);
-		api_post(url,goal,callback);
+		api_post(url,reminder,callback);
 	},
 	destroy: function(id,callback){
 		var url = api_url(this.resource,id);
@@ -183,27 +187,17 @@ _DB.Medication = {
 	},
 }
 
-_DB.Medicaltest = {
-	resource : 'medicaltests',
-	retrieve : function(id,callback){
-		var url = api_url(this.resource,id);
-		api_get(url,callback);
-	},
+_DB.ReminderReading = {
+	resource : 'reminderreadings',
 	list : function(options,callback){
+		if(!options['reading_date'])
+			throw 'Need reading date';
 		var url = api_url_x(this.resource,options);
 		api_get(url,callback);
 	},
 	update : function(id,goal,callback){
 		var url = api_url(this.resource,id);
 		api_put(url,goal,callback);
-	},
-	create : function(goal,callback){
-		var url = api_url(this.resource);
-		api_post(url,goal,callback);
-	},
-	destroy: function(id,callback){
-		var url = api_url(this.resource,id);
-		api_delete(url,callback);
 	},
 }
 
