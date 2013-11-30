@@ -1,16 +1,3 @@
-<div id="" data-fileid="" data-backdrop="static" data-keyboard="false" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="Upload a file" aria-hidden="true">
-  <div class="modal-header">
-    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-    
-  </div>
-  <div class="modal-body" >
-  	
-    <br/>
-    <button id="family-users-add" class="btn btn-success" type="button">Save</button>
-  </div>
-</div>
-
-
 <?php
 
 

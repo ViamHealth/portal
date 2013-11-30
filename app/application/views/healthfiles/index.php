@@ -37,6 +37,7 @@
 <?php $this->load->view('healthfiles/_upload_file_modal'); ?>
 
 <?php $this->load->view('healthfiles/_edit_file_modal'); ?>
+<?php $this->load->view('healthfiles/_share_file_modal'); ?>
 
 
 
@@ -139,6 +140,7 @@ var _t_hf_row = '<tr class=""><td style="height: 40px;"><span class="filetype_ic
 
 var _t_fo = '<div class="sb_list1"><ul><li class="download"><a href="#">Download</a></li>'+
 			/*'<li class="share"><a class="open_ppFS" href="javascript:void(0);">Share</a></li>'+*/
+			'<li class="share">Share</li>'+
 			'<li class="edit">Edit</li>'+
 			'<li class="delete">Delete</li></ul></div>';
 
@@ -185,6 +187,11 @@ function fetch_healthfiles(page){
                 $(_t).find(".files-options .edit").attr('onclick','').unbind('click');
 				$(_t).find(".files-options .edit").click(function(){
 					populate_file_edit_details(fid);
+				});
+				$(_t).find(".files-options .share").attr('onclick','').unbind('click');
+				$(_t).find(".files-options .share").click(function(){
+					$("#share-file-modal .btn-save").attr("data-id",fid);
+					$("#share-file-modal").modal();
 				});
 				$(_t).find(".files-options .download a").attr({
 					//target: '_blank', 

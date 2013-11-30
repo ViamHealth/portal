@@ -18,7 +18,9 @@ make this a class now!!
     <div class="modal-content">
       <div class="modal-header">
         <?php if(isset($hide_close_button) && $hide_close_button ): ?>
+          
         <?php elseif(isset($disallow_close) && $disallow_close): ?>
+        <?php else: ?>
           <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
         <?php endif ?>
         <?php if(isset($header_title)): ?>
@@ -29,6 +31,7 @@ make this a class now!!
        <?php if(isset($modal_body_html)) echo $modal_body_html; ?>
       </div>
       <?php if(isset($hide_footer) && $hide_footer): ?>
+      <?php else: ?>
       <div class="modal-footer">
         <?php if(isset($footer_html)):?>
           <div class="row" style="text-align: left;">
