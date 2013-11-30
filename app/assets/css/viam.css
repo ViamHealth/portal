@@ -132,6 +132,8 @@ background-position: -10px -858px;
 
 #healthfiles-table .sb_list1 ul li.share{
 background-position: -10px -937px;
+color: #428bca;
+text-decoration: none;
 }
 #healthfiles-table .sb_list1 ul li.edit{
 background-position: -10px -967px;

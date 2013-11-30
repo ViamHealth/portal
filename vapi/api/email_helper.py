@@ -105,4 +105,4 @@ def share_healthfile_email(owner, email,att):
 	if owner.email is not None:
 		inv_email = owner.email
 	
-	send_mail(subject,message,[email],None,att)
+	send_mail(subject,message,[email],owner.email,att)

@@ -471,6 +471,12 @@ _DB.HealthFile = {
 		var url = api_url(this.resource,id);
 		api_delete(url,callback);
 	},
+	share: function(id,email,callback){
+		var url = VH.params.apiUrl+'healthfiles/share/'+id+'/';
+		var data = {};
+		data.email = email;
+		api_post(url,data,callback);
+	}
 }
 
 _DB.FoodItems = {

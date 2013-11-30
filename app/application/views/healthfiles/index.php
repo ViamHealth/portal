@@ -92,6 +92,21 @@ $(document).ready(function(){
 	          }
 	        }
 	    });
+		$("#share-file-modal .btn-save").on('click',function(){
+			event.preventDefault();
+	        var form = $('#share-file-form');
+	        form.validate();
+	        if(form.valid()){
+	        	var email = $("#share-file-form input[name=email]").val();
+	        	var id = $("#share-file-modal .btn-save").attr("data-id");
+	        	_DB.HealthFile.share(id,email,function(json,success){
+	        		if(success){
+	        			console.log('file emailed');
+	        		}
+	        	});
+	        	$("#share-file-modal").modal('hide');
+	        }
+		});
 	});
 
 	fetch_healthfiles();
