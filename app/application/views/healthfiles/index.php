@@ -33,7 +33,6 @@
         </tbody>
 	</table>
 	</div>
-	<!--<a href="#" onclick="$('#upload-file-modal').modal();"><button id="family-users-add" class="btn btn-success" type="button">Upload File</button></a>-->
 </div>
 <?php $this->load->view('healthfiles/_upload_file_modal'); ?>
 
@@ -109,8 +108,8 @@ function populate_file_edit_details(fid){
 
 			$("#file_edit_description").val(json.description);
 			$("#file_edit_name").html(json.name);
-
-			$('#edit-file-modal').find("button").click(function(){
+			$('#edit-file-modal').find("button.btn-save").attr('onclick','').unbind('click');
+			$('#edit-file-modal').find("button.btn-save").click(function(){
 				var params = {};
 				params.description = $('#file_edit_description').val();
 				_DB.HealthFile.update(fid,params,function(){
@@ -144,7 +143,7 @@ function fetch_healthfiles(page){
 		if(success){
 			$("#healthfiles-table").show();
 			var data = json.results;
-			$("#healthfiles-table > tbody").html('');
+			$("#healthfiles-table > tbody").find("tr").remove();
 			$.each(data,function(i,val){
 				var _t = $.parseHTML(_t_hf_row);
 
@@ -167,9 +166,11 @@ function fetch_healthfiles(page){
 						$(this).css({"position":""});
 						$(this).find(".sb_list1").css("display","none");
 				});
+				$(_t).find(".files-options .delete a").attr('onclick','').unbind('click');
 				$(_t).find(".files-options .delete a").click(function(){
 					delete_healthfile(fid);
 				});
+                                $(_t).find(".files-options .delete a").attr('onclick','').unbind('click');
 				$(_t).find(".files-options .edit a").click(function(){
 					populate_file_edit_details(fid);
 				});
@@ -181,7 +182,7 @@ function fetch_healthfiles(page){
 				$("#healthfiles-table > tbody").append(_t);
 
 			});
-			if(json.count){
+			if(0){//json.count){
 			    $("#healthfiles-table").tablesorter({
 				sortList: [[2,1],],
 				headers: { 
