@@ -7,7 +7,7 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="#"> &nbsp; </a>
+      <a class="navbar-brand" href="/"> &nbsp; </a>
     </div>
     <div class="navbar-collapse collapse">
       
@@ -45,9 +45,9 @@
         <li class="<?php echo active_link('site','login'); ?>">
         	<a href="<?php echo viam_url('login',$current_user_id); ?>">Login</a>
         </li>
-        <li class="<?php echo active_link('site','signup'); ?>">
+        <!--<li class="<?php echo active_link('site','signup'); ?>">
         	<a href="<?php echo viam_url('signup',$current_user_id); ?>">Signup</a>
-        </li>
+        </li>-->
       </ul>
       <?php endif ?>
     </div><!--/.nav-collapse -->

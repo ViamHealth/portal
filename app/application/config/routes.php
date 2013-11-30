@@ -44,6 +44,7 @@ $route['login'] = "site/login";
 $route['login(:any)'] = "site/login/$1";
 $route['signup'] = "site/signup";
 $route['logout'] = "site/logout";
+$route['forgot_password'] = "site/forgot_password";
 $route['loginapi/(:any)'] = "site/loginapi/$1";
 
 $route['home'] = "app/index";

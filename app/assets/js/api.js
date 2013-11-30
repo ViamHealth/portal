@@ -609,6 +609,14 @@ _DB.Login = {
                 options.type = 'POST';
                 options.data = data;
                 api_ajax_no_auth(url,options,callback)
+	},
+	forgot_password_email: function(email,callback){
+		var url = VH.params.apiUrl+'forgot-password-email/';
+		var options = {}
+		options.type = 'POST';
+		options.data = {};
+		options.data.email = email;
+		api_ajax_no_auth(url,options,callback);
 	}
 
 }

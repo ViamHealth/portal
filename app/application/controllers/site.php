@@ -21,6 +21,13 @@ class Site extends V_Controller {
 		$this->template('site/signup',$data);
 	}
 
+	public function forgot_password()
+	{
+		$data['title'] = 'Forgot Password'; // Capitalize the first letter
+
+		$this->template('site/forgot_password',$data);
+	}
+
 	public function loginapi($token)
 	{
 		$this->session->set_userdata('token',$token);

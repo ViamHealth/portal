@@ -155,26 +155,15 @@ $("#login-button-home").on("click",function(event){
                 <div class="form-group">
                     <input name="password" type="password" class="form-control input-block-level" placeholder="Password" required />
                 </div>
-                <label class="checkbox">
-                    <input type="checkbox" value="remember-me" />
-                    Keep me signed in
-                </label>
                 <button class="btn btn-primary btn-block " id="login-button-home" type="button">
                     Sign in</button>
                 </form>
                 <a class="forgotLnk" href="<?php //echo $this->createUrl('site/forgotpassword',array()); ?>">I can't access my account</a>
                 <div class="or-box">
-                    <span class="or">OR</span>
+                    
                     <div class="row">
                         <div class="col-md-12">
                             <button onclick="fb_login();" class="btn btn-facebook1 btn-block btn-default">Login with Facebook</button>
-                        </div>
-                    </div>
-                </div>
-                <div class="or-box">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <a href="<?php //echo $this->createUrl('site/signup',array()); ?>" class="btn btn-info btn-block">Create New Account</a>
                         </div>
                     </div>
                 </div>

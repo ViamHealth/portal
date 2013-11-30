@@ -649,10 +649,10 @@ function load_diary_rows(diet,food,predessor,_t_elem){
 		delete_diary_row($(this));
 	});
 	$(_t_elem).find('.food-item-name').html(food.name);
-	$(_t_elem).find('.food-item-calories').html(parseFloat(food.calories)*ratio);
-	$(_t_elem).find('.food-item-carbs').html(parseFloat(food.total_carbohydrates)*ratio);
-	$(_t_elem).find('.food-item-fat').html(parseFloat(food.total_fat)*ratio);
-	$(_t_elem).find('.food-item-protein').html(parseFloat(food.protein)*ratio);
+	$(_t_elem).find('.food-item-calories').html(parseInt(food.calories)*ratio);
+	$(_t_elem).find('.food-item-carbs').html(parseInt(food.total_carbohydrates)*ratio);
+	$(_t_elem).find('.food-item-fat').html(parseInt(food.total_fat)*ratio);
+	$(_t_elem).find('.food-item-protein').html(parseInt(food.protein)*ratio);
 	
 	var a = total_diet_numbers[diet.meal_type];
 

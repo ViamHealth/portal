@@ -23,6 +23,16 @@ function format_date_for_api(ev)
 	var formattedTime = yyyy + '-' + mm + '-' + dd;
 	return formattedTime;
 }
+
+function show_body_alerts(message,status){
+  var alert = $.parseHTML('<div class="alert alert-warning alert-dismissable">'+
+    '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button></div>');
+  $(alert).append(message);
+  $("#alert_box").html(alert);
+  
+    $(alert).addClass('alert-'+status);
+}
+
 function reset_session_user_data(callback)
 {
   if(!callback) callback = function(){}

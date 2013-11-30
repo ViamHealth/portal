@@ -27,7 +27,7 @@ if($loggedin)
 }
 ?>
 
-
+<div class="container" id="alert_box"></div>
 <div class="container" >
 <?php if($loggedin): ?>
 	<div class="col-md-3">
@@ -50,7 +50,7 @@ if($loggedin)
 <?php else: ?>
 
 		<div class="row">
-			<div class="col-md-12" style="">
+			<div class="col-md-12">
 <?php endif ?>
 
 <?php //var_dump($family); ?>
