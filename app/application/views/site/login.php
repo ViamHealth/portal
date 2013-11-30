@@ -10,7 +10,8 @@ function fb_login(){
               if(success){
                 set_login_session(json.token,'fb');
               } else {
-                alert('Can not login right now. Please try again later.');
+                show_body_alerts('Can not login right now. Please try again later.','danger');
+
               }
             });
         } else {
@@ -31,33 +32,38 @@ function set_login_session(token,type)
         if(type == 'email')
                       $("#login-unsuccess-message").show();
         elseif(type=='fb')
-      alert('Your facebook account is not attached to any registered user');
+            show_body_alerts('Your facebook account is not attached to any registered user','danger');
     }
   });
 }
 
 $(document).ready(function(){
-$("#login-button-home").on("click",function(event){
-    $("#login-unsuccess-message").hide();
-    event.preventDefault();
-	var email = $("input[name=email]").val();
-	var password = $("input[name=password]").val();
-	_DB.Login.by_email(email,password,function(json,success){
-		if(success){
-			set_login_session(json.token,'email');
-		} else {
-            if(json.responseText){
-                if(json.responseText){
-                    var r = $.parseJSON(json.responseText);
-                    if(r['non_field_errors'][0] == 'Unable to login with provided credentials.'){
-                        $("#login-unsuccess-message").show();    
+    $("#login-button-home").on("click",function(event){
+        $("#login-unsuccess-message").hide();
+        event.preventDefault();
+        var form = $('#form-signin');
+        form.validate();
+        if(form.valid()){
+
+        	var email = $("input[name=email]").val();
+        	var password = $("input[name=password]").val();
+        	_DB.Login.by_email(email,password,function(json,success){
+        		if(success){
+        			set_login_session(json.token,'email');
+        		} else {
+                    if(json.responseText){
+                        if(json.responseText){
+                            var r = $.parseJSON(json.responseText);
+                            if(r['non_field_errors'][0] == 'Unable to login with provided credentials.'){
+                                $("#login-unsuccess-message").show();    
+                            }
+                            console.log(r['non_field_errors'][0]);
+                            }        
                     }
-                    console.log(r['non_field_errors'][0]);
-                    }        
-            }
+                }
+        	});
         }
-	});
-});
+    });
 });
 </script>
 <style>
@@ -155,7 +161,7 @@ $("#login-button-home").on("click",function(event){
                 <div class="form-group">
                     <input name="password" type="password" class="form-control input-block-level" placeholder="Password" required />
                 </div>
-                <button class="btn btn-primary btn-block " id="login-button-home" type="button">
+                <button class="btn btn-primary btn-block " id="login-button-home" type="submit">
                     Sign in</button>
                 </form>
                 <a class="forgotLnk" href="<?php echo viam_url('/forgot_password/') ?>">I can't access my account</a>
