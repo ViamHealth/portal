@@ -1,22 +1,22 @@
 <style>
 .diary-plus {
 	background: url(/assets/images/gr-plus-ic.png) no-repeat 3px 3px;
-	min-width:17px;
+	
 }
 .exercise-plus {
 	background: url(/assets/images/gr-plus-ic.png) no-repeat 3px 3px;
-	min-width:17px;
+	
 }
 .dairy-food-item-delete {
 	font: 12px Segoe UI, Arial, Helvetica, sans-serif;
 color: #ff0000;
-width:17px;
+
 text-align: center;
 }
 .exercise-item-delete {
 	font: 12px Segoe UI, Arial, Helvetica, sans-serif;
 color: #ff0000;
-width:17px;
+
 text-align: center;
 }
 
@@ -50,20 +50,16 @@ line-height: 10px;
 
 
 <div>
-<div class="row">
-	<div class="col-md-9 col-xs-8 col-sm-9">Food Diary</div>
-	<div class="col-md-3 col-xs-2 col-sm-3" id="sandbox-container">
-		<input style="font-size:12px;padding: 0 20px;
-	  border: 0 none;background: url(/assets/images/sprite-img.png) no-repeat 0 -581px;
-	  text-align: center;cursor: pointer;box-shadow: none;
-	  "
-	          name="food_diary_date" 
-	          type="text" id="food_diary_date" >
-	</div>
+<div class="page-header">
+  <h1>Food Diary <div class="pull-right viam_date_parent"  id="sandbox-container">
+		<input class="viam_date_selector" name="food_diary_date" type="text" id="food_diary_date" >
+	</div></h1>
 </div>
+
+
 <div class="row">
 	<div class="col-md-12" id="total-items">Loading..</div>
-	<div class="col-md-12" style="font-size:12px;">
+	<div class="table-responsive" style="font-size:12px;">
 		<table class="table table-condensed table-striped table-bordered" id="diet-table">
 	        
 		</table>
@@ -107,7 +103,7 @@ var total_diet_numbers = {
 		"total_carbs" : 0,
 		"total_proteins" : 0,
 	},
-		'EXERCISE' :{
+	'EXERCISE' :{
 		"total_calories" : 0,
 		"total_fat" : 0,
 		"total_carbs" : 0,
@@ -128,18 +124,65 @@ $(document).ready(function(){
 	    autoclose: true,
 	    todayHighlight: true
 	}).on('changeDate', function(ev){
-		load_diary(format_date_for_api(ev));
+		load_diary(format_date_for_api(ev.date));
 	});;
 
 	$('#sandbox-container input').datepicker("setValue", new Date());
 
 	load_diary();
+	load_physical_activity_array();
+
 
 	$("#add_food_item_search").keyup(function(){
 		populate_search_data($( this ).val());
 	});
 
+	$('#activity_date').datepicker({
+	    format: "yyyy-mm-dd",
+	    todayBtn: "linked",
+	    keyboardNavigation: false,
+	    forceParse: false,
+	    autoclose: true,
+	    todayHighlight: true
+	});
+
+	$('#activity_date').datepicker("setValue", new Date());
+
+	$("#add-exercise-modal").find('.btn-save').on('click',function(e){
+		save_upa(e);
+	});
+
 });
+
+function save_upa(event){
+	event.preventDefault();
+	var form = $('#add-exercise-form');
+	var upa = {};
+	upa.physical_activity =  $(form).find('select[name=physical_activity] option:selected').val();
+	upa.weight =  $(form).find('input:text[name=weight]').val();
+	upa.activity_date =  $(form).find('input:text[name=activity_date]').val();
+	upa.time_spent =  $(form).find('input:text[name=time_spent]').val();
+	var id = $("#add-exercise-modal").find('.btn-save').attr("data_id");
+	if(!id){
+		_DB.UserPhysicalActivity.create(upa,function(json,success){
+
+			post_upa_save(json,success);
+		});
+	} else {
+		_DB.UserPhysicalActivity.update(id,upa,function(json,success){
+			post_upa_save(json,success);
+		});
+	}
+}
+
+function post_upa_save(json,success){
+	if(success){
+		$('#add-exercise-modal').modal('hide');
+		load_exercise_page($("#food_diary_date").val());
+	} else {
+		$('#add-exercise-modal').modal('hide');
+	}
+}
 function load_diary(dairy_date){
 	
 	$("#diet-table").html('<?php  $this->load->view("fooddiary/_table"); ?>');
@@ -170,7 +213,11 @@ function load_physical_activity_array(){
 			if(json.results){
 				$.each(json.results,function(i,val){
 					physical_activity[val.id] = val;
+					var o = new Option(val.label, val.id);
+					$(o).html(val.label);
+					$("#add-exercise-form select[name=physical_activity]").append(o);
 				});
+
 			}
 		}
 	});
@@ -190,7 +237,7 @@ function delete_diary_row(elem){
 					
 
 					$(elem).parent().remove();
-					load_diary_page(type,dairy_date);
+					load_diary_page(type,$("#food_diary_date").val());
 				}
 			});
 		}	
@@ -210,7 +257,7 @@ function delete_exercise_row(elem){
 					var type = $(elem).parent().attr("diary-type");
 					var activity_date = $(elem).parents("table").attr("diary_date");
 					$(elem).parent().remove();
-					load_exercise_page(activity_date);
+					load_exercise_page($("#food_diary_date").val());
 				}
 			});
 		}	
@@ -225,7 +272,7 @@ function load_exercise_page(activity_date){
 	options.activity_date = activity_date;
 	options.page_size = 100;
 	_DB.UserPhysicalActivity.list(options,function(json,success){
-		console.log(json);
+		
 		if(success){
 			var predessor = $("#exercise-tr");
 			var _t = '<?php $this->load->view("fooddiary/_exercise_row",array()); ?>';
@@ -238,6 +285,22 @@ function load_exercise_page(activity_date){
 				$(_a).addClass("diary-pahar").addClass("childhidden");
 			}
 			var data = json.results;
+
+			
+			$($(predessor).find(".exercise-plus")[0]).attr('onclick','').unbind('click');
+			
+            $($(predessor).find(".exercise-plus")[0]).on('click',function(){
+            	var data = {};
+            	data['meal_type']='EXERCISE';
+            	data['activity_date'] = activity_date;
+				//$("#add_food_item_search").val('');
+            	$("#add-exercise-modal").modal();
+            	$("#add-exercise-modal").find('.btn-save').attr("data_id","");
+				//$($("#add-exercise-modal").find('.btn-save')[0]).attr('onclick','').unbind('click');
+            	
+
+            });
+
 			$.each(data,function(i,upa){
 				var _t_elem = $.parseHTML(_t);
 				$(predessor).after(_t_elem);
@@ -252,9 +315,9 @@ function load_exercise_page(activity_date){
 				
 				var a = total_diet_numbers['EXERCISE'];
 
-				$(predessor).find(".total-calories").html(a.total_calories);	
-
-
+				a.total_calories = a.total_calories + parseInt(upa.calories_spent);
+				$(predessor).find(".total-calories").html(a.total_calories);
+				load_final_analysis();
 				$($(predessor).find("td")[0]).attr('onclick','').unbind('click');
 
 				$($(predessor).find("td")[0]).on('click',function(){
@@ -271,32 +334,20 @@ function load_exercise_page(activity_date){
 
 	            	$.each(data_rows,function(i,val){
 	            		
-	            		if(!$(val).hasClass("hide")){
-	            			$(val).addClass("hide");
+	            		if(!$(val).hasClass("hidden")){
+	            			$(val).addClass("hidden");
 	            		} else {
-	            			$(val).removeClass("hide");
+	            			$(val).removeClass("hidden");
 	            		}
 	            	});
 	            });
 
-				$($(predessor).find(".exercise-plus")[0]).attr('onclick','').unbind('click');
-
-	            $($(predessor).find(".exercise-plus")[0]).on('click',function(){
-	            	console.log('asd');
-	            	var data = {};
-	            	data['meal_type']='EXERCISE';
-	            	data['activity_date'] = activity_date;
-					//$("#add_food_item_search").val('');
-	            	$("#add-exercise-modal").modal();
-					//$($("#add-food-item-modal").find('.btn-save')[0]).attr('onclick','').unbind('click');
-	            	//$("#add-food-item-modal").on("shown",handle_modal_shown(data));
-
-	            });
 				
 
 			});
 		}
 		//$("#add-exercise-modal").modal();
+		//load_final_analysis();
 	});
 }
 function load_diary_page(meal_type,dairy_date){
@@ -389,11 +440,11 @@ function load_diary_page(meal_type,dairy_date){
 				$(data_rows).attr("diary-type",meal_type);
 
             	$.each(data_rows,function(i,val){
-            		console.log($(val).hasClass("hide"));
-            		if(!$(val).hasClass("hide")){
-            			$(val).addClass("hide");
+            		console.log($(val).hasClass("hidden"));
+            		if(!$(val).hasClass("hidden")){
+            			$(val).addClass("hidden");
             		} else {
-            			$(val).removeClass("hide");
+            			$(val).removeClass("hidden");
             		}
             		//$(val).toggle();
             	});
@@ -412,6 +463,7 @@ function load_diary_page(meal_type,dairy_date){
 
             });
 		}
+		//load_final_analysis();
 	});
 }
 
@@ -586,6 +638,7 @@ function reset_diary_group(predessor){
 	$($(predessor).find("td")[0]).removeClass("childshown").removeClass("childhidden");
 
     $($(predessor).find(".diary-plus")[0]).attr('onclick','').unbind('click');
+    load_final_analysis();
 }
 function load_diary_rows(diet,food,predessor,_t_elem){
 	//console.log('here');
@@ -617,6 +670,7 @@ function load_diary_rows(diet,food,predessor,_t_elem){
 
 	total_food_items++;
 	set_total_food_items();	
+	load_final_analysis();
 	//events_diet();
 	
 }
@@ -625,5 +679,19 @@ function set_total_food_items(){
 		$("#total-items").html("Total ( "+total_food_items+" Foods )");
 	else if (total_food_items <= 1)
 		$("#total-items").html("Total ( "+total_food_items+" Food )");
+}
+
+function load_final_analysis(){	
+	
+	$("#gain-tr .total-calories").html(parseInt(total_diet_numbers.BREAKFAST.total_calories) + parseInt(total_diet_numbers.LUNCH.total_calories) +  parseInt(total_diet_numbers.SNACKS.total_calories) + parseInt(total_diet_numbers.DINNER.total_calories)  );
+	$("#gain-tr .total-fat").html(parseInt(total_diet_numbers.BREAKFAST.total_fat) + parseInt(total_diet_numbers.LUNCH.total_fat) +  parseInt(total_diet_numbers.SNACKS.total_fat) + parseInt(total_diet_numbers.DINNER.total_fat)  );
+	$("#gain-tr .total-carbs").html(parseInt(total_diet_numbers.BREAKFAST.total_carbs) + parseInt(total_diet_numbers.LUNCH.total_carbs) +  parseInt(total_diet_numbers.SNACKS.total_carbs) + parseInt(total_diet_numbers.DINNER.total_carbs)  );
+	$("#gain-tr .total-proteins").html(parseInt(total_diet_numbers.BREAKFAST.total_proteins) + parseInt(total_diet_numbers.LUNCH.total_proteins) +  parseInt(total_diet_numbers.SNACKS.total_proteins) + parseInt(total_diet_numbers.DINNER.total_proteins) );
+
+	$("#net-tr .total-calories").html(parseInt(total_diet_numbers.BREAKFAST.total_calories) + parseInt(total_diet_numbers.LUNCH.total_calories) +  parseInt(total_diet_numbers.SNACKS.total_calories) + parseInt(total_diet_numbers.DINNER.total_calories) -  parseInt(total_diet_numbers.EXERCISE.total_calories) );
+	$("#net-tr .total-fat").html(parseInt(total_diet_numbers.BREAKFAST.total_fat) + parseInt(total_diet_numbers.LUNCH.total_fat) +  parseInt(total_diet_numbers.SNACKS.total_fat) + parseInt(total_diet_numbers.DINNER.total_fat) -  parseInt(total_diet_numbers.EXERCISE.total_fat) );
+	$("#net-tr .total-carbs").html(parseInt(total_diet_numbers.BREAKFAST.total_carbs) + parseInt(total_diet_numbers.LUNCH.total_carbs) +  parseInt(total_diet_numbers.SNACKS.total_carbs) + parseInt(total_diet_numbers.DINNER.total_carbs) -  parseInt(total_diet_numbers.EXERCISE.total_carbs) );
+	$("#net-tr .total-proteins").html(parseInt(total_diet_numbers.BREAKFAST.total_proteins) + parseInt(total_diet_numbers.LUNCH.total_proteins) +  parseInt(total_diet_numbers.SNACKS.total_proteins) + parseInt(total_diet_numbers.DINNER.total_proteins) -  parseInt(total_diet_numbers.EXERCISE.total_proteins) );
+	
 }
 </script>

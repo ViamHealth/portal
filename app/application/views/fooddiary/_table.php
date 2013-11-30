@@ -5,7 +5,7 @@
 	  				<td style="border-left: none;"> CARBS</td> \
 	  				<td style="border-left: none;">FAT</td> \
 	  				<td style="border-left: none;">PROTEIN</td> \
-	  				<td style="border-left: none;"></td> \
+	  				<td style="border-left: none;"> <span class="glyphicon glyphicon-pencil"></span> </td> \
 	  			</tr> \
 	  			<tr class="success" id="breakfast-tr"> \
 	  				<td class="breakfast-diary">BREAKFAST</td> \
@@ -48,4 +48,20 @@
 	  				<td class="total-proteins"></td> \
 	  				<td class="exercise-plus"></td> \
 	  			</tr> \
-  			</tbody>
+	  			<tr class="danger" id="gain-tr"> \
+	  				<td class="gain-diary">GAIN</td> \
+	  				<td class="total-calories"></td> \
+	  				<td class="total-carbs"></td> \
+	  				<td class="total-fat"></td> \
+	  				<td class="total-proteins"></td> \
+	  				<td class="gain-plus"></td> \
+	  			</tr> \
+	  			<tr class="danger" id="net-tr"> \
+	  				<td class="net-diary">NET</td> \
+	  				<td class="total-calories"></td> \
+	  				<td class="total-carbs"></td> \
+	  				<td class="total-fat"></td> \
+	  				<td class="total-proteins"></td> \
+	  				<td class="net-plus"></td> \
+	  			</tr> \
+  			</tbody>\

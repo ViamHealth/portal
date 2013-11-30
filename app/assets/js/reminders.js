@@ -319,12 +319,15 @@ function load_reminderreadings(rr_date){
 					} else {
 						set_rr_event_count(val,_t_elem);
 					}
+					$($(_t_elem).find(".is_complete button")[0]).attr('onclick','').unbind('click');
 					$(_t_elem).find('.is_complete button').on('click',function(){
 						toggle_is_completed(this,rr_date);
 					});
+					$($(_t_elem).find(".medicine_check button")[0]).attr('onclick','').unbind('click');
 					$(_t_elem).find('.medicine_check button').on('click',function(){
 						toggle_medicine_check(this,rr_date);
 					});
+					$($(_t_elem).find(".edit-reminder button")[0]).attr('onclick','').unbind('click');
 					$(_t_elem).find('.edit-reminder').on('click',function(){
 						load_reminder_form(val.reminder.id,rr_date);
 					});

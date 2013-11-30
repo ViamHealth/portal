@@ -9,14 +9,7 @@
 .is_complete button{
 	margin:5px;
 }
-.viam_date_selector {
-	font-size:12px;padding: 0 20px;
-	  border: 0 none;background: url(/assets/images/sprite-img.png) no-repeat 0 -581px;
-	  text-align: center;cursor: pointer;box-shadow: none;
-}
-.viam_date_parent {
-	font-size:12px;
-}
+
 </style>
 <div>
 <div class="page-header">

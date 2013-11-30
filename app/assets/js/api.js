@@ -103,6 +103,7 @@ api_url_x = function(resource,options){
 	var page_size = options['page_size'] || null;
 	var search = options['search'] || null;
 	var reading_date = options['reading_date'] || null;
+	var activity_date = options['activity_date'] || null;
 
 	var url = VH.params.apiUrl+resource;
 	if(pk)
@@ -126,6 +127,8 @@ api_url_x = function(resource,options){
 
 	if(reading_date)
 		url = url+get_url_amp_ques(url)+'reading_date='+reading_date;
+	if(activity_date)
+		url = url+get_url_amp_ques(url)+'activity_date='+activity_date;
 	
 	return url;
 }

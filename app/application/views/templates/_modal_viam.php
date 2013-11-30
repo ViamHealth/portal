@@ -35,6 +35,7 @@ footer_html
           <?php if(isset($btn_primary_text)): ?>
           <button type="button" class="btn btn-primary btn-save"><?php echo $btn_primary_text ?></button>
           <?php endif ?>
+          </div>
         <?php else: ?>
           <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
           <?php if(isset($btn_primary_text)): ?>
