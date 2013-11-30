@@ -49,7 +49,7 @@ for user in User.objects.all():
 
 @api_view(['GET',])
 def handles3downloads(request, healthfile_id):
-    LOCAL_PATH = '/tmp/s3/'
+    LOCAL_PATH = settings.S3_LOCAL_DOWNLOAD_LOCATION
 
     try:
         m = Healthfile.objects.get(id=healthfile_id)

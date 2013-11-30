@@ -85,8 +85,8 @@ def facebook_populate_profile(user,data,token):
     	if pic_url is not None:
             from django.core.files import File
 
-            urllib.urlretrieve(pic_url, "/tmp/s3/pp-"+fb_profile_id+'.jpg')
-            f = open("/tmp/s3/pp-"+fb_profile_id+'.jpg')
+            urllib.urlretrieve(pic_url,  settings.S3_LOCAL_DOWNLOAD_LOCATION+"pp-"+fb_profile_id+'.jpg')
+            f = open(settings.S3_LOCAL_DOWNLOAD_LOCATION+"pp-"+fb_profile_id+'.jpg')
             pic = File(f)
 
     		
