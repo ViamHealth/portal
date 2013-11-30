@@ -158,7 +158,7 @@ $("#login-button-home").on("click",function(event){
                 <button class="btn btn-primary btn-block " id="login-button-home" type="button">
                     Sign in</button>
                 </form>
-                <a class="forgotLnk" href="<?php //echo $this->createUrl('site/forgotpassword',array()); ?>">I can't access my account</a>
+                <a class="forgotLnk" href="<?php echo viam_url('/forgot_password/') ?>">I can't access my account</a>
                 <div class="or-box">
                     
                     <div class="row">
