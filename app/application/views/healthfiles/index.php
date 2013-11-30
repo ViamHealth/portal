@@ -181,14 +181,16 @@ function fetch_healthfiles(page){
 				$("#healthfiles-table > tbody").append(_t);
 
 			});
-			$("#healthfiles-table").tablesorter({
+			if(json.count){
+			    $("#healthfiles-table").tablesorter({
 				sortList: [[2,1],],
 				headers: { 
-		            3: { 
-		                sorter: false 
-		            }, 
-		        } 
-			}); 
+		            		3: { 
+		                		sorter: false 
+		            		}, 
+		        	},
+			    }); 
+			}
 			$(".loading_healthfiles").hide();
 		}
 	});
