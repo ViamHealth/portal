@@ -92,7 +92,7 @@ $(document).ready(function(){
 	          }
 	        }
 	    });
-		$("#share-file-modal .btn-save").on('click',function(){
+		$("#share-file-modal .btn-save").on('click',function(event){
 			event.preventDefault();
 	        var form = $('#share-file-form');
 	        form.validate();
