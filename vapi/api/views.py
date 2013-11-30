@@ -6,6 +6,7 @@ from rest_framework import viewsets, filters
 from api.models import *
 from api.healthfiles.models import *
 from api.serializers import *
+from api.healthfiles.serializers import *
 
 import hashlib, os
 
@@ -46,6 +47,40 @@ for user in User.objects.all():
 
 
 
+
+@api_view(['POST',])
+def share_healthfile(request, healthfile_id):
+    serializer = FileShareSerializer(data=request.DATA, context={'request': request})
+    if serializer.is_valid():
+        try:
+            m = Healthfile.objects.get(pk=healthfile_id)
+
+            has_permission = False
+            if request.user.is_authenticated():
+                pass
+            else:
+                return Response(status=status.HTTP_401_UNAUTHORIZED)
+
+            user_id = int(request.user.id)
+
+            if request.user == m.user:
+                has_permission = True
+            else:
+                qqueryset = UserGroupSet.objects.filter(user_id__in=[user_id,m.user_id],group_id__in=[user_id,m.user_id],status='ACTIVE')
+                for p in qqueryset:
+                    if(p.user_id != p.group_id):
+                        has_permission = True
+            if has_permission:
+                mm = {}
+                mm['url'] = 'media/'+str(m.file)
+                mm['name'] = m.name
+                share_healthfile_email(request.user,serializer.object.get('email'),mm)
+                return Response(status=status.HTTP_204_NO_CONTENT)
+            else:
+                return Response(status=status.HTTP_401_UNAUTHORIZED)
+        except Healthfile.DoesNotExist:
+            return Response(content, status=status.HTTP_404_NOT_FOUND)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['GET',])
 def handles3downloads(request, healthfile_id):

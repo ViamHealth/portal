@@ -3,12 +3,13 @@ import boto
 from boto.s3.key import Key
 from django.core.mail import send_mail, EmailMessage
 import pprint
-
+from django.core.files.storage import default_storage
+import os
 
 FROM_VIAM_EMAIL = getattr(settings, "FROM_VIAM_EMAIL", None)
 ENABLE_EMAIL_SANDBOX = getattr(settings, "ENABLE_EMAIL_SANDBOX", None)
 
-def send_mail(subject, message, recipient_list, from_email=None ):
+def send_mail(subject, message, recipient_list, from_email=None, attachment=None ):
 	html_message = True
 	if ENABLE_EMAIL_SANDBOX is not None and ENABLE_EMAIL_SANDBOX == True:
 		recipient_list = ['kunal.rachhoya@viamhealth.com','Narendra.Mudigal@viamhealth.com',]
@@ -17,6 +18,23 @@ def send_mail(subject, message, recipient_list, from_email=None ):
 		if from_email is None:
 			from_email = FROM_VIAM_EMAIL
 		email = EmailMessage(subject, message, from_email, recipient_list)
+
+		if attachment is not None:
+			
+			LOCAL_PATH = settings.S3_LOCAL_DOWNLOAD_LOCATION
+
+			conn = boto.connect_s3(settings.AWS_ACCESS_KEY_ID, settings.AWS_SECRET_ACCESS_KEY)
+			key = conn.get_bucket(settings.AWS_STORAGE_BUCKET_NAME).get_key(attachment.get('url'))
+
+			if os.path.exists(LOCAL_PATH+attachment.get('name')):
+				os.remove(LOCAL_PATH+attachment.get('name'))
+			key.get_contents_to_filename(LOCAL_PATH+attachment.get('name'))
+			att = file(LOCAL_PATH+attachment.get('name'),'r')
+			if att:
+				email.attach(attachment.get('name'), att.read())
+			else:
+				pass
+			
 		if html_message:
 		    email.content_subtype = 'html'
 		email.send()
@@ -69,4 +87,22 @@ def share_user_email(invited, inviter, share_user):
 	email = invited.email
 	subject = 'Profile shared on Viamhealth'
 	message = 'Profile ' + shared_of + ' have been shared with you ' + by_invited 
-	send_mail(subject, message, [email])
+	inv_email = None
+	if inviter.email is not None:
+		inv_email = inviter.email
+	send_mail(subject, message, [email], inv_email)
+
+def share_healthfile_email(owner, email,att):
+	
+	email = email
+	if owner.first_name is not None and owner.first_name != '':
+		subject = owner.first_name + ' shared a file with you'
+	else:
+		subject = 'Find attached a file shared with you'
+
+	message = 'File shared'
+	inv_email = None
+	if owner.email is not None:
+		inv_email = owner.email
+	
+	send_mail(subject,message,[email],None,att)

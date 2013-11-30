@@ -71,12 +71,6 @@ urlpatterns = patterns('',
     url(r'^reminderreadings/$', ReminderReadingsViewSet.as_view({'get':'list'}),name='reminderreadings-list'),
     url(r'^reminderreadings/(?P<pk>[0-9]+)/$', ReminderReadingsViewSet.as_view({'get':'retrieve','put':'update'}),name='reminderreadings-detail'),
 
-    #url(r'^bmi-profile/$', UserBmiProfileViewSet.as_view({'get':'list','post':'create'}),name='userbmiprofile-list'),
-    #url(r'^bmi-profile/(?P<pk>[0-9]+)/$', UserBmiProfileViewSet.as_view({'get':'retrieve','put':'update','delete':'destroy'}),name='userbmiprofile-detail'),
-
-    #url(r'^healthfiles/(?P<pk>[0-9]+)/get-text/$', HealthfileViewSet.as_view({'get': 'get_text'}), name='healthfile-text'),
-
-    #url(r'^goals/$', GoalViewSet.as_view(),name='goal-list'),
     url(r'^weight-readings/$', WeightReadingViewSet.as_view({'get':'list','post':'create'}),name='weight-readings'),
     url(r'^weight-readings/(?P<reading_date>[0-9-]+)/$', WeightReadingViewSet.as_view({'get':'retrieve','delete':'destroy','put':'update'}),name='weight-reading-detail'),
     url(r'^blood-pressure-readings/$', BloodPressureReadingViewSet.as_view({'get':'list','post':'create'}),name='blood-pressure-readings'),
@@ -100,6 +94,7 @@ urlpatterns = patterns('',
     #url(r'^upload/', ote.upload_food_items),
 
     url(r'^healthfiles/download/(?P<healthfile_id>[0-9]+)/$', handles3downloads, name='download-healthfiles'),
+    url(r'^healthfiles/share/(?P<healthfile_id>[0-9]+)/$', share_healthfile, name='share-healthfiles'),
     url(r'^goals/$', all_goals, name='all-goals'),
     url(r'^logout/$', logout, name='logout'),
 
