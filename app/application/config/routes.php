@@ -41,7 +41,7 @@
 $route['default_controller'] = "site/login";
 $route['heartbeat'] = "site/heartbeat";
 $route['login'] = "site/login";
-$route['login(:any)'] = "site/login/$1";
+$route['login/(:any)'] = "site/login/$1";
 $route['signup'] = "site/signup";
 $route['logout'] = "site/logout";
 $route['forgot_password'] = "site/forgot_password";
@@ -50,7 +50,9 @@ $route['loginapi/(:any)'] = "site/loginapi/$1";
 $route['home'] = "app/index";
 $route['u/(:num)/home'] = "app/index/";
 
+
 $route['files'] = "healthfiles/index";
+$route['download_healthfile/(:num)'] = "healthfiles/download_healthfile/$1";
 $route['diary'] = "fooddiary/index";
 $route['goals'] = "goals/index";
 $route['reminders'] = "reminders/index";

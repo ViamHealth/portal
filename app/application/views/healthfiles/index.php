@@ -43,9 +43,15 @@
 <script>
 function delete_healthfile(id)
 {
-	_DB.HealthFile.destroy(id,function(json,success){
-		fetch_healthfiles();
-	});	
+	bootbox.confirm("Delete file?", function(result) {
+	  if(result){
+		_DB.HealthFile.destroy(id,function(json,success){
+			fetch_healthfiles();
+		});  	
+	  }
+	}); 
+
+		
 }
 function save_edit_healthfile(elem)
 {
@@ -133,8 +139,8 @@ var _t_hf_row = '<tr class=""><td style="height: 40px;"><span class="filetype_ic
 
 var _t_fo = '<div class="sb_list1"><ul><li class="download"><a href="#">Download</a></li>'+
 			/*'<li class="share"><a class="open_ppFS" href="javascript:void(0);">Share</a></li>'+*/
-			'<li class="edit"><a class="open_ppADL" href="javascript:void(0);">Edit</a></li>'+
-			'<li class="delete"><a href="#">Delete</a></li></ul></div>';
+			'<li class="edit">Edit</li>'+
+			'<li class="delete">Delete</li></ul></div>';
 
 
 function fetch_healthfiles(page){
@@ -172,17 +178,17 @@ function fetch_healthfiles(page){
 						$(this).css({"position":""});
 						$(this).find(".sb_list1").css("display","none");
 				});
-				$(_t).find(".files-options .delete a").attr('onclick','').unbind('click');
-				$(_t).find(".files-options .delete a").click(function(){
+				$(_t).find(".files-options .delete").attr('onclick','').unbind('click');
+				$(_t).find(".files-options .delete").click(function(){
 					delete_healthfile(fid);
 				});
-                                $(_t).find(".files-options .delete a").attr('onclick','').unbind('click');
-				$(_t).find(".files-options .edit a").click(function(){
+                $(_t).find(".files-options .edit").attr('onclick','').unbind('click');
+				$(_t).find(".files-options .edit").click(function(){
 					populate_file_edit_details(fid);
 				});
 				$(_t).find(".files-options .download a").attr({
-					target: '_blank', 
-                    href  : "<?php echo site_url('getdownloadurl'); ?> ?>"+'/'+fid,
+					//target: '_blank', 
+                    href  : "<?php echo site_url('download_healthfile'); ?>"+'/'+fid,
                 });
 				
 				$("#healthfiles-table > tbody").append(_t);
@@ -205,9 +211,10 @@ function fetch_healthfiles(page){
 
 function get_filtype_icon_class(mime_type){
 	if(!mime_type) return false;
-	
+	console.log(mime_type);
 	if(mime_type == 'application/pdf') return "pdf_ft";
 	if(mime_type == "image/jpeg") return "img_ft";
+	if(mime_type == "image/png") return "img_ft";
 
 }
 </script>

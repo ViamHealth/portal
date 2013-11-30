@@ -60,7 +60,7 @@ border-color: #37AA4F;
 }
 
 .modal-body {
-background-color: #efefef;
+/*background-color: #efefef;*/
 }
 
 
@@ -106,7 +106,7 @@ cursor: pointer;
 #healthfiles-table .sb_list1 {
 	width: 110px;
 position: absolute;
-top: 16px;
+top: 10px;
 right: 0;
 z-index: 1;
 display: none;
@@ -135,10 +135,13 @@ background-position: -10px -937px;
 }
 #healthfiles-table .sb_list1 ul li.edit{
 background-position: -10px -967px;
+color: #428bca;
+text-decoration: none;
 }
 
 #healthfiles-table .sb_list1 ul li.delete{
 background-position: -10px -1058px;
+color:red;
 }
 
 .filetype_icon {
