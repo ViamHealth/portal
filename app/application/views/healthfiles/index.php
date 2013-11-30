@@ -1,30 +1,38 @@
+<script src="<?php echo base_url('assets/js/jquery.tablesorter.min.js') ?>"></script>
 
-<div class="row" style="font-size:12px;">
-	<span class="loading_healthfiles" style="display:none;">Loading Data. Please wait....</span>
-	<br/>
-	<table class="table table-condensed " id="healthfiles-table" >
+
+<div class="page-header">
+  <h1>
+  	Files
+  	<div class="pull-right" >
+		<span class="btn btn-success fileinput-button">
+    	    <span class="glyphicon glyphicon-cloud-upload"> Upload</span>
+    		<input id="fileupload" type="file" name="file" 
+    			data-url="<?php echo  $api_url.'healthfiles/?user='.$appuser->id;?>" >
+	   	</span>
+		<div id="fileupload-status" style="display:none;">Uploading..</div>
+	</div>
+  </h1>
+</div>
+
+<div class="row" >
+	<div class="loading_healthfiles" style="display:none;">Loading Data. Please wait....</div>
+	
+	<div class="table-responsive">
+	<table class="table table-condensed table-striped tablesorter" id="healthfiles-table" >
 		<thead> 
-			<tr class="">
-				<th style="">Filename</td>
-				<th style="border-left: none;">Description</td>
-				<th style="border-left: none;">Date</td>
-				<th style="border-left: none;">Action</td>
+			<tr class="success">
+				<th style="">Filename</th>
+				<th style="border-left: none;">Description</th>
+				<th style="border-left: none;">Date</th>
+				<th style="border-left: none;">Action</th>
 			</tr>
         </thead>
 		<tbody> 
 			
         </tbody>
 	</table>
-	 <span class="btn btn-success fileinput-button">
-        <!--<i class="glyphicon glyphicon-plus"></i>-->
-        <span>Upload file</span>
-
-    	<input id="fileupload" type="file" name="file" data-url="<?php echo  $api_url.'healthfiles/?user='.$appuser->id;?>" >
-   	</span>
-   	
-	<div id="fileupload-status" style="display:none;">Uploading..</div>
-	<div id="fileupload-error" style="display:none;">There was some error. Please try again after some time.</div>
-
+	</div>
 	<!--<a href="#" onclick="$('#upload-file-modal').modal();"><button id="family-users-add" class="btn btn-success" type="button">Upload File</button></a>-->
 </div>
 <?php $this->load->view('healthfiles/_upload_file_modal'); ?>
@@ -70,7 +78,7 @@ $(document).ready(function(){
 	          	populate_file_edit_details(fid);
 	          	
 	          } else {
-	          	$('#fileupload-error').show();
+	          	show_body_alerts('Could not upload file at this moment. Please try again later.');
 	          	fetch_healthfiles();
 	          }
 	        }
@@ -173,6 +181,14 @@ function fetch_healthfiles(page){
 				$("#healthfiles-table > tbody").append(_t);
 
 			});
+			$("#healthfiles-table").tablesorter({
+				sortList: [[2,1],],
+				headers: { 
+		            3: { 
+		                sorter: false 
+		            }, 
+		        } 
+			}); 
 			$(".loading_healthfiles").hide();
 		}
 	});
