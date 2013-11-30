@@ -30,7 +30,9 @@ $modal_body_html = '
     </div>';
 $modal_data = array();
 $modal_data['modal_id'] = $modal_id;
-$modal_data['hide_close_button'] = null;
+$modal_data['hide_close_button'] = True;
+$modal_data['disallow_close'] = True;
+$modal_data['hide_footer'] = True;
 $modal_data['header_title'] = $header_title;
 $modal_data['btn_primary_text'] = 'Save';
 $modal_data['footer_html'] = null;

@@ -8,7 +8,7 @@
 		<span class="btn btn-success fileinput-button">
     	    <span class="glyphicon glyphicon-cloud-upload"> Upload</span>
     		<input id="fileupload" type="file" name="file" 
-    			data-url="<?php echo  $api_url.'healthfiles/?user='.$appuser->id;?>" >
+    			data-url="<?php echo  $api_url.'healthfiles/?user='.$current_user_id;?>" >
 	   	</span>
 		<div id="fileupload-status" style="display:none;">Uploading..</div>
 	</div>
@@ -57,7 +57,10 @@ $(document).ready(function(){
 	        dataType: 'json',
 	        beforeSend: function(xhr) {
 	                 xhr.setRequestHeader("Authorization", "Token <?php echo $token; ?>");
-	                 $('#upload-file-modal').modal()
+	                 $('#upload-file-modal').modal({
+	                 	backdrop:"static",
+	                 	keyboard: false,
+	                 })
 	              //$('#fileupload-status').show();
 	            },
 	        progressall: function (e, data) {
@@ -96,7 +99,10 @@ $(document).ready(function(){
 });
 
 function populate_file_edit_details(fid){
-	$('#edit-file-modal').modal();
+	$('#edit-file-modal').modal({
+		backdrop:"static",
+	    keyboard: false,
+	});
 	$('#edit-file-modal').attr("data-fileid",fid);
 	_DB.HealthFile.retrieve(fid,function(json,success){
 		if(success){
