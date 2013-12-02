@@ -1,20 +1,20 @@
 
 $(document).ready(function(){
-	$('#sandbox-container input').datepicker({
-	    format: "yyyy-mm-dd",
+	$('#sandbox-container .input-append.date').datepicker({
+	    format: "dd MM yyyy",
 	    todayBtn: "linked",
 	    keyboardNavigation: false,
 	    forceParse: false,
 	    autoclose: true,
 	    todayHighlight: true
 	}).on('changeDate', function(ev){
-		load_reminderreadings(format_date_for_api(ev.date));
+		load_reminderreadings(format_date_for_api_from_datepicker(ev.date));
 	});
-	$('#sandbox-container input').datepicker("setValue", new Date());
+	$('#sandbox-container .input-append.date').datepicker("setValue", new Date());
 
 	
-	$('#reminder_start_date').datepicker({
-	    format: "yyyy-mm-dd",
+	$('#reminder_start_date_parent .input-append.date').datepicker({
+	    format: "dd MM yyyy",
 	    todayBtn: "linked",
 	    keyboardNavigation: false,
 	    forceParse: false,
@@ -22,10 +22,10 @@ $(document).ready(function(){
 	    todayHighlight: true
 	});
 
-	$('#reminder_start_date').datepicker("setValue", new Date());
+	$('#reminder_start_date_parent .input-append.date').datepicker("setValue", new Date());
 
-	$('#reminder_end_date').datepicker({
-	    format: "yyyy-mm-dd",
+	$('#reminder_end_date_parent .input-append.date').datepicker({
+	    format: "dd MM yyyy",
 	    todayBtn: "linked",
 	    keyboardNavigation: false,
 	    forceParse: false,
@@ -37,7 +37,18 @@ $(document).ready(function(){
 	$('#reminder-form select[name=reminder_type]').change(function(){
 		load_reminder_form_by_type();
 	});
+	$('#reminder-form select[name=repeat_mode]').change(function(){
+		var repeat_mode = $('#reminder-form select[name=repeat_mode] option:selected').val();
+		if(repeat_mode == 0){
+			$("#reminder_end_date_parent").parents('.form-group').addClass("hidden");
+			$("#reminder_end_date").val("");
+		} else {
+			
+			$("#reminder_end_date_parent").parents('.form-group').removeClass("hidden");
+		}
+	});
 	$('#reminder-form .btn-save').on('click',function(e){
+		event.preventDefault();
 		save_reminder(e);
 	});
 
@@ -53,7 +64,6 @@ function load_reminder_form(id,reading_date){
 	$("#reminder-modal").modal();
 	_DB.Reminder.retrieve(id,function(json,success){
 		if(success){
-			console.log(json);
 			var reminder = json;
 			var form = $('#reminder-form');
 			$(form).find('select[name=reminder_type]').val(reminder.type);
@@ -78,29 +88,37 @@ function load_reminder_form(id,reading_date){
 function save_reminder(event){
 	event.preventDefault();
 	var form = $('#reminder-form');
-	var reminder = {};
-	reminder.type =  $(form).find('select[name=reminder_type] option:selected').val();
-	reminder.name =  $(form).find('input:text[name=name]').val();
-	reminder.details =  $(form).find('input:text[name=details]').val();
-	if(reminder.type == 2 ){
-		reminder.morning_count = $(form).find('input:text[name=morning_count]').val();
-		reminder.afternoon_count = $(form).find('input:text[name=afternoon_count]').val();
-		reminder.night_count = $(form).find('input:text[name=night_count]').val();
-	}
-	var id = $(form).find('.btn-save').attr("data_id");
-	if(!id){
-		_DB.Reminder.create(reminder,function(json,success){
-			post_reminder_save(json,success);
-		});
-	} else {
-		_DB.Reminder.update(id,reminder,function(json,success){
-			post_reminder_save(json,success);
-		});
+	form.validate();
+	if(form.valid()){
+		var reminder = {};
+		reminder.type =  $(form).find('select[name=reminder_type] option:selected').val();
+		reminder.name =  $(form).find('input:text[name=name]').val();
+		reminder.details =  $(form).find('input:text[name=details]').val();
+		reminder.repeat_mode = $(form).find('select[name=repeat_mode] option:selected').val();
+		if(reminder.type == 2 ){
+			reminder.morning_count = $(form).find('input:text[name=morning_count]').val();
+			reminder.afternoon_count = $(form).find('input:text[name=afternoon_count]').val();
+			reminder.night_count = $(form).find('input:text[name=night_count]').val();
+		}
+
+		reminder.start_date = format_date_for_api_from_datepicker($(form).find("#reminder_start_date").val())
+		if($(form).find("#reminder_end_date").val())
+			reminder.end_date = format_date_for_api_from_datepicker($(form).find("#reminder_end_date").val())
+		var id = $(form).find('.btn-save').attr("data_id");
+		if(!id){
+			_DB.Reminder.create(reminder,function(json,success){
+				post_reminder_save(json,success);
+			});
+		} else {
+			_DB.Reminder.update(id,reminder,function(json,success){
+				post_reminder_save(json,success);
+			});
+		}
 	}
 }
 function post_reminder_save(json,success){
 	if(success){
-		load_reminderreadings($("#reminder_date").val());
+		load_reminderreadings(format_date_for_api_from_datepicker($("#reminder_date").val()));
 	}
 	reset_reminder_form();
 }
@@ -206,7 +224,7 @@ function set_rr_event_count(rr,_t_elem){
 		else
 			set_medicine_future(_a_c,rr.reminder.afternoon_count);
 	}
-	console.log(rr.reminder.night_count)
+	
 	if(!rr.reminder.night_count)
 		set_medicine_unset(_n_c,rr.reminder.night_count);
 	else if(rr.night_check) {
@@ -288,7 +306,6 @@ function set_medicine_future(elem,label){
 	$(elem).html(label).addClass('btn-warning').addClass('disabled');
 }
 function load_reminderreadings(rr_date){
-	console.log('loading');
 	$("#rr_messages").show();
 	if(!rr_date) {
 		rr_date = format_date_for_api();

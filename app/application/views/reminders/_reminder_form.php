@@ -40,15 +40,21 @@
 		</div>
 		<div class="form-group ">
 			<label for="start_date" class="col-sm-2 col-md-3 control-label">Start Date</label>
-			<div class="col-sm-10 col-md-5 viam_date_parent" >
-				<input class="viam_date_selector" name="start_date" type="text" id="reminder_start_date" >
+			<div class="col-sm-10 col-md-6 viam_date_parent" id="reminder_start_date_parent">
+				<div class="input-append date">
+				<input class="viam_date_selector" name="start_date" type="text" id="reminder_start_date" required >
+				<span class="add-on glyphicon glyphicon-calendar"></span>
+		  		</div>
 			</div>
 		</div>
 
-		<div class="form-group ">
+		<div class="form-group hidden" >
 			<label for="end_date" class="col-sm-2 col-md-3 control-label">End Date</label>
-			<div class="col-sm-10 col-md-5 viam_date_parent" >
+			<div class="col-sm-10 col-md-6 viam_date_parent" id="reminder_end_date_parent" >
+				<div class="input-append date">
 				<input class="viam_date_selector" name="end_date" type="text" id="reminder_end_date" >
+				<span class="add-on glyphicon glyphicon-calendar"></span>
+		  		</div>
 			</div>
 		</div>
 		<hr/>

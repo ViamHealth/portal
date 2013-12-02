@@ -14,7 +14,10 @@
 <div>
 <div class="page-header">
   <h1>Reminders <div class="pull-right viam_date_parent"  id="sandbox-container">
+  		<div class="input-append date">
 		<input class="viam_date_selector" name="reminder_date" type="text" id="reminder_date" >
+		<span class="add-on glyphicon glyphicon-calendar"></span>
+  		</div>
 	</div></h1>
 </div>
 
