@@ -162,21 +162,25 @@ $(document).ready(function(){
 function save_upa(event){
 	event.preventDefault();
 	var form = $('#add-exercise-form');
-	var upa = {};
-	upa.physical_activity =  $(form).find('select[name=physical_activity] option:selected').val();
-	upa.weight =  $(form).find('input:text[name=weight]').val();
-	upa.activity_date =  format_date_for_api_from_datepicker($(form).find('input:text[name=activity_date]').val());
-	upa.time_spent =  $(form).find('input:text[name=time_spent]').val();
-	var id = $("#add-exercise-modal").find('.btn-save').attr("data_id");
-	if(!id){
-		_DB.UserPhysicalActivity.create(upa,function(json,success){
+	form.validate();
+	if(form.valid()){
 
-			post_upa_save(json,success);
-		});
-	} else {
-		_DB.UserPhysicalActivity.update(id,upa,function(json,success){
-			post_upa_save(json,success);
-		});
+		var upa = {};
+		upa.physical_activity =  $(form).find('select[name=physical_activity] option:selected').val();
+		upa.weight =  $(form).find('input:text[name=weight]').val();
+		upa.activity_date =  format_date_for_api_from_datepicker($(form).find('input:text[name=activity_date]').val());
+		upa.time_spent =  $(form).find('input:text[name=time_spent]').val();
+		var id = $("#add-exercise-modal").find('.btn-save').attr("data_id");
+		if(!id){
+			_DB.UserPhysicalActivity.create(upa,function(json,success){
+
+				post_upa_save(json,success);
+			});
+		} else {
+			_DB.UserPhysicalActivity.update(id,upa,function(json,success){
+				post_upa_save(json,success);
+			});
+		}
 	}
 }
 

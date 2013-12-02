@@ -40,7 +40,7 @@ make this a class now!!
           <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
         <?php endif ?>
           <?php if(isset($btn_primary_text)): ?>
-          <button type="button" class="btn btn-primary btn-save"><?php echo $btn_primary_text ?></button>
+          <button type="submit" class="btn btn-primary btn-save"><?php echo $btn_primary_text ?></button>
           <?php endif ?>
           </div>
         <?php else: ?>
@@ -48,7 +48,7 @@ make this a class now!!
           <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
           <?php endif ?>
           <?php if(isset($btn_primary_text)): ?>
-          <button type="button" class="btn btn-primary btn-save"><?php echo $btn_primary_text ?></button>
+          <button type="submit" class="btn btn-primary btn-save"><?php echo $btn_primary_text ?></button>
           <?php endif ?>
         <?php endif ?>
       </div>
