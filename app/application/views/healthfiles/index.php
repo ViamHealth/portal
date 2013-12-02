@@ -1,4 +1,4 @@
-<script src="<?php echo base_url('assets/js/jquery.tablesorter.min.js') ?>"></script>
+<!--<script src="<?php //echo base_url('assets/js/jquery.tablesorter.min.js') ?>"></script>-->
 
 
 <div class="page-header">
@@ -19,7 +19,7 @@
 	<div class="loading_healthfiles" style="display:none;">Loading Data. Please wait....</div>
 	
 	<div class="table-responsive">
-	<table class="table table-condensed table-striped tablesorter" id="healthfiles-table" >
+	<table class="table table-condensed table-striped" id="healthfiles-table" >
 		<thead> 
 			<tr class="success">
 				<th style="">Filename</th>
@@ -217,14 +217,14 @@ function fetch_healthfiles(page){
 
 			});
 			if(0){//json.count){
-			    $("#healthfiles-table").tablesorter({
+			    /*$("#healthfiles-table").tablesorter({
 				sortList: [[2,1],],
 				headers: { 
 		            		3: { 
 		                		sorter: false 
 		            		}, 
 		        	},
-			    }); 
+			    });*/ 
 			}
 			$(".loading_healthfiles").hide();
 		}

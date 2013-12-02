@@ -1,4 +1,11 @@
-
+<style>
+#date_of_birth.accept {
+  color:blue;
+}
+#date_of_birth.error {
+  border:1px solid red;
+}
+</style>
 <div class="col-md-3">
 <?php if($allow_edit_profile_image): ?>
   <img src="<?php echo $user->profile->profile_picture_url ?>" class="img-polaroid" id="profile_picture_img" height="100px" width="100px">
@@ -44,9 +51,11 @@
   </div>
   <div class="form-group">
     <label for="date_of_birth" class="col-sm-2 col-md-3  control-label">Born on</label>
-    <div class="col-sm-10 col-md-5" id="sandbox-container">
-		<input class="form-control" style="" name="date_of_birth" type="text" id="date_of_birth" value="<?php echo $user->profile->date_of_birth; ?>" >
+    <div class="col-sm-10 col-md-5" >
+		  <input class="form-control" name="date_of_birth" type="text" id="date_of_birth" value="" placeholder="Eg. 10 Aug 92" >
+      <input type="hidden" name="date_of_birth_val" id="date_of_birth_val" value="<?php echo $user->profile->date_of_birth; ?>" />
     </div>
+    
   </div>
 
   <div class="form-group">

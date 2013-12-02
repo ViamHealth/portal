@@ -20,6 +20,7 @@
    <script src="<?php echo base_url('assets/js/jquery.iframe-transport.js') ?>"></script>
    <script src="<?php echo base_url('assets/js/jquery.fileupload.js') ?>"></script>
    <script src="<?php echo base_url('assets/js/jquery.ddslick.min.js') ?>"></script>
+   <script src="<?php echo base_url('assets/js/date.js') ?>"></script>
 
    <script src="<?php echo base_url('assets/js/viam.js') ?>"></script>
 </body>

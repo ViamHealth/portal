@@ -5,7 +5,6 @@ function fb_attach() {
             user_id = response.authResponse.userID; //get FB UID
             _DB.User.attach_facebook(access_token,function(json,success){
               if(success){
-              	console.log('sdf');
                 //set_login_session(json.token,'fb');
               } else {
                 //alert('Can not login right now. Please try again later.');
@@ -19,20 +18,50 @@ function fb_attach() {
         scope: 'email'
     });
 }
-$(document).ready(function(){
-	var nowTemp = new Date();
-	var now = new Date(nowTemp.getFullYear(), nowTemp.getMonth(), nowTemp.getDate(), 0, 0, 0, 0);
-	
-	$('#sandbox-container input').datepicker({
-	    format: "yyyy-mm-dd",
-	    endDate: now,
-	    keyboardNavigation: false,
-	    forceParse: false,
-	    autoclose: true,
-	    todayHighlight: true
-	});
-	$('#sandbox-container input').datepicker("setValue", new Date());
 
+function load_dob_widget(){
+		var messages = "Try a different format of date.";
+		var input = $("input:text[name=date_of_birth]"),  date = null;
+		var input_date = $("input[name=date_of_birth_val]");
+		
+		if (input_date.val().length > 0) {
+			date = Date.parse(input_date.val());
+			if (date !== null){
+				input.val(date.toString("MMMM dd, yyyy"));
+			}
+		}
+		input.focus(
+			function (e) {
+				input.val("");
+			}
+		);
+		input.blur( 
+			function (e) {
+				if (input.val().length > 0) {
+					date = Date.parse(input.val());
+					if (date !== null){
+						input_date.val(date.toString("yyyy-mm-dd"));
+						input.removeClass("error").addClass("accept").val(date.toString("MMMM dd, yyyy"));
+					}
+
+					else{
+						//show_body_alerts('Could not understand date format for your Date of Birth. Please try again','warning');
+						input_date.val('');
+						input.removeClass("accept").addClass("error").val('');
+						input.focus();
+					}
+				} else if ( input_date.val().length >  0){
+					date = Date.parse(input_date.val());
+					if (date !== null){
+						input.addClass("accept").val(date.toString("MMMM dd, yyyy"));
+					}
+				}
+			}
+		);
+}
+$(document).ready(function(){
+	load_dob_widget();
+	
 	_DB.User.update_profile_picture(function(result, textStatus){
 		$("#profile_picture_img").attr('src',result.profile_picture_url);
 		reset_session_user_data();
@@ -69,7 +98,16 @@ $(document).ready(function(){
 
 	$('#profile-detail-save').on('click',function(event){
 		event.preventDefault();
+		var date_of_birth = $("#date_of_birth_val").val();
+		var date = Date.parse(date_of_birth);
+		if(date === null){
+			$("input:text[name=date_of_birth]").addClass("error").removeClass("accept").focus();
+			return false;
+		}
 		var form = $('#profile-details-form');
+		/*form.rules( "add", {
+			date_of_birth_val : "required",
+		});*/
 		form.validate();
 		if(form.valid()){
 			var user_id = $("input:hidden[name=user_id]").val();
@@ -83,7 +121,7 @@ $(document).ready(function(){
 			if(email) user.email = email;
 
 			profile.gender = $("input:radio[name=gender]:checked").val();
-			profile.date_of_birth = format_date_for_api($("#date_of_birth").val());
+			profile.date_of_birth = format_date_for_api($("#date_of_birth_val").val());
 			profile.city = $("#city").val();
 			var mobile = $("#mobile").val();
 			if(mobile) profile.mobile = mobile;
