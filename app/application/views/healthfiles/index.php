@@ -101,7 +101,7 @@ $(document).ready(function(){
 	        	var id = $("#share-file-modal .btn-save").attr("data-id");
 	        	_DB.HealthFile.share(id,email,function(json,success){
 	        		if(success){
-	        			console.log('file emailed');
+	        			//console.log('file emailed');
 	        		}
 	        	});
 	        	$("#share-file-modal").modal('hide');
@@ -138,12 +138,14 @@ function populate_file_edit_details(fid){
 			$("#file_edit_name").html(json.name);
 			$('#edit-file-modal').find("button.btn-save").attr('onclick','').unbind('click');
 			$('#edit-file-modal').find("button.btn-save").click(function(){
+				event.preventDefault();
 				var params = {};
 				params.description = $('#file_edit_description').val();
 				_DB.HealthFile.update(fid,params,function(){
 					fetch_healthfiles();
 					$('#edit-file-modal').modal('hide');
 				});
+				
 			});
 			//save_edit_healthfile(this)
 		}
@@ -233,7 +235,6 @@ function fetch_healthfiles(page){
 
 function get_filtype_icon_class(mime_type){
 	if(!mime_type) return false;
-	console.log(mime_type);
 	if(mime_type == 'application/pdf') return "pdf_ft";
 	if(mime_type == "image/jpeg") return "img_ft";
 	if(mime_type == "image/png") return "img_ft";
