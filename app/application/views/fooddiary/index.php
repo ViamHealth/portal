@@ -440,7 +440,7 @@ function load_diary_page(meal_type,dairy_date){
 				$(data_rows).attr("diary-type",meal_type);
 
             	$.each(data_rows,function(i,val){
-            		console.log($(val).hasClass("hidden"));
+            		
             		if(!$(val).hasClass("hidden")){
             			$(val).addClass("hidden");
             		} else {
@@ -478,7 +478,7 @@ function handle_modal_shown(data){
 }
 function save_new_item(elem){
 
-	console.log('save called');
+	
 	var meal_type = $(elem).attr("meal-type");
 	var food_item_id = $(elem).attr("itemid");
 	var ddData = $('#add_food_quantity_selector').data('ddslick');
@@ -650,9 +650,9 @@ function load_diary_rows(diet,food,predessor,_t_elem){
 	});
 	$(_t_elem).find('.food-item-name').html(food.name);
 	$(_t_elem).find('.food-item-calories').html(parseInt(food.calories)*ratio);
-	$(_t_elem).find('.food-item-carbs').html(parseInt(food.total_carbohydrates)*ratio);
+	$(_t_elem).find('.food-item-carbs').html(parseInt(food.cholesterol)*ratio);
 	$(_t_elem).find('.food-item-fat').html(parseInt(food.total_fat)*ratio);
-	$(_t_elem).find('.food-item-protein').html(parseInt(food.protein)*ratio);
+	$(_t_elem).find('.food-item-protein').html(parseInt(food.sugars)*ratio);
 	
 	var a = total_diet_numbers[diet.meal_type];
 
@@ -662,10 +662,10 @@ function load_diary_rows(diet,food,predessor,_t_elem){
 	a.total_fat = a.total_fat + parseFloat(food.total_fat)*ratio;
 	$(predessor).find(".total-fat").html(a.total_fat);
 
-	a.total_carbs = a.total_carbs + parseFloat(food.total_carbohydrates)*ratio;
+	a.total_carbs = a.total_carbs + parseFloat(food.cholesterol)*ratio;
 	$(predessor).find(".total-carbs").html(a.total_carbs);
 
-	a.total_proteins = a.total_proteins+ parseFloat(food.protein)*ratio;
+	a.total_proteins = a.total_proteins+ parseFloat(food.sugars)*ratio;
 	$(predessor).find(".total-proteins").html(a.total_proteins);
 
 	total_food_items++;

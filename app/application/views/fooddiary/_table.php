@@ -2,9 +2,9 @@
 	  			<tr class="warning"> \
 	  				<td style="">INTAKE</td> \
 	  				<td style="border-left: none;">CALORIES</td> \
-	  				<td style="border-left: none;"> CARBS</td> \
+	  				<td style="border-left: none;">CHOLESTEROL</td> \
 	  				<td style="border-left: none;">FAT</td> \
-	  				<td style="border-left: none;">PROTEIN</td> \
+	  				<td style="border-left: none;">SUGAR</td> \
 	  				<td style="border-left: none;"> <span class="glyphicon glyphicon-pencil"></span> </td> \
 	  			</tr> \
 	  			<tr class="success" id="breakfast-tr"> \
