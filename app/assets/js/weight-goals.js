@@ -4,10 +4,18 @@ function populate_weight_graph(){
 		'no_goal_action' : function(){
 			_DB.User.retrieve_bmi_profile(VH.vars.profile_id,function(json,success){
 					if(!json.height){
-						alert('create bmi profile first');
+						bootbox.confirm("You need to complete your profile first. Go to profile page ?", function(result) {
+							if(result){
+								var uu = find_family_user_id();
+								if(uu)
+									window.location = "/u/"+uu+"/user";
+								else
+									window.location = "/user";
+							}
+						});
 					} else {
 						// create goal		
-						$(_stack['new_goal_form']).show();
+						//$(_stack['new_goal_form']).show();
 					}
 				});
 		}

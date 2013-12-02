@@ -590,6 +590,7 @@ function populate_graph(goal_type,options){
 				$(_stack['click_to_add_reading']).attr("goal_id",goal.id);
 				$(_stack['delete_goal_button']).attr("goal_id",goal.id);
 				$(_stack['delete_goal_button']).show();
+				$(_stack['chart_container']).parents('.chart-container').find('.goal_reading_open').show();
 
 				if( goal.readings.length)
 					var time_start = apiDateToGraphDate(goal.readings[0].reading_date);
@@ -684,6 +685,8 @@ function populate_graph(goal_type,options){
 		            navigation: {menuItemStyle: {fontSize: '10px'}}
 		        });
 			} else {
+				$(_stack['chart_container']).parents('.chart-container').find('.goal_reading_open').hide();
+				
 				if(isFunction(options['no_goal_action'])){
 					options['no_goal_action']();
 				} else {
