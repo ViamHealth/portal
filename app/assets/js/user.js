@@ -264,7 +264,20 @@ $(document).ready(function(){
 	$("#change-password-modal .btn-save").on('click',function(event){
 		event.preventDefault();
 		var form = $('#change-password-form');
-		form.validate();
+		form.validate({
+			rules: {
+				old_password : {
+					required: true,
+				},
+				password : {
+					required: true,
+				},
+				confirm_password: {
+					required: true,
+					equalTo: "input:password[name=password]"
+				},
+			}
+		});
 		if(form.valid()){
 			var data = {};
 			data.old_password = $(form).find("input:password[name=old_password]").val();

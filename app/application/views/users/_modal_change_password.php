@@ -20,6 +20,12 @@ $modal_body_html = '<div class="row">
 			  <input type="password" class="form-control" name="password" placeholder="New Password" value="" required>
 			</div>
 		</div>
+		<div class="form-group">
+			<label for="confirm_password" class="col-sm-2 col-md-3 control-label">Confirm Password</label>
+			<div class="col-sm-10 col-md-5">
+			  <input type="password" class="form-control" name="confirm_password" placeholder="Same as above" value="" required>
+			</div>
+		</div>
 		<div class="wrong_password" style="display:none;">Incorrect Old Password</div>
 	</form>
 </div>
