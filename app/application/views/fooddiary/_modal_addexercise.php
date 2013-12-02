@@ -18,8 +18,11 @@ $modal_body_html = '<div class="row">
 		</div>
 		<div class="form-group ">
 			<label for="activity_date" class="col-sm-2 col-md-3 control-label">Activity Date</label>
-			<div class="col-sm-10 col-md-5 viam_date_parent" >
+			<div class="col-sm-10 col-md-6 viam_date_parent" id="activity_date_parent" >
+				<div class="input-append date">
 				<input class="viam_date_selector" name="activity_date" type="text" id="activity_date" >
+				<span class="add-on glyphicon glyphicon-calendar"></span>
+				</div>
 			</div>
 		</div>
 		<div class="form-group">

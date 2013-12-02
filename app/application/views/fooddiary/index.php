@@ -51,8 +51,12 @@ line-height: 10px;
 
 <div>
 <div class="page-header">
-  <h1>Food Diary <div class="pull-right viam_date_parent"  id="sandbox-container">
-		<input class="viam_date_selector" name="food_diary_date" type="text" id="food_diary_date" >
+  <h1>Food Diary 
+  	<div class="pull-right viam_date_parent"  id="sandbox-container">
+  		<div class="input-append date">
+  		<input type="text" class="viam_date_selector" name="food_diary_date" id="food_diary_date">
+  		<span class="add-on glyphicon glyphicon-calendar"></span>
+  		</div>
 	</div></h1>
 </div>
 
@@ -115,8 +119,8 @@ $(document).ready(function(){
 	var nowTemp = new Date();
 	var now = new Date(nowTemp.getFullYear(), nowTemp.getMonth(), nowTemp.getDate(), 0, 0, 0, 0);
 	
-	$('#sandbox-container input').datepicker({
-	    format: "yyyy-mm-dd",
+	$('#sandbox-container .input-append.date').datepicker({
+	    format: "dd MM yyyy",
 	    endDate: now,
 	    todayBtn: "linked",
 	    keyboardNavigation: false,
@@ -124,10 +128,10 @@ $(document).ready(function(){
 	    autoclose: true,
 	    todayHighlight: true
 	}).on('changeDate', function(ev){
-		load_diary(format_date_for_api(ev.date));
+		load_diary(format_date_for_api_from_datepicker(ev.date));
 	});;
 
-	$('#sandbox-container input').datepicker("setValue", new Date());
+	$('#sandbox-container .input-append.date').datepicker("setValue", new Date());
 
 	load_diary();
 	load_physical_activity_array();
@@ -137,16 +141,17 @@ $(document).ready(function(){
 		populate_search_data($( this ).val());
 	});
 
-	$('#activity_date').datepicker({
-	    format: "yyyy-mm-dd",
+	$('#activity_date_parent .input-append.date').datepicker({
+	    format: "dd MM yyyy",
 	    todayBtn: "linked",
+	    endDate: now,
 	    keyboardNavigation: false,
 	    forceParse: false,
 	    autoclose: true,
 	    todayHighlight: true
 	});
 
-	$('#activity_date').datepicker("setValue", new Date());
+	$('#activity_date_parent .input-append.date').datepicker("setValue", new Date());
 
 	$("#add-exercise-modal").find('.btn-save').on('click',function(e){
 		save_upa(e);
@@ -160,7 +165,7 @@ function save_upa(event){
 	var upa = {};
 	upa.physical_activity =  $(form).find('select[name=physical_activity] option:selected').val();
 	upa.weight =  $(form).find('input:text[name=weight]').val();
-	upa.activity_date =  $(form).find('input:text[name=activity_date]').val();
+	upa.activity_date =  format_date_for_api_from_datepicker($(form).find('input:text[name=activity_date]').val());
 	upa.time_spent =  $(form).find('input:text[name=time_spent]').val();
 	var id = $("#add-exercise-modal").find('.btn-save').attr("data_id");
 	if(!id){
@@ -255,7 +260,7 @@ function delete_exercise_row(elem){
 				if(success){
 					//total_food_items --;
 					var type = $(elem).parent().attr("diary-type");
-					var activity_date = $(elem).parents("table").attr("diary_date");
+					var activity_date = format_date_for_api_from_datepicker($(elem).parents("table").attr("diary_date"));
 					$(elem).parent().remove();
 					load_exercise_page($("#food_diary_date").val());
 				}
