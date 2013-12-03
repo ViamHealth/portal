@@ -61,7 +61,7 @@ class Userprofile {
 
 class Userbmiprofile {
 	public $id;
-	public $user;
+	//public $user;
 	public $height;
 	public $weight;
 	public $lifestyle;
@@ -83,7 +83,11 @@ class Userbmiprofile {
 
 	public function set_data($data=array()) {
 		foreach($data as $k=>$v){
-			$this->$k = $v;
+			//$this->$k = $v;
+			if($k=='latest_readings')
+				foreach ($v as $lk => $lv) { 
+					$this->$lk = $lv;
+				}
 		}
 	}
 

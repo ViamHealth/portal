@@ -7,6 +7,7 @@ from rest_framework import viewsets
 from .models import *
 from .serializers import *
 
+from api.utils.helper import *
 
 from rest_framework.authtoken.models import Token
 from rest_framework import permissions,  status, exceptions
@@ -41,7 +42,7 @@ class ForgotPasswordView(viewsets.ViewSet):
         if serializer.is_valid():
             user = serializer.object.get('user',None)
             if user is not None:
-                password = User.objects.make_random_password()
+                password = v_make_random_password()
                 user.password = make_password(password)
                 user.save()
                 forgot_password_email(user,password)
@@ -55,7 +56,7 @@ class ForgotPasswordView(viewsets.ViewSet):
         if serializer.is_valid():
             user = serializer.object.get('user',None)
             if user is not None:
-                password = User.objects.make_random_password()
+                password = v_make_random_password()
                 password = '1111'
                 user.password = make_password(password)
                 user.save()
@@ -123,8 +124,8 @@ class InviteView(viewsets.ViewSet):
                 user = User.objects.get(email=email)
                 invite_existing_email(user, request.user)
             except User.DoesNotExist:
-                password = User.objects.make_random_password()
-                user = User.objects.create_user(username=generate_random_username(), email=email,password=password)
+                password = v_make_random_password()
+                user = User.objects.create_user(username=generate_random_username(), email=email,password=make_password(password))
                 invite_new_email(user, request.user, password)
 
             UserProfile.objects.get_or_create(user=user)
@@ -160,7 +161,7 @@ class ShareView(viewsets.ViewSet):
             if serializer.object.get('is_self',False):
                 # Self user. validated. All is well. Just update the email, create password and send email
                 share_user.email = email
-                share_user.password = User.objects.make_random_password()
+                share_user.password = make_password(v_make_random_password())
                 share_user.save()
                 invite_new_email(share_user, request.user, share_user.password)
 
@@ -169,8 +170,8 @@ class ShareView(viewsets.ViewSet):
                     # sharing with already existing user. Great. Move on
                     user = User.objects.get(email=email)
                 except User.DoesNotExist:
-                    password = User.objects.make_random_password()
-                    user = User.objects.create_user(username=generate_random_username(), email=email,password=password)
+                    password = v_make_random_password()
+                    user = User.objects.create_user(username=generate_random_username(), email=email,password=make_password(password))
                     UserProfile.objects.get_or_create(user=user)
                     UserBmiProfile.objects.get_or_create(user=user,defaults={'updated_by': request.user})        
                     invite_new_email(user, request.user, password)
@@ -293,7 +294,7 @@ class UserView(viewsets.ViewSet):
         first_name = data.get('first_name',None)
         last_name = data.get('last_name', None)
         email = data.get('email',None)
-        password = User.objects.make_random_password()
+        password = v_make_random_password()
         mobile = data.get('mobile',None)
 
         username = generate_random_username()
@@ -343,7 +344,7 @@ class UserView(viewsets.ViewSet):
         else:
             #create new user
             #authenticating user
-            serializer = UserCreateSerializer(data={'username':username,'email':email,'password':password,'first_name':first_name,'last_name':last_name})
+            serializer = UserCreateSerializer(data={'username':username,'email':email,'password':make_password(password),'first_name':first_name,'last_name':last_name})
             if serializer.is_valid():
                 serializer.save()
                 user=User.objects.get(pk=serializer.data.get('id'))
