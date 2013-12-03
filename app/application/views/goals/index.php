@@ -702,7 +702,9 @@ function save_goal(elem,goal_type,goal_id,goal,reading, callback){
 	if($(elem).hasClass("disbaled"))
 		return;
 	$(elem).addClass("disabled");
-	$(elem).attr("data-loading-text","Saving");
+	//$(elem).attr("data-loading-text","Saving");
+	var _temp_val = $(elem).html();
+	$(elem).html('Saving...');
 	var _stack = stacks[goal_type];
 	goal = from_ui_to_api_goal_interval(goal_type,goal);
 
@@ -726,11 +728,13 @@ function save_goal(elem,goal_type,goal_id,goal,reading, callback){
 		_stack['model'].update(goal_id,goal,function(){
 			callback();
 			$(elem).removeClass("disabled");
+			$(elem).html(_temp_val);
 		});
 	} else {
 		_stack['model'].create(goal,function(){
 			callback();
 			$(elem).removeClass("disabled");
+			$(elem).html(_temp_val);
 		});
 	}
 }

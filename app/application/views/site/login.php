@@ -39,6 +39,7 @@ function set_login_session(token,type)
 
 $(document).ready(function(){
     $("#login-button-home").on("click",function(event){
+        
         $("#login-unsuccess-message").hide();
         event.preventDefault();
         var form = $('#form-signin');
@@ -47,6 +48,7 @@ $(document).ready(function(){
 
         	var email = $("input[name=email]").val();
         	var password = $("input[name=password]").val();
+            $("#login-button-home").addClass("disabled").val('Loading....');
         	_DB.Login.by_email(email,password,function(json,success){
         		if(success){
         			set_login_session(json.token,'email');
@@ -61,6 +63,7 @@ $(document).ready(function(){
                             }        
                     }
                 }
+                $("#login-button-home").removeClass("disabled").val('Sign in');
         	});
         }
     });

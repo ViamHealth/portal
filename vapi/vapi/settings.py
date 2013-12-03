@@ -148,23 +148,7 @@ INSTALLED_APPS = (
     'api.util',
     'storages',
     'django_ses',
-    #'allauth',
-    #'allauth.account',
-    #'allauth.socialaccount',
-    #'allauth.socialaccount.providers.facebook',
 )
-
-#ACCOUNT_EMAIL_REQUIRED = True
-
-#LOGIN_REDIRECT_URL = '/social-login-success/'
-
-#ACCOUNT_AUTHENTICATION_METHOD = "email"
-
-#ACCOUNT_EMAIL_VERIFICATION = "none"
-
-#ACCOUNT_UNIQUE_EMAIL =True
-
-#ACCOUNT_USER_USERNAME_FIELD = "none"
 
 
 # A sample logging configuration. The only tangible logging
@@ -209,32 +193,18 @@ LOGGING = {
     }
 }
 
-SERVER_EMAIL = 'kunal.rachhoya@viamhealth.com'
+SERVER_EMAIL = 'no-reply@viamhealth.com'
 
 TEMPLATE_CONTEXT_PROCESSORS = (
     "django.core.context_processors.request",
     "django.contrib.auth.context_processors.auth",
-    #"allauth.account.context_processors.account",
-    #"allauth.socialaccount.context_processors.socialaccount",
 )
 
 AUTHENTICATION_BACKENDS = (
-    # Needed to login by username in Django admin, regardless of `allauth`
     "django.contrib.auth.backends.ModelBackend",
-
-    # `allauth` specific authentication methods, such as login by e-mail
-    #"allauth.account.auth_backends.AuthenticationBackend",
 )
 
 
-#SOCIALACCOUNT_PROVIDERS = { 'facebook':
-#    {
-#        'SCOPE': ['email',],
-#        'AUTH_PARAMS': {  },
-#        'METHOD': 'oauth2' ,
-#        #'LOCALE_FUNC': 'path.to.callable'
-#    } 
-#}
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': ('rest_framework.permissions.IsAuthenticated',),
     'DEFAULT_AUTHENTICATION_CLASSES': (
@@ -251,7 +221,7 @@ STATICFILES_STORAGE = 'api.s3utils.StaticS3BotoStorage'
 
 EMAIL_BACKEND = 'django_ses.SESBackend'
 
-FROM_VIAM_EMAIL = 'kunal.rachhoya@viamhealth.com'
+FROM_VIAM_EMAIL = 'no-reply@viamhealth.com'
 ENABLE_EMAIL_SANDBOX = True
 
 AWS_ACCESS_KEY_ID = 'AKIAI2VBRE4FPIPF6AYA'

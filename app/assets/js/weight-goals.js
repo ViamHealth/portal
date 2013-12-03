@@ -32,15 +32,20 @@ function attach_weight_events(){
 	event_click_to_add_reading(goal_type);
 
 	$(_stack['new_goal_form_save_button']).click(function(event){
-		var goal = {}
-		goal.weight = $("#weight_goal_target_weight").val();
-		var goal_id = $("#weight_goal_id").val();	
-		var reading = {};
-		reading.weight = $("#weight_goal_current_weight").val();
-		save_goal(this,goal_type,goal_id,goal,reading, populate_weight_graph)
+		event.preventDefault();
+		var $form = $("#weight-goal-add-form");
+		$form.validate();
+		if($form.valid()){
+			var goal = {}
+			goal.weight = $("#weight_goal_target_weight").val();
+			var goal_id = $("#weight_goal_id").val();	
+			var reading = {};
+			reading.weight = $("#weight_goal_current_weight").val();
+			save_goal(this,goal_type,goal_id,goal,reading, populate_weight_graph)
+		}
 	});
 
-	$(_stack['add_reading_form_save']).click(function(){
+	$(_stack['add_reading_form_save']).click(function(event){
 		event.preventDefault();
 		var $form = $("#weight-goal-reading-add");
 		$form.validate();
