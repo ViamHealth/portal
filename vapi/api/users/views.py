@@ -7,7 +7,7 @@ from rest_framework import viewsets
 from .models import *
 from .serializers import *
 
-from api.utils.helper import *
+from api.util.helper import *
 
 from rest_framework.authtoken.models import Token
 from rest_framework import permissions,  status, exceptions
