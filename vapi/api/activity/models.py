@@ -19,6 +19,9 @@ class PhysicalActivity(models.Model):
     class Meta:
         db_table = 'tbl_physical_activities'
 
+    def __unicode__(self):
+        return u'Id %s Label: %s' % (self.id, self.label)
+
 class UserPhysicalActivity(models.Model):
     TIME_SPENT_UNIT_CHOICES = (
         ('1','MINUTE'),
