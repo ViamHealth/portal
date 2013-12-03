@@ -520,7 +520,9 @@ function populate_search_data(keyword){
 	options['page_size'] = results_page_size;
 	options['search'] = keyword;
 	$('#add_food_results').html('');
-	
+	$('#add_food_quantity_selector').ddslick('destroy');
+	$("#add_food_details").hide();
+
 	_DB.FoodItems.search(options,function(json,success){
 		if($('#add_food_results').attr('loading_time')!=tim)
 			return ;
@@ -560,6 +562,7 @@ function populate_search_data(keyword){
 }
 function load_search_detail(fi){
 	$('#add_food_quantity_selector').ddslick('destroy');
+	$("#add_food_details").show();
 	var k = $("#add_food_details");
 	$(k).find(".name").html(fi.name);
 	$(k).find(".calories").html(fi.calories+' '+fi.calories_unit);

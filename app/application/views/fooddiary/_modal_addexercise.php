@@ -33,7 +33,7 @@ $modal_body_html = '<div class="row">
 			</div>
 		</div>
 		<div class="form-group">
-			<label for="time_spent" class="col-sm-2 col-md-3 control-label">Time Spent ( minutes )</label>
+			<label for="time_spent" class="col-sm-2 col-md-3 control-label">Time Spent (minutes)</label>
 			<div class="col-sm-10 col-md-5">
 			  <input type="text" class="form-control" name="time_spent" placeholder="Time Spent" 
 			  	value="" required>
