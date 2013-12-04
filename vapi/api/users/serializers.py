@@ -220,19 +220,20 @@ class LatestReadings:
         bmi_classification = ''
         if obj is not None:
             if obj.weight is not None and obj.height is not None:
-                bmi = float(obj.weight)/( ( float(obj.height)/100.00 ) * ( float(obj.height)/100.00 ))
-                if bmi < 16.00:
-                    #bmi_classification = 'Underweight'
-                    bmi_classification = '1'
-                elif bmi >= 18.50 and bmi <= 24.99:
-                    #bmi_classification = 'Normal range'
-                    bmi_classification = '2'
-                elif bmi >= 25.00 and bmi <= 29.99:
-                    #bmi_classification = 'Overweight'
-                    bmi_classification = '3'
-                elif bmi >= 30.00:
-                    #bmi_classification = 'Obese'
-                    bmi_classification = '4'
+                if float(obj.height) > 0 :
+                    bmi = float(obj.weight)/( ( float(obj.height)/100.00 ) * ( float(obj.height)/100.00 ))
+                    if bmi < 16.00:
+                        #bmi_classification = 'Underweight'
+                        bmi_classification = '1'
+                    elif bmi >= 18.50 and bmi <= 24.99:
+                        #bmi_classification = 'Normal range'
+                        bmi_classification = '2'
+                    elif bmi >= 25.00 and bmi <= 29.99:
+                        #bmi_classification = 'Overweight'
+                        bmi_classification = '3'
+                    elif bmi >= 30.00:
+                        #bmi_classification = 'Obese'
+                        bmi_classification = '4'
         return bmi_classification
 
     def get_bmr(self, obj=None):
