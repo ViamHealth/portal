@@ -15,7 +15,7 @@ from rest_framework.authtoken.models import Token
 from rest_framework.views import APIView
 from rest_framework.authtoken.serializers import AuthTokenSerializer
 from rest_framework import permissions, renderers, parsers, status
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, authentication_classes, permission_classes
 
 
 from rest_framework.response import Response
@@ -47,6 +47,8 @@ for user in User.objects.all():
 
 
 @api_view(['GET',])
+@permission_classes((permissions.AllowAny,))
+#@authentication_classes()
 def heartbeat(request):
     return HttpResponse(status=204)
 
