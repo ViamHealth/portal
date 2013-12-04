@@ -46,7 +46,9 @@ for user in User.objects.all():
     Token.objects.get_or_create(user=user)
 
 
-
+@api_view(['GET',])
+def heartbeat(request):
+    return HttpResponse(status=204)
 
 @api_view(['POST',])
 def share_healthfile(request, healthfile_id):

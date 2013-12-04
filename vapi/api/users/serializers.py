@@ -218,12 +218,9 @@ class LatestReadings:
 
     def get_bmi_classification(self,obj=None):
         bmi_classification = ''
-        print 'getoong bmi'
         if obj is not None:
-            print 'in bmi'
             if obj.weight is not None and obj.height is not None:
                 bmi = float(obj.weight)/( ( float(obj.height)/100.00 ) * ( float(obj.height)/100.00 ))
-                print bmi
                 if bmi < 16.00:
                     #bmi_classification = 'Underweight'
                     bmi_classification = '1'

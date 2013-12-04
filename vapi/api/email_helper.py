@@ -19,7 +19,7 @@ def send_mail(subject, message, recipient_list, from_email=None, attachment=None
 	try:
 		if from_email is None:
 			from_email = FROM_VIAM_EMAIL
-
+		from_email = FROM_VIAM_EMAIL
 		email = EmailMessage(subject, message, from_email, recipient_list)
 
 		if attachment is not None:

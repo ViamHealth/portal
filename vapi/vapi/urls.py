@@ -36,6 +36,7 @@ admin.autodiscover()
 obtain_auth_token = ObtainAuthToken.as_view()
 
 urlpatterns = patterns('',
+    url(r'^heartbeat/$', heartbeat, name='heartbeat'),
     # Examples:
     # url(r'^$', 'vapi.home', name='home'),
     #url(r'^', include('api.urls')),
