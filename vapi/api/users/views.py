@@ -15,7 +15,7 @@ from rest_framework.decorators import api_view, link, action
 from rest_framework.response import Response
 from django.http import Http404
 from itertools import chain
-from datetime import datetime
+import datetime
 from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
 from api.vfacebook import *
@@ -379,8 +379,8 @@ class UserView(viewsets.ViewSet):
         return Response(serializer.data)
 
     def destroy(self, request, pk=None):
-        UserGroupSet.objects.filter(group=pk,user=request.user.id,status='ACTIVE').update(status='DELETED',updated_by=request.user,updated_at=datetime.now())
-        UserGroupSet.objects.filter(user=pk,group=request.user.id,status='ACTIVE').update(status='DELETED',updated_by=request.user,updated_at=datetime.now())
+        UserGroupSet.objects.filter(group=pk,user=request.user.id,status='ACTIVE').update(status='DELETED',updated_by=request.user,updated_at=datetime.datetime.now())
+        UserGroupSet.objects.filter(user=pk,group=request.user.id,status='ACTIVE').update(status='DELETED',updated_by=request.user,updated_at=datetime.datetime.now())
         return Response(status=status.HTTP_204_NO_CONTENT)
 
     @action(methods=['POST'])
