@@ -92,7 +92,7 @@ urlpatterns = patterns('',
     #url(r'^food-items/search/(?P<search_string>[0-9A-Za-z]+)/$', FoodItemViewSet.as_view({'get':'search'}),name='fooditem-list'),
     #Uncomment the admin/doc line below to enable admin documentation:
     #url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
-    #url(r'^upload/', ote.upload_food_items),
+    #url(r'^upload/', upload_food_items),
 
     url(r'^healthfiles/download/(?P<healthfile_id>[0-9]+)/$', handles3downloads, name='download-healthfiles'),
     url(r'^healthfiles/share/(?P<healthfile_id>[0-9]+)/$', share_healthfile, name='share-healthfiles'),

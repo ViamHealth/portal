@@ -1,14 +1,2 @@
-htdocs_yii_user_management
-demos
-softwares/yii/demos
-softwares/hoauth
-softwares/yii-debug-toolbar
-softwares/yii-user
-softwares/yii-user-management
-softwares/yiiplayground
-htdocs/protected/runtime
-htdocs/assets
 *.pyc
-htdocs/protected/runtime/application.log
-webapp/protected/runtime/application.log
-webapp/assets/*
+*.pyo

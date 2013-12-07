@@ -33,50 +33,82 @@ import boto
 from boto.s3.key import Key
 from django.conf import settings
 
-from data_importer import XLSImporter
+from data_importer import XLSImporter, BaseImporter
 import pprint
 from api.diet.models import *
-class FoodItemXlsImporterModel(XLSImporter):
+import fractions
+
+class FoodItemXlsImporterModel(BaseImporter):
     class Meta:
         model = FoodItem
         ignore_first_line = True
         raise_errors = True
+        delimiter = ','
         exclude = ['display_image','quantity','calories_unit', 'total_fat_unit', 'saturated_fat_unit', 'polyunsaturated_fat_unit', 'monounsaturated_fat_unit', 'trans_fat_unit', 'cholesterol_unit', 'sodium_unit', 'potassium_unit', 'total_carbohydrates_unit', 'dietary_fiber_unit', 'sugars_unit', 'protein_unit', 'vitamin_a_unit', 'vitamin_c_unit', 'calcium_unit', 'iron_unit',
         'created_at','updated_at','updated_by',
         ]
 
 def upload_fdb_files(filename):
-    LOCAL_DIR = os.path.dirname(__file__)
-
+    #LOCAL_DIR = os.path.dirname(__file__)
+    LOCAL_DIR = '/home/kunalr/codebase/portal/vapi/api/csvs/c'
+    #xls_file = os.path.join(LOCAL_DIR, 'csvs/'+filename)
+    #xls_file = 'csvs/'+filename
     xls_file = os.path.join(LOCAL_DIR, filename)
+    print xls_file
+    print filename
+    #return
     my_csv_list = FoodItemXlsImporterModel(source=xls_file)
+    pprint.pprint(my_csv_list.cleaned_data[1])
+    user = User.objects.get(id=1)
+    import string
     i = 0
-    try:
-        for k,m in my_csv_list.cleaned_data:
-            i = i + 1
-            import string
+    for k,m in my_csv_list.cleaned_data:
+	
+        i = i + 1
+        #print i
+        try:
             m['quantity_unit'] = filter(lambda x: x in string.printable, m['quantity_unit'])
             m['name'] = filter(lambda x: x in string.printable, m['name'])
 
             qstr = m['quantity_unit']
             m['quantity'],abc,m['quantity_unit'] = qstr.partition(" ")
-            m['quantity'] = float(m['quantity'])
-            m['updated_by'] = request.user
+	    #print m['quantity']
+            if m['quantity'] == '1/2':
+                m['quantity'] = 0.5
+            elif m['quantity'] == '1/3':
+                m['quantity'] = 0.33;
+            elif m['quantity'] == '3/4':
+                m['quantity'] = 0.75;
+            elif m['quantity'] == '1/4':
+                m['quantity'] = 0.25;
+            elif m['quantity'] == '2/3':
+                m['quantity'] = 0.66;
+            elif m['quantity'] == '1/8':
+                 m['quantity'] = 0.125;
+            else:
+                try:
+                    m['quantity'] = float(m['quantity'])
+                except:
+                    m['quantity'] = float(fractions.Fraction(m['quantity']))
+            m['updated_by'] = user
             m['status'] = 'ACTIVE'
-            
-            fi = FoodItem(**m)
-            fi.save(force_insert=True,)
-    except:
-        pprint.pprint('failed for ')
-        pprint.pprint(i)
+        except:
+            pprint.pprint(my_csv_list.cleaned_data[i-1])
+            continue
+        fi = FoodItem(**m)
+        fi.save(force_insert=True,)
 
     
 
 @api_view(['GET',])
 def upload_food_items(request, format=None):
-    #upload_fdb_files('FDB1.xlsx')
-    #upload_fdb_files('FDB2.xlsx')
-    upload_fdb_files('FDB3.xlsx')
+    path= os.path.dirname(os.path.abspath(__file__))
+    csvs = os.path.join(path, 'csvs')
+    os.chdir('/home/kunalr/codebase/portal/vapi/api/csvs/c/')
+    for files in os.listdir("."):
+        upload_fdb_files(files)
+    #upload_fdb_files('fdb3.xls')
+    #upload_fdb_files('fdb4.xls')
 
 
 #Temporary create code for all users once.
