@@ -148,6 +148,8 @@ INSTALLED_APPS = (
     'api.util',
     'storages',
     'django_ses',
+    'djcelery',
+    'seacucumber',
 )
 
 
@@ -219,7 +221,7 @@ REST_FRAMEWORK = {
 DEFAULT_FILE_STORAGE = 'api.s3utils.MediaS3BotoStorage' 
 STATICFILES_STORAGE = 'api.s3utils.StaticS3BotoStorage'
 
-EMAIL_BACKEND = 'django_ses.SESBackend'
+EMAIL_BACKEND = 'seacucumber.backend.SESBackend'
 
 FROM_VIAM_EMAIL = 'no-reply@viamhealth.com'
 ENABLE_EMAIL_SANDBOX = True
@@ -238,3 +240,6 @@ FACEBOOK_APP_ID = '603777449653645'
 FACEBOOK_APP_SECRET = '97c795e525ba60ade8bf4c781662a901'
 
 S3_LOCAL_DOWNLOAD_LOCATION = '/s3downloads/'
+
+CELERY_RESULT_BACKEND='djcelery.backends.database:DatabaseBackend'
+BROKER_URL = 'django://'
