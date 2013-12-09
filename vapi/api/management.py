@@ -10,7 +10,7 @@ def munge_username(sender, **kwargs):
         "MODIFY username VARCHAR(255) NOT NULL")
     cursor.execute("ALTER TABLE auth_user "
         "MODIFY email VARCHAR(255) NULL")
-    cursor.execute("ALTER TABLE auth_user ADD UNIQUE INDEX (email)")
+    #cursor.execute("ALTER TABLE auth_user ADD UNIQUE INDEX (email)")
     
     transaction.commit_unless_managed()
 

@@ -4,7 +4,7 @@ from api.email_helper import *
 from rest_framework import filters
 from .models import *
 from .serializers import *
-
+import datetime
 from rest_framework import permissions
 
 
@@ -16,6 +16,19 @@ class ReminderViewSet(ViamModelViewSetNoStatus):
     #search_fields = ('name',)
     model = Reminder
     serializer_class = ReminderSerializer
+
+    def end_from_today(self, request, pk=None):
+        o = self.get_object(pk)
+        ReminderReadings.objects.filter(reminder=o).exclude(reading_date__lte=datetime.date.today()).delete()
+        try:
+            rr = ReminderReadings.objects.get(reminder=o,reading_date=datetime.date.today())
+            if rr.morning_check or rr.afternoon_check or rr.evening_check or rr.night_check or rr.complete_check:
+                pass
+            else:
+                rr.delete()
+        except ReminderReadings.DoesNotExist:
+            pass
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 class ReminderReadingsViewSet(ViamModelViewSetNoStatus):
     filter_fields = ('reading_date',)

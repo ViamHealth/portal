@@ -68,6 +68,7 @@ urlpatterns = patterns('',
 
     url(r'^reminders/$', ReminderViewSet.as_view({'get':'list','post':'create'}),name='reminder-list'),
     url(r'^reminders/(?P<pk>[0-9]+)/$', ReminderViewSet.as_view({'get':'retrieve','put':'update','delete':'destroy'}),name='reminder-detail'),
+    url(r'^reminders/(?P<pk>[0-9]+)/end/$', ReminderViewSet.as_view({'post':'end_from_today'}),name='reminder-end'),
 
     url(r'^reminderreadings/$', ReminderReadingsViewSet.as_view({'get':'list'}),name='reminderreadings-list'),
     url(r'^reminderreadings/(?P<pk>[0-9]+)/$', ReminderReadingsViewSet.as_view({'get':'retrieve','put':'update'}),name='reminderreadings-detail'),

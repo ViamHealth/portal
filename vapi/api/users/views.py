@@ -19,7 +19,9 @@ import datetime
 from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
 from api.vfacebook import *
-
+import urllib
+from django.core.files import File
+from django.conf import settings
 
 @api_view(['GET',])
 def logout(request):
@@ -257,32 +259,41 @@ class UserView(viewsets.ViewSet):
 
     def create_connections(self, request, user):
         try:
-            UserGroupSet.objects.get(group=request.user, user=user)
-            #why add again . 400 for you moron
-            result = {}
-            result['email'] = 'User already added as a family member'
-            return Response(result,status=status.HTTP_400_BAD_REQUEST)
-
-        except UserGroupSet.DoesNotExist:
-            try:
-                UserGroupSet.objects.get(group=user, user=request.user)
+            umap = UserGroupSet.objects.get(group=request.user, user=user)
+            if umap.status == 'ACTIVE':
+                #why add again . 400 for you moron
                 result = {}
                 result['email'] = 'User already added as a family member'
                 return Response(result,status=status.HTTP_400_BAD_REQUEST)
+            else:
+                umap.status = 'ACTIVE'
+                umap.updated_by = request.user
+                umap.save()
+        except UserGroupSet.DoesNotExist:
+            try:
+                umap = UserGroupSet.objects.get(group=user, user=request.user)
+                if umap.status == 'ACTIVE':
+                    result = {}
+                    result['email'] = 'User already added as a family member'
+                    return Response(result,status=status.HTTP_400_BAD_REQUEST)
+                else:
+                    umap.status = 'ACTIVE'
+                    umap.updated_by = request.user
+                    umap.save()
             except UserGroupSet.DoesNotExist:
                 #create connection
                 umap = UserGroupSet(group=request.user, user=user,status='ACTIVE',updated_by=request.user);
                 umap.save()
 
-                if user.email:
-                    invite_existing_email(user, request.user)
-                """
-                profile = user.get_profile()
-                if profile.mobile:
-                    #send sms
-                """
-                serializer = UserSerializer(user)
-                return Response(serializer.data, status=status.HTTP_201_CREATED)
+        if user.email:
+            invite_existing_email(user, request.user)
+        """
+        profile = user.get_profile()
+        if profile.mobile:
+            #send sms
+        """
+        serializer = UserSerializer(user)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
     def create(self, request, format=None):
@@ -397,9 +408,39 @@ class UserView(viewsets.ViewSet):
     def update_profile(self, request, pk=None):
         user = self.get_object(pk)
         profile = user.profile
+        fb_profile_id = request.DATA.get('fb_profile_id',None)
+        fb_username = request.DATA.get('fb_username',None)
+        graph_url = None
+        social_uid = None
+        if not profile.profile_picture:
+            if profile.fb_profile_id is None and fb_profile_id is not None  :
+                graph_url = 'https://graph.facebook.com/'+ str(fb_profile_id) +'/picture?redirect=false&type=large'
+                social_uid =  fb_profile_id
+            elif  profile.fb_username is None and fb_username is not None :
+                graph_url = 'https://graph.facebook.com/'+ str(fb_username) +'/picture?redirect=false&type=large'
+                social_uid = fb_username
         serializer = UserProfileSerializer(profile, data=request.DATA)
         if serializer.is_valid():
             serializer.save()
+            #Too late to make this api auto fetch data from vfacebook lib.
+            #forced code repetition
+            #limits us to only public data
+            if graph_url is not None:
+                picture = None
+                pic_resp = requests.get(graph_url )
+                pic_data = pic_resp.json()
+                pic_data = pic_data['data']
+                
+                pic_is_set = pic_data.get('is_silhouette',None)
+                if pic_is_set is not None and pic_is_set != 'true':
+                    pic_url = pic_data.get('url',None)
+
+                    if pic_url is not None:
+                        urllib.urlretrieve(pic_url,  settings.S3_LOCAL_DOWNLOAD_LOCATION+"pp-"+social_uid+'.jpg')
+                        f = open(settings.S3_LOCAL_DOWNLOAD_LOCATION+"pp-"+social_uid+'.jpg')
+                        pic = File(f)
+                        profile.profile_picture = pic
+                        profile.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 

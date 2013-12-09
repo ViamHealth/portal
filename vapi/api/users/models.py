@@ -72,6 +72,13 @@ class UserProfile(models.Model):
     def __unicode__(self):
         return u'Profile %s of user: %s' % (self.id, self.user.username)
 
+    def save(self, *args, **kwargs):
+        if not self.fb_profile_id:
+            self.fb_profile_id = None
+        if not self.mobile:
+            self.mobile = None
+        super(UserProfile, self).save(*args, **kwargs)
+
 class UserBmiProfile(models.Model):  
     LIFESTYLE_CHOICES = (
         ('1', 'SEDENTARY'),
