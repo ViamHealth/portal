@@ -5,6 +5,8 @@ from django.contrib.auth.models import User
 import hashlib, os
 
 from simple_history.models import HistoricalRecords
+from rest_framework.authtoken.models import Token
+from django.db.models.signals import post_save
 #from dateutil.parser import *
 
 s3_image_root = 'http://viamhealth-docsbucket.s3.amazonaws.com/';
@@ -109,7 +111,7 @@ class UserBmiProfile(models.Model):
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    updated_by = models.ForeignKey('auth.User', related_name="+", db_column='updated_by')
+    updated_by = models.ForeignKey('auth.User', related_name="+", db_column='updated_by',null=True)
 
 
     history = HistoricalRecords()
@@ -146,3 +148,16 @@ class UserGroupSet(models.Model):
         return u' %s - %s' % (self.group.username, self.user.username)
 
 User.profile = property(lambda u: UserProfile.objects.get_or_create(user=u)[0])
+User.bmi_profile = property(lambda u: UserBmiProfile.objects.get_or_create(user=u)[0])
+
+
+#Automatically create token, profile, bmi_profile for a user as soon as it is created.
+def create_profiles(sender, **kw):
+    user = kw["instance"]
+    if kw["created"]:
+        Token.objects.get_or_create(user=user)
+        UserProfile.objects.get_or_create(user=user)
+        UserBmiProfile.objects.get_or_create(user=user,)
+
+post_save.connect(create_profiles, sender=User)
+

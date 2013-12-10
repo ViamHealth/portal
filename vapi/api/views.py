@@ -111,14 +111,7 @@ def upload_food_items(request, format=None):
     #upload_fdb_files('fdb4.xls')
 
 
-#Temporary create code for all users once.
-for user in User.objects.all():
-    enddate = datetime.today() - timedelta(days=7)
-    #pprint.pprint('deleting since the datetime')
-    #pprint.pprint(enddate)
-    Token.objects.filter(created__lt=enddate).delete()
-    #TODO: custom algo for creating token string
-    Token.objects.get_or_create(user=user)
+
 
 
 @api_view(['GET',])

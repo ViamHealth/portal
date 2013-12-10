@@ -53,8 +53,9 @@ class UserWeightGoalSerializer(serializers.HyperlinkedModelSerializer):
 
     def get_healthy_range(self, obj=None):
         if obj is not None:
-            u = UserBmiProfile.objects.get_or_create(user=obj.user,defaults={'updated_by': obj.user})[0]
-            
+            #u = UserBmiProfile.objects.get_or_create(user=obj.user,defaults={'updated_by': obj.user})[0]
+            u = obj.user.bmi_profile
+
             if u.height is None:
                     return None
             else:

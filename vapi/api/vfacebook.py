@@ -5,7 +5,7 @@ FACEBOOK_APP_SECRET = settings.FACEBOOK_APP_SECRET
 
 import requests
 from django.contrib.auth.models import User
-from api.users.models import UserProfile
+from api.users.models import *
 
 import datetime
 import facebook
@@ -31,12 +31,16 @@ def facebook_create_user(data,token):
     last_name = data.get('last_name',None)
 
     user = User.objects.create_user(username=username, email=email,first_name=first_name,last_name=last_name)
+    bmi_profile = user.bmi_profile
+    bmi_profile.updated_by = user
+    bmi_profile.save()
     facebook_populate_profile(user,data,token)
 
     return user
 
 def facebook_populate_profile(user,data,token):
-    profile =  UserProfile.objects.get_or_create(user=user)[0]
+    #profile =  UserProfile.objects.get_or_create(user=user)[0]
+    profile = user.profile
     
     if not profile.gender:
 	    gender = data.get('gender',None)

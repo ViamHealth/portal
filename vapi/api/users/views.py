@@ -87,8 +87,15 @@ class SignupView(viewsets.ViewSet):
             except UserProfile.DoesNotExist:
                 user = User(username=generate_random_username(),email=None,password=make_password(password))
                 user.save()
-                UserProfile.objects.get_or_create(user=user, defaults={'mobile':mobile})
-                UserBmiProfile.objects.get_or_create(user=user,defaults={'updated_by': user})
+                profile = user.profile
+                profile.mobile = mobile
+                profile.save()
+                bmi_profile= user.bmi_profile
+                bmi_profile.updated_by = user
+                bmi_profile.save()
+
+                #UserProfile.objects.get_or_create(user=user, defaults={'mobile':mobile})
+                #UserBmiProfile.objects.get_or_create(user=user,defaults={'updated_by': user})
                 pserializer = UserSerializer(user, context={'request': request})
                 return Response(pserializer.data, status=status.HTTP_201_CREATED)
 
@@ -102,10 +109,14 @@ class SignupView(viewsets.ViewSet):
                 serializer.object.password = make_password(serializer.object.password)
                 serializer.save()
                 user = User.objects.get(pk=serializer.object.id)
-                    
-                UserProfile.objects.get_or_create(user=user)
+                bmi_profile= user.bmi_profile
+                bmi_profile.updated_by = user
+                bmi_profile.save()
+                #UserProfile.objects.get_or_create(user=user)
+                #UserBmiProfile.objects.get_or_create(user=user,defaults={'updated_by': user})
+
                 pserializer = UserSerializer(user, context={'request': request})
-                UserBmiProfile.objects.get_or_create(user=user,defaults={'updated_by': user})
+                
 
                 if email is not None:
                     signup_email(user.email)
@@ -129,12 +140,12 @@ class InviteView(viewsets.ViewSet):
                 password = v_make_random_password()
                 user = User.objects.create_user(username=generate_random_username(), email=email,password=make_password(password))
                 invite_new_email(user, request.user, password)
+                bmi_profile= user.bmi_profile
+                bmi_profile.updated_by = request.user
+                bmi_profile.save()
 
-            UserProfile.objects.get_or_create(user=user)
-            UserBmiProfile.objects.get_or_create(user=user,defaults={'updated_by': request.user})
-
-            
-
+            #UserProfile.objects.get_or_create(user=user)
+            #UserBmiProfile.objects.get_or_create(user=user,defaults={'updated_by': request.user})
             pserializer = UserSerializer(user, data=serializer.object, context={'request': request})
 
             return Response(pserializer.data, status=status.HTTP_201_CREATED)
@@ -174,8 +185,11 @@ class ShareView(viewsets.ViewSet):
                 except User.DoesNotExist:
                     password = v_make_random_password()
                     user = User.objects.create_user(username=generate_random_username(), email=email,password=make_password(password))
-                    UserProfile.objects.get_or_create(user=user)
-                    UserBmiProfile.objects.get_or_create(user=user,defaults={'updated_by': request.user})        
+                    bmi_profile= user.bmi_profile
+                    bmi_profile.updated_by = user
+                    bmi_profile.save()
+                    #UserProfile.objects.get_or_create(user=user)
+                    #UserBmiProfile.objects.get_or_create(user=user,defaults={'updated_by': request.user})        
                     invite_new_email(user, request.user, password)
 
                 try:
@@ -359,8 +373,15 @@ class UserView(viewsets.ViewSet):
             if serializer.is_valid():
                 serializer.save()
                 user=User.objects.get(pk=serializer.data.get('id'))
-                UserProfile.objects.get_or_create(user=user,defaults={'mobile':mobile})
-                UserBmiProfile.objects.get_or_create(user=user,defaults={'updated_by': user})
+                profile = user.profile
+                profile.mobile = mobile
+                profile.save()
+                bmi_profile= user.bmi_profile
+                bmi_profile.updated_by = user
+                bmi_profile.save()
+
+                #UserProfile.objects.get_or_create(user=user,defaults={'mobile':mobile})
+                #UserBmiProfile.objects.get_or_create(user=user,defaults={'updated_by': user})
 
                 umap = UserGroupSet(group=request.user, user=user,status='ACTIVE',updated_by=request.user);
                 umap.save()
@@ -447,14 +468,16 @@ class UserView(viewsets.ViewSet):
     @link()
     def retrieve_bmi_profile(self, request, pk):
         user = self.get_object(pk)
-        bmi_profile = UserBmiProfile.objects.get_or_create(user=user,defaults={'updated_by': user})[0]
+        bmi_profile= user.bmi_profile
+        #bmi_profile = UserBmiProfile.objects.get_or_create(user=user,defaults={'updated_by': user})[0]
         serializer = UserBmiProfileSerializer(bmi_profile, context={'request': request})
         return Response(serializer.data)
 
     @action(methods=['PUT'])
     def update_bmi_profile(self, request, pk=None):
         user = self.get_object(pk)
-        bmi_profile = UserBmiProfile.objects.get_or_create(user=user,defaults={'updated_by': user})[0]
+        bmi_profile= user.bmi_profile
+        #bmi_profile = UserBmiProfile.objects.get_or_create(user=user,defaults={'updated_by': user})[0]
         serializer = UserBmiProfileSerializer(bmi_profile, data=request.DATA, context={'request': request})
         if serializer.is_valid():
             serializer.save()

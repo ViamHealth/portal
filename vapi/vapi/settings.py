@@ -150,6 +150,7 @@ INSTALLED_APPS = (
     'django_ses',
     'djcelery',
     'seacucumber',
+    'kombu.transport.django',
 )
 
 
