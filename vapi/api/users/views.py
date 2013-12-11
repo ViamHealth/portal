@@ -27,7 +27,7 @@ from django.conf import settings
 def logout(request):
     if request.user.is_authenticated():
         Token.objects.get(user=request.user).delete()
-        Token.objects.get_or_create(user=user)
+        Token.objects.get_or_create(user=request.user)
         return Response(status=status.HTTP_204_NO_CONTENT)
     else:
         return Response(status=status.HTTP_401_UNAUTHORIZED)
