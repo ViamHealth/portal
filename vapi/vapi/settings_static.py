@@ -148,6 +148,7 @@ INSTALLED_APPS = (
     'djcelery',
     'seacucumber',
     'kombu.transport.django',
+    'rest_framework_swagger',
 )
 
 
@@ -251,3 +252,19 @@ S3_LOCAL_DOWNLOAD_LOCATION = '/s3downloads/'
 
 CELERY_RESULT_BACKEND='djcelery.backends.database:DatabaseBackend'
 BROKER_URL = 'django://'
+
+SWAGGER_SETTINGS = {
+    "exclude_namespaces": [], # List URL namespaces to ignore
+    "api_version": '1.0.0.3',  # Specify your API's version
+    "api_path": "/",  # Specify the path to your API not a root level
+    "enabled_methods": [  # Specify which methods to enable in Swagger UI
+        'get',
+        'post',
+        'put',
+        'patch',
+        'delete'
+    ],
+    "api_key": '', # An API key
+    "is_authenticated": True,  # Set to True to enforce user authentication,
+    "is_superuser": False,  # Set to True to enforce admin only access
+}
