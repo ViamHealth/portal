@@ -14,6 +14,101 @@ class UserProfileSerializer(serializers.ModelSerializer):
         model = UserProfile
         fields = ( 'gender', 'date_of_birth', 'profile_picture_url','mobile','blood_group','fb_profile_id','fb_username','organization', 'street','city','state','country','zip_code','lattitude','longitude','address',)
 
+class UserBmiProfileSerializer(serializers.HyperlinkedModelSerializer):
+    user = serializers.Field(source='user.id')
+    bmr = serializers.SerializerMethodField('get_bmr')
+    bmi_classification = serializers.SerializerMethodField('get_bmi_classification')
+    bp_classification = serializers.SerializerMethodField('get_bp_classification')
+    sugar_classification = serializers.SerializerMethodField('get_sugar_classification')
+    cholesterol_classification = serializers.SerializerMethodField('get_cholesterol_classification')
+    total_cholesterol = serializers.Field(source='total_cholesterol')
+    latest_readings = serializers.SerializerMethodField('get_latest_readings')
+    class Meta:
+        model = UserBmiProfile
+        fields = (
+            'id', 
+            'user', 
+            'height' , 
+            'weight' ,
+            'lifestyle',
+            'bmi_classification',
+            'bmr',
+            'systolic_pressure',
+            'diastolic_pressure',
+            'pulse_rate',
+            'bp_classification',
+            'random',
+            'fasting',
+            'sugar_classification',
+            'hdl',
+            'ldl',
+            'triglycerides',
+            'total_cholesterol',
+            'cholesterol_classification',
+            'latest_readings',
+            )
+
+    def get_latest_readings(self, obj=None):
+        cp = obj
+        user = obj.user
+        q = UserWeightReading.objects.filter(user=user).order_by('-reading_date')[:1]
+        if len(q) == 1:
+            weight = q[0]
+            cp.weight = weight.weight
+
+        q = UserBloodPressureReading.objects.filter(user=user).order_by('-reading_date')[:1]
+        if len(q) == 1:
+            bp = q[0]
+            if bp.systolic_pressure is not None:
+                cp.systolic_pressure = bp.systolic_pressure
+            if bp.diastolic_pressure is not None:
+                cp.diastolic_pressure = bp.diastolic_pressure
+            if bp.pulse_rate is not None:
+                cp.pulse_rate = bp.pulse_rate
+
+        q = UserGlucoseReading.objects.filter(user=user).order_by('-reading_date')[:1]
+        if len(q) == 1:
+            bp = q[0]
+            if bp.random is not None:
+                cp.random = bp.random
+            if bp.fasting is not None:
+                cp.fasting = bp.fasting
+        
+        q = UserCholesterolReading.objects.filter(user=user).order_by('-reading_date')[:1]
+        if len(q) == 1:
+            bp = q[0]
+            if bp.hdl is not None:
+                cp.hdl = bp.hdl
+            if bp.ldl is not None:
+                cp.ldl = bp.ldl
+            if bp.triglycerides is not None:
+                cp.triglycerides = bp.triglycerides
+
+        s = LatestBmiProfileData(cp)
+        return s.data
+
+    def get_bmi_classification(self, obj=None):
+        data = LatestReadings(obj)
+        return data.get_bmi_classification(obj)
+
+    def get_bmr(self, obj=None):
+        data = LatestReadings(obj)
+        return data.get_bmr(obj)
+    
+    def get_bp_classification(self, obj=None):
+        data = LatestReadings(obj)
+        return data.get_bp_classification(obj)
+
+    def get_sugar_classification(self, obj=None):
+        data = LatestReadings(obj)
+        return data.get_sugar_classification(obj)
+
+    def get_cholesterol_classification(self, obj=None):
+        data = LatestReadings(obj)
+        return data.get_cholesterol_classification(obj)
+    
+
+
 class UserPasswordSerializer(serializers.Serializer):
     old_password = serializers.CharField(required=True)
     password = serializers.CharField(required=True)
@@ -33,9 +128,10 @@ class UserProfilePicSerializer(serializers.ModelSerializer):
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
     profile = UserProfileSerializer(required=False)
+    bmi_profile = UserBmiProfileSerializer(required=False)
     class Meta:
         model = User
-        fields = ('id',  'username', 'email', 'first_name', 'last_name', 'profile')
+        fields = ('id',  'username', 'email', 'first_name', 'last_name', 'profile', 'bmi_profile')
 
 class UserEditSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
@@ -341,96 +437,3 @@ class LatestBmiProfileData(serializers.Serializer):
         data = LatestReadings(obj)
         return data.get_total_cholesterol(obj)
 
-class UserBmiProfileSerializer(serializers.HyperlinkedModelSerializer):
-    user = serializers.Field(source='user.id')
-    bmr = serializers.SerializerMethodField('get_bmr')
-    bmi_classification = serializers.SerializerMethodField('get_bmi_classification')
-    bp_classification = serializers.SerializerMethodField('get_bp_classification')
-    sugar_classification = serializers.SerializerMethodField('get_sugar_classification')
-    cholesterol_classification = serializers.SerializerMethodField('get_cholesterol_classification')
-    total_cholesterol = serializers.Field(source='total_cholesterol')
-    latest_readings = serializers.SerializerMethodField('get_latest_readings')
-    class Meta:
-        model = UserBmiProfile
-        fields = (
-            'id', 
-            'user', 
-            'height' , 
-            'weight' ,
-            'lifestyle',
-            'bmi_classification',
-            'bmr',
-            'systolic_pressure',
-            'diastolic_pressure',
-            'pulse_rate',
-            'bp_classification',
-            'random',
-            'fasting',
-            'sugar_classification',
-            'hdl',
-            'ldl',
-            'triglycerides',
-            'total_cholesterol',
-            'cholesterol_classification',
-            'latest_readings',
-            )
-
-    def get_latest_readings(self, obj=None):
-        cp = obj
-        user = obj.user
-        q = UserWeightReading.objects.filter(user=user).order_by('-reading_date')[:1]
-        if len(q) == 1:
-            weight = q[0]
-            cp.weight = weight.weight
-
-        q = UserBloodPressureReading.objects.filter(user=user).order_by('-reading_date')[:1]
-        if len(q) == 1:
-            bp = q[0]
-            if bp.systolic_pressure is not None:
-                cp.systolic_pressure = bp.systolic_pressure
-            if bp.diastolic_pressure is not None:
-                cp.diastolic_pressure = bp.diastolic_pressure
-            if bp.pulse_rate is not None:
-                cp.pulse_rate = bp.pulse_rate
-
-        q = UserGlucoseReading.objects.filter(user=user).order_by('-reading_date')[:1]
-        if len(q) == 1:
-            bp = q[0]
-            if bp.random is not None:
-                cp.random = bp.random
-            if bp.fasting is not None:
-                cp.fasting = bp.fasting
-        
-        q = UserCholesterolReading.objects.filter(user=user).order_by('-reading_date')[:1]
-        if len(q) == 1:
-            bp = q[0]
-            if bp.hdl is not None:
-                cp.hdl = bp.hdl
-            if bp.ldl is not None:
-                cp.ldl = bp.ldl
-            if bp.triglycerides is not None:
-                cp.triglycerides = bp.triglycerides
-
-        s = LatestBmiProfileData(cp)
-        return s.data
-
-    def get_bmi_classification(self, obj=None):
-        data = LatestReadings(obj)
-        return data.get_bmi_classification(obj)
-
-    def get_bmr(self, obj=None):
-        data = LatestReadings(obj)
-        return data.get_bmr(obj)
-    
-    def get_bp_classification(self, obj=None):
-        data = LatestReadings(obj)
-        return data.get_bp_classification(obj)
-
-    def get_sugar_classification(self, obj=None):
-        data = LatestReadings(obj)
-        return data.get_sugar_classification(obj)
-
-    def get_cholesterol_classification(self, obj=None):
-        data = LatestReadings(obj)
-        return data.get_cholesterol_classification(obj)
-    
