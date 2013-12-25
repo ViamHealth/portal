@@ -26,6 +26,7 @@ class HealthfileViewSet(ViamModelViewSet):
     filter_backends = (filters.SearchFilter,)
     search_fields = ('name','description',)
 
+
     def pre_save(self, obj):
         file = self.request.FILES.get('file',None)
         if file is not None:
@@ -44,13 +45,7 @@ class HealthfileViewSet(ViamModelViewSet):
             else:
                 return HealthfileEditSerializer
 
-    #TODO: remove csrf_exempt   
-    #@csrf_exempt
     def create(self, request, format=None):
-        #pprint.pprint(request.META)
-        #pprint.pprint(request.DATA)
-        #pprint.pprint(request.FILES['file'].size)
-        #return 'a'
         serializer = self.get_serializer(data=request.DATA,)
         if serializer.is_valid():
             file = self.request.FILES.get('file',None)
@@ -68,7 +63,7 @@ class HealthfileViewSet(ViamModelViewSet):
 
     def update(self, request, pk=None):
         tags_sent = False
-        m = self.get_object(pk)
+        m = self.get_object()
         serializer = self.get_serializer(m, data=request.DATA)
         if serializer.is_valid():
             serializer.save()
@@ -86,7 +81,7 @@ class HealthfileViewSet(ViamModelViewSet):
                 id_arr = []
                 for v in tags:
                     try:
-                        t = HealthfileTag.objects.get(healthfile=m,tag=v)
+                        t = HealthfileTag.objects.get(healthfile=m,tag=v,is_deleted=False)
                     except HealthfileTag.DoesNotExist:
                         t = HealthfileTag(tag=v,healthfile=m)
                     tdata = {}
@@ -99,9 +94,9 @@ class HealthfileViewSet(ViamModelViewSet):
                     else:
                         tag_objs_create.append(tdata)
 
-                qt = HealthfileTag.objects.filter(id__in=id_arr)
+                #qt = HealthfileTag.objects.filter(id__in=id_arr,is_deleted=False)
 
-                HealthfileTag.objects.filter(healthfile=m).exclude(id__in=id_arr).delete()
+                HealthfileTag.objects.filter(healthfile=m).exclude(id__in=id_arr).soft_delete()
 
                 tagserializer = HealthfileTagAddSerializer(data=tag_objs_create , many=True)
                 if tagserializer.is_valid():

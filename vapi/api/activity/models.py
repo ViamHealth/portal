@@ -2,6 +2,7 @@ from __future__ import unicode_literals
 from django.db import models
 import  pprint, datetime
 from simple_history.models import HistoricalRecords
+from api.models import ApiModel, StaticApiModel
 
 
 MEASURE_CHOICES = (
@@ -10,7 +11,7 @@ MEASURE_CHOICES = (
 )
 
 
-class PhysicalActivity(models.Model):
+class PhysicalActivity(StaticApiModel):
     label = models.TextField()
     value = models.FloatField()
 
@@ -22,7 +23,7 @@ class PhysicalActivity(models.Model):
     def __unicode__(self):
         return u'Id %s Label: %s' % (self.id, self.label)
 
-class UserPhysicalActivity(models.Model):
+class UserPhysicalActivity(ApiModel):
     TIME_SPENT_UNIT_CHOICES = (
         ('1','MINUTE'),
         ('2','HOUR'),
@@ -35,10 +36,6 @@ class UserPhysicalActivity(models.Model):
     physical_activity = models.ForeignKey('PhysicalActivity', related_name="+")
     user_calories_spent = models.CharField(max_length=40L,blank=True,null=True)
     activity_date = models.DateField(null=True,blank=True)
-
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-    updated_by = models.ForeignKey('auth.User', related_name="+", db_column='updated_by')
     
     history = HistoricalRecords()
 
@@ -50,3 +47,6 @@ class UserPhysicalActivity(models.Model):
 
     class Meta:
         db_table = 'tbl_user_physical_activities'
+
+    def __unicode__(self):
+        return u'Id %s User Email: %s' % (self.id, self.user.email)

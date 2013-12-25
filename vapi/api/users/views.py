@@ -89,6 +89,7 @@ class SignupView(viewsets.ViewSet):
                 user.save()
                 profile = user.profile
                 profile.mobile = mobile
+                profile.updated_by = user
                 profile.save()
                 bmi_profile= user.bmi_profile
                 bmi_profile.updated_by = user
@@ -109,6 +110,9 @@ class SignupView(viewsets.ViewSet):
                 serializer.object.password = make_password(serializer.object.password)
                 serializer.save()
                 user = User.objects.get(pk=serializer.object.id)
+                profile = user.profile
+                profile.updated_by = user
+                profile.save()
                 bmi_profile= user.bmi_profile
                 bmi_profile.updated_by = user
                 bmi_profile.save()
@@ -185,6 +189,9 @@ class ShareView(viewsets.ViewSet):
                 except User.DoesNotExist:
                     password = v_make_random_password()
                     user = User.objects.create_user(username=generate_random_username(), email=email,password=make_password(password))
+                    profile = user.profile
+                    profile.updated_by = user
+                    profile.save()
                     bmi_profile= user.bmi_profile
                     bmi_profile.updated_by = user
                     bmi_profile.save()
@@ -240,7 +247,7 @@ class UserView(viewsets.ViewSet):
         if user_id == family_user_id:
             return True
         has_permission = False
-        qqueryset = UserGroupSet.objects.filter(user_id__in=[user_id,family_user_id],group_id__in=[user_id,family_user_id],status='ACTIVE')
+        qqueryset = UserGroupSet.objects.filter(user_id__in=[user_id,family_user_id],group_id__in=[user_id,family_user_id],status='ACTIVE',is_deleted=False)
         for p in qqueryset:
             if(p.user_id != p.group_id):
                 has_permission = True
@@ -259,21 +266,34 @@ class UserView(viewsets.ViewSet):
 
     def list(self, request, format=None):
         qqueryset = UserGroupSet.objects.filter(Q(group=request.user)|Q(user=request.user)).filter(status='ACTIVE')
+        qqueryset = sync_queryset_filter(self,qqueryset)
+
         users = []
         users = list(set(users))
         #users = [p.user for p in qqueryset]
         for p in qqueryset:
             if p.group.id != request.user.id:
+                p.group.is_deleted = p.is_deleted
                 users = [p.group] + users
             if p.user.id != request.user.id:
+                p.user.is_deleted = p.is_deleted
                 users = [p.user] + users
-        users = [request.user] + users
-        serializer = UserSerializer(users, many=True, context={'request': request})
+        self_user = request.user
+        self_user.is_deleted = False
+        users = [self_user] + users
+
+        
+        sync_ts = request.QUERY_PARAMS.get('last_sync', None)
+        if sync_ts is None:
+            serializer = UserListSerializer(users, fields=('id',  'username', 'email', 'first_name', 'last_name', 'profile', 'bmi_profile'), many=True)
+        else:
+            serializer = UserListSerializer(users,fields=('id',  'username', 'email', 'first_name', 'last_name', 'profile', 'bmi_profile','is_deleted'), many=True)    
+
         return Response(serializer.data)
 
     def create_connections(self, request, user):
         try:
-            umap = UserGroupSet.objects.get(group=request.user, user=user)
+            umap = UserGroupSet.objects.get(group=request.user, user=user,is_deleted=False)
             if umap.status == 'ACTIVE':
                 #why add again . 400 for you moron
                 result = {}
@@ -285,7 +305,7 @@ class UserView(viewsets.ViewSet):
                 umap.save()
         except UserGroupSet.DoesNotExist:
             try:
-                umap = UserGroupSet.objects.get(group=user, user=request.user)
+                umap = UserGroupSet.objects.get(group=user, user=request.user,is_deleted=False)
                 if umap.status == 'ACTIVE':
                     result = {}
                     result['email'] = 'User already added as a family member'
@@ -375,6 +395,7 @@ class UserView(viewsets.ViewSet):
                 user=User.objects.get(pk=serializer.data.get('id'))
                 profile = user.profile
                 profile.mobile = mobile
+                profile.updated_by = user
                 profile.save()
                 bmi_profile= user.bmi_profile
                 bmi_profile.updated_by = user
@@ -411,8 +432,8 @@ class UserView(viewsets.ViewSet):
         return Response(serializer.data)
 
     def destroy(self, request, pk=None):
-        UserGroupSet.objects.filter(group=pk,user=request.user.id,status='ACTIVE').update(status='DELETED',updated_by=request.user,updated_at=datetime.datetime.now())
-        UserGroupSet.objects.filter(user=pk,group=request.user.id,status='ACTIVE').update(status='DELETED',updated_by=request.user,updated_at=datetime.datetime.now())
+        UserGroupSet.objects.filter(group=pk,user=request.user.id).update(status='DELETED',is_deleted=True,updated_by=request.user)
+        UserGroupSet.objects.filter(user=pk,group=request.user.id).update(status='DELETED',is_deleted=True,updated_by=request.user)
         return Response(status=status.HTTP_204_NO_CONTENT)
 
     @action(methods=['POST'])
@@ -461,6 +482,7 @@ class UserView(viewsets.ViewSet):
                         f = open(settings.S3_LOCAL_DOWNLOAD_LOCATION+"pp-"+social_uid+'.jpg')
                         pic = File(f)
                         profile.profile_picture = pic
+                        profile.updated_by = request.user
                         profile.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

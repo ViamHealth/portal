@@ -7,6 +7,8 @@ import requests
 from django.contrib.auth.models import User
 from api.users.models import *
 
+from api.util.helper import *
+
 import datetime
 import facebook
 import urllib
@@ -31,6 +33,9 @@ def facebook_create_user(data,token):
     last_name = data.get('last_name',None)
 
     user = User.objects.create_user(username=username, email=email,first_name=first_name,last_name=last_name)
+    profile = user.profile
+    profile.updated_by = user
+    profile.save()
     bmi_profile = user.bmi_profile
     bmi_profile.updated_by = user
     bmi_profile.save()

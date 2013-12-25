@@ -6,27 +6,13 @@ from django.dispatch import receiver
 import datetime
 from dateutil.rrule import *
 from simple_history.models import HistoricalRecords
+from api.models import ApiModel
 
 
 s3_image_root = 'http://viamhealth-docsbucket.s3.amazonaws.com/';
 
-GLOBAL_STATUS_CHOICES = (
-        ('ACTIVE','ACTIVE'),
-        ('DELETED','DELETED')
-    )
-MEASURE_CHOICES = (
-        ('METRIC','METRIC'),
-        ('STANDARD','STANDARD')
-)
-INTERVAL_UNIT_CHOICES = (
-    ('DAY','DAY'),
-    ('WEEK','WEEK'),
-    ('MONTH','MONTH'),
-    ('YEAR','YEAR'),
-)
 
-
-class Reminder(models.Model):
+class Reminder(ApiModel):
     REMINDER_REPEAT_MODE_CHOICES = (
         ('0','NONE'),
         ('1','MONTHLY'),
@@ -70,9 +56,6 @@ class Reminder(models.Model):
     repeat_weekday = models.CharField(max_length=9L,choices=WEEKDAY_CHOICES,blank=True,null=True)
     repeat_every_x = models.IntegerField(blank=True,null=True)
     repeat_i_counter = models.IntegerField(blank=True,null=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-    updated_by = models.ForeignKey('auth.User', related_name="+", db_column='updated_by')    
     
     history = HistoricalRecords()
     
@@ -86,7 +69,7 @@ class Reminder(models.Model):
     class Meta:
         db_table = 'tbl_reminders'
     
-class ReminderReadings(models.Model):
+class ReminderReadings(ApiModel):
     user = models.ForeignKey('auth.User', related_name="+")
     reminder = models.ForeignKey('Reminder', related_name="+")
     morning_check = models.BooleanField(blank=True,default=False)
@@ -94,7 +77,6 @@ class ReminderReadings(models.Model):
     evening_check = models.BooleanField(blank=True,default=False)
     night_check = models.BooleanField(blank=True,default=False)
     complete_check = models.BooleanField(blank=True,default=False)
-    updated_by = models.ForeignKey('auth.User', related_name="+", db_column='updated_by') 
 
     reading_date = models.DateField()
 

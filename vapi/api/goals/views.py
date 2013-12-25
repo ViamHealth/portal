@@ -10,6 +10,8 @@ from .serializers import *
 from rest_framework import permissions, status
 from rest_framework.response import Response
 from django.http import  HttpResponse
+from rest_framework.decorators import api_view, link, action
+from rest_framework.decorators import api_view, authentication_classes, permission_classes
 
 
 class WeightReadingViewSet(GoalReadingsViewSet):
@@ -20,13 +22,13 @@ class WeightReadingViewSet(GoalReadingsViewSet):
         else:
             return UserWeightReadingCreateSerializer
 
-class UserWeightGoalViewSet(ViamModelViewSetClean):
+class UserWeightGoalViewSet(ViamModelViewSet):
     model = UserWeightGoal
     serializer_class = UserWeightGoalSerializer
 
     def create(self, request, format=None):
         try:
-            UserWeightGoal.objects.get(user=self.get_user_object())
+            UserWeightGoal.objects.get(user=self.get_user_object(),is_deleted=False)
             return Response(status=status.HTTP_400_BAD_REQUEST)
         except UserWeightGoal.DoesNotExist:
             return super(UserWeightGoalViewSet, self).create(request,format)
@@ -40,13 +42,13 @@ class BloodPressureReadingViewSet(GoalReadingsViewSet):
         else:
             return UserBloodPressureReadingCreateSerializer
 
-class UserBloodPressureGoalViewSet(ViamModelViewSetClean):
+class UserBloodPressureGoalViewSet(ViamModelViewSet):
     model = UserBloodPressureGoal
     serializer_class = UserBloodPressureGoalSerializer
 
     def create(self, request, format=None):
         try:
-            UserBloodPressureGoal.objects.get(user=self.get_user_object())
+            UserBloodPressureGoal.objects.get(user=self.get_user_object(),is_deleted=False)
             return Response(status=status.HTTP_400_BAD_REQUEST)
         except UserBloodPressureGoal.DoesNotExist:
             return super(UserBloodPressureGoalViewSet, self).create(request,format)
@@ -59,7 +61,7 @@ class CholesterolReadingViewSet(GoalReadingsViewSet):
         else:
             return UserCholesterolReadingCreateSerializer
 
-class UserCholesterolGoalViewSet(ViamModelViewSetClean):
+class UserCholesterolGoalViewSet(ViamModelViewSet):
     
     #filter_fields = ('user')
     model = UserCholesterolGoal
@@ -67,7 +69,7 @@ class UserCholesterolGoalViewSet(ViamModelViewSetClean):
 
     def create(self, request, format=None):
         try:
-            UserCholesterolGoal.objects.get(user=self.get_user_object())
+            UserCholesterolGoal.objects.get(user=self.get_user_object(),is_deleted=False)
             return Response(status=status.HTTP_400_BAD_REQUEST)
         except UserCholesterolGoal.DoesNotExist:
             return super(UserCholesterolGoalViewSet, self).create(request,format)
@@ -80,7 +82,7 @@ class GlucoseReadingViewSet(GoalReadingsViewSet):
         else:
             return UserGlucoseReadingCreateSerializer
 
-class UserGlucoseGoalViewSet(ViamModelViewSetClean):
+class UserGlucoseGoalViewSet(ViamModelViewSet):
 
     #filter_fields = ('user')
     model = UserGlucoseGoal
@@ -88,13 +90,14 @@ class UserGlucoseGoalViewSet(ViamModelViewSetClean):
 
     def create(self, request, format=None):
         try:
-            UserGlucoseGoal.objects.get(user=self.get_user_object())
+            UserGlucoseGoal.objects.get(user=self.get_user_object(),is_deleted=False)
             return Response(status=status.HTTP_400_BAD_REQUEST)
         except UserGlucoseGoal.DoesNotExist:
             return super(UserGlucoseGoalViewSet, self).create(request,format)
 
 
-
+@api_view(['GET',])
+@permission_classes((permissions.IsAuthenticated,))
 def all_goals(request):
     glucose = None
     weight = None
@@ -107,7 +110,7 @@ def all_goals(request):
     fuser = request.GET.get('user',None)
     if fuser is not None:
         user_id = int(request.user.id)
-        qqueryset = UserGroupSet.objects.filter(user_id__in=[user_id,int(fuser)],group_id__in=[user_id,int(fuser)],status='ACTIVE')
+        qqueryset = UserGroupSet.objects.filter(user_id__in=[user_id,int(fuser)],group_id__in=[user_id,int(fuser)],status='ACTIVE',is_deleted=False)
         for p in qqueryset:
             if(p.user_id != p.group_id):
                 has_permission = True
@@ -122,19 +125,19 @@ def all_goals(request):
 
         
     try:
-        glucose = UserGlucoseGoal.objects.get(user=user)
+        glucose = UserGlucoseGoal.objects.get(user=user,is_deleted=False)
     except UserGlucoseGoal.DoesNotExist:
         pass
     try:
-        weight = UserWeightGoal.objects.get(user=user)
+        weight = UserWeightGoal.objects.get(user=user,is_deleted=False)
     except UserWeightGoal.DoesNotExist:
         pass
     try:
-        blood_pressure = UserBloodPressureGoal.objects.get(user=user)
+        blood_pressure = UserBloodPressureGoal.objects.get(user=user,is_deleted=False)
     except UserBloodPressureGoal.DoesNotExist:
         pass
     try:
-        cholesterol = UserCholesterolGoal.objects.get(user=user)
+        cholesterol = UserCholesterolGoal.objects.get(user=user,is_deleted=False)
     except UserCholesterolGoal.DoesNotExist:
         pass
     

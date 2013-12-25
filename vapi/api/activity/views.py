@@ -4,16 +4,13 @@ from .serializers import *
 from rest_framework import viewsets, permissions
 
 
-class PhysicalActivityViewSet(viewsets.ModelViewSet):
+class PhysicalActivityViewSet(ViamModelViewSetNoUser):
     model = PhysicalActivity
     serializer_class = PhysicalActivitySerializer
-    permission_classes = (permissions.IsAuthenticated,)
 
 
-class UserPhysicalActivityViewSet(ViamModelViewSetClean):
+class UserPhysicalActivityViewSet(ViamModelViewSet):
     model = UserPhysicalActivity
-    #serializer_class = UserPhysicalActivityCreateSerializer
-    permission_classes = (permissions.IsAuthenticated,)
     filter_fields = ('user','activity_date',)
 
     def get_serializer_class(self):

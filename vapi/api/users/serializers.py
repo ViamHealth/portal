@@ -51,12 +51,12 @@ class UserBmiProfileSerializer(serializers.HyperlinkedModelSerializer):
     def get_latest_readings(self, obj=None):
         cp = obj
         user = obj.user
-        q = UserWeightReading.objects.filter(user=user).order_by('-reading_date')[:1]
+        q = UserWeightReading.objects.filter(user=user,is_deleted=False).order_by('-reading_date')[:1]
         if len(q) == 1:
             weight = q[0]
             cp.weight = weight.weight
 
-        q = UserBloodPressureReading.objects.filter(user=user).order_by('-reading_date')[:1]
+        q = UserBloodPressureReading.objects.filter(user=user,is_deleted=False).order_by('-reading_date')[:1]
         if len(q) == 1:
             bp = q[0]
             if bp.systolic_pressure is not None:
@@ -66,7 +66,7 @@ class UserBmiProfileSerializer(serializers.HyperlinkedModelSerializer):
             if bp.pulse_rate is not None:
                 cp.pulse_rate = bp.pulse_rate
 
-        q = UserGlucoseReading.objects.filter(user=user).order_by('-reading_date')[:1]
+        q = UserGlucoseReading.objects.filter(user=user,is_deleted=False).order_by('-reading_date')[:1]
         if len(q) == 1:
             bp = q[0]
             if bp.random is not None:
@@ -74,7 +74,7 @@ class UserBmiProfileSerializer(serializers.HyperlinkedModelSerializer):
             if bp.fasting is not None:
                 cp.fasting = bp.fasting
         
-        q = UserCholesterolReading.objects.filter(user=user).order_by('-reading_date')[:1]
+        q = UserCholesterolReading.objects.filter(user=user,is_deleted=False).order_by('-reading_date')[:1]
         if len(q) == 1:
             bp = q[0]
             if bp.hdl is not None:
@@ -125,6 +125,24 @@ class UserProfilePicSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserProfile
         fields = ( 'profile_picture',)
+
+class UserListSerializer(serializers.ModelSerializer):
+    profile = UserProfileSerializer(required=False)
+    bmi_profile = UserBmiProfileSerializer(required=False)
+    is_deleted = serializers.BooleanField(read_only=True,required=False,default=False)
+    class Meta:
+        model = User
+        fields = ('id',  'username', 'email', 'first_name', 'last_name', 'profile', 'bmi_profile','is_deleted')
+
+    def __init__(self, *args, **kwargs):
+        fields = kwargs.pop('fields', None)
+        super(UserListSerializer, self).__init__(*args, **kwargs)
+
+        if fields:
+            allowed = set(fields)
+            existing = set(self.fields.keys())
+            for field_name in existing - allowed:
+                self.fields.pop(field_name)
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
     profile = UserProfileSerializer(required=False)

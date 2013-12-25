@@ -4,42 +4,24 @@ from api.models import *
 from api.users.models import *
 from api.serializers import *
 from rest_framework.authtoken.models import Token
-from django.core.signals import request_started
-from rest_framework.views import APIView
-from rest_framework.generics import ListAPIView
+
 #from rest_framework.authtoken.serializers import AuthTokenSerializer
 from rest_framework import permissions, renderers, parsers, status
-from rest_framework.decorators import api_view, link, action
-from rest_framework.mixins import DestroyModelMixin
-from rest_framework.reverse import reverse
 from rest_framework.response import Response
-import pprint
-from django.db.models import Q
-from django.http import Http404
-from itertools import chain
-import time
-from datetime import datetime, timedelta
-from django.shortcuts import get_object_or_404
-from rest_framework.parsers import MultiPartParser
-import mimetypes
-from django.core import exceptions
+
 from django.contrib.auth.hashers import *
 from django.http import Http404, HttpResponse
-from random import choice
-from string import ascii_lowercase, digits
 
-def generate_random_username(length=8, chars=ascii_lowercase+digits, split=4, delimiter='-'):
-    
-    username = ''.join([choice(chars) for i in xrange(length)])
-    
-    if split:
-        username = delimiter.join([username[start:start+split] for start in range(0, len(username), split)])
-    
-    try:
-        User.objects.get(username=username)
-        return generate_random_username(length=length, chars=chars, split=split, delimiter=delimiter)
-    except User.DoesNotExist:
-        return username;
+
+
+def sync_queryset_filter(view,queryset):
+    sync_ts = view.request.QUERY_PARAMS.get('last_sync', None)
+    if sync_ts is None:
+        queryset.filter(is_deleted=False)
+    else:
+        queryset.filter(updated_at__gte=sync_ts)
+    return queryset
+
 
 class JSONResponse(HttpResponse):
     """
@@ -49,6 +31,8 @@ class JSONResponse(HttpResponse):
         content = renderers.JSONRenderer().render(data)
         kwargs['content_type'] = 'application/json'
         super(JSONResponse, self).__init__(content, **kwargs)
+
+
 
 class FamilyPermission(permissions.BasePermission):
     def check_family_permission(self,user_id, family_user_id):
@@ -85,14 +69,66 @@ class FamilyPermission(permissions.BasePermission):
         user_id = int(request.user.id)
         return self.check_family_permission(user_id, family_user_id)
 
+"""
+For static models like food_items
+"""
+class ViamModelViewSetNoUser(viewsets.ModelViewSet):
 
-class ViamModelViewSetClean(viewsets.ModelViewSet):
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def restruct_serializer(self):
+        sync_ts = self.request.QUERY_PARAMS.get('last_sync', None)
+        if sync_ts is not None:
+            self.serializer_class.is_deleted = serializers.BooleanField(read_only=True,required=False)
+            self.serializer_class.Meta.fields += ('is_deleted',)
+
+    def sync_queryset_filter(self,queryset):
+        self.restruct_serializer()
+        sync_ts = self.request.QUERY_PARAMS.get('last_sync', None)
+        if sync_ts is None:
+            queryset.filter(is_deleted=False)
+        else:
+            queryset.filter(updated_at__gte=sync_ts)
+        return queryset
+
+    def get_queryset(self):
+        queryset = super(ViamModelViewSetNoUser, self).get_queryset()
+        return self.sync_queryset_filter(queryset)
+
+    def get_object(self):
+        o = super(ViamModelViewSetNoUser, self).get_object()
+        if o.is_deleted :
+            raise self.model.DoesNotExist
+        else:
+            return o
+        
+    def list(self, request, format=None):
+        return super(ViamModelViewSetNoUser, self).list(request,format)
+
+    def create(self, request, format=None):
+        return super(ViamModelViewSetNoUser, self).create(request,format)
+
+    def retrieve(self, request, pk=None, format=None):
+        return super(ViamModelViewSetNoUser, self).retrieve(request,pk,format)
+
+    def update(self, request, pk=None, format=None):
+        return super(ViamModelViewSetNoUser, self).update(request,pk,format)        
+
+    def destroy(self,request, pk=None, format=None):
+        o = self.get_object()
+        o.soft_delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+"""
+For  models that are linked with a user
+"""
+class ViamModelViewSet(ViamModelViewSetNoUser):
     
     permission_classes = (permissions.IsAuthenticated,FamilyPermission,)
-    filter_fields = ('user',)
+    #filter_fields = ('user',)
 
     #Custom helper functions
-
     def get_user_object(self):
         fuser = self.request.QUERY_PARAMS.get('user', None)
         if fuser is not None:
@@ -102,22 +138,18 @@ class ViamModelViewSetClean(viewsets.ModelViewSet):
 
     #Over riding viewset functions
     def get_queryset(self):
-        queryset = super(ViamModelViewSetClean, self).get_queryset()
-
+        queryset = super(ViamModelViewSet, self).get_queryset()
         if self.request.method not in permissions.SAFE_METHODS or self.action == 'retrieve':
             return queryset
         user = self.get_user_object()
         q = queryset.filter(user=user)
-
         return q
 
     def get_object(self):
-        try:
-            o = super(ViamModelViewSetClean, self).get_object()
-            self.check_object_permissions(self.request, o)
-            return o
-        except self.model.DoesNotExist:
-            raise Http404
+        o = super(ViamModelViewSet, self).get_object()
+        #TODO: remove below check. Super should take care of this
+        self.check_object_permissions(self.request, o)
+        return o
     
     def pre_save(self, obj):
         if hasattr(obj, 'user') == False:
@@ -126,14 +158,22 @@ class ViamModelViewSetClean(viewsets.ModelViewSet):
             obj.user = self.get_user_object()
         obj.updated_by = self.request.user
 
-    def create(self, request, format=None):
-        return super(ViamModelViewSetClean, self).create(request,format)
+    def destroy(self, request, pk=None, format=None):
+        super(ViamModelViewSet, self).destroy(pk)
+        o = self.get_object()
+        #TODO: Find a way to automatically figure out, whether the model has updated_by field or not. and push this above
+        o.updated_by = self.request.user
+        o.save()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-class GoalReadingsViewSet(ViamModelViewSetClean):
+"""
+Only for goal readings as reading_date is psuedo primary key for them
+"""
+class GoalReadingsViewSet(ViamModelViewSet):
     def get_object(self, reading_date):
         try:
-            o = self.model.objects.get(reading_date=reading_date,user=self.get_user_object())
+            o = self.model.objects.get(reading_date=reading_date,user=self.get_user_object(),is_deleted=False)
             self.check_object_permissions(self.request, o)
             return o
         except self.model.DoesNotExist:
@@ -161,164 +201,6 @@ class GoalReadingsViewSet(ViamModelViewSetClean):
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    def destroy(self, request, reading_date):
-        o = self.get_object(reading_date)
-        o.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
-
-
-class ViamModelViewSetNoStatus(viewsets.ModelViewSet):
-    
-    permission_classes = (permissions.IsAuthenticated,FamilyPermission,)
-    #filter_fields = ('user',)
-
-    #Custom helper functions
-
-    def get_user_object(self):
-        fuser = self.request.QUERY_PARAMS.get('user', None)
-        if fuser is not None:
-            return User.objects.get(pk=fuser)
-        else:
-            return self.request.user
-
-    #Over riding viewset functions
-    def get_queryset(self):
-        queryset = self.model.objects.all()
-        if self.request.method not in permissions.SAFE_METHODS:
-            return queryset
-        user = self.get_user_object()
-        return queryset.filter(user=user)
-
-    def get_object(self, pk=None):
-        try:
-            o = self.model.objects.get(pk=pk)
-            #o = super(ViamModelViewSetNoStatus, self).get_object()
-            self.check_object_permissions(self.request, o)
-            return o
-        except self.model.DoesNotExist:
-            raise Http404
-    
-    def pre_save(self, obj):
-        obj.user = self.get_user_object()
-        obj.updated_by = self.request.user
-
-    def retrieve(self, request, pk=None):
-        m = self.get_object(pk)
-        serializer = self.get_serializer(m)
-        return Response(serializer.data) 
-
-    def update(self, request, pk=None):
-        m = self.get_object(pk)
-        serializer = self.get_serializer(m, data=request.DATA)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    def destroy(self, request, pk=None):
-        o = self.get_object(pk)
-        o.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
-
- 
-class ViamModelViewSet(viewsets.ModelViewSet):
-    
-    permission_classes = (permissions.IsAuthenticated,FamilyPermission,)
-    filter_fields = ('user',)
-
-    #Custom helper functions
-    def get_user_object(self):
-        fuser = self.request.QUERY_PARAMS.get('user', None)
-        if fuser is not None:
-            return User.objects.get(pk=fuser)
-        else:
-            return self.request.user
-
-    #Over riding viewset functions
-    def get_queryset(self):
-        queryset = self.model.objects.filter(status='ACTIVE')
-        if self.request.method not in permissions.SAFE_METHODS:
-            return queryset
-        user = self.request.QUERY_PARAMS.get('user', None)
-        if user is not None:
-            queryset = queryset.filter(user=user)
-        else:
-            queryset = queryset.filter(user=self.request.user)
-        return queryset
-
-    def get_object(self, pk=None):
-        try:
-            o = self.model.objects.get(pk=pk,status='ACTIVE')
-            self.check_object_permissions(self.request, o)
-            return o
-        except self.model.DoesNotExist:
-            raise Http404
-
-    def pre_save(self, obj):
-        obj.user = self.get_user_object()
-        obj.updated_by = self.request.user
-
-    def retrieve(self, request, pk=None):
-        m = self.get_object(pk)
-        serializer = self.get_serializer(m)
-        return Response(serializer.data)
-
-    #def create(self, request, format=None):
-    #    serializer = self.get_serializer(data=request.DATA,)
-    #    pprint.pprint('hihii')
-    #    if serializer.is_valid():
-    #        #TODO: bug - not calling pre_save
-    #        serializer.object.user = self.get_user_object()
-    #        serializer.object.updated_by = self.request.user
-    #        serializer.save()
-    #        return Response(serializer.data, status=status.HTTP_201_CREATED)
-    #    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    def update(self, request, pk=None):
-        m = self.get_object(pk)
-        serializer = self.get_serializer(m, data=request.DATA)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    def destroy(self, request, pk=None):
-        m = self.get_object(pk)
-        m.status = 'DELETED'
-        m.updated_by = self.request.user
-        m.save()
-        return Response(status=status.HTTP_204_NO_CONTENT)
-
-"""
-function to get object , with ACTIVE status
-
-def global_get_object(view):
-    queryset = view.get_queryset()
-    filter = {}
-    filter[view.lookup_field] = view.kwargs[view.lookup_field]
-    model = get_object_or_404(queryset, **filter)
-    #Redundant as queryset will have auto check
-    #view.check_object_permissions(view.request, model)
-    return model
-"""
 
 
 
-"""
-function used for creating and updating]
-"""
-def global_create_update(request, view, pk=None, data=None):
-    serializerObj = view.get_serializer_class()
-    if data is None:
-        data = request.DATA
-    if pk is not None:
-        mObj = view.get_object()
-        serializer = serializerObj(mObj, data=data, context={'request': request})
-    else:
-        serializer = serializerObj(data=data, context={'request': request})
-    if serializer.is_valid():
-        serializer.object.user = global_get_user_object(request)
-        serializer.object.updated_by = request.user
-        serializer.save()
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

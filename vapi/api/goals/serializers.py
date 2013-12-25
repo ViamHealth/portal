@@ -18,10 +18,11 @@ def goal_readings_validator(obj, attrs, source):
         else:
             user = User.objects.get(pk=fuser)
         try:
-            obj.Meta.model.objects.get(reading_date=attrs['reading_date'],user=user)
+            obj.Meta.model.objects.get(reading_date=attrs['reading_date'],user=user,is_deleted=False)
             raise serializers.ValidationError('reading for this date already exists')
         except obj.Meta.model.DoesNotExist:
             return attrs
+
 class UserWeightReadingCreateSerializer(serializers.HyperlinkedModelSerializer):
     user = serializers.Field(source='user.id')
     class Meta:
@@ -43,7 +44,7 @@ class UserWeightGoalSerializer(serializers.HyperlinkedModelSerializer):
     def get_readings(self, obj=None):
         if obj is not None:
             user = obj.user
-            readings = UserWeightReading.objects.filter(user=user,reading_date__gte=obj.created_at)
+            readings = UserWeightReading.objects.filter(user=user,reading_date__gte=obj.created_at,is_deleted=False)
             serializer = UserWeightReadingSerializer(readings, many=True)
             return serializer.data
     #readings = UserWeightReadingSerializer(many=True)
@@ -96,7 +97,7 @@ class UserBloodPressureGoalSerializer(serializers.HyperlinkedModelSerializer):
     def get_readings(self, obj=None):
         if obj is not None:
             user = obj.user
-            readings = UserBloodPressureReading.objects.filter(user=user,reading_date__gte=obj.created_at)
+            readings = UserBloodPressureReading.objects.filter(user=user,reading_date__gte=obj.created_at,is_deleted=False)
             serializer = UserBloodPressureReadingSerializer(readings, many=True)
             return serializer.data
 
@@ -147,7 +148,7 @@ class UserCholesterolGoalSerializer(serializers.HyperlinkedModelSerializer):
     def get_readings(self, obj=None):
         if obj is not None:
             user = obj.user
-            readings = UserCholesterolReading.objects.filter(user=user,reading_date__gte=obj.created_at)
+            readings = UserCholesterolReading.objects.filter(user=user,reading_date__gte=obj.created_at,is_deleted=False)
             serializer = UserCholesterolReadingSerializer(readings, many=True)
             return serializer.data
 
@@ -201,7 +202,7 @@ class UserGlucoseGoalSerializer(serializers.HyperlinkedModelSerializer):
     def get_readings(self, obj=None):
         if obj is not None:
             user = obj.user
-            readings = UserGlucoseReading.objects.filter(user=user,reading_date__gte=obj.created_at)
+            readings = UserGlucoseReading.objects.filter(user=user,reading_date__gte=obj.created_at,is_deleted=False)
             serializer = UserGlucoseReadingSerializer(readings, many=True)
             return serializer.data
         

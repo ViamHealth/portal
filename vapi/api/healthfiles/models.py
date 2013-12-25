@@ -3,6 +3,8 @@ from __future__ import unicode_literals
 from django.db import models
 import mimetypes, pprint, datetime
 from simple_history.models import HistoricalRecords
+from api.models import ApiModel, StaticApiModel
+
 
 GLOBAL_STATUS_CHOICES = (
         ('ACTIVE','ACTIVE'),
@@ -10,7 +12,7 @@ GLOBAL_STATUS_CHOICES = (
     )
 
 
-class HealthfileTag(models.Model):
+class HealthfileTag(StaticApiModel):
     healthfile = models.ForeignKey('Healthfile', related_name="+")
     tag = models.CharField(max_length=64L)
 
@@ -21,7 +23,7 @@ class HealthfileTag(models.Model):
     def __unicode__(self):
         return u' %s of healthfile %s' % (self.id, self.healthfile)
 
-class Healthfile(models.Model):
+class Healthfile(ApiModel):
     def get_healthfile_path(self, filename):
         return 'healthfiles/'+str(self.user.id)+str(self.name)+str(datetime.datetime.now())
 
@@ -30,10 +32,6 @@ class Healthfile(models.Model):
     description = models.TextField(blank=True, null=True)
     mime_type = models.CharField(max_length=256L,blank=True, null=True)
     file = models.FileField(upload_to=get_healthfile_path, blank=True, editable=True,)
-    status = models.CharField(max_length=18L, choices=GLOBAL_STATUS_CHOICES, default='ACTIVE', db_index=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-    updated_by = models.ForeignKey('auth.User', related_name="+", db_column='updated_by')
     #TODO: Use forms instead of using this flag
     uploading_file = False
 

@@ -9,28 +9,25 @@ from rest_framework import permissions
 
 
 
-class ReminderViewSet(ViamModelViewSetNoStatus):
-    #filter_fields = ('type')
+class ReminderViewSet(ViamModelViewSet):
     filter_fields = ('type',)
-    #filter_backends = (filters.SearchFilter,)
-    #search_fields = ('name',)
     model = Reminder
     serializer_class = ReminderSerializer
 
     def end_from_today(self, request, pk=None):
-        o = self.get_object(pk)
-        ReminderReadings.objects.filter(reminder=o).exclude(reading_date__lte=datetime.date.today()).delete()
+        o = self.get_object()
+        ReminderReadings.objects.filter(reminder=o,id_deleted=False).exclude(reading_date__lte=datetime.date.today()).soft_delete()
         try:
-            rr = ReminderReadings.objects.get(reminder=o,reading_date=datetime.date.today())
+            rr = ReminderReadings.objects.get(reminder=o,reading_date=datetime.date.today(),is_deleted=False)
             if rr.morning_check or rr.afternoon_check or rr.evening_check or rr.night_check or rr.complete_check:
                 pass
             else:
-                rr.delete()
+                rr.soft_delete()
         except ReminderReadings.DoesNotExist:
             pass
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-class ReminderReadingsViewSet(ViamModelViewSetNoStatus):
+class ReminderReadingsViewSet(ViamModelViewSet):
     filter_fields = ('reading_date',)
     model = ReminderReadings
     serializer_class = ReminderReadingsSerializer
@@ -38,14 +35,14 @@ class ReminderReadingsViewSet(ViamModelViewSetNoStatus):
     def get_queryset(self):
         from django.db.models import F
 
-        queryset = self.model.objects.all()
+        queryset = self.model.objects.filter(is_deleted=False)
         if self.request.method not in permissions.SAFE_METHODS:
             return queryset
 
         type = self.request.QUERY_PARAMS.get('type', 'ALL')
 
         if type == '1' or type == '2' or type == '3' or type == '4' :
-            queryset = self.model.objects.filter(reminder__type=type, reminder_id = F('reminder__id'))
+            queryset = queryset.filter(reminder__type=type, reminder_id = F('reminder__id'))
 
         user = self.get_user_object()
         queryset = queryset.filter(user=user)

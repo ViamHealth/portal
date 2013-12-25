@@ -4,6 +4,7 @@ from django.db import models
 import datetime
 from dateutil.relativedelta import relativedelta
 from simple_history.models import HistoricalRecords
+from api.models import ApiModel
 
 MEASURE_CHOICES = (
         ('METRIC','METRIC'),
@@ -31,7 +32,7 @@ def goal_get_target_date(obj, *args, **kwargs):
         obj.target_date = obj.target_date.date()
     return obj.target_date
 
-class UserWeightGoal(models.Model):
+class UserWeightGoal(ApiModel):
     
     user = models.ForeignKey('auth.User', related_name="+")
     weight = models.FloatField()
@@ -39,9 +40,6 @@ class UserWeightGoal(models.Model):
     target_date = models.DateField(blank=True,null=True)
     interval_num = models.IntegerField(blank=True,default=0)
     interval_unit = models.CharField(max_length=6L, choices=INTERVAL_UNIT_CHOICES,blank=True,null=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-    updated_by = models.ForeignKey('auth.User', related_name="+", db_column='updated_by')
 
     history = HistoricalRecords()
 
@@ -57,15 +55,12 @@ class UserWeightGoal(models.Model):
             self.target_date = goal_get_target_date(self, *args, **kwargs)
         super(UserWeightGoal, self).save(*args, **kwargs)
     
-class UserWeightReading(models.Model):
+class UserWeightReading(ApiModel):
     user = models.ForeignKey('auth.User', related_name="+")
     weight = models.FloatField()
     weight_measure = models.CharField(max_length=12L, choices=MEASURE_CHOICES, default='METRIC',null=True)
     reading_date = models.DateField()
     comment = models.TextField(blank=True, null=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-    updated_by = models.ForeignKey('auth.User', related_name="+", db_column='updated_by')
     
     history = HistoricalRecords()
     
@@ -79,7 +74,7 @@ class UserWeightReading(models.Model):
         return u'reading %s ' % (self.id)
 
 
-class UserBloodPressureGoal(models.Model):
+class UserBloodPressureGoal(ApiModel):
     user = models.ForeignKey('auth.User', related_name="+")
     target_date = models.DateField(blank=True,null=True)
     systolic_pressure = models.FloatField()
@@ -87,9 +82,6 @@ class UserBloodPressureGoal(models.Model):
     pulse_rate = models.IntegerField()
     interval_num = models.IntegerField(blank=True,default=0)
     interval_unit = models.CharField(max_length=6L, choices=INTERVAL_UNIT_CHOICES,blank=True, null=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-    updated_by = models.ForeignKey('auth.User', related_name="+", db_column='updated_by')
 
     history = HistoricalRecords()
     
@@ -106,16 +98,13 @@ class UserBloodPressureGoal(models.Model):
         super(UserBloodPressureGoal, self).save(*args, **kwargs)
 
 
-class UserBloodPressureReading(models.Model):
+class UserBloodPressureReading(ApiModel):
     user = models.ForeignKey('auth.User', related_name="+")
     systolic_pressure = models.FloatField()
     diastolic_pressure = models.FloatField()
     pulse_rate = models.IntegerField()
     reading_date = models.DateField()
     comment = models.TextField(blank=True,null=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-    updated_by = models.ForeignKey('auth.User', related_name="+", db_column='updated_by')
 
     history = HistoricalRecords()
 
@@ -127,7 +116,7 @@ class UserBloodPressureReading(models.Model):
     def __unicode__(self):
         return u'reading %s ' % (self.id, )
 
-class UserCholesterolGoal(models.Model):
+class UserCholesterolGoal(ApiModel):
     user = models.ForeignKey('auth.User', related_name="+")
     target_date = models.DateField(blank=True,null=True)
     hdl = models.FloatField()
@@ -135,9 +124,6 @@ class UserCholesterolGoal(models.Model):
     triglycerides = models.FloatField()
     interval_num = models.IntegerField(blank=True,default=0)
     interval_unit = models.CharField(max_length=6L, choices=INTERVAL_UNIT_CHOICES,blank=True, null=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-    updated_by = models.ForeignKey('auth.User', related_name="+", db_column='updated_by')
     
     history = HistoricalRecords()
 
@@ -160,16 +146,13 @@ class UserCholesterolGoal(models.Model):
 
         return total_cholesterol
 
-class UserCholesterolReading(models.Model):
+class UserCholesterolReading(ApiModel):
     user = models.ForeignKey('auth.User', related_name="+")
     hdl = models.FloatField()
     ldl = models.FloatField()
     triglycerides = models.FloatField()
     reading_date = models.DateField()
     comment = models.TextField(blank=True, null=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-    updated_by = models.ForeignKey('auth.User', related_name="+", db_column='updated_by')
 
     history = HistoricalRecords()
 
@@ -190,16 +173,13 @@ class UserCholesterolReading(models.Model):
         return total_cholesterol
         
 
-class UserGlucoseGoal(models.Model):
+class UserGlucoseGoal(ApiModel):
     user = models.ForeignKey('auth.User', related_name="+")
     target_date = models.DateField(blank=True,null=True)
     random = models.FloatField()
     fasting = models.FloatField()
     interval_num = models.IntegerField(blank=True,default=0)
     interval_unit = models.CharField(max_length=6L, choices=INTERVAL_UNIT_CHOICES,blank=True, null=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-    updated_by = models.ForeignKey('auth.User', related_name="+", db_column='updated_by')
     
     history = HistoricalRecords()
 
@@ -214,15 +194,12 @@ class UserGlucoseGoal(models.Model):
             self.target_date = goal_get_target_date(self, *args, **kwargs)
         super(UserGlucoseGoal, self).save(*args, **kwargs)
 
-class UserGlucoseReading(models.Model):
+class UserGlucoseReading(ApiModel):
     user = models.ForeignKey('auth.User', related_name="+")
     random = models.FloatField(blank=True, null=True)
     fasting = models.FloatField(blank=True, null=True)
     reading_date = models.DateField()
     comment = models.TextField(blank=True, null=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-    updated_by = models.ForeignKey('auth.User', related_name="+", db_column='updated_by')
 
     history = HistoricalRecords()
 

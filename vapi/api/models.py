@@ -9,14 +9,42 @@
 
 from __future__ import unicode_literals
 from django.db import models
-#from django.db.models.signals import post_save, pre_save
-#from django.dispatch import receiver
-#from api.facebook import *
-#from allauth.socialaccount.models import SocialToken
 
 
 
-#@receiver(post_save, sender=SocialToken)
-#def intercept_facebook_login(sender, instance, created, **kwargs):
-#    if created and instance.account.provider=='facebook':
-#        populate_profile(instance.token,instance.account.user)
+class StaticApiModel(models.Model):
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    is_deleted = models.BooleanField(default=False,db_index=True)
+
+    def soft_delete(self, *args, **kwargs):
+        self.is_deleted = True
+        super(StaticApiModel, self).save(*args, **kwargs)
+
+    def get_last_timestamp(self):
+        return self.updated_at
+
+    class Meta:
+        abstract = True
+
+class ApiModel(StaticApiModel):
+    updated_by = models.ForeignKey('auth.User', related_name="+", db_column='updated_by')
+
+    class Meta:
+        abstract = True
+
+"""
+def commit_changeset(model, **kw):
+    from django.contrib.auth.models import User
+
+    if model  in [User, ] or issubclass(model.__class__, ApiModel):
+        #model = kw["instance"]
+        deleted = False
+        for key, value in kw.iteritems():
+            if key == 'deleted':
+                deleted = value
+        obj, created =  ChangeSet.objects.get_or_create(model=model.__class__.__name__,model_id=model.id,deleted=deleted)
+        print created
+        if not created:
+            obj.commit()
+"""

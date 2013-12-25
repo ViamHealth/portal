@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 from django.db import models
 import hashlib, os, pprint
 from simple_history.models import HistoricalRecords
+from api.models import ApiModel, StaticApiModel
 
 s3_image_root = 'http://viamhealth-docsbucket.s3.amazonaws.com/';
 
@@ -11,7 +12,7 @@ GLOBAL_STATUS_CHOICES = (
         ('DELETED','DELETED')
     )
 
-class DietTracker(models.Model):
+class DietTracker(ApiModel):
     MEAL_TYPE_CHOICES = (
         ('BREAKFAST','BREAKFAST'),
         ('LUNCH','LUNCH'),
@@ -23,9 +24,6 @@ class DietTracker(models.Model):
     food_quantity_multiplier = models.FloatField(blank=False)
     meal_type = models.CharField(max_length=18L, choices=MEAL_TYPE_CHOICES, db_index=True, blank=False)
     diet_date = models.DateField()
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-    updated_by = models.ForeignKey('auth.User', related_name="+", db_column='updated_by')
 
     history = HistoricalRecords()
 
@@ -37,7 +35,8 @@ class DietTracker(models.Model):
     def __unicode__(self):
         return u'id=%s user=%s meal_type=%s food=%s' % (self.id, self.user.id, self.meal_type, self.food_item.name)
 
-class FoodItem(models.Model):
+
+class FoodItem(StaticApiModel):
 
     def get_display_image_path(self, filename): 
         return 'fooditems/display_image_'+hashlib.sha224(str(self.id)).hexdigest()+os.path.splitext(filename)[1]
@@ -88,13 +87,11 @@ class FoodItem(models.Model):
     vitamin_c_unit = models.CharField(max_length=64L,blank=True)
     calcium_unit = models.CharField(max_length=64L,blank=True)
     iron_unit = models.CharField(max_length=64L,blank=True)
-    created_at = models.DateTimeField(auto_now_add=True, null=True)
-    updated_at = models.DateTimeField(auto_now=True, null=True)
-    updated_by = models.ForeignKey('auth.User', related_name="+", db_column='updated_by')
-    status = models.CharField(max_length=18L, choices=GLOBAL_STATUS_CHOICES, default='ACTIVE', db_index=True)
+
     class Meta:
         db_table = 'tbl_food_items'
         verbose_name_plural = 'Food Items'
         verbose_name = 'Food Item'
+    
     def __unicode__(self):
         return u'%s' % self.name
