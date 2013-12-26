@@ -35,6 +35,8 @@ class Healthfile(ApiModel):
     #TODO: Use forms instead of using this flag
     uploading_file = False
 
+    history = HistoricalRecords()
+
     class Meta:
         db_table = 'tbl_healthfiles'
 
