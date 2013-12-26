@@ -81,7 +81,89 @@ eg. on ubuntu , packages libmysqlclient-dev, python-dev and python-mysqldb are r
 
 yum install mysql-devel python-devel
 
+
+**ignore**
+python manage.py schemamigration api.users --initial
+
+python manage.py schemamigration api.activity --initial
+
+python manage.py schemamigration api.diet --initial
+
+python manage.py schemamigration api.goals --initial
+
+python manage.py schemamigration api.healthfiles --initial
+
+python manage.py schemamigration api.reminders --initial
+
+python manage.py schemamigration api.util  --initial
+
+python manage.py schemamigration api --initial
+
+python manage.py schemamigration rest_framework --initial
+
+python manage.py schemamigration rest_framework.authtoken --initial
+
+python manage.py schemamigration django_ses --initial
+
+python manage.py schemamigration djcelery --initial
+
+python manage.py schemamigration storages --initial
+
+python manage.py schemamigration seacucumber --initial
+
+python manage.py schemamigration kombu.transport.django --initial
+
+python manage.py schemamigration rest_framework_swagger --initial
+
+
+python manage.py migrate api.users 
+
+python manage.py migrate api.activity 
+
+python manage.py migrate api.diet 
+
+python manage.py migrate api.goals 
+
+python manage.py migrate api.healthfiles 
+
+python manage.py migrate api.reminders 
+
+
+python manage.py migrate api 
+
+python manage.py migrate rest_framework 
+
+python manage.py migrate rest_framework.authtoken 
+
+python manage.py migrate django_ses 
+
+python manage.py migrate djcelery 
+
+python manage.py migrate storages 
+
+python manage.py migrate seacucumber 
+
+python manage.py migrate kombu.transport.django 
+
+python manage.py migrate rest_framework_swagger 
+
+INSERT INTO viam_v0.tbl_food_items ( name,display_image, quantity, quantity_unit, calories , total_fat, saturated_fat ,polyunsaturated_fat, monounsaturated_fat, trans_fat, cholesterol, sodium, potassium, total_carbohydrates, dietary_fiber, sugars ,protein, vitamin_a, vitamin_c, calcium, iron, calories_unit, total_fat_unit, saturated_fat_unit, polyunsaturated_fat_unit, monounsaturated_fat_unit, trans_fat_unit, cholesterol_unit, sodium_unit, potassium_unit ,total_carbohydrates_unit, dietary_fiber_unit, sugars_unit, protein_unit, vitamin_a_unit, vitamin_c_unit, calcium_unit, iron_unit )  select name,display_image, quantity, quantity_unit, calories , total_fat, saturated_fat ,polyunsaturated_fat, monounsaturated_fat, trans_fat, cholesterol, sodium, potassium, total_carbohydrates, dietary_fiber, sugars ,protein, vitamin_a, vitamin_c, calcium, iron, calories_unit, total_fat_unit, saturated_fat_unit, polyunsaturated_fat_unit, monounsaturated_fat_unit, trans_fat_unit, cholesterol_unit, sodium_unit, potassium_unit ,total_carbohydrates_unit, dietary_fiber_unit, sugars_unit, protein_unit, vitamin_a_unit, vitamin_c_unit, calcium_unit, iron_unit from viam.tbl_food_items ;
+
+update viam_v0.tbl_food_items  set created_at = NOW(), updated_at = NOW();
+
+INSERT INTO viam_v0.tbl_physical_activities ( label, `value` )  select label, `value` from viam.tbl_physical_activities ;
+
+update viam_v0.tbl_physical_activities  set created_at = NOW(), updated_at = NOW();
+
+**ignore ends**
+
+
+
+**Uncomment last line in management.py**
+
 python manage.py syncdb
+
+Comment back the last line in management.py
 
 This command will also create an admin user
 

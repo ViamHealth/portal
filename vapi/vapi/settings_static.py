@@ -149,6 +149,7 @@ INSTALLED_APPS = (
     'seacucumber',
     'kombu.transport.django',
     'rest_framework_swagger',
+    'simple_history',
 )
 
 
