@@ -86,9 +86,9 @@ class ViamModelViewSetNoUser(viewsets.ModelViewSet):
         self.restruct_serializer()
         sync_ts = self.request.QUERY_PARAMS.get('last_sync', None)
         if sync_ts is None:
-            queryset.filter(is_deleted=False)
+            queryset = queryset.filter(is_deleted=False)
         else:
-            queryset.filter(updated_at__gte=sync_ts)
+            queryset = queryset.filter(updated_at__gte=sync_ts)
         return queryset
 
     def get_queryset(self):
@@ -98,7 +98,7 @@ class ViamModelViewSetNoUser(viewsets.ModelViewSet):
     def get_object(self):
         o = super(ViamModelViewSetNoUser, self).get_object()
         if o.is_deleted :
-            raise self.model.DoesNotExist
+            raise Http404
         else:
             return o
         
@@ -159,8 +159,9 @@ class ViamModelViewSet(ViamModelViewSetNoUser):
         obj.updated_by = self.request.user
 
     def destroy(self, request, pk=None, format=None):
-        super(ViamModelViewSet, self).destroy(pk)
+        #super(ViamModelViewSet, self).destroy(pk)
         o = self.get_object()
+        o.soft_delete()
         #TODO: Find a way to automatically figure out, whether the model has updated_by field or not. and push this above
         o.updated_by = self.request.user
         o.save()
