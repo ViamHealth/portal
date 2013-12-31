@@ -14,14 +14,6 @@ from django.http import Http404, HttpResponse
 
 
 
-def sync_queryset_filter(view,queryset):
-    sync_ts = view.request.QUERY_PARAMS.get('last_sync', None)
-    if sync_ts is None:
-        queryset.filter(is_deleted=False)
-    else:
-        queryset.filter(updated_at__gte=sync_ts)
-    return queryset
-
 
 class JSONResponse(HttpResponse):
     """

@@ -266,21 +266,53 @@ class UserView(viewsets.ViewSet):
 
     def list(self, request, format=None):
         qqueryset = UserGroupSet.objects.filter(Q(group=request.user)|Q(user=request.user)).filter(status='ACTIVE')
-        qqueryset = sync_queryset_filter(self,qqueryset)
+        sync_ts = request.QUERY_PARAMS.get('last_sync', None)
+        if sync_ts is None:
+            qqueryset.filter(is_deleted=False)
+
+        f = '%Y-%m-%d %H:%M:%S'
 
         users = []
         users = list(set(users))
         #users = [p.user for p in qqueryset]
         for p in qqueryset:
             if p.group.id != request.user.id:
-                p.group.is_deleted = p.is_deleted
-                users = [p.group] + users
+                if sync_ts is not None:
+                    ut = p.group.updated_at.replace(tzinfo=None)
+                    but = p.group.bmi_profile.updated_at.replace(tzinfo=None)
+                    st = datetime.datetime.strptime(sync_ts, f)
+                    if st < ut or st < but:
+                        p.group.is_deleted = p.is_deleted
+                        users = [p.group] + users
+                else:
+                    p.group.is_deleted = p.is_deleted
+                    users = [p.group] + users
             if p.user.id != request.user.id:
-                p.user.is_deleted = p.is_deleted
-                users = [p.user] + users
+                if sync_ts is not None:
+                    ut = p.user.updated_at.replace(tzinfo=None)
+                    but = p.user.bmi_profile.updated_at.replace(tzinfo=None)
+                    st = datetime.datetime.strptime(sync_ts, f)
+                    if st < ut or st < but:
+                        p.user.is_deleted = p.is_deleted
+                        users = [p.user] + users
+                else:
+                    p.user.is_deleted = p.is_deleted
+                    users = [p.user] + users
+
         self_user = request.user
-        self_user.is_deleted = False
-        users = [self_user] + users
+        
+
+        if sync_ts is not None:
+            ut = self_user.profile.updated_at.replace(tzinfo=None)
+            but = self_user.bmi_profile.updated_at.replace(tzinfo=None)
+            st = datetime.datetime.strptime(sync_ts, f)
+            if st < ut or st < but:
+                self_user.is_deleted = False
+                users = [self_user] + users
+        else:
+            self_user.is_deleted = False
+            users = [self_user] + users
+        
 
         
         sync_ts = request.QUERY_PARAMS.get('last_sync', None)
@@ -406,7 +438,8 @@ class UserView(viewsets.ViewSet):
 
                 umap = UserGroupSet(group=request.user, user=user,status='ACTIVE',updated_by=request.user);
                 umap.save()
-                invite_new_email(user, request.user, password)
+                if email is not None:
+                    invite_new_email(user, request.user, password)
 
                 pserializer = UserSerializer(user)
                 return Response(pserializer.data, status=status.HTTP_201_CREATED)
@@ -529,4 +562,57 @@ class UserView(viewsets.ViewSet):
             return Response(pserializer.data)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    """
+    @action(methods=['PUT',])
+    def sync_user(self,request,pk=None):
+        import json
+
+        data =  json.loads(request.body)
+        if pk is None:
+            user = User()
+        else:
+            user = User.objects.get(pk=pk)
+
+        serializer = UserSyncEditSerializer(user, data=data,context={'request': request})
+        if serializer.is_valid():
+            profile_serializer = UserProfileSerializer(user.profile, data=data.get('profile'), context={'request':request})
+            if profile_serializer.is_valid():
+                bmi_profile_serializer = UserBmiProfileSerializer(user.bmi_profile, data=data.get('bmi_profile'), context={'request':request})
+                if bmi_profile_serializer.is_valid():
+                    serializer.save()
+                    profile_serializer.save()
+                    bmi_profile_serializer.save()
+                    return Response(serializer.data)
+                else:
+                    return Response(bmi_profile_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            else:
+                return Response(profile_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    @action(methods=['POST',])
+    def sync_user(self,request):
+        import json
+
+        data =  json.loads(request.body)
+        username = generate_random_username()
+        user = User.objects.create_user(username=username, email=username)
         
+        serializer = UserSyncEditSerializer(user, data=data,context={'request': request})
+        if serializer.is_valid():
+            profile_serializer = UserProfileSerializer(user.profile, data=data.get('profile'), context={'request':request})
+            if profile_serializer.is_valid():
+                bmi_profile_serializer = UserBmiProfileSerializer(user.bmi_profile, data=data.get('bmi_profile'), context={'request':request})
+                if bmi_profile_serializer.is_valid():
+                    serializer.save()
+                    profile_serializer.save()
+                    bmi_profile_serializer.save()
+                    return Response(serializer.data)
+                else:
+                    return Response(bmi_profile_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            else:
+                return Response(profile_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    """
