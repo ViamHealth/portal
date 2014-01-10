@@ -142,7 +142,7 @@ class InviteView(viewsets.ViewSet):
                 invite_existing_email(user, request.user)
             except User.DoesNotExist:
                 password = v_make_random_password()
-                user = User.objects.create_user(username=generate_random_username(), email=email,password=make_password(password))
+                user = User.objects.create_user(username=generate_random_username(), email=email,password=password)
                 invite_new_email(user, request.user, password)
                 bmi_profile= user.bmi_profile
                 bmi_profile.updated_by = request.user
@@ -188,7 +188,7 @@ class ShareView(viewsets.ViewSet):
                     user = User.objects.get(email=email)
                 except User.DoesNotExist:
                     password = v_make_random_password()
-                    user = User.objects.create_user(username=generate_random_username(), email=email,password=make_password(password))
+                    user = User.objects.create_user(username=generate_random_username(), email=email,password=password)
                     profile = user.profile
                     profile.updated_by = user
                     profile.save()
@@ -216,25 +216,6 @@ class ShareView(viewsets.ViewSet):
 
 #TODO: Move to mixins for less  code
 class UserView(viewsets.ViewSet):
-    """
-    CRUD for authenticated user or its family member
-    * Requires token authentication.
-    * CRUD of fields created_at & updated_at are handled by API only.
-    * Updation of username and email not allowed
-    * ============
-    * GET /users/ - List of users accessible to current logged in user
-    * GET /users/me/ - get current logged in user
-    * GET /users/<pk>/ - get user with id <pk>
-    * POST /users/ - Create new family user for current logged in user
-    * PUT /users/<pk>/ - Update user with id <pk>
-    * PUT /users/<pk>/profile/ - update profile of user with id <pk>
-    * PUT /users/<pk>/profile-picture/ - upload profile picture of user with id <pk> . Require multpart/form-data
-    * GET /users/<pk>/bmi-profile/ - gets bmi profile of user
-    * PUT /users/<pk>/bmi-profile/ - updates bmi profile of user
-    * POST /users/<pk>/change-password/ - change password of user with id <pk>
-    * DELETE /users/<pk>/ - Delete users with id <pk>
-    * ============
-    """
     permission_classes = (permissions.IsAuthenticated,)
 
 
@@ -265,6 +246,9 @@ class UserView(viewsets.ViewSet):
             raise Http404
 
     def list(self, request, format=None):
+        """
+        List of users accessible to current logged in user
+        """
         qqueryset = UserGroupSet.objects.filter(Q(group=request.user)|Q(user=request.user)).filter(status='ACTIVE')
         sync_ts = request.QUERY_PARAMS.get('last_sync', None)
         if sync_ts is None:
@@ -363,6 +347,12 @@ class UserView(viewsets.ViewSet):
 
 
     def create(self, request, format=None):
+        """
+        Create new family user for current logged in user
+        
+        email -- email id
+        """
+
         email_exists = False
         mobile_exists = False
 
@@ -446,11 +436,18 @@ class UserView(viewsets.ViewSet):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)     
 
     def retrieve(self, request, pk=None):
+        """
+        get user with id <pk>
+        """
         user = self.get_object(pk)
         serializer = UserSerializer(user, context={'request': request})
         return Response(serializer.data)
 
     def update(self, request, pk=None):
+        """
+        Update User object
+        """
+
         user = self.get_object(pk)
         serializer = UserEditSerializer(user, data=request.DATA, context={'request': request})
         if serializer.is_valid():
@@ -461,10 +458,17 @@ class UserView(viewsets.ViewSet):
 
     @link()
     def current_user(self, request):
+        """
+        get current logged in user
+        """
+
         serializer = UserSerializer(request.user, context={'request': request})
         return Response(serializer.data)
 
     def destroy(self, request, pk=None):
+        """
+        Delete users with id <pk>
+        """
         UserGroupSet.objects.filter(group=pk,user=request.user.id).update(status='DELETED',is_deleted=True,updated_by=request.user)
         UserGroupSet.objects.filter(user=pk,group=request.user.id).update(status='DELETED',is_deleted=True,updated_by=request.user)
         return Response(status=status.HTTP_204_NO_CONTENT)
