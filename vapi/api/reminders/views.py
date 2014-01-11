@@ -14,9 +14,19 @@ class ReminderViewSet(ViamModelViewSet):
     model = Reminder
     serializer_class = ReminderSerializer
 
+    def destroy(self,request,pk=None):
+        o = self.get_object()
+        rr = ReminderReadings.objects.filter(reminder=o,is_deleted=False)
+        for reading in rr:
+            reading.soft_delete()
+        return super(ReminderViewSet, self).destroy(pk)
+
+
     def end_from_today(self, request, pk=None):
         o = self.get_object()
-        ReminderReadings.objects.filter(reminder=o,id_deleted=False).exclude(reading_date__lte=datetime.date.today()).soft_delete()
+        rr = ReminderReadings.objects.filter(reminder=o,is_deleted=False).exclude(reading_date__lte=datetime.date.today())
+        for reading in rr:
+            reading.soft_delete()
         try:
             rr = ReminderReadings.objects.get(reminder=o,reading_date=datetime.date.today(),is_deleted=False)
             if rr.morning_check or rr.afternoon_check or rr.evening_check or rr.night_check or rr.complete_check:
