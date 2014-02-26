@@ -25,6 +25,7 @@ class HealthfileViewSet(ViamModelViewSet):
     model = Healthfile
     filter_backends = (filters.SearchFilter,)
     search_fields = ('name','description',)
+    serializer_class = HealthfileSerializer
 
 
     def pre_save(self, obj):

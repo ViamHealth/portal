@@ -167,7 +167,7 @@ class GoalReadingsViewSet(ViamModelViewSet):
     def get_object(self, reading_date):
         try:
             o = self.model.objects.get(reading_date=reading_date,user=self.get_user_object(),is_deleted=False)
-            self.check_object_permissions(self.request, o)
+            #self.check_object_permissions(self.request, o)
             return o
         except self.model.DoesNotExist:
             raise Http404

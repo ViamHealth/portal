@@ -174,8 +174,7 @@ class ShareView(viewsets.ViewSet):
                         UserGroupSet.objects.get(group=request.user, user=share_user,status='ACTIVE')
                     except UserGroupSet.DoesNotExist:
                         return Response(status=status.HTTP_403_FORBIDDEN)
-
-            if serializer.object.get('is_self',False):
+            if serializer.object.get('is_self',True):
                 # Self user. validated. All is well. Just update the email, create password and send email
                 share_user.email = email
                 share_user.password = make_password(v_make_random_password())
@@ -186,6 +185,11 @@ class ShareView(viewsets.ViewSet):
                 try:
                     # sharing with already existing user. Great. Move on
                     user = User.objects.get(email=email)
+                    if user.password is None or user.password == '':
+                        password = v_make_random_password()
+                        user.password = make_password(password)
+                        user.save()
+                        invite_new_email(user, request.user, password)
                 except User.DoesNotExist:
                     password = v_make_random_password()
                     user = User.objects.create_user(username=generate_random_username(), email=email,password=password)
@@ -269,8 +273,9 @@ class UserView(viewsets.ViewSet):
                         p.group.is_deleted = p.is_deleted
                         users = [p.group] + users
                 else:
-                    p.group.is_deleted = p.is_deleted
-                    users = [p.group] + users
+                    if p.is_deleted == False:
+                        p.group.is_deleted = p.is_deleted
+                        users = [p.group] + users
             if p.user.id != request.user.id:
                 if sync_ts is not None:
                     ut = p.user.updated_at.replace(tzinfo=None)
@@ -280,8 +285,9 @@ class UserView(viewsets.ViewSet):
                         p.user.is_deleted = p.is_deleted
                         users = [p.user] + users
                 else:
-                    p.user.is_deleted = p.is_deleted
-                    users = [p.user] + users
+                    if p.is_deleted == False:
+                        p.user.is_deleted = p.is_deleted
+                        users = [p.user] + users
 
         self_user = request.user
         

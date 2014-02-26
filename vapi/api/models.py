@@ -32,7 +32,7 @@ class ApiModel(StaticApiModel):
 
     class Meta:
         abstract = True
-
+    """
     @property
     def _history_user(self):
         return self.updated_by
@@ -40,7 +40,7 @@ class ApiModel(StaticApiModel):
     @_history_user.setter
     def _history_user_setter(self, value):
         self.updated_by = value
-
+    """
 """
 def commit_changeset(model, **kw):
     from django.contrib.auth.models import User

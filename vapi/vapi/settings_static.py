@@ -202,7 +202,7 @@ LOGGING = {
     }
 }
 
-SERVER_EMAIL = 'no-reply@viamhealth.com'
+SERVER_EMAIL = 'admin@viamhealth.com'
 
 TEMPLATE_CONTEXT_PROCESSORS = (
     "django.core.context_processors.request",

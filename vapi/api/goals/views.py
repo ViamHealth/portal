@@ -109,6 +109,8 @@ def all_goals(request):
 
     fuser = request.GET.get('user',None)
     if fuser is not None:
+        if int(fuser) == int(request.user.id):
+            has_permission = True
         user_id = int(request.user.id)
         qqueryset = UserGroupSet.objects.filter(user_id__in=[user_id,int(fuser)],group_id__in=[user_id,int(fuser)],status='ACTIVE',is_deleted=False)
         for p in qqueryset:
