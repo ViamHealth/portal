@@ -142,6 +142,7 @@ INSTALLED_APPS = (
     'api.healthfiles',
     'api.reminders',
     'api.users',
+    'api.immunizations',
     'api.util',
     'storages',
     'django_ses',

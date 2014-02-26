@@ -7,6 +7,7 @@ from api.activity.models import *
 from api.diet.models import *
 from api.healthfiles.models import *
 from api.reminders.models import *
+from api.immunizations.models import *
 
 USER_ADMIN_LINK = "/admin/auth/user/"
 def USER_DISPLAY_STRING(obj):
@@ -176,6 +177,36 @@ class GlucoseReadingAdmin(admin.ModelAdmin):
     user_link.short_description = "User"
     user_link.admin_order_field  = 'user__id'
 
+class ImmunizationAdmin(admin.ModelAdmin):
+    list_display = [
+        'label', 
+        'recommended_age' , 
+    ]
+    list_filter = [ 'recommended_age','created_at','updated_at']
+
+class UserImmunizationAdmin(admin.ModelAdmin):
+    list_display = [
+        'id', 
+        'immunization_link' ,
+        'user_link',
+        'is_completed'
+    ]
+    list_filter = [ 'is_completed','created_at','updated_at']
+
+    def user_link(self,obj):
+        return USER_LINK(obj.user)
+    def immunization_link(self,obj):
+        return u'<a href="/admin/immunizations/immunization/%s/">%s</a>' % (obj.immunization.id,obj.immunization.label)
+
+    immunization_link.allow_tags = True
+    immunization_link.short_description = "Immunization"
+    immunization_link.admin_order_field  = 'user__id'
+    user_link.allow_tags = True
+    user_link.short_description = "User"
+    user_link.admin_order_field  = 'user__id'
+
+
+
 admin.site.register(UserProfile, UserProfileAdmin)
 admin.site.register(Reminder, ReminderAdmin)
 admin.site.register(UserGroupSet, UserGroupSetAdmin)
@@ -195,3 +226,5 @@ admin.site.register(UserGlucoseReading, GlucoseReadingAdmin)
 #admin.site.register(PhysicalActivity)
 #admin.site.register(UserPhysicalActivity, SimpleHistoryAdmin)
 
+admin.site.register(Immunization, ImmunizationAdmin)
+admin.site.register(UserImmunization, UserImmunizationAdmin)

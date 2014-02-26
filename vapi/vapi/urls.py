@@ -7,6 +7,7 @@ from api.diet.views import *
 from api.healthfiles.views import *
 from api.reminders.views import *
 from api.users.views import *
+from api.immunizations.views import *
 
 from django.views.decorators.csrf import csrf_exempt
 #from allauth.socialaccount.providers.facebook.views import login_by_token
@@ -23,6 +24,7 @@ router.register(r'blood-pressure-goals', UserBloodPressureGoalViewSet)
 router.register(r'cholesterol-goals', UserCholesterolGoalViewSet)
 router.register(r'glucose-goals', UserGlucoseGoalViewSet)
 router.register(r'diet-tracker', DietTrackerViewSet)
+router.register(r'user-immunizations', UserImmunizationViewSet)
 
 #router.register(r'food-items', FoodItemViewSet)
 
@@ -86,6 +88,8 @@ urlpatterns = patterns('',
     url(r'^users/(?P<pk>[0-9]+)/profile/$', UserView.as_view({'put':'update_profile'}),name='profile-detail'),
     url(r'^users/(?P<pk>[0-9]+)/profile-picture/$', UserView.as_view({'put':'update_profile_pic'}),name='profile-detail'),
     url(r'^users/(?P<pk>[0-9]+)/bmi-profile/$', UserView.as_view({'get':'retrieve_bmi_profile','put':'update_bmi_profile'}),name='userbmiprofile-detail'),
+    #url(r'^users/(?P<pk>[0-9]+)/sync-user/$', UserView.as_view({'put':'sync_user'}),name='syncuser-detail'),
+    #url(r'^users/sync-user/$', UserView.as_view({'put':'sync_user'}),name='syncuser-detail'),
     url(r'^users/change-password/$', UserView.as_view({'post':'change_password'}),name='password-detail'),
 
     url(r'^food-items/$', FoodItemViewSet.as_view({'get':'list'}),name='fooditem-detail'),
