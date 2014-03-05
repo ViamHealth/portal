@@ -7,8 +7,8 @@ class ImmunizationSerializer(serializers.ModelSerializer):
         fields = ( 'id', 'label','recommended_age',)
 
 class UserImmunizationSerializer(serializers.ModelSerializer):
-    immunization = serializers.Field(source='immunization.id')
-    user = serializers.Field(source='user.id')
+    #immunization = serializers.Field(source='immunization.id')
+    #user = serializers.Field(source='user.id')
     class Meta:
         model = UserImmunization
         fields = ( 'id', 'immunization', 'user','is_completed')
@@ -23,6 +23,9 @@ class UserImmunizationListSerializer(serializers.Serializer):
         return immunizations.data
 
     def get_user_immunizations(self, obj=None):
-        i = UserImmunization.objects.filter(is_deleted=False)
+        user_id = self.context['request'].QUERY_PARAMS.get('user', None)
+        if user_id is None:
+            user_id = self.context['request'].user.id
+        i = UserImmunization.objects.filter(is_deleted=False,user=user_id)
         immunizations = UserImmunizationSerializer(i, many=True)
         return immunizations.data

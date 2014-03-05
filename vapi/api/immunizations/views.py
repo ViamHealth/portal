@@ -7,11 +7,11 @@ class ImmunizationViewSet(ViamModelViewSetNoUser):
     model = Immunization
     serializer_class = ImmunizationSerializer
 
-class UserImmunizationViewSet(viewsets.ModelViewSet):
+class UserImmunizationViewSet(ViamModelViewSet):
     model = UserImmunization
     serializer_class = UserImmunizationSerializer
     
     def list(self, request):
-        serializer = UserImmunizationListSerializer()
+        serializer = UserImmunizationListSerializer(context={'request': request})
         return Response(serializer.data)
 

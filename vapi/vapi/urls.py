@@ -8,6 +8,7 @@ from api.healthfiles.views import *
 from api.reminders.views import *
 from api.users.views import *
 from api.immunizations.views import *
+from api.watchdog.views import *
 
 from django.views.decorators.csrf import csrf_exempt
 #from allauth.socialaccount.providers.facebook.views import login_by_token
@@ -19,7 +20,6 @@ router.register(r'healthfiles', HealthfileViewSet)
 router.register(r'weight-goals', UserWeightGoalViewSet)
 router.register(r'user-physical-activity', UserPhysicalActivityViewSet)
 router.register(r'physical-activity', PhysicalActivityViewSet)
-
 router.register(r'blood-pressure-goals', UserBloodPressureGoalViewSet)
 router.register(r'cholesterol-goals', UserCholesterolGoalViewSet)
 router.register(r'glucose-goals', UserGlucoseGoalViewSet)
@@ -102,6 +102,8 @@ urlpatterns = patterns('',
     url(r'^healthfiles/download/(?P<healthfile_id>[0-9]+)/$', handles3downloads, name='download-healthfiles'),
     url(r'^healthfiles/share/(?P<healthfile_id>[0-9]+)/$', share_healthfile, name='share-healthfiles'),
     url(r'^goals/$', all_goals, name='all-goals'),
+    url(r'^watchdog/$', watchdog_data, name='all-data'),
+    
     url(r'^logout/$', logout, name='logout'),
 
     #Uncomment the next line to enable the admin:
