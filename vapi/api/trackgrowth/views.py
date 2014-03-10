@@ -32,6 +32,7 @@ class UserTrackGrowthDataViewSet(ViamModelViewSet):
             #	a['date'] = date_of_birth
             #else:
             #	a['date'] = date_of_birth + relativedelta( days = tg.age ) 
+            a['id'] = tg.id
             a['age'] = tg.age
             a['height'] = tg.height
             a['weight'] = tg.weight
