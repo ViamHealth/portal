@@ -4,7 +4,7 @@ from django.db import models
 from django.contrib.auth.models import User
 import hashlib, os
 from api.models import ApiModel
-
+from api.util.enums import GENDER_CHOICES, MEASURE_CHOICES
 from simple_history.models import HistoricalRecords
 from rest_framework.authtoken.models import Token
 from django.db.models.signals import post_save, post_delete
@@ -14,17 +14,8 @@ from api.models import ApiModel, StaticApiModel
 
 s3_image_root = 'http://viamhealth-docsbucket.s3.amazonaws.com/';
 
-MEASURE_CHOICES = (
-        ('METRIC','METRIC'),
-        ('STANDARD','STANDARD')
-)
-
 
 class UserProfile(models.Model):  
-    GENDER_CHOICES = (
-        ('MALE','MALE'),
-        ('FEMALE','FEMALE')
-    )
     BLOOD_GROUP_CHOICES = (
         ('1','A+'),
         ('2','A-'),

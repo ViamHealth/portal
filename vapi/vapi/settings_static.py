@@ -144,7 +144,7 @@ INSTALLED_APPS = (
     'api.users',
     'api.immunizations',
     'api.util',
-    'api.watchdog',
+    'api.trackgrowth',
     'storages',
     'django_ses',
     'djcelery',

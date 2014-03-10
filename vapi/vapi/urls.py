@@ -8,7 +8,8 @@ from api.healthfiles.views import *
 from api.reminders.views import *
 from api.users.views import *
 from api.immunizations.views import *
-from api.watchdog.views import *
+from api.trackgrowth.views import *
+#from api.watchdog.views import *
 
 from django.views.decorators.csrf import csrf_exempt
 #from allauth.socialaccount.providers.facebook.views import login_by_token
@@ -25,6 +26,7 @@ router.register(r'cholesterol-goals', UserCholesterolGoalViewSet)
 router.register(r'glucose-goals', UserGlucoseGoalViewSet)
 router.register(r'diet-tracker', DietTrackerViewSet)
 router.register(r'user-immunizations', UserImmunizationViewSet)
+router.register(r'user-track-growth', UserTrackGrowthDataViewSet)
 
 #router.register(r'food-items', FoodItemViewSet)
 
@@ -102,7 +104,7 @@ urlpatterns = patterns('',
     url(r'^healthfiles/download/(?P<healthfile_id>[0-9]+)/$', handles3downloads, name='download-healthfiles'),
     url(r'^healthfiles/share/(?P<healthfile_id>[0-9]+)/$', share_healthfile, name='share-healthfiles'),
     url(r'^goals/$', all_goals, name='all-goals'),
-    url(r'^watchdog/$', watchdog_data, name='all-data'),
+    #url(r'^watchdog/$', watchdog_data, name='all-data'),
     
     url(r'^logout/$', logout, name='logout'),
 

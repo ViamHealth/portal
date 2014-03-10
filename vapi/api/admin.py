@@ -8,6 +8,7 @@ from api.diet.models import *
 from api.healthfiles.models import *
 from api.reminders.models import *
 from api.immunizations.models import *
+from api.trackgrowth.models import *
 
 USER_ADMIN_LINK = "/admin/auth/user/"
 def USER_DISPLAY_STRING(obj):
@@ -206,6 +207,27 @@ class UserImmunizationAdmin(admin.ModelAdmin):
     user_link.admin_order_field  = 'user__id'
 
 
+class TrackGrowthDataAdmin(admin.ModelAdmin):
+    list_display = [
+        'label', 
+        'gender', 
+        'age',
+        'height',
+        'weight',
+    ]
+    list_filter = [ 'age','created_at','updated_at']
+
+class UserTrackGrowthDataAdmin(admin.ModelAdmin):
+    list_display = ['id','user_link','entry_date', 'height','weight','created_at','updated_at','updated_by','is_deleted']
+    list_filter = ['entry_date','created_at','updated_at','is_deleted']
+
+    def user_link(self,obj):
+        return USER_LINK(obj.user)
+    user_link.allow_tags = True
+    user_link.short_description = "User"
+    user_link.admin_order_field  = 'user__id'
+
+
 
 admin.site.register(UserProfile, UserProfileAdmin)
 admin.site.register(Reminder, ReminderAdmin)
@@ -228,3 +250,6 @@ admin.site.register(UserGlucoseReading, GlucoseReadingAdmin)
 
 admin.site.register(Immunization, ImmunizationAdmin)
 admin.site.register(UserImmunization, UserImmunizationAdmin)
+
+admin.site.register(TrackGrowthData, TrackGrowthDataAdmin)
+admin.site.register(UserTrackGrowthData, UserTrackGrowthDataAdmin)
