@@ -12,6 +12,14 @@ class TrackGrowthDataViewSet(ViamModelViewSetNoUser):
 class UserTrackGrowthDataViewSet(ViamModelViewSet):
     model = UserTrackGrowthData
     serializer_class = UserTrackGrowthDataSerializer
+
+    def get_object(self, reading_date):
+        try:
+            o = self.model.objects.get(reading_date=reading_date,user=self.get_user_object(),is_deleted=False)
+            #self.check_object_permissions(self.request, o)
+            return o
+        except self.model.DoesNotExist:
+            raise Http404
     
     def list(self, request):
     	user_id = request.QUERY_PARAMS.get('user', None)
@@ -71,3 +79,26 @@ class UserTrackGrowthDataViewSet(ViamModelViewSet):
         	result['user_track_growth'].append(e)
         	
         return JSONResponse(result)
+
+
+    def create(self, request, format=None):
+        serializer = self.get_serializer(data=request.DATA,)
+        if serializer.is_valid():
+            serializer.object.user = self.get_user_object()
+            serializer.object.updated_by = self.request.user
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def retrieve(self, request, reading_date):
+        m = self.get_object(reading_date)
+        serializer = self.get_serializer(m)
+        return Response(serializer.data)
+
+    def update(self, request, reading_date):
+        m = self.get_object(reading_date)
+        serializer = self.get_serializer(m, data=request.DATA)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

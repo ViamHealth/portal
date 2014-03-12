@@ -12,7 +12,7 @@ class UserTrackGrowthDataSerializer(serializers.ModelSerializer):
         model = UserTrackGrowthData
         fields = ( 'id', 'user', 'entry_date','height','weight')
 
-    def validate_entry_date(self, attrs):
+    def validate_entry_date(self, attrs, source):
         user = attrs['user']
         entry_date = attrs['entry_date']
         u = UserProfile.objects.get(pk=user)
