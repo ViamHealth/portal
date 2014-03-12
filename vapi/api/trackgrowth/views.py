@@ -4,6 +4,7 @@ from .serializers import *
 from datetime import datetime, timedelta
 from rest_framework import viewsets, permissions
 from dateutil.relativedelta import relativedelta
+from api.users.models import UserProfile
 
 class TrackGrowthDataViewSet(ViamModelViewSetNoUser):
     model = TrackGrowthData
@@ -82,13 +83,7 @@ class UserTrackGrowthDataViewSet(ViamModelViewSet):
 
 
     def create(self, request, format=None):
-        serializer = self.get_serializer(data=request.DATA,)
-        if serializer.is_valid():
-            serializer.object.user = self.get_user_object()
-            serializer.object.updated_by = self.request.user
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    	pass
 
     def retrieve(self, request, pk):
         m = self.get_object(pk)
@@ -96,9 +91,19 @@ class UserTrackGrowthDataViewSet(ViamModelViewSet):
         return Response(serializer.data)
 
     def update(self, request, pk):
-        m = self.get_object(pk)
-        serializer = self.get_serializer(m, data=request.DATA)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    	try:
+        	m = self.model.objects.get(entry_date=pk,user=self.get_user_object(),is_deleted=False)
+        	serializer = self.get_serializer(m, data=request.DATA)
+	        if serializer.is_valid():
+	            serializer.save()
+	            return Response(serializer.data)
+	        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except self.model.DoesNotExist:
+        	serializer = self.get_serializer(data=request.DATA,)
+	        if serializer.is_valid():
+	            serializer.object.user = self.get_user_object()
+	            serializer.object.updated_by = self.request.user
+	            serializer.save()
+	            return Response(serializer.data, status=status.HTTP_201_CREATED)
+	        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
