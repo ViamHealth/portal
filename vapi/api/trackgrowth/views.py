@@ -13,9 +13,9 @@ class UserTrackGrowthDataViewSet(ViamModelViewSet):
     model = UserTrackGrowthData
     serializer_class = UserTrackGrowthDataSerializer
 
-    def get_object(self, reading_date):
+    def get_object(self, pk):
         try:
-            o = self.model.objects.get(reading_date=reading_date,user=self.get_user_object(),is_deleted=False)
+            o = self.model.objects.get(entry_date=pk,user=self.get_user_object(),is_deleted=False)
             #self.check_object_permissions(self.request, o)
             return o
         except self.model.DoesNotExist:
@@ -90,13 +90,13 @@ class UserTrackGrowthDataViewSet(ViamModelViewSet):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    def retrieve(self, request, reading_date):
-        m = self.get_object(reading_date)
+    def retrieve(self, request, pk):
+        m = self.get_object(pk)
         serializer = self.get_serializer(m)
         return Response(serializer.data)
 
-    def update(self, request, reading_date):
-        m = self.get_object(reading_date)
+    def update(self, request, pk):
+        m = self.get_object(pk)
         serializer = self.get_serializer(m, data=request.DATA)
         if serializer.is_valid():
             serializer.save()

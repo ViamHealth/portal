@@ -144,6 +144,52 @@ class UserListSerializer(serializers.ModelSerializer):
             for field_name in existing - allowed:
                 self.fields.pop(field_name)
 
+"""
+class UserSyncEditSerializer(serializers.Serializer):
+    profile = UserProfileSerializer(required=True,many=False)
+    bmi_profile = UserBmiProfileSerializer(required=True,many=False)
+    username = serializers.CharField(max_length=255,blank=True)
+    email = serializers.CharField(max_length=255,blank=True)
+    first_name = serializers.CharField(max_length=30,blank=True)
+    last_name = serializers.CharField(max_length=30,blank=True)
+
+
+    def restore_object(self, attrs, instance=None):
+        if instance:
+            instance.email = attrs.get('email', instance.email)
+            username = attrs.get('username', None)
+            if username is None or len(username) == 0 :
+                instance.username = instance.username
+            else:
+                instance.username = username
+            instance.first_name = attrs.get('first_name', instance.first_name)
+            instance.last_name = attrs.get('last_name', instance.last_name)
+            #instance.profile.city = attrs.get('profile', instance.profile.city).city
+            #instance.profile.gender = attrs.get('profile', instance.profile.gender).gender
+            #instance.bmi_profile = attrs.get('bmi_profile', instance.bmi_profile)
+
+            return instance
+
+        return User(**attrs)
+
+    def validate_email(self, attrs, source):
+        value = attrs[source]
+        if len(value):   
+            try:
+                validate_email( value )
+                return attrs
+            except ValidationError:
+                raise serializers.ValidationError("Enter a valid e-mail address.")
+
+"""
+
+class UserCreateSerializer(serializers.HyperlinkedModelSerializer):
+
+    class Meta:
+        model = User
+        fields = ('id',  'first_name', 'last_name','username', 'email')
+
+
 class UserSerializer(serializers.HyperlinkedModelSerializer):
     profile = UserProfileSerializer(required=False)
     bmi_profile = UserBmiProfileSerializer(required=False)
@@ -222,11 +268,6 @@ class UserFacebookConnectSerializer(serializers.Serializer):
                 attrs['fb_data'] = data
                 return attrs
 
-class UserCreateSerializer(serializers.HyperlinkedModelSerializer):
-
-    class Meta:
-        model = User
-        fields = ('id',  'first_name', 'last_name','username', 'email')
 
 
 class EmailUserSignupSerializer(serializers.HyperlinkedModelSerializer):
