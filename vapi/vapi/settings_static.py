@@ -152,8 +152,9 @@ INSTALLED_APPS = (
     'kombu.transport.django',
     'rest_framework_swagger',
     'simple_history',
+    'explorer',
 )
-
+EXPLORER_SQL_WHITELIST = ('CREATED', 'DELETED','UPDATED_AT','UPDATED_BY')
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to

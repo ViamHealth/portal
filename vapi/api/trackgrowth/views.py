@@ -53,7 +53,7 @@ class UserTrackGrowthDataViewSet(ViamModelViewSet):
         utd = UserTrackGrowthData.objects.filter(is_deleted=False,user=user_id).order_by('entry_date')
         for ut in utd:
             days_diff = abs((ut.entry_date - date_of_birth).days)
-            if days_diff < 0:
+            if days_diff < 0 or days_diff > 1825 :
             	continue
             
             #date = date_of_birth+ timedelta(days=days_diff)

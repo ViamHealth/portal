@@ -278,7 +278,7 @@ class UserView(viewsets.ViewSet):
                         users = [p.group] + users
             if p.user.id != request.user.id:
                 if sync_ts is not None:
-                    ut = p.user.updated_at.replace(tzinfo=None)
+                    ut = p.user.profile.updated_at.replace(tzinfo=None)
                     but = p.user.bmi_profile.updated_at.replace(tzinfo=None)
                     st = datetime.datetime.strptime(sync_ts, f)
                     if st < ut or st < but:
