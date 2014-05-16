@@ -9,6 +9,7 @@ from api.reminders.views import *
 from api.users.views import *
 from api.immunizations.views import *
 from api.trackgrowth.views import *
+from api.tasks.views import *
 #from api.watchdog.views import *
 
 from django.views.decorators.csrf import csrf_exempt
@@ -107,6 +108,8 @@ urlpatterns = patterns('',
     #url(r'^watchdog/$', watchdog_data, name='all-data'),
     
     url(r'^logout/$', logout, name='logout'),
+
+    url(r'^tasks/$', ListUserTasks.as_view()),
 
     #Uncomment the next line to enable the admin:
     url(r'^admin/', include(admin.site.urls)),

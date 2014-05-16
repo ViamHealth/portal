@@ -9,6 +9,7 @@ from api.healthfiles.models import *
 from api.reminders.models import *
 from api.immunizations.models import *
 from api.trackgrowth.models import *
+from api.tasks.models import *
 
 USER_ADMIN_LINK = "/admin/auth/user/"
 def USER_DISPLAY_STRING(obj):
@@ -201,7 +202,7 @@ class UserImmunizationAdmin(admin.ModelAdmin):
 
     immunization_link.allow_tags = True
     immunization_link.short_description = "Immunization"
-    immunization_link.admin_order_field  = 'user__id'
+    immunization_link.admin_order_field  = 'immunization__id'
     user_link.allow_tags = True
     user_link.short_description = "User"
     user_link.admin_order_field  = 'user__id'
@@ -228,6 +229,29 @@ class UserTrackGrowthDataAdmin(admin.ModelAdmin):
     user_link.admin_order_field  = 'user__id'
 
 
+class UserTaskAdmin(admin.ModelAdmin):
+    list_display = [
+        'id',
+        'user_link',
+        'task_link',
+        'weight',
+        'set_choice',
+        'created_at',
+        'updated_at'
+    ]
+    list_filter = [ 'set_choice','created_at','updated_at']
+
+    def user_link(self,obj):
+        return USER_LINK(obj.user)
+    user_link.allow_tags = True
+    user_link.short_description = "User"
+    user_link.admin_order_field  = 'user__id'
+
+    def task_link(self,obj):
+        return u'<a href="/admin/tasks/task/%s/">%s</a>' % (obj.task.id,obj.task.message)
+    task_link.allow_tags = True
+    task_link.short_description = "Task"
+    task_link.admin_order_field  = 'task__id'
 
 admin.site.register(UserProfile, UserProfileAdmin)
 admin.site.register(Reminder, ReminderAdmin)
@@ -253,3 +277,7 @@ admin.site.register(UserImmunization, UserImmunizationAdmin)
 
 admin.site.register(TrackGrowthData, TrackGrowthDataAdmin)
 admin.site.register(UserTrackGrowthData, UserTrackGrowthDataAdmin)
+
+admin.site.register(TaskChoiceFeedback)
+admin.site.register(Task)
+admin.site.register(UserTask, UserTaskAdmin)

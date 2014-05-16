@@ -6,12 +6,6 @@ from simple_history.models import HistoricalRecords
 from api.models import ApiModel, StaticApiModel
 
 
-GLOBAL_STATUS_CHOICES = (
-        ('ACTIVE','ACTIVE'),
-        ('DELETED','DELETED')
-    )
-
-
 class HealthfileTag(StaticApiModel):
     healthfile = models.ForeignKey('Healthfile', related_name="+")
     tag = models.CharField(max_length=64L)
@@ -22,6 +16,7 @@ class HealthfileTag(StaticApiModel):
         db_table = 'tbl_healthfile_tags'
     def __unicode__(self):
         return u' %s of healthfile %s' % (self.id, self.healthfile)
+
 
 class Healthfile(ApiModel):
     def get_healthfile_path(self, filename):
