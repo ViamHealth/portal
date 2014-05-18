@@ -154,7 +154,15 @@ INSTALLED_APPS = (
     'rest_framework_swagger',
     'simple_history',
     'explorer',
+    'gcmserver',
+    'tastypie',
+    'gcm',
 )
+
+GCM_APIKEY = "AIzaSyCuWWIDVr0kKY4CUnZq0_V3dxkHB9cx8BE"
+
+GCM_DEVICE_MODEL = 'gcmserver.models.MyDevice'
+
 EXPLORER_SQL_WHITELIST = ('CREATED', 'DELETED','UPDATED_AT','UPDATED_BY')
 
 # A sample logging configuration. The only tangible logging
