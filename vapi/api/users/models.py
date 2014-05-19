@@ -152,6 +152,9 @@ def create_profiles(sender, **kw):
         Token.objects.get_or_create(user=user)
         UserProfile.objects.get_or_create(user=user)
         UserBmiProfile.objects.get_or_create(user=user,)
+        apiKey = ApiKey(user=request.user,key="1")
+        apiKey.save()
+
 
 post_save.connect(create_profiles, sender=User)
 
