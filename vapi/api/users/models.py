@@ -9,6 +9,7 @@ from simple_history.models import HistoricalRecords
 from rest_framework.authtoken.models import Token
 from django.db.models.signals import post_save, post_delete
 from api.models import ApiModel, StaticApiModel
+from tastypie.models import ApiKey
 
 #from dateutil.parser import *
 
@@ -152,7 +153,7 @@ def create_profiles(sender, **kw):
         Token.objects.get_or_create(user=user)
         UserProfile.objects.get_or_create(user=user)
         UserBmiProfile.objects.get_or_create(user=user,)
-        apiKey = ApiKey(user=request.user,key="1")
+        apiKey = ApiKey(user=user,key="1")
         apiKey.save()
 
 
