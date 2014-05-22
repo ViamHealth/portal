@@ -39,7 +39,6 @@ class UpdateSetChoiceTask(APIView):
 	permission_classes = (permissions.IsAuthenticated,)
 
 	def post(self, request, task_id, format=None):
-		print request.user
 		choice = request.DATA.get('set_choice',None)
 		if task_id is None or choice is None or (choice != "1" and choice != "2" ):
 			result = {}
@@ -47,7 +46,7 @@ class UpdateSetChoiceTask(APIView):
 			return Response(result,status=status.HTTP_400_BAD_REQUEST)
 		else:
 			try:
-				userTask = UserTask.objects.get(user=request.user, task_id=task_id)
+				userTask = UserTask.objects.get(user=request.user, id=task_id)
 				userTask.set_choice = choice
 				userTask.updated_by = request.user
 				userTask.save()
