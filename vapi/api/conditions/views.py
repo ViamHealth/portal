@@ -8,7 +8,7 @@ class InsertUserConditions(APIView):
 	permission_classes = (permissions.IsAuthenticated,)
 
 	def post(self, request, format=None):
-		list_condistions = request.DATA.get('list_condistions',None)
+		list_condistions = request.DATA.get('list_conditions',None)
 		fuser = self.request.QUERY_PARAMS.get('user', None)
 		if list_condistions is None:
 			result = {}
