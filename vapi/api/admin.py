@@ -10,6 +10,7 @@ from api.reminders.models import *
 from api.immunizations.models import *
 from api.trackgrowth.models import *
 from api.tasks.models import *
+from api.conditions.models import *
 
 USER_ADMIN_LINK = "/admin/auth/user/"
 def USER_DISPLAY_STRING(obj):
@@ -280,4 +281,5 @@ admin.site.register(UserTrackGrowthData, UserTrackGrowthDataAdmin)
 
 admin.site.register(TaskChoiceFeedback)
 admin.site.register(Task)
+admin.site.register(UserConditionTemp)
 admin.site.register(UserTask, UserTaskAdmin)

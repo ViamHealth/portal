@@ -10,6 +10,8 @@ from api.users.views import *
 from api.immunizations.views import *
 from api.trackgrowth.views import *
 from api.tasks.views import *
+from api.conditions.views import *
+
 #from api.watchdog.views import *
 
 from django.views.decorators.csrf import csrf_exempt
@@ -111,11 +113,13 @@ urlpatterns = patterns('',
 
     url(r'^tasks/$', ListUserTasks.as_view()),
     url(r'^tasks/(?P<task_id>[0-9]+)/set_choice/$', UpdateSetChoiceTask.as_view()),
+    url(r'^user_conditions/', InsertUserConditions.as_view()),
 
     #Uncomment the next line to enable the admin:
     url(r'^admin/', include(admin.site.urls)),
     url(r'^docs/', include('rest_framework_swagger.urls')),
     url(r'^explorer/', include('explorer.urls')),
+    
     url(r'', include('gcmserver.urls')),
 
 )

@@ -146,6 +146,7 @@ INSTALLED_APPS = (
     'api.util',
     'api.trackgrowth',
     'api.tasks',
+    'api.conditions',
     'storages',
     'django_ses',
     'djcelery',
