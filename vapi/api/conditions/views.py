@@ -3,6 +3,7 @@ from rest_framework.response import Response
 from rest_framework import authentication, permissions, status
 from django.http import Http404
 from .models import *
+from django.contrib.auth.models import User
 
 class InsertUserConditions(APIView):
 	permission_classes = (permissions.IsAuthenticated,)
