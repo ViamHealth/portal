@@ -8,7 +8,7 @@ class ListUserTasks(APIView):
 	permission_classes = (permissions.IsAuthenticated,)
 	def get(self, request, format=None):
 		result = []
-		usertasks = UserTask.objects.filter(user=request.user).order_by('-weight','updated_at')[:5]
+		usertasks = UserTask.objects.filter(user=request.user).order_by('-weight','-updated_at')[:7]
 		for ut in usertasks:
 			obj = {}
 			obj['choice_1_message'] = ''
