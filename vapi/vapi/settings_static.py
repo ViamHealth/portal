@@ -158,7 +158,10 @@ INSTALLED_APPS = (
     'gcmserver',
     'tastypie',
     'gcm',
+    'csvimport',
 )
+
+CSVIMPORT_MODELS = ['trackgrowth.TrackGrowthAdvancedData',]
 
 GCM_APIKEY = "AIzaSyCuWWIDVr0kKY4CUnZq0_V3dxkHB9cx8BE"
 
