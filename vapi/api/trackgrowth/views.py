@@ -5,6 +5,52 @@ from datetime import datetime, timedelta
 from rest_framework import viewsets, permissions
 from dateutil.relativedelta import relativedelta
 from api.users.models import UserProfile
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import authentication, permissions, status
+from django.http import Http404
+
+class TrackGrowthDataAdvancedViewSet(APIView):
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def get(self, request, format=None):
+        gender = self.request.QUERY_PARAMS.get('gender', None)
+        age = self.request.QUERY_PARAMS.get('age', None)
+
+        if gender is None or age is None:
+            result = {}
+            result['non_field_error'] = 'Provide a  gender and age'
+            return Response(result,status=status.HTTP_400_BAD_REQUEST)
+        
+        result = {}
+        try:
+            tg = TrackGrowthAdvancedData.objects.get(gender=gender,age=age,is_deleted=False)
+            result['gender'] = tg.gender
+            result['age'] = tg.age
+            result['height_3n'] = tg.height_3n
+            result['weight_3n'] = tg.weight_3n
+            result['height_2n'] = tg.height_2n
+            result['weight_2n'] = tg.weight_2n
+            result['height_1n'] = tg.height_1n
+            result['weight_1n'] = tg.weight_1n
+            result['height_0'] = tg.height_0
+            result['weight_0'] = tg.weight_0
+            result['height_1'] = tg.height_1
+            result['weight_1'] = tg.weight_1
+            result['height_2'] = tg.height_2
+            result['weight_2'] = tg.weight_2
+            result['height_3'] = tg.height_3
+            result['weight_3'] = tg.weight_3
+
+            return JSONResponse(result)
+
+        except TrackGrowthAdvancedData.DoesNotExist:
+            raise Http404
+
+
+
+
+
 
 class TrackGrowthDataViewSet(ViamModelViewSetNoUser):
     model = TrackGrowthData

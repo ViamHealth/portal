@@ -279,6 +279,9 @@ admin.site.register(UserImmunization, UserImmunizationAdmin)
 admin.site.register(TrackGrowthData, TrackGrowthDataAdmin)
 admin.site.register(UserTrackGrowthData, UserTrackGrowthDataAdmin)
 
+
+admin.site.register(TrackGrowthAdvancedData)
+
 admin.site.register(TaskChoiceFeedback)
 admin.site.register(Task)
 admin.site.register(UserConditionTemp)
