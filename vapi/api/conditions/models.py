@@ -15,6 +15,6 @@ class UserConditionTemp(models.Model):
 		verbose_name_plural = 'User Conditions'
 
 	def __unicode__(self):
-		return u'%s - %s' % (self.user, self.condition)
+		return u'%s - %s' % (self.user.first_name, self.condition)
 
 

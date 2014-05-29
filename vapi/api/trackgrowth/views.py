@@ -23,8 +23,8 @@ class TrackGrowthDataAdvancedViewSet(APIView):
             return Response(result,status=status.HTTP_400_BAD_REQUEST)
         
         result = {}
-        try:
-            tg = TrackGrowthAdvancedData.objects.get(gender=gender,age=age,is_deleted=False)
+        tg = TrackGrowthAdvancedData.objects.filter(gender=gender,age__gte=age,is_deleted=False).order_by('age')[0]
+        if tg:
             result['gender'] = tg.gender
             result['age'] = tg.age
             result['height_3n'] = tg.height_3n
@@ -43,8 +43,8 @@ class TrackGrowthDataAdvancedViewSet(APIView):
             result['weight_3'] = tg.weight_3
 
             return JSONResponse(result)
-
-        except TrackGrowthAdvancedData.DoesNotExist:
+        else:
+        #except TrackGrowthAdvancedData.DoesNotExist:
             raise Http404
 
 
