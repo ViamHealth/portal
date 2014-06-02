@@ -436,6 +436,8 @@ class UserView(viewsets.ViewSet):
                 umap.save()
                 if email is not None:
                     invite_new_email(user, request.user, password)
+                else:
+                    send_no_email_user_created_alert(user,request.user)
 
                 pserializer = UserSerializer(user)
                 return Response(pserializer.data, status=status.HTTP_201_CREATED)

@@ -138,3 +138,17 @@ def share_healthfile_email(owner, email,att):
 	
 	send_mail(subject,message,[email],owner.email,att)
 	send_mail('Share health file Alert','Email Id - '+ str(email), USER_ALERT_EMAILS)
+
+def send_no_email_user_created_alert(added,owner):
+	person_str = 'Username = ' + str(owner.username)
+	if owner.email is not None:
+		person_str = person_str + '<br/>Email = ' + str(owner.email)
+	if owner.first_name is not None:
+		person_str = person_str + '<br/>First name = ' + str(owner.first_name)
+
+	added_str = ''
+	if added.first_name is not None:
+		added_str =  'First name :- ' + str(added.first_name)
+
+	send_mail('New User Added Alert','Added by - <br/>' + person_str + 'Added User Details - ' + added_str,  USER_ALERT_EMAILS)
+
