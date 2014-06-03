@@ -50,11 +50,25 @@ class Personality(models.Model):
 
 	history = HistoricalRecords()
 
+	class Meta:
+		verbose_name_plural = 'Personalities'
+		verbose_name = 'Personality'
+
+	def __unicode__(self):
+		return u'%s' % (self.label)
+
 class TaskPersonalityMap(StaticApiModel):
 	task = models.ForeignKey('Task', related_name="+")
 	personality = models.ForeignKey('Personality', related_name="+")
 
 	history = HistoricalRecords()
+
+	class Meta:
+		verbose_name_plural = 'TaskPersonalityMaps'
+		verbose_name = 'TaskPersonalityMap'
+        
+	def __unicode__(self):
+		return u'%s - %s' % (self.personality, self.task)
 """
 class UserPersonalityMap(StaticApiModel):
 	personality = models.ForeignKey('Personality', related_name="+")

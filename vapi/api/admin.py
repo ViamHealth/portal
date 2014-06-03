@@ -238,7 +238,9 @@ class UserTaskAdmin(admin.ModelAdmin):
         'weight',
         'set_choice',
         'created_at',
-        'updated_at'
+        'updated_at',
+        'updated_by'
+
     ]
     list_filter = [ 'set_choice','created_at','updated_at']
 
