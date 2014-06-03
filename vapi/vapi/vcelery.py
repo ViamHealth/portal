@@ -38,31 +38,33 @@ def refresh_tokens():
 
 	return 'Token Refresh Complete'
 
-@periodic_task(run_every=crontab(hour=0, minute=30))
+@periodic_task(run_every=crontab(minute='*/1'))
 def set_user_personalities():
 	from django.contrib.auth.models import User
-	from api.models import Personality, UserPersonalityMap
+	from api.tasks.models import Personality, TaskPersonalityMap, UserTask
 	from django.db.models import Q
+        from dateutil.relativedelta import relativedelta
 
 	cronUser = User.objects.get(username='superadmin')
 
-	updatedbydatetime = datetime.datetime.today() - datetime.timedelta(minutes=25)
-	years25ago = datetime.datetime.today() - datetime.timedelta(years=25)
+	updatedbydatetime = datetime.datetime.today() - datetime.timedelta(minutes=2)
+	years25ago = datetime.datetime.now() - relativedelta(years=25)
 	
 
 	personalities = Personality.objects.all()
+        users = []
 	for personality in personalities:
 		insertData = []
 
-		if personality.pid == '1':
+		if personality.pid == 1:
 			#Female age more than 25
 			#userPersonalityMap = UserPersonalityMap.objects.filter(~Q(personality = personality), user__userprofile__gender='FEMALE')
 			users = User.objects.filter(
-				user__userprofile__gender='FEMALE',
-				user__userprofile__date_of_birth__lt=years25ago,
-				user__userprofile__updated_at__gt=updatedbydatetime )
+				userprofile__gender='FEMALE',
+				userprofile__date_of_birth__lt=years25ago,
+				userprofile__updated_at__gt=updatedbydatetime )
 
-		elif personality.pid == '2':
+		elif personality.pid == 2:
 			#Male age more than 25
 			#userPersonalityMap = UserPersonalityMap.objects.filter(~Q(personality = personality), user__userprofile__gender='FEMALE')
 			users = User.objects.filter(
@@ -70,7 +72,7 @@ def set_user_personalities():
 				user__userprofile__date_of_birth__lt=years25ago,
 				user__userprofile__updated_at__gt=updatedbydatetime )
 
-		elif personality.pid == '3':
+		elif personality.pid == 3:
 			#Female age less than 25
 			#userPersonalityMap = UserPersonalityMap.objects.filter(~Q(personality = personality), user__date_joined__gt=enddate)
 			users = User.objects.filter(
@@ -78,7 +80,7 @@ def set_user_personalities():
 				user__userprofile__date_of_birth__gt=years25ago,
 				user__userprofile__updated_at__gt=updatedbydatetime )
 
-		elif personality.pid == '4':
+		elif personality.pid == 4:
 			#Male age less than 25
 			#userPersonalityMap = UserPersonalityMap.objects.filter(~Q(personality = personality), user__date_joined__gt=enddate)
 			users = User.objects.filter(
@@ -86,15 +88,16 @@ def set_user_personalities():
 				user__userprofile__date_of_birth__gt=years25ago,
 				user__userprofile__updated_at__gt=updatedbydatetime )
 
-		taskPersonalityMap = TaskPersonalityMap.objects.filter(personality=personality).distinct('task')
+		taskPersonalityMap = TaskPersonalityMap.objects.filter(personality=personality)
 
 		if taskPersonalityMap:
 			for taskPersonality in taskPersonalityMap:
 				for user in users:
 					userTasks = UserTask.objects.filter(task=taskPersonality.task,user=user)
 					if not userTasks:
-						insertData.append(userTask(user=user, task=taskPersonality.task,udated_by=cronUser))
-			if insertData.len():
+						insertData.append(UserTask(user=user, task=taskPersonality.task,updated_by=cronUser))
+
+			if len(insertData):
 				UserTask.objects.bulk_create(insertData)
 
 
