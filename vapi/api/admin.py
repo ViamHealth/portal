@@ -284,5 +284,7 @@ admin.site.register(TrackGrowthAdvancedData)
 
 admin.site.register(TaskChoiceFeedback)
 admin.site.register(Task)
+admin.site.register(TaskPersonalityMap)
+admin.site.register(Personality)
 admin.site.register(UserConditionTemp)
 admin.site.register(UserTask, UserTaskAdmin)

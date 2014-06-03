@@ -44,3 +44,21 @@ class UserTask(ApiModel):
 	def __unicode__(self):
 		return u'%s - %s' % (self.user, self.task)
 
+class Personality(models.Model):
+	label = models.CharField(max_length=256L,null=False,blank=False)
+	pid = models.PositiveIntegerField()
+
+	history = HistoricalRecords()
+
+class TaskPersonalityMap(StaticApiModel):
+	task = models.ForeignKey('Task', related_name="+")
+	personality = models.ForeignKey('Personality', related_name="+")
+
+	history = HistoricalRecords()
+"""
+class UserPersonalityMap(StaticApiModel):
+	personality = models.ForeignKey('Personality', related_name="+")
+	user = models.ForeignKey('auth.User', related_name="+")
+
+	history = HistoricalRecords()
+"""
