@@ -47,6 +47,7 @@ def f7(seq):
 def set_user_personalities():
 	from django.contrib.auth.models import User
 	from api.users.models import UserGroupSet
+        from api.conditions.models import UserConditionTemp
 	from api.tasks.models import Personality, TaskPersonalityMap, UserTask
 	from django.db.models import Q
 	from dateutil.relativedelta import relativedelta
