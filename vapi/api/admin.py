@@ -54,19 +54,21 @@ class UserGroupSetAdmin(admin.ModelAdmin):
 
 class UserBmiProfileAdmin(admin.ModelAdmin):
     list_display = [
+                'id',
 		'user_link', 
 		'height' , 
 		'weight' ,
 		'lifestyle',
-		'systolic_pressure',
-		'diastolic_pressure',
-		'pulse_rate',
-		'random',
-		'fasting',
-		'hdl',
-		'ldl',
-		'triglycerides',
-		'total_cholesterol',
+		#'systolic_pressure',
+		#'diastolic_pressure',
+		#'pulse_rate',
+		#'random',
+		#'fasting',
+		#'hdl',
+		#'ldl',
+		#'triglycerides',
+		#'total_cholesterol',
+                'updated_at'
     ]
     list_filter = [ 'created_at','updated_at']
 
