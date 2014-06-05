@@ -38,12 +38,18 @@ def refresh_tokens():
 
 	return 'Token Refresh Complete'
 
+def f7(seq):
+    seen = set()
+    seen_add = seen.add
+    return [ x for x in seq if x not in seen and not seen_add(x)]
+
 @periodic_task(run_every=crontab(minute='*/1'))
 def set_user_personalities():
 	from django.contrib.auth.models import User
+	from api.users.models import UserGroupSet
 	from api.tasks.models import Personality, TaskPersonalityMap, UserTask
 	from django.db.models import Q
-        from dateutil.relativedelta import relativedelta
+	from dateutil.relativedelta import relativedelta
 
 	cronUser = User.objects.get(username='superadmin')
 
@@ -52,7 +58,8 @@ def set_user_personalities():
 	
 
 	personalities = Personality.objects.all()
-        users = []
+	users = []
+
 	for personality in personalities:
 		insertData = []
 
@@ -88,6 +95,51 @@ def set_user_personalities():
 				userprofile__date_of_birth__gt=years25ago,
 				userprofile__updated_at__gt=updatedbydatetime )
 
+		elif personality.pid == 5:
+			#All
+			users = User.objects.filter(
+				userprofile__updated_at__gt=updatedbydatetime )
+
+		elif personality.pid == 6:
+			#Have family member less than 10 in group set
+			years10ago = datetime.datetime.now() - relativedelta(years=10)
+
+			usergroupset = UserGroupSet.objects.filter(
+				Q(group__userprofile__date_of_birth__gt=years10ago,
+					group__userprofile__updated_at__gt=updatedbydatetime) | 
+				Q(user__userprofile__date_of_birth__gt=years10ago,
+					user__userprofile__updated_at__gt=updatedbydatetime) ).filter(is_deleted=False,status='ACTIVE')
+			
+			users_list = []
+			users_list = list(set(users_list))
+
+			for usergs in usergroupset:
+				users_list = [usergs.group] + users_list
+				users_list = [usergs.user] + users_list
+			
+			users_unique_list = f7(users_list)
+
+			users = User.objects.filter(pk__in=users_unique_list).exclude(user__userprofile__date_of_birth__gt=years10ago)
+
+			"""
+			users2 = User.objects.filter(
+				userprofile__date_of_birth__gt=years10ago,
+				is_active=True,
+				userprofile__updated_at__gt=updatedbydatetime )
+			usergroupset = UserGroupSet.objects.filter(Q(group__in=users2)| Q(user=users2),status='ACTIVE')
+			users = User.objects.filter(usergroupset__in=usergroupset).exclude(user__in=user2)
+			"""
+		"""
+		elif personality.pid == 6:
+			#Have family member with diabetes
+			uct = UserConditionTemp.objects.get(condition='cholesterol')
+			users2 = User.objects.filter(
+				user__in=uct
+				is_active=True,
+				userprofile__updated_at__gt=updatedbydatetime )
+			usergroupset = UserGroupSet.objects.filter(Q(group__in=users2)| Q(user=users2),status='ACTIVE')
+			users = User.objects.filter(usergroupset__in=usergroupset).exclude(user__in=user2)
+		"""
 		taskPersonalityMap = TaskPersonalityMap.objects.filter(personality=personality)
 
 		if taskPersonalityMap:
