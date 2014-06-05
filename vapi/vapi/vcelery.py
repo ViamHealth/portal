@@ -47,7 +47,7 @@ def f7(seq):
 def set_user_personalities():
 	from django.contrib.auth.models import User
 	from api.users.models import UserGroupSet
-        from api.conditions.models import UserConditionTemp
+	from api.conditions.models import UserConditionTemp
 	from api.tasks.models import Personality, TaskPersonalityMap, UserTask
 	from django.db.models import Q
 	from dateutil.relativedelta import relativedelta
@@ -122,13 +122,28 @@ def set_user_personalities():
                         if users_unique_list:
         			users = User.objects.filter(pk__in=[usera.id for usera in users_unique_list]).exclude(userprofile__date_of_birth__gt=years10ago)
 
-		elif personality.pid == 7:
-			#Have family member or self with diabetes
+		elif personality.pid == 7 or personality.pid == 8 or personality.pid == 9 or personality.pid == 10:
+			
 			uct_list = []
 			uct_list = list(set(uct_list))
 
+			condition = 'blood sugar'
+			
+			if personality.pid == 7:
+				condition='cholesterol'
+
+			elif personality.pid == 8:
+				condition = 'weight'
+
+			elif personality.pid == 9:
+				condition = 'blood pressure'
+			else:
+				condition = 'blood sugar'
+
+			#Have family member or self with diabetes
+			
 			uct = UserConditionTemp.objects.only('user').filter(
-				condition='cholesterol',
+				condition=condition,
 				user__userprofile__updated_at__gt=updatedbydatetime,
 				user__is_active=True)
 
