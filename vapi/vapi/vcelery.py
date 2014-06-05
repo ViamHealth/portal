@@ -109,7 +109,6 @@ def set_user_personalities():
 					group__userprofile__updated_at__gt=updatedbydatetime) | 
 				Q(user__userprofile__date_of_birth__gt=years10ago,
 					user__userprofile__updated_at__gt=updatedbydatetime) ).filter(is_deleted=False,status='ACTIVE')
-			
 			users_list = []
 			users_list = list(set(users_list))
 
@@ -119,7 +118,8 @@ def set_user_personalities():
 			
 			users_unique_list = f7(users_list)
 
-			users = User.objects.filter(pk__in=users_unique_list).exclude(user__userprofile__date_of_birth__gt=years10ago)
+                        if users_unique_list:
+        			users = User.objects.filter(pk__in=[usera.id for usera in users_unique_list]).exclude(userprofile__date_of_birth__gt=years10ago)
 
 			"""
 			users2 = User.objects.filter(
