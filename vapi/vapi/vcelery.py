@@ -121,25 +121,37 @@ def set_user_personalities():
                         if users_unique_list:
         			users = User.objects.filter(pk__in=[usera.id for usera in users_unique_list]).exclude(userprofile__date_of_birth__gt=years10ago)
 
-			"""
-			users2 = User.objects.filter(
-				userprofile__date_of_birth__gt=years10ago,
-				is_active=True,
-				userprofile__updated_at__gt=updatedbydatetime )
-			usergroupset = UserGroupSet.objects.filter(Q(group__in=users2)| Q(user=users2),status='ACTIVE')
-			users = User.objects.filter(usergroupset__in=usergroupset).exclude(user__in=user2)
-			"""
-		"""
-		elif personality.pid == 6:
-			#Have family member with diabetes
-			uct = UserConditionTemp.objects.get(condition='cholesterol')
-			users2 = User.objects.filter(
-				user__in=uct
-				is_active=True,
-				userprofile__updated_at__gt=updatedbydatetime )
-			usergroupset = UserGroupSet.objects.filter(Q(group__in=users2)| Q(user=users2),status='ACTIVE')
-			users = User.objects.filter(usergroupset__in=usergroupset).exclude(user__in=user2)
-		"""
+		elif personality.pid == 7:
+			#Have family member or self with diabetes
+			uct_list = []
+			uct_list = list(set(uct_list))
+
+			uct = UserConditionTemp.objects.only('user').filter(
+				condition='cholesterol',
+				user__userprofile__updated_at__gt=updatedbydatetime,
+				user__is_active=True)
+
+			for ucta in uct:
+				uct_list = [ucta.user.id] + uct_list
+
+			if uct_list:
+				usergroupset = UserGroupSet.objects.filter(
+					Q(group__in=uct_list) | 
+					Q(user__in=uct_list) ).filter(is_deleted=False,status='ACTIVE')
+
+				users_list = []
+				users_list = list(set(users_list))
+
+				for usergs in usergroupset:
+					users_list = [usergs.group.id] + users_list
+					users_list = [usergs.user.id] + users_list
+				
+				users_unique_list = f7(users_list)
+				if users_unique_list:
+					users = User.objects.filter(pk__in=users_list)
+
+
+
 		taskPersonalityMap = TaskPersonalityMap.objects.filter(personality=personality)
 
 		if taskPersonalityMap:
