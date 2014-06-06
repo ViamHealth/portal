@@ -90,7 +90,6 @@ def set_user_personalities():
 
 		elif personality.pid == 4:
 			#Male age less than 25
-			#userPersonalityMap = UserPersonalityMap.objects.filter(~Q(personality = personality), user__date_joined__gt=enddate)
 			users = User.objects.filter(
 				userprofile__gender='MALE',
 				userprofile__date_of_birth__gt=years25ago,
@@ -167,6 +166,22 @@ def set_user_personalities():
 					users = User.objects.filter(pk__in=users_list)
 
 
+
+		elif personality.pid == 11:
+			#Male age more than 40
+			years40ago = datetime.datetime.now() - relativedelta(years=40)
+			users = User.objects.filter(
+				userprofile__gender='MALE',
+				userprofile__date_of_birth__lt=years40ago,
+				userprofile__updated_at__gt=updatedbydatetime )
+
+		elif personality.pid == 12:
+			#Female age more than 40
+			years40ago = datetime.datetime.now() - relativedelta(years=40)
+			users = User.objects.filter(
+				userprofile__gender='FEMALE',
+				userprofile__date_of_birth__lt=years40ago,
+				userprofile__updated_at__gt=updatedbydatetime )
 
 		taskPersonalityMap = TaskPersonalityMap.objects.filter(personality=personality)
 
