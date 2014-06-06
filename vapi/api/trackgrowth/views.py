@@ -23,28 +23,32 @@ class TrackGrowthDataAdvancedViewSet(APIView):
             return Response(result,status=status.HTTP_400_BAD_REQUEST)
         
         result = {}
-        tg = TrackGrowthAdvancedData.objects.filter(gender=gender,age__gte=age,is_deleted=False).order_by('age')[0]
-        if tg:
-            result['gender'] = tg.gender
-            result['age'] = tg.age
-            result['height_3n'] = tg.height_3n
-            result['weight_3n'] = tg.weight_3n
-            result['height_2n'] = tg.height_2n
-            result['weight_2n'] = tg.weight_2n
-            result['height_1n'] = tg.height_1n
-            result['weight_1n'] = tg.weight_1n
-            result['height_0'] = tg.height_0
-            result['weight_0'] = tg.weight_0
-            result['height_1'] = tg.height_1
-            result['weight_1'] = tg.weight_1
-            result['height_2'] = tg.height_2
-            result['weight_2'] = tg.weight_2
-            result['height_3'] = tg.height_3
-            result['weight_3'] = tg.weight_3
+        tg1 = TrackGrowthAdvancedData.objects.filter(gender=gender,age__gte=age,is_deleted=False).order_by('age')
+        if tg1:
+            tg = tg1[0]
+            if tg:
+                result['gender'] = tg.gender
+                result['age'] = tg.age
+                result['height_3n'] = tg.height_3n
+                result['weight_3n'] = tg.weight_3n
+                result['height_2n'] = tg.height_2n
+                result['weight_2n'] = tg.weight_2n
+                result['height_1n'] = tg.height_1n
+                result['weight_1n'] = tg.weight_1n
+                result['height_0'] = tg.height_0
+                result['weight_0'] = tg.weight_0
+                result['height_1'] = tg.height_1
+                result['weight_1'] = tg.weight_1
+                result['height_2'] = tg.height_2
+                result['weight_2'] = tg.weight_2
+                result['height_3'] = tg.height_3
+                result['weight_3'] = tg.weight_3
 
-            return JSONResponse(result)
+                return JSONResponse(result)
+            else:
+                raise Http404
         else:
-        #except TrackGrowthAdvancedData.DoesNotExist:
+            #except TrackGrowthAdvancedData.DoesNotExist:
             raise Http404
 
 
