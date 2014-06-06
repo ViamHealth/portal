@@ -113,6 +113,8 @@ urlpatterns = patterns('',
 
     url(r'^tasks/$', ListUserTasks.as_view()),
     url(r'^tasks/(?P<task_id>[0-9]+)/set_choice/$', UpdateSetChoiceTask.as_view()),
+    url(r'^tasks/(?P<task_id>[0-9]+)/set_blood_pressure/$', UpdateBloodPressureTask.as_view()),
+    
     url(r'^user_conditions/', InsertUserConditions.as_view()),
 
     url(r'^percentile_data/', TrackGrowthDataAdvancedViewSet.as_view()),

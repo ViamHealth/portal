@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 from django.db import models
 from simple_history.models import HistoricalRecords
 from api.models import ApiModel, StaticApiModel
+#from api.goals.models import UserBloodPressureReading
 
 SET_CHOICE_CHOICES = (
 		('0','0'),
@@ -20,11 +21,18 @@ class TaskChoiceFeedback(models.Model):
 
 
 class Task(models.Model):
+
+	TASK_TYPE_CHOICES = (
+        ('1','TEXT_WITH_BUTTONS'),
+        ('2','BP_INPUT_FORM')
+    )
+
 	message = models.CharField(max_length=256L,blank=False, null=False)
 	label_choice_1 = models.CharField(max_length=32L,blank=True, null=True)
 	choice_1_message = models.ForeignKey('TaskChoiceFeedback', related_name="+", blank=True, null=True, on_delete=models.PROTECT)
 	label_choice_2 = models.CharField(max_length=32L,blank=True, null=True)
 	choice_2_message = models.ForeignKey('TaskChoiceFeedback', related_name="+", blank=True, null=True, on_delete=models.PROTECT)
+	task_type = models.CharField(max_length=64L, choices=TASK_TYPE_CHOICES, default='1', null=False, blank=False)
 	
 
 	history = HistoricalRecords()
@@ -33,11 +41,13 @@ class Task(models.Model):
 		return u'%s' % (self.message)
 
 
+
 class UserTask(ApiModel):
 	task = models.ForeignKey('Task', related_name="+", on_delete=models.CASCADE)
 	user = models.ForeignKey('auth.User', related_name="+")
 	weight = models.PositiveIntegerField(default=0)
 	set_choice = models.CharField(max_length=1L, choices=SET_CHOICE_CHOICES, default='0',null=False)
+	blood_pressure_reading = models.ForeignKey('goals.UserBloodPressureReading', related_name="+", blank=True, null=True)
 
 	history = HistoricalRecords()
 
