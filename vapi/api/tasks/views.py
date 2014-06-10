@@ -29,6 +29,7 @@ class ListUserTasks(APIView):
 			obj['created_at'] = ut.created_at
 			obj['updated_at'] = ut.updated_at
 			obj['is_deleted'] = ut.is_deleted
+                        obj['task_type'] = ut.task.task_type
 			result.append(obj)
 
 		fin = {}
