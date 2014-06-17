@@ -18,6 +18,7 @@ class ListUserTasks(APIView):
 			obj['choice_2_message'] = ''
 			obj['id'] = ut.id
 			obj['message'] = ut.task.message
+                        obj['task_type'] = ut.task.task_type
 			obj['label_choice_1'] = ut.task.label_choice_1
 			obj['label_choice_2'] = ut.task.label_choice_2
 			if ut.task.choice_1_message is not None:

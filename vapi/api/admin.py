@@ -132,7 +132,7 @@ class BPGoalAdmin(admin.ModelAdmin):
     user_link.admin_order_field  = 'user__id'
 
 class BPReadingAdmin(admin.ModelAdmin):
-    list_display = ['systolic_pressure','user_link','diastolic_pressure','pulse_rate', 'reading_date','created_at','updated_at','updated_by','is_deleted']
+    list_display = ['id','systolic_pressure','user_link','diastolic_pressure','pulse_rate', 'reading_date','created_at','updated_at','updated_by','is_deleted']
     list_filter = ['reading_date','created_at','updated_at','is_deleted']
 
     def user_link(self,obj):
@@ -231,6 +231,23 @@ class UserTrackGrowthDataAdmin(admin.ModelAdmin):
     user_link.short_description = "User"
     user_link.admin_order_field  = 'user__id'
 
+class TaskPersonalityMapAdmin(admin.ModelAdmin):
+    list_display = [
+        'id',
+        'personality',
+        'task'
+    ]
+    list_filter = [ 'personality' ]
+
+class TaskAdmin(admin.ModelAdmin):
+    list_display = [
+        'id',
+        'task_type',
+        'message',
+        'label_choice_1',
+        'label_choice_2',
+    ]
+    list_filter = [ 'task_type']
 
 class UserTaskAdmin(admin.ModelAdmin):
     list_display = [
@@ -239,11 +256,12 @@ class UserTaskAdmin(admin.ModelAdmin):
         'task_link',
         'weight',
         'set_choice',
+        'blood_pressure_reading',
         'created_at',
         'updated_at',
         'updated_by'
-
     ]
+    raw_id_fields = ('task','blood_pressure_reading',)
     list_filter = [ 'set_choice','created_at','updated_at']
 
     def user_link(self,obj):
@@ -287,8 +305,8 @@ admin.site.register(UserTrackGrowthData, UserTrackGrowthDataAdmin)
 admin.site.register(TrackGrowthAdvancedData)
 
 admin.site.register(TaskChoiceFeedback)
-admin.site.register(Task)
-admin.site.register(TaskPersonalityMap)
+admin.site.register(Task,TaskAdmin)
+admin.site.register(TaskPersonalityMap, TaskPersonalityMapAdmin)
 admin.site.register(Personality)
 admin.site.register(UserConditionTemp)
 admin.site.register(UserTask, UserTaskAdmin)
